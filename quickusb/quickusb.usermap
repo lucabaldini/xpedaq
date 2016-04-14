@@ -1,0 +1,8 @@
+# The entries below are used to detect a quickusb module when it's plugged in
+# and then run the quickusb script to change the ownership and
+# permissions on the "device node" used by libusb.
+#
+# The 0x0003 match flag means the device is matched by its vendor and
+# product IDs.
+#
+quickusb 0x0003 0x0fbb 0x0001 0x0000 0x0000 0x00 0x00 0x00 0x00 0x00 0x00 0x00

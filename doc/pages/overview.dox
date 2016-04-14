@@ -1,0 +1,62 @@
+/*!
+
+\page overview Overview
+
+<h2>Prerequisites</h2>
+
+\li <b>Qt 4</b><br>
+The data acquisition program uses Qt for the Graphical user interface, as
+well as for other components (in particular for the UDP socket).
+Any of the Qt 4 series should do the job. The code is developed with
+Qt 4.3.1 and 4.3.3.
+
+\li <b>c++ compiler</b><br>
+The program has been successfully compiled under Linux with gcc 3.4.6
+(Scientific Linux 4) and gcc 4.3.0 (Fedora Core 9) and under Windows with
+the corresponding gcc port MinGW.
+
+\li <b>QuickUsb driver</b><br>
+It is required for running the data acquisition program. Under Windows the
+driver from BitWise must be correctly installed, while under Linux
+everything should work off the shelf after the compilation.
+
+
+<h2>Compilation</h2>
+
+This assumes that the prerequisites are correctly installed and the
+environment for the prerequisites themselves is properly set up. The
+make utility is shipped with MinGW under windows.
+That said, the compilations proceeds in two separate steps (the following
+assumes that you are in the data acquisition root directory).
+\li Run qmake:<br>
+<code>> qmake</code><br>
+This reads the <code>xpol.pro</code> file and creates the Makefile necessary
+for the compilation.
+
+\li Run make:<br>
+<code>> make</code><br>
+
+If it's the first compilation/installation you also have to create copies
+of the following files:
+\li <code>runId.cfg.sample       -> runId.cfg</code>
+\li <code>preferences.cfg.sample -> preferences.cfg</code>
+\li <code>config/last.cfg.sample -> config/last.cfg</code>
+
+If everything runs fine, you just run the executabe which is called
+<code>xpol</code> under Linux and <code>xpol.exe</code> under Windows.
+
+
+<h2>Environment</h2>
+
+The <code>XPOL_DAQ_ROOT</code> environmental variable must be defined and
+point to the root of the package installation.
+
+There are two other environmental variables which can be optionally set
+\li <code>XPOL_DAQ_DATA</code> identifies the folder where the data are
+written
+\li <code>XPOL_DAQ_LOG</code> defines the folder for the log files.
+
+If not set, those two paths get their default values (see the documentation
+of the \ref xpolenv namespace for further details).
+
+*/

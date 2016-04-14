@@ -1,0 +1,16 @@
+//Visualization mode//
+4
+//Write data file//
+116
+//Multicast enabled//
+0
+//Multicast address//
+127.0.0.1
+//Multicast port//
+50001
+//Write log file//
+88
+//Logger terminal level//
+0
+//Logger display level//
+0

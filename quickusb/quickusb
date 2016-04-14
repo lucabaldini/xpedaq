@@ -1,0 +1,29 @@
+#!/bin/sh 
+
+# This file is part of sane-backends. 
+# 
+# This script changes the permissions and ownership of a USB device under 
+# /proc/bus/usb to grant access to this device to users in the usb group. 
+# 
+# Ownership is set to root:usb, permissions are set to 0660. 
+# 
+# Arguments : 
+# ----------- 
+# ACTION=[add|remove] 
+# DEVICE=/proc/bus/usb/BBB/DDD 
+# TYPE=usb 
+
+if [ -z "${DEVICE}" ] ; then 
+        IF=$(echo ${DEVPATH} | sed 's:\(bus/usb/devices/\)\(.*\)-\(.*\):\2:') 
+        if [ -r /sys/${DEVPATH}/devnum ]; then 
+             DEV=$(cat /sys/${DEVPATH}/devnum) 
+        else 
+             DEV=1 # you'll have to adjust this manually for kernel < 2.6.6 
+        fi 
+        DEVICE=$(printf '/proc/bus/usb/%.03d/%.03d' ${IF} ${DEV}) 
+fi 
+
+if [ "$ACTION" = "add" -a "$TYPE" = "usb" ]; then 
+  chown root:usb "$DEVICE" 
+  chmod 0660 "$DEVICE" 
+fi 

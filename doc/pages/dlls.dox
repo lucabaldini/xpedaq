@@ -1,0 +1,40 @@
+/*!
+
+\page dlls Exporting DLL names
+
+Here are some notes about the compilation and linking of the DAQ program
+under windows using MinGW.
+
+The QuickUsb controller is shipped along with DLL library the code must
+be compiled and linked against. Unfortunately the dll follows that Visual
+Studio conventions for the entry points and cannot be linked out of the box
+by other compilers like MinGW (and, if by any chance, you're asking yourself
+why the hell we want to compile with MinGW, well... Qt open source does not
+support Visual Studio; that's the answer).
+
+The bottomline is that we need to more steps before being able to compile.
+\li Create a QuickUsb.def file containing all the function names we want to
+export (can be written by hand with a text editor).
+\li Create a libquickusb.a file (using the information from the .def file and
+the .dll file) suitable for the linker (use <code>dlltool</code> shipped along
+with MinGW).
+
+There's a nice tutorial at:
+http://www.mingw.org/MinGWiki/index.php/CreateImportLibraries
+which explains some of the issues involved here.
+
+Essentially each time you see an error message sounding like:
+
+<code>
+./build pUsbController.o:pUsbController.cpp:(.text+0x83d): undefined reference
+to `QuickUsbGetLastError\@4'<br>
+collect2: ld returned 1 exit status<br>
+mingw32-make: *** [xpol.exe] Error 1
+</code>
+
+that means that one or more names are not exported correctly from the dll
+to the link file. What you have to do is:
+\li Edit the QuickUsb.def file adding the new name (should be straightforward).
+\li Run the batch file "exportDllNames.bat", which should do the rest.
+
+*/

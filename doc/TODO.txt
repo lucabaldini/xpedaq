@@ -1,0 +1,5 @@
++ Set pUsbController TIMEOUT to the correct value according to what it's doing
+
++ Multicast by packets of tenth of events
++ Clean pUsbController.h : use something better than #define STUFF ?
+
