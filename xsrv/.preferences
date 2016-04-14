@@ -1,5 +1,5 @@
 //Input file path//
-D:\provaMON\xpol.mdat
+/data/work/xipe/xpedaq/data/xpol.mdat
 //Multicast address//
 127.0.0.1
 //Multicast port//
