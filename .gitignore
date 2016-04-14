@@ -32,6 +32,8 @@ build/*
 data/*
 moc/*
 Makefile
+preferences.cfg
+runId.cfg
 xpol
 
 xsrv/moc/* 
