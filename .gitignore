@@ -31,6 +31,8 @@
 build/*
 data/*
 moc/*
+doc/html/*
+doc/latex/*
 Makefile
 preferences.cfg
 runId.cfg
