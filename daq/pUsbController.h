@@ -204,10 +204,10 @@ class pUsbController : public CQuickUsb
   int setTimeout(unsigned long timeout);
   /*! \brief Return the error description as reported on the QuickUsb data
    sheet.*/
-  std::string getErrorDescription(unsigned long errorCode);
+  static std::string getErrorDescription(unsigned long errorCode);
   /*! \brief Return the error resolution as reported on the QuickUsb data
    sheet.*/
-  std::string getErrorResolution(unsigned long errorCode);
+  static std::string getErrorResolution(unsigned long errorCode);
  protected:
 
  private:

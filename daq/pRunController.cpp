@@ -103,8 +103,16 @@ int pRunController::createUsbModules()
       m_usbController = new pUsbController(usbDeviceName);
       return 0;
     }
-  *xpollog::kError << "No USB module found." << endline;
-  return 1;
+  unsigned long errorCode;
+  QuickUsbGetLastError(&errorCode);
+  if (errorCode > 0)
+    {
+      *xpollog::kError << "Error " << errorCode << ". "
+		       << pUsbController::getErrorDescription(errorCode)
+		       << endline;
+    }
+  *xpollog::kError << "No USB module found." << endline;  
+  return errorCode;
 }
 
 /*!
