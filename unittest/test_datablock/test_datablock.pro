@@ -22,9 +22,9 @@ SOURCES += xpolenv.cpp
 SOURCES += pLoggerChannel.cpp
 SOURCES += pLogger.cpp
 SOURCES += pIOManager.cpp
-SOURCES += test_header.cpp
+SOURCES += test_datablock.cpp
 
-TARGET   = test_header
+TARGET   = test_datablock
 
 QMAKE_CLEAN += ./test.dat
 QMAKE_CLEAN += $$TARGET
