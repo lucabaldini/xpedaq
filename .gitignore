@@ -35,6 +35,7 @@ doc/latex/*
 Makefile
 preferences.cfg
 runId.cfg
+object_script.xpol
 xpol
 
 xsrv/moc/* 
