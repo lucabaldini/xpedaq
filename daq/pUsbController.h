@@ -28,7 +28,7 @@ with this program; if not, write to the Free Software Foundation Inc.,
 #include "xpolutils.h"
 #include "xpollog.h"
 #include "CQuickUsb.h"
-#include "QuickUsb.h"
+#include "QuickUSB.h"
 
 #define WORDWIDE	1	//deprecated use SETTING_WORDWIDE
 #define DATAADDRESS	2 	//deprecated use SETTING_DATAADDRESS
