@@ -130,7 +130,7 @@ TARGET = xpol
 unix {
   QMAKE_CLEAN += ./gui/*~
   QMAKE_CLEAN += ./daq/*~
-  QMAKE_CLEAN += ./quickusb/*~
+  QMAKE_CLEAN += ./quickusb-$${QUICKUSB_VERSION}/*~
   QMAKE_CLEAN += ./utils/*~
   QMAKE_CLEAN += $$TARGET
 }
