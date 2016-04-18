@@ -348,7 +348,7 @@ void pRunController::fsm_startRun()
   *xpollog::kDebug << "Output file path: " << m_outputFilePath << endline;
   *xpollog::kDebug << "Header file path: " << m_headerFilePath << endline;
   m_dataCollector->reset();
-  if (m_usbController->IsOpen())
+  if (m_usbController->IsOpened())
     {
       m_xpolFpga->setup(m_parentWindow->getConfiguration());
       m_dataCollector->setup(m_outputFilePath,
@@ -404,7 +404,7 @@ void pRunController::fsm_pause()
 void pRunController::fsm_resume()
 {
   *xpollog::kInfo << "Run controller restarted." << endline;
-  if (m_usbController->IsOpen())
+  if (m_usbController->IsOpened())
     {
       m_dataCollector->start();
     } else {

@@ -2,8 +2,17 @@ INCLUDEPATH += ./gui
 DEPENDPATH  += ./gui
 INCLUDEPATH += ./daq
 DEPENDPATH  += ./daq
-INCLUDEPATH += ./quickusb
-DEPENDPATH  += ./quickusb
+
+windows {
+  INCLUDEPATH += ./quickusb-2.15.2
+  DEPENDPATH  += ./quickusb-2.15.2
+}
+
+unix {
+  INCLUDEPATH += ./quickusb
+  DEPENDPATH  += ./quickusb
+}
+
 INCLUDEPATH += ./utils
 DEPENDPATH  += ./utils
 
@@ -12,7 +21,7 @@ unix {
 }
 
 windows {
-  LIBS += -L./quickusb -lQuickUsb
+  LIBS += -L./quickusb-2.15.2/windows -lQuickUsb
   CONFIG += qt thread console
   CONFIG -= debug_and_release
 }
