@@ -1,0 +1,1 @@
+dlltool -d QuickUsb.def -l libquickusb.a -Ak
