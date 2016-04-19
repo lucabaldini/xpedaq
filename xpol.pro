@@ -13,7 +13,7 @@ DEPENDPATH  += ./quickusb-$${QUICKUSB_VERSION}
   
 unix {
 ARCH = $$system(uname -m)
-message(q-making for Linux $${UNAME}...)
+message(q-making for Linux $${ARCH}...)
 LIBS += -L./quickusb-$${QUICKUSB_VERSION}/linux/lib/$${ARCH} -lusb -lquickusb
 }
 
