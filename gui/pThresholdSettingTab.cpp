@@ -32,6 +32,7 @@ pThresholdSettingTab::pThresholdSettingTab()
   setupConnections();
   setupToolTips();
   freezeSize(xpolgui::kTabGroupBoxWidth);
+  changeSettingMode(true);
 }
 
 void pThresholdSettingTab::setupToolTips()
@@ -212,12 +213,18 @@ void pThresholdSettingTab::changeSettingMode(int mode)
       connect(m_thresholdSpinBox[0], SIGNAL(valueChanged(int)),
 	      m_thresholdSpinBox[i], SLOT(setValue(int)));
     }
+    if (!m_modeCheckBox->isChecked()){
+      m_modeCheckBox->setChecked(true);
+    }
   } else {
     m_thresholdsBounded = false;
     for (int i = 1; i < NUM_READOUT_CLUSTERS; i++){
       enableThresholdWidgets(i);
       disconnect(m_thresholdSpinBox[0], SIGNAL(valueChanged(int)),
 		 m_thresholdSpinBox[i], SLOT(setValue(int)));      
+    }
+    if (m_modeCheckBox->isChecked()){
+      m_modeCheckBox->setChecked(false);
     }
   }
   disableLastThresholdWidget();
