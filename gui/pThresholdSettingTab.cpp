@@ -79,27 +79,27 @@ void pThresholdSettingTab::setupReferenceWidgets()
 
 void pThresholdSettingTab::addThresholdWidgets(int clusterId)
 {
-  int row = clusterId%(NUM_READOUT_CLUSTERS/2);
+  int row = clusterId % (NUM_READOUT_CLUSTERS/2);
   int column = 5*(clusterId/(NUM_READOUT_CLUSTERS/2));
   m_thresholdLabel[clusterId] =
     new pQtCustomTextLabel(this, QString("Cluster %1").arg(clusterId));
-  m_thresholdSpinBox[clusterId] = new QSpinBox(this);
+  m_thresholdSpinBox[clusterId] = new QSpinBox(this);  
   m_thresholdUnitsLabel[clusterId] = new pQtCustomTextLabel(this, "        ");
   m_thresholdLabel[clusterId]->setFixedWidth(xpolgui::kTabTextLabelsWidth);
   m_thresholdLabel[clusterId]->setLabelStyle();
   m_thresholdSpinBox[clusterId]->setFixedWidth(xpolgui::kTabSpinBoxesWidth);
   m_groupBoxGridLayout->addWidget(m_thresholdLabel[clusterId], row ,column);
-  m_groupBoxGridLayout->addWidget(m_thresholdSpinBox[clusterId],
-				  row ,column + 1);
-  m_groupBoxGridLayout->addWidget(m_thresholdUnitsLabel[clusterId],
-				  row, column + 3);
-  m_groupBoxGridLayout->
-    setColumnMinimumWidth(2, xpolgui::kTabColumnsSmallSpacing);
-  m_groupBoxGridLayout->
-    setColumnMinimumWidth(4, xpolgui::kTabColumnsMidSpacing);
+  m_groupBoxGridLayout->addWidget(m_thresholdSpinBox[clusterId], row,
+				  column + 1);
+  m_groupBoxGridLayout->addWidget(m_thresholdUnitsLabel[clusterId], row,
+				  column + 3);
+  m_groupBoxGridLayout->setColumnMinimumWidth(2,
+					      xpolgui::kTabColumnsSmallSpacing);
+  m_groupBoxGridLayout->setColumnMinimumWidth(4,
+					      xpolgui::kTabColumnsMidSpacing);
   m_groupBoxGridLayout->setColumnStretch(4, 1);
-  m_groupBoxGridLayout->
-    setColumnMinimumWidth(7, xpolgui::kTabColumnsSmallSpacing);
+  m_groupBoxGridLayout->setColumnMinimumWidth(7,
+					      xpolgui::kTabColumnsSmallSpacing);
 }
 
 void pThresholdSettingTab::enableThresholdWidgets(int clusterId)
