@@ -37,6 +37,8 @@ preferences.cfg
 runId.cfg
 object_script.xpol
 xpol
+quickusb-*/linux/driver/x64/
+quickusb-*/linux/driver/x86/
 
 xsrv/moc/* 
 xsrv/preferences.cfg
