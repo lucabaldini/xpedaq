@@ -45,8 +45,13 @@ void pLogger::setLogFilePath()
   struct tm *timeinfo = localtime(&timestamp);
   char timestring[50];
   strftime(timestring , 50, "%Y-%m-%d_%H-%M-%S", timeinfo);
-  std::string logFileName = std::string(timestring) + ".log";
-  m_logFilePath = xpolenv::join(xpolenv::kDaqLogDirPath, logFileName);
+  std::string fileName = std::string(timestring) + ".log";
+  if (char *var = std::getenv("XPOL_DAQ_LOG")) {
+    m_logFileDir = var;
+  } else {
+    m_logFileDir = std::string(std::getenv("XPOL_DAQ_ROOT")) + "/log";
+  }
+  m_logFilePath = m_logFileDir + "/" + fileName;
 }
 
 void pLogger::setTerminalLevel(int level)

@@ -74,13 +74,6 @@ std::string xpolenv::kDaqPixmapsDirPath =
 std::string xpolenv::kDaqDataDirPath =
   xpolenv::getEnvironmentVariable("XPOL_DAQ_DATA",
 				  xpolenv::appendToDaqRoot("data"));
-/*!
-  Points to the environmental variable <tt>XPOL_DAQ_LOG</tt> if it is set,
-  to <tt>{\ref kDaqRootDirPath}/log/</tt> otherwise.
-*/
-std::string xpolenv::kDaqLogDirPath =
-  xpolenv::getEnvironmentVariable("XPOL_DAQ_LOG",
-				  xpolenv::appendToDaqRoot("log"));
 
 /*! \param varName
   The name of the environmental variable.

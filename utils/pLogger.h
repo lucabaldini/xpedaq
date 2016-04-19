@@ -62,6 +62,7 @@ class pLogger
   pLoggerChannel *m_warningChannel;
   pLoggerChannel *m_errorChannel;
   std::string m_logFilePath;
+  std::string m_logFileDir;
   void setLogFilePath();
 };
 

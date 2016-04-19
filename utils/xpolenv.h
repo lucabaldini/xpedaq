@@ -59,8 +59,6 @@ namespace xpolenv{
   extern std::string kDaqPixmapsDirPath;
   /*! \brief Path to the folder in which the data are written.*/
   extern std::string kDaqDataDirPath;
-  /*! \brief Path to the folder in which the log files are written.*/
-  extern std::string kDaqLogDirPath;
   /*! \brief Return the value of an environmental variable.*/
   extern std::string getEnvironmentVariable(std::string varName);
   /*! \brief Return the value of an environmental variable.*/
