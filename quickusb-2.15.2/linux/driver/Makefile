@@ -17,17 +17,7 @@ DISP_CC  = "Building"
 DISP_RM  = "Cleaning up"
 DISP_INS = "Inserting kernel object"
 DISP_REM = "Removing kernel object"
-
-ifeq ($(ARCH),32)
-  OUTDIR = x86
-else
-  ifeq ($(ARCH),64)
-    OUTDIR = x64
-  else
-    OUTDIR = x64
-  endif
-endif
-
+OUTDIR   = $(shell uname -m)
 
 all: $(OBJECTS)
 	mkdir -p $(OUTDIR)
@@ -51,4 +41,4 @@ reinstall: all
 
 clean:
 	$(ECHO) $(DISP_RM)
-	@$(RM) -rf *.o *~ core .depend .*.cmd *.ko *.mod.c .tmp_versions x86/*.ko x64/*.ko
+	@$(RM) -rf *.o *~ core .depend .*.cmd *.ko *.mod.c .tmp_versions $(shell uname -m)
