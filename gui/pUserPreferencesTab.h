@@ -48,6 +48,7 @@ class pUserPreferencesTab : public pQtCustomTab
   pUserPreferences *getUserPreferences();
   int getVisualizationMode();
   bool dataFileEnabled();
+  std::string getOutputFolder();
   bool multicastEnabled();
   std::string getMulticastAddress();
   int getMulticastPort();
@@ -58,6 +59,7 @@ class pUserPreferencesTab : public pQtCustomTab
 
  public slots:
   void enableMulticastWidgets(int enable = 1);
+  void enableOutputFolderWidgets(int enable = 1);
   void changeVisualizationMode();
 
  signals:
@@ -75,6 +77,8 @@ class pUserPreferencesTab : public pQtCustomTab
   QRadioButton *m_chargeVisualizationButton;
   QCheckBox *m_enableDataFileCheckBox;
   QCheckBox *m_enableMulticastCheckBox;
+  pQtCustomTextLabel *m_outputFolderLabel;
+  QLineEdit *m_outputFolderDisplay;
   pQtCustomTextLabel *m_multicastAddressLabel;
   QLineEdit *m_multicastAddressDisplay;
   pQtCustomTextLabel *m_multicastPortLabel;
@@ -89,6 +93,7 @@ class pUserPreferencesTab : public pQtCustomTab
   void setupMulticastWidgets();
   void setupLoggerWidgets();
   void setupConnections();
+  void setOutputFodler(std::string path);
   void setMulticastAddress(std::string address);
   void setMulticastPort(int port);
   int convertLoggerLevel(QString level);

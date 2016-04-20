@@ -42,6 +42,9 @@ pUserPreferencesTab::pUserPreferencesTab()
   setupLoggerWidgets();
   freezeSize(xpolgui::kTabGroupBoxWidth);
   setupConnections();
+  // To be uncommented when the functionality is implemented.
+  m_enableDataFileCheckBox->setEnabled(false);
+  enableOutputFolderWidgets(false);
 }
 
 void pUserPreferencesTab::setupVisualizationModeWidgets()
@@ -65,8 +68,13 @@ void pUserPreferencesTab::setupDataFileWidgets()
   int row = m_groupBoxGridLayout->rowCount();
   m_enableDataFileCheckBox = new QCheckBox("Write data to disk", this);
   m_groupBoxGridLayout->addWidget(m_enableDataFileCheckBox, row, 0);
-  // To be uncommented when the functionality is implemented.
-  m_enableDataFileCheckBox->setEnabled(0);
+  row++;
+  m_outputFolderLabel = new pQtCustomTextLabel(this, "Output root folder");
+  m_outputFolderDisplay = new QLineEdit(this);
+  m_outputFolderLabel->setLabelStyle();
+  m_groupBoxGridLayout->addWidget(m_outputFolderLabel, row, 0);
+  m_groupBoxGridLayout->addWidget(m_outputFolderDisplay, row, 1);
+  row ++;
 }
 
 void pUserPreferencesTab::setupMulticastWidgets()
@@ -123,6 +131,12 @@ void pUserPreferencesTab::setupLoggerWidgets()
   m_groupBoxGridLayout->addWidget(m_loggerDisplayLevelComboBox, row, 1);
 }
 
+void pUserPreferencesTab::enableOutputFolderWidgets(int enable)
+{
+  m_outputFolderLabel->setEnabled(enable);
+  m_outputFolderDisplay->setEnabled(enable);
+}
+
 void pUserPreferencesTab::enableMulticastWidgets(int enable)
 {
   m_multicastAddressLabel->setEnabled(enable);
@@ -133,6 +147,8 @@ void pUserPreferencesTab::enableMulticastWidgets(int enable)
 
 void pUserPreferencesTab::setupConnections()
 {
+  //connect(m_enableDataFileCheckBox, SIGNAL(stateChanged(int)),
+  //this, SLOT(enableOutputFolderWidgets(int)));
   connect(m_enableMulticastCheckBox, SIGNAL(stateChanged(int)),
 	  this, SLOT(enableMulticastWidgets(int)));
   connect(m_daqVisualizationButton, SIGNAL(clicked()),
@@ -154,6 +170,11 @@ int pUserPreferencesTab::getVisualizationMode()
   } else {
     return xpolgui::kUndefinedVisualizationCode;
   }
+}
+
+std::string pUserPreferencesTab::getOutputFolder()
+{
+  return m_outputFolderDisplay->text().toStdString();
 }
 
 bool pUserPreferencesTab::multicastEnabled()
@@ -196,6 +217,7 @@ pUserPreferences *pUserPreferencesTab::getUserPreferences()
   pUserPreferences *preferences = new pUserPreferences();
   preferences->setVisualizationMode(getVisualizationMode());
   preferences->enableDataFile(dataFileEnabled());
+  preferences->setOutputFolder(getOutputFolder());
   preferences->enableMulticast(multicastEnabled());
   preferences->setMulticastAddress(getMulticastAddress());
   preferences->setMulticastPort(getMulticastPort());
@@ -220,6 +242,7 @@ void pUserPreferencesTab::displayUserPreferences(pUserPreferences preferences)
     *xpollog::kError << "Invalid display." << endline;
   }
   m_enableDataFileCheckBox->setChecked(preferences.dataFileEnabled());
+  setOutputFodler(preferences.outputFolder());
   m_enableMulticastCheckBox->setChecked(preferences.multicastEnabled());
   enableMulticastWidgets(preferences.multicastEnabled());
   setMulticastAddress(preferences.getMulticastAddress());
@@ -229,6 +252,12 @@ void pUserPreferencesTab::displayUserPreferences(pUserPreferences preferences)
   m_loggerDisplayLevelComboBox->
     setCurrentIndex(preferences.getLoggerDisplayLevel());
   m_enableLogFileCheckBox->setChecked(preferences.logFileEnabled());
+}
+
+void pUserPreferencesTab::setOutputFodler(std::string path)
+{
+  QString pathQString = QString(path.c_str());
+  m_outputFolderDisplay->setText(pathQString);
 }
 
 void pUserPreferencesTab::setMulticastAddress(std::string address)

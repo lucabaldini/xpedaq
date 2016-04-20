@@ -44,6 +44,10 @@ class pUserPreferences
     {return m_dataFileEnabled;}
   inline void enableDataFile(bool enable)
     {m_dataFileEnabled = enable;}
+  inline std::string outputFolder() const
+    {return m_outputFolder;}
+  inline void setOutputFolder(std::string path)
+    {m_outputFolder = path;}
   inline bool multicastEnabled() const
     {return m_multicastEnabled;}
   inline void enableMulticast(bool enable)
@@ -76,6 +80,7 @@ class pUserPreferences
  private:
   unsigned short int m_visualizationMode;
   bool m_dataFileEnabled;
+  std::string m_outputFolder;
   bool m_multicastEnabled;
   std::string m_multicastAddress;
   int m_multicastPort;

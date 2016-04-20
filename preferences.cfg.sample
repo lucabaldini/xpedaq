@@ -1,7 +1,9 @@
 //Visualization mode//
 4
 //Write data file//
-116
+1
+//Output root folder//
+$XPOL_DAQ_ROOT/data
 //Multicast enabled//
 0
 //Multicast address//

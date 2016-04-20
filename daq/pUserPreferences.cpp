@@ -46,6 +46,8 @@ void pUserPreferences::writeToFile(std::string filePath)
   xpolio::kIOManager->write(outputFile, getVisualizationMode());
   xpolio::kIOManager->write(outputFile, "//Write data file//");
   xpolio::kIOManager->write(outputFile, dataFileEnabled());
+  xpolio::kIOManager->write(outputFile, "//Output root folder//");
+  xpolio::kIOManager->write(outputFile, outputFolder());
   xpolio::kIOManager->write(outputFile, "//Multicast enabled//");
   xpolio::kIOManager->write(outputFile, multicastEnabled());
   xpolio::kIOManager->write(outputFile, "//Multicast address//");
@@ -70,6 +72,8 @@ void pUserPreferences::readFromFile(std::string filePath)
   setVisualizationMode(xpolio::kIOManager->readUnsignedShort(inputFile));
   xpolio::kIOManager->skipLine(inputFile);
   enableDataFile(bool(xpolio::kIOManager->readUnsignedShort(inputFile)));
+  xpolio::kIOManager->skipLine(inputFile);
+  setOutputFolder(xpolio::kIOManager->readLine(inputFile));
   xpolio::kIOManager->skipLine(inputFile);
   enableMulticast(bool(xpolio::kIOManager->readUnsignedShort(inputFile)));
   xpolio::kIOManager->skipLine(inputFile);
