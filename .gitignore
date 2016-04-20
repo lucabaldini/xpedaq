@@ -27,8 +27,10 @@
 *.app
 
 # Automatically generated files and folders.
+bin/*
 build/*
 data/*
+log/*
 moc/*
 doc/html/*
 doc/latex/*
@@ -40,6 +42,7 @@ xpol
 quickusb-*/linux/driver/x64/
 quickusb-*/linux/driver/x86/
 
-xsrv/moc/* 
-xsrv/preferences.cfg
-xsrv/xsrv
+xpedaq/moc/* 
+
+xpesrv/moc/* 
+xpesrv/preferences.cfg

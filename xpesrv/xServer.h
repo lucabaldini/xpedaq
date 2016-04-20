@@ -59,7 +59,7 @@ class xServer : public QThread
   int m_sleepTime;
   bool m_running;
   int m_numBroadcastedEvents;
-  ifstream fStream; //added by Gloria
+  std::ifstream fStream; //added by Gloria
   int fErr;         // Error code. added by Gloria
 };
 

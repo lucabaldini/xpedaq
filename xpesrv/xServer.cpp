@@ -72,7 +72,7 @@ void xServer::run()
   *xpollog::kDebug << "Address   : " << m_multicastAddress << endline;
   *xpollog::kDebug << "Port      : " << m_multicastPort << endline;
   //if (!(m_inputFile = fopen(m_inputFilePath.c_str(), "r")))
-  fStream.open(m_inputFilePath.c_str(), ios::in | ios::binary );
+  fStream.open(m_inputFilePath.c_str(), std::ios::in | std::ios::binary );
   fErr = fStream.bad();
   if ( fErr ) 
     {

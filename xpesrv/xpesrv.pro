@@ -2,11 +2,11 @@ INCLUDEPATH += ../utils
 DEPENDPATH  += ../utils
 INCLUDEPATH += ../daq
 DEPENDPATH  += ../daq
-INCLUDEPATH += ../quickusb
-DEPENDPATH  += ../quickusb
 INCLUDEPATH += ../gui
 DEPENDPATH  += ../gui
-INCLUDEPATH += 
+INCLUDEPATH +=
+
+include(../quickusb-2.15.2/quickusb.pro)
 
 windows {
   CONFIG += qt thread console
@@ -35,11 +35,12 @@ SOURCES += pLoggerChannel.cpp
 SOURCES += pLogger.cpp
 SOURCES += pIOManager.cpp
 SOURCES += pQtCustomTextLabel.cpp
-SOURCES += main.cpp
+SOURCES += xpesrv.cpp
 
-QT      += network
+QT += network
 
 OBJECTS_DIR = build
-MOC_DIR     = moc
+MOC_DIR = moc
 
-TARGET = xsrv
+TARGET = xpesrv
+DESTDIR = ../bin

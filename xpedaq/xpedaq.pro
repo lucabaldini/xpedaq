@@ -1,28 +1,11 @@
+INCLUDEPATH += ../gui
+DEPENDPATH  += ../gui
+INCLUDEPATH += ../daq
+DEPENDPATH  += ../daq
+INCLUDEPATH += ../utils
+DEPENDPATH  += ../utils
 
-QUICKUSB_VERSION = 2.15.2
-
-
-INCLUDEPATH += ./gui
-DEPENDPATH  += ./gui
-INCLUDEPATH += ./daq
-DEPENDPATH  += ./daq
-INCLUDEPATH += ./utils
-DEPENDPATH  += ./utils
-INCLUDEPATH += ./quickusb-$${QUICKUSB_VERSION}
-DEPENDPATH  += ./quickusb-$${QUICKUSB_VERSION}
-  
-unix {
-ARCH = $$system(uname -m)
-message(q-making for Linux $${ARCH}...)
-LIBS += -L./quickusb-$${QUICKUSB_VERSION}/linux/lib/$${ARCH} -lusb -lquickusb
-}
-
-windows {
-message(q-making for Windows...)
-LIBS += -L./quickusb-$${QUICKUSB_VERSION}/windows -lQuickUsb
-CONFIG += qt thread console
-CONFIG -= debug_and_release
-}
+include(../quickusb-2.15.2/quickusb.pro)
 
 HEADERS += xpolgui.h
 HEADERS += xpoldetector.h
@@ -117,26 +100,26 @@ SOURCES += pLogger.cpp
 SOURCES += pIOManager.cpp
 SOURCES += pUdpSender.cpp
 
-
-SOURCES += main.cpp
+SOURCES += xpedaq.cpp
 
 OBJECTS_DIR = build
 MOC_DIR = moc
 
 QT += network
 
-TARGET = xpol
+TARGET = xpedaq
+DESTDIR = ../bin
 
 unix {
   QMAKE_CLEAN += ./gui/*~
   QMAKE_CLEAN += ./daq/*~
   QMAKE_CLEAN += ./quickusb-$${QUICKUSB_VERSION}/*~
   QMAKE_CLEAN += ./utils/*~
-  QMAKE_CLEAN += $$TARGET
+  QMAKE_CLEAN += $$DESTDIR/$$TARGET
 }
 
-windows {
-  QMAKE_CLEAN += xpol.exe
+windows {  
+  QMAKE_CLEAN += $$DESTDIR/$$TARGET.exe
 }
 
 message(Done.)
