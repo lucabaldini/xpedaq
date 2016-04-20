@@ -198,7 +198,7 @@ void pThresholdSettingTab::displayReference(unsigned short reference,
     m_referenceUnitsLabel->setText(xpolgui::kVoltageUnitsLabel);
   } else {
     *xpollog::kWarning << "Undefined visualization mode." << endline;
-    m_referenceDisplay->setText("n/a");
+    m_referenceDisplay->setText(xpolgui::kNotAvailable);
     m_referenceUnitsLabel->setText(xpolgui::kUndefinedUnitsLabel);
   }
 }
