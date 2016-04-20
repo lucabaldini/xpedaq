@@ -33,7 +33,7 @@
 =============================================================================*/
 #include <time.h>
 #include <fstream>
-#include "QuickUsb.h"
+#include "QuickUSB.h"
 
 #define NO_PREVIOUS_ERROR 0
 #define QUSB_ERROR_NOT_OPEN 1
