@@ -22,16 +22,17 @@ with this program; if not, write to the Free Software Foundation Inc.,
 
 #include "pDaqDisplay.h"
 
-pDaqDisplay::pDaqDisplay(QWidget *parent, int labelsWidth)
-  : pQtDisplayGui(parent, labelsWidth)
+pDaqDisplay::pDaqDisplay(QWidget *parent)
+  : pQtDisplayGui(parent)
 {
   setTitle("Data acquisition information");
-  m_runIdLabel                = addField("Run Id");
-  m_statusLabel               = addField("Status");
-  m_numDataBlocksLabel        = addField("Number of acquired data blocks");
-  m_numEventsLabel            = addField("Number of acquired events");
-  m_elapsedTimeLabel          = addField("Elapsed time (s)");
-  m_averageDaqEventRateLabel  = addField("Average DAQ event rate (Hz)");
-  m_instantDaqEventRateLabel  = addField("Instant DAQ event rate (Hz)");
-  m_instantFpgaEventRateLabel = addField("Instant FPGA event rate (Hz)");
+  m_stationIdLabel = addField("Station Id");
+  m_runIdLabel = addField("Run Id");
+  m_statusLabel = addField("Status");
+  m_numDataBlocksLabel = addField("Number of data blocks acquired");
+  m_numEventsLabel = addField("Number of events acquired");
+  m_elapsedTimeLabel = addField("Elapsed time [s]");
+  m_averageDaqEventRateLabel = addField("Average DAQ event rate [Hz]");
+  m_instantDaqEventRateLabel = addField("Instant DAQ event rate [Hz]");
+  m_instantFpgaEventRateLabel = addField("Instant FPGA event rate [Hz]");
 }

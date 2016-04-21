@@ -42,10 +42,12 @@ class pDaqDisplay : public pQtDisplayGui
   Q_OBJECT
 
  public:
-  pDaqDisplay(QWidget *parent, int labelsWidth);
+  pDaqDisplay(QWidget *parent);
   ~pDaqDisplay() {;}
 
  public slots:
+  void updateStationId(int stationId)
+    {m_stationIdLabel->setText(stationId);}
   void updateRunId(int runId)
     {m_runIdLabel->setText(runId);}
   void updateStatus(QString status)
@@ -64,6 +66,7 @@ class pDaqDisplay : public pQtDisplayGui
     {m_instantFpgaEventRateLabel->setText(rate);}
 
  private:
+  pQtCustomTextLabel *m_stationIdLabel;
   pQtCustomTextLabel *m_runIdLabel;
   pQtCustomTextLabel *m_statusLabel;
   pQtCustomTextLabel *m_numDataBlocksLabel;

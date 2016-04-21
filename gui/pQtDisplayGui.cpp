@@ -22,11 +22,10 @@ with this program; if not, write to the Free Software Foundation Inc.,
 
 #include "pQtDisplayGui.h"
 
-pQtDisplayGui::pQtDisplayGui(QWidget *parent, int labelsWidth)
+pQtDisplayGui::pQtDisplayGui(QWidget *parent)
   : pQtGroupBoxWidget(parent)
 {
   m_groupBoxGridLayout->setSpacing(1);
-  m_labelsWidth = labelsWidth;
 }
 
 pQtCustomTextLabel *pQtDisplayGui::addField(QString fieldLabel)
@@ -36,7 +35,7 @@ pQtCustomTextLabel *pQtDisplayGui::addField(QString fieldLabel)
     new pQtCustomTextLabel(this, xpolgui::kNotAvailable);
   pQtCustomTextLabel *labelWidget = new pQtCustomTextLabel(this, fieldLabel);
   dataWidget->setDataStyle();
-  labelWidget->setLabelStyle(m_labelsWidth);
+  labelWidget->setLabelStyle(xpolgui::kDaqDisplayLabelsWidth);
   m_groupBoxGridLayout->addWidget(labelWidget, row ,0);
   m_groupBoxGridLayout->addWidget(dataWidget, row ,1);
   return dataWidget;

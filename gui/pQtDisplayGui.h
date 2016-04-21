@@ -38,12 +38,11 @@ class pQtDisplayGui : public pQtGroupBoxWidget
   Q_OBJECT
 
  public:
-  pQtDisplayGui(QWidget *parent, const int labelsWidth = -1);
+  pQtDisplayGui(QWidget *parent);
   ~pQtDisplayGui() {;}
 
  protected:
   pQtCustomTextLabel *addField(QString fieldLabel);
-  int m_labelsWidth;
 };
 
 #endif

@@ -52,7 +52,7 @@ pMainWindow::~pMainWindow()
 
 void pMainWindow::setupDaqDisplay()
 {
-  m_daqDisplay = new pDaqDisplay(m_centralWidget, 200);
+  m_daqDisplay = new pDaqDisplay(m_centralWidget);
   m_daqDisplay->freezeSize(DISPLAYS_WIDTH, -1);
   m_mainGridLayout->addWidget(m_daqDisplay, 0, 0, Qt::AlignTop);
 }

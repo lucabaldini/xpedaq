@@ -32,6 +32,7 @@ namespace xpolgui{
   extern const short unsigned int kChargeVisualizationCode;
   extern const short unsigned int kVoltageVisualizationCode;
   extern const QString kNotAvailable;
+  extern const int kDaqDisplayLabelsWidth;
   extern const int kButtonsWidth;
   extern const int kButtonsHeight;
   extern const int kButtonsIconsSize;
