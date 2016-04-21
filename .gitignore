@@ -41,6 +41,7 @@ object_script.xpol
 xpol
 quickusb-*/linux/driver/i686/
 quickusb-*/linux/driver/x86_64/
+xpedaq/config/*.cfg
 
 xpedaq/moc/* 
 
