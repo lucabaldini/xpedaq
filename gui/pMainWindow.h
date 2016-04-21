@@ -72,6 +72,7 @@ class pMainWindow : public pQtMainWindowGui
   void stop();
   inline pRunController *getRunController()
     {return m_runController;}
+  QString currentOutputFolder();
 
  protected:
 

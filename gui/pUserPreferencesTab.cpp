@@ -47,6 +47,11 @@ pUserPreferencesTab::pUserPreferencesTab()
   enableOutputFolderWidgets(false);
 }
 
+QString pUserPreferencesTab::outputRootFolder()
+{
+  return m_outputFolderDisplay->text();
+}
+
 void pUserPreferencesTab::setupVisualizationModeWidgets()
 {
   int row = m_groupBoxGridLayout->rowCount();

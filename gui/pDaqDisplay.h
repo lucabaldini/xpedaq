@@ -46,8 +46,12 @@ class pDaqDisplay : public pQtDisplayGui
   ~pDaqDisplay() {;}
 
  public slots:
+  inline int stationId() const
+    {return m_stationIdLabel->text().toInt();}
   void updateStationId(int stationId)
     {m_stationIdLabel->setText(stationId);}
+  inline int runId() const
+    {return m_runIdLabel->text().toInt();}
   void updateRunId(int runId)
     {m_runIdLabel->setText(runId);}
   void updateStatus(QString status)

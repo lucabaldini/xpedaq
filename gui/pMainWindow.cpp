@@ -62,12 +62,22 @@ pMainWindow::pMainWindow()
   selectConfiguration(m_detectorCfgFilePath);
   m_runController->init();
   showMessage("Data acquisition system ready", 2000);
+  //std::cout << currentOutputFolder().toStdString() << std::endl;
 }
 
 pMainWindow::~pMainWindow()
 {
   saveUserPreferences();
   saveConfiguration(false);
+}
+
+QString pMainWindow::currentOutputFolder()
+{
+  QString outputFolder = m_userPreferencesTab->outputRootFolder() +
+    QDir::separator() +
+    QString("%1").arg(m_daqDisplay->stationId(), 3, 10, QLatin1Char('0')) +
+    "_" + QString("%1").arg(m_daqDisplay->runId(), 6, 10, QLatin1Char('0')); 
+  return outputFolder;
 }
 
 void pMainWindow::setupDaqDisplay()

@@ -55,6 +55,7 @@ class pUserPreferencesTab : public pQtCustomTab
   int getLoggerTerminalLevel();
   int getLoggerDisplayLevel();
   bool logFileEnabled();
+  QString outputRootFolder();
   void displayUserPreferences(pUserPreferences preferences);
 
  public slots:
