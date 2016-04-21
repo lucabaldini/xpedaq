@@ -44,6 +44,7 @@ email: support@bitwisesys.com
 #include <linux/dma-mapping.h>
 #include <linux/workqueue.h>
 #include <linux/timer.h>
+#include <linux/aio.h>
 #include <linux/uio.h>
 
 typedef int             BOOL;
