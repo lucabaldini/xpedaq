@@ -37,26 +37,12 @@ std::string xpolenv::kDirSeparator = "\\";
 std::string xpolenv::kDirSeparator = "/";
 #endif
 
-/*!
-  Points to <tt>{\ref kDaqRootDirPath}/runId.cfg</tt>.
-*/
-std::string xpolenv::kDefaultRunIdFilePath =
-  xpolenv::appendToDaqRoot("runId.cfg");
-/*!
-  Points to <tt>{\ref kDaqRootDirPath}/preferences.cfg</tt>.
-*/
-std::string xpolenv::kDefaultPreferencesFilePath =
-  xpolenv::appendToDaqRoot("preferences.cfg");
+
 /*!
   Points to <tt>{\ref kDaqRootDirPath}/config/</tt>.
 */
 std::string xpolenv::kDaqConfigDirPath =
   xpolenv::appendToDaqRoot("config");
-/*!
-  Points to <tt>{\ref kDaqConfigDirPath}/last.cfg</tt>.
-*/
-std::string xpolenv::kDefaultConfigFilePath =
-  xpolenv::join(xpolenv::kDaqConfigDirPath, "last.cfg");
 /*!
   Points to <tt>{\ref kDaqRootDirPath}/gui/</tt>.
 */
@@ -103,7 +89,7 @@ std::string xpolenv::getEnvironmentVariable(std::string varName)
 std::string xpolenv::getEnvironmentVariable(std::string varName,
 					    std::string defaultPath)
 {
-  char *variable = ::getenv(varName.c_str());
+  char *variable = std::getenv(varName.c_str());
   if (variable == NULL)
   {
     return defaultPath;

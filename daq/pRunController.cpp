@@ -53,7 +53,16 @@ pRunController::pRunController(pMainWindow *parentWindow,
   m_closeParentOnStop = false;
   m_outputFilePath = xpolenv::kNullPath;
   m_headerFilePath = xpolenv::kNullPath;
-  m_runIdCfgFilePath = xpolenv::kDefaultRunIdFilePath;
+  // Create the runId.cfg file, if needed.
+  QString cfgFilePath = QString(std::getenv("XPOL_DAQ_ROOT")) +
+    QDir::separator() + "xpedaq" + QDir::separator() + "config" +
+    QDir::separator() + "runId.cfg";
+  if (!QFile(cfgFilePath).exists()) {
+    *xpollog::kInfo << "Creating " << cfgFilePath.toStdString() <<
+      "..." << endline;
+    QFile(cfgFilePath + ".sample").copy(cfgFilePath);
+  }
+  m_runIdCfgFilePath = cfgFilePath.toStdString();
   if (createUsbModules())
     {
       m_parentWindow->disableHardware();
@@ -244,12 +253,15 @@ double pRunController::getInstantDaqEventRate()
 
 int pRunController::readRunId()
 {
+  *xpollog::kDebug << "Reading run Id from " << m_runIdCfgFilePath <<
+    "..." << endline;
   return xpolio::kIOManager->getInteger(m_runIdCfgFilePath);
 }
 
 void pRunController::writeRunId()
 {
-  *xpollog::kDebug << "Writing the runId configuration file... " << endline;
+  *xpollog::kDebug << "Writing run Id to " << m_runIdCfgFilePath <<
+    "... " << endline;
   xpolio::kIOManager->put(m_runIdCfgFilePath, m_runId);
 }
 

@@ -45,14 +45,8 @@ namespace xpolenv{
   extern std::string kNullPath;
   /*! \brief Directory separator (either "/" or "\" depending on the os).*/
   extern std::string kDirSeparator;
-  /*! \brief Path to the text file containing the runId.*/
-  extern std::string kDefaultRunIdFilePath;
-  /*! \brief Path to the file containing the default preferences.*/
-  extern std::string kDefaultPreferencesFilePath;
   /*! \brief Path to the folder containing the configuration files.*/
   extern std::string kDaqConfigDirPath;
-  /*! \brief Path to the last used configuration file.*/
-  extern std::string kDefaultConfigFilePath;
   /*! \brief Path to the folder containing the GUI classes.*/
   extern std::string kDaqGuiDirPath;
   /*! \brief Path to the folder containing the necessary GUI pixmaps.*/

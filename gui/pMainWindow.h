@@ -26,6 +26,7 @@ with this program; if not, write to the Free Software Foundation Inc.,
 #include <iostream>
 
 #include <QFileDialog>
+#include <QDir>
 
 #include "xpollog.h"
 #include "xpolenv.h"
@@ -98,6 +99,8 @@ class pMainWindow : public pQtMainWindowGui
   QAction *m_saveConfigurationAction;
   QAction *m_savePreferencesAction;
   int m_lastVisualizationMode;
+  std::string m_preferencesCfgFilePath;
+  std::string m_detectorCfgFilePath;
   void setupDaqDisplay();
   void setupMessageDisplay();
   void setupTransportBar();

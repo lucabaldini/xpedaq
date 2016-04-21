@@ -24,8 +24,28 @@ with this program; if not, write to the Free Software Foundation Inc.,
 
 pMainWindow::pMainWindow()
 {
-  pUserPreferences preferences =
-    pUserPreferences(xpolenv::kDefaultPreferencesFilePath);
+  // Create the preferences.cfg file, if needed.
+  QString cfgFilePath = QString(std::getenv("XPOL_DAQ_ROOT")) +
+    QDir::separator() + "xpedaq" + QDir::separator() + "config" +
+    QDir::separator() + "preferences.cfg";
+  if (!QFile(cfgFilePath).exists()) {
+    *xpollog::kInfo << "Creating " << cfgFilePath.toStdString() <<
+      "..." << endline;
+    QFile(cfgFilePath + ".sample").copy(cfgFilePath);
+  }
+  m_preferencesCfgFilePath = cfgFilePath.toStdString();
+  // Create the detector.cfg file, if needed.
+  cfgFilePath = QString(std::getenv("XPOL_DAQ_ROOT")) +
+    QDir::separator() + "xpedaq" + QDir::separator() + "config" +
+    QDir::separator() + "detector.cfg";
+  if (!QFile(cfgFilePath).exists()) {
+    *xpollog::kInfo << "Creating " << cfgFilePath.toStdString() <<
+      "..." << endline;
+    QFile(cfgFilePath + ".sample").copy(cfgFilePath);
+  }
+  m_detectorCfgFilePath = cfgFilePath.toStdString();
+  // Move on.
+  pUserPreferences preferences = pUserPreferences(m_preferencesCfgFilePath);
   xpollog::kLogger->setTerminalLevel(preferences.getLoggerTerminalLevel());
   xpollog::kLogger->setDisplayLevel(preferences.getLoggerDisplayLevel());
   setupDaqDisplay();
@@ -39,7 +59,7 @@ pMainWindow::pMainWindow()
   setupConnections();
   m_userPreferencesTab->displayUserPreferences(preferences);
   m_lastVisualizationMode = preferences.getVisualizationMode();
-  selectConfiguration(xpolenv::kDefaultConfigFilePath);
+  selectConfiguration(m_detectorCfgFilePath);
   m_runController->init();
   showMessage("Data acquisition system ready", 2000);
 }
@@ -55,6 +75,21 @@ void pMainWindow::setupDaqDisplay()
   m_daqDisplay = new pDaqDisplay(m_centralWidget);
   m_daqDisplay->freezeSize(DISPLAYS_WIDTH, -1);
   m_mainGridLayout->addWidget(m_daqDisplay, 0, 0, Qt::AlignTop);
+  // Read the station Id from the proper configuration file.
+  QString cfgFilePath = QString(std::getenv("XPOL_DAQ_ROOT")) +
+    QDir::separator() + "xpedaq" + QDir::separator() + "config" +
+    QDir::separator() + "stationId.cfg";
+  if (!QFile(cfgFilePath).exists()) {
+    *xpollog::kError << "Could not find " << cfgFilePath.toStdString() <<
+      "." << endline;
+    *xpollog::kError << "Need a station identifier to start the DAQ." <<
+      endline;
+    exit(1);
+  }
+  *xpollog::kDebug << "Reading station Id from " <<
+    cfgFilePath.toStdString() << "..." << endline;
+  int stationId = xpolio::kIOManager->getInteger(cfgFilePath.toStdString());
+  m_daqDisplay->updateStationId(stationId);
 }
 
 void pMainWindow::setupMessageDisplay()
@@ -204,13 +239,13 @@ void pMainWindow::saveConfiguration(bool promptDialog)
 	getConfiguration()->writeToFile(filePath.toStdString());
       }
     } else {
-    getConfiguration()->writeToFile(xpolenv::kDefaultConfigFilePath);
+    getConfiguration()->writeToFile(m_detectorCfgFilePath);
   }
 }
 
 void pMainWindow::saveUserPreferences()
 {
-  getUserPreferences()->writeToFile(xpolenv::kDefaultPreferencesFilePath);
+  getUserPreferences()->writeToFile(m_preferencesCfgFilePath);
 }
 
 void pMainWindow::displayConfiguration(pDetectorConfiguration *configuration,
