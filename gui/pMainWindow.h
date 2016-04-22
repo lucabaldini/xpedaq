@@ -76,6 +76,7 @@ class pMainWindow : public pQtMainWindowGui
   QString currentOutputFolder();
   QString currentDataFileName();
   QString currentDataFilePath();
+  void saveRunInfo(QString folderPath);
 
  protected:
 

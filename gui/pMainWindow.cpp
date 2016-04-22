@@ -62,7 +62,6 @@ pMainWindow::pMainWindow()
   selectConfiguration(m_detectorCfgFilePath);
   m_runController->init();
   showMessage("Data acquisition system ready", 2000);
-  std::cout << currentDataFilePath().toStdString() << std::endl;
 }
 
 pMainWindow::~pMainWindow()
@@ -85,7 +84,7 @@ QString pMainWindow::currentOutputFolder()
 
 QString pMainWindow::currentDataFileName()
 {
-  return currentDataIdentifier() + ".mdat";
+  return "data_" + currentDataIdentifier() + ".mdat";
 }
 
 QString pMainWindow::currentDataFilePath()
@@ -335,4 +334,16 @@ void pMainWindow::setupConnections()
   	  m_runController->getXpolFpga(), SLOT(readVrefDac()));
   connect(m_userPreferencesTab, SIGNAL(visualizetionModeChanged(int)),
 	  this, SLOT(changeVisualizationMode(int))); 
+}
+
+
+void pMainWindow::saveRunInfo(QString folderPath)
+{
+  QString dataId = currentDataIdentifier();
+  QString cfgFilePath = folderPath + QDir::separator() + "detector_" +
+    dataId + ".cfg";
+  getConfiguration()->writeToFile(cfgFilePath.toStdString());
+  cfgFilePath = folderPath + QDir::separator() + "preferences_" +
+    dataId + ".cfg";
+  getUserPreferences()->writeToFile(cfgFilePath.toStdString());
 }

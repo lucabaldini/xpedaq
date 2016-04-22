@@ -342,14 +342,16 @@ void pRunController::fsm_startRun()
 {
   *xpollog::kInfo << "Starting run controller..." << endline;
   incrementRunId();
+  // Create the output folder, if it does not exist.
+  QString outputFolder = m_parentWindow->currentOutputFolder();
+  if (!QDir(outputFolder).exists()) {
+    *xpollog::kInfo << "Creating " << outputFolder.toStdString() <<
+      "..." << endline;
+    QDir().mkpath(outputFolder);
+  }
+  m_parentWindow->saveRunInfo(outputFolder);
   if (m_outputFilePath == xpolenv::kNullPath)
     {
-      QString outputFolder = m_parentWindow->currentOutputFolder();
-      if (!QDir(outputFolder).exists()) {
-	*xpollog::kInfo << "Creating " << outputFolder.toStdString() <<
-	  "..." << endline;
-	QDir().mkpath(outputFolder);
-      }
       m_outputFilePath = m_parentWindow->currentDataFilePath().toStdString();
     }
   if (m_headerFilePath != xpolenv::kNullPath)
