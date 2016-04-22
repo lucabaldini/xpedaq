@@ -344,10 +344,13 @@ void pRunController::fsm_startRun()
   incrementRunId();
   if (m_outputFilePath == xpolenv::kNullPath)
     {
-      std::stringstream outputFileName;
-      outputFileName << "xpol_" << m_runId << ".mdat";
-      m_outputFilePath = xpolenv::join(xpolenv::kDaqDataDirPath,
-				       outputFileName.str());
+      QString outputFolder = m_parentWindow->currentOutputFolder();
+      if (!QDir(outputFolder).exists()) {
+	*xpollog::kInfo << "Creating " << outputFolder.toStdString() <<
+	  "..." << endline;
+	QDir().mkpath(outputFolder);
+      }
+      m_outputFilePath = m_parentWindow->currentDataFilePath().toStdString();
     }
   if (m_headerFilePath != xpolenv::kNullPath)
     {
