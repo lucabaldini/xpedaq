@@ -335,7 +335,7 @@ void pMainWindow::setupConnections()
   	  m_runController->getXpolFpga(), SLOT(readVrefDac()));
   connect(m_userPreferencesTab, SIGNAL(visualizetionModeChanged(int)),
 	  this, SLOT(changeVisualizationMode(int)));
-  connect(m_runController, SIGNAL(usbConnectionError()),
+  connect(m_runController, SIGNAL(usbConnectionError(unsigned long)),
 	  this, SLOT(disableHardwareWidgets()));
 }
 

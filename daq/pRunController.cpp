@@ -65,37 +65,13 @@ pRunController::pRunController(pMainWindow *parentWindow,
   m_runIdCfgFilePath = cfgFilePath.toStdString();
 }
 
-void pRunController::connectToQuickUsb()
-{
-  if (createUsbModules())
-    {
-      emit usbConnectionError();
-    }
-  m_xpolFpga = new pXpolFpga(m_usbController);
-  m_dataCollector = new pDataCollector(m_usbController);
-  m_dataAcquisitionTimer = new QTimer();
-  connect(m_dataAcquisitionTimer, SIGNAL(timeout()),
-	  this, SLOT(updateTimer()));
-  connect(m_dataCollector, SIGNAL(readoutErrorDetected(int)),
-	  this, SLOT(stopParent()));
-}
-
-/*!
-  If more than one module are found a warning is logged, since the
-  data acquisition program cannot handle more than a single interface at a
-  time.
-
-  \return 0 if one (or more) module(s) is (are) found, 1 otherwise.
-
-  \todo Change the return type from int to bool.
-
-  \todo Improve the string manipulation code.
- */
-
-int pRunController::createUsbModules()
+unsigned long pRunController::connectToQuickUsb()
 {
   *xpollog::kInfo << "Searching for USB module(s)... " << endline;
+  unsigned long errorCode = 0;
   char usbDeviceString[512];
+  // Execute the QuickUsb::QuickUsbFindModules and see what's connected.
+  // If this finds something, we go ahead and parse the return string.
   if (QuickUsbFindModules(usbDeviceString, 512)) {
     int numUsbDevices = 0;
     char usbDeviceName[20];
@@ -106,20 +82,35 @@ int pRunController::createUsbModules()
       usbDeviceStringPtr += strlen(usbDeviceStringPtr);
       numUsbDevices ++;
     }
+    // We're not equipped to handle more than one device, yet.
     if (numUsbDevices > 1) {
       *xpollog::kWarning << numUsbDevices << " modules found." << endline;
     }
+    // Create the pUsbController object.
     m_usbController = new pUsbController(usbDeviceName);
-    return 0;
   }
-  unsigned long errorCode;
-  QuickUsbGetLastError(&errorCode);
-  if (errorCode > 0) {
-    *xpollog::kError << "Error " << errorCode << ". "
-		     << pUsbController::getErrorDescription(errorCode)
-		     << endline;
+  // And this is the case where there are no QuickUsb interfaces attached:
+  // we parse the last error code and emit a usbConnectionError(errorCode)
+  // signal.
+  else {
+    QuickUsbGetLastError(&errorCode);
+    if (errorCode > 0) {
+      *xpollog::kError << "Error " << errorCode << ". "
+		       << pUsbController::getErrorDescription(errorCode)
+		       << endline;
+    }
+    *xpollog::kError << "No USB module found." << endline;
+    emit usbConnectionError(errorCode);
   }
-  *xpollog::kError << "No USB module found." << endline;
+  // Irrespectively, we create the remaining objects.
+  // Mind that if there's no USB connection, m_usbController is a null
+  // pointer. Do we have to do anything about it.
+  m_xpolFpga = new pXpolFpga(m_usbController);
+  m_dataCollector = new pDataCollector(m_usbController);
+  m_dataAcquisitionTimer = new QTimer();
+  connect(m_dataAcquisitionTimer, SIGNAL(timeout()), this, SLOT(updateTimer()));
+  connect(m_dataCollector, SIGNAL(readoutErrorDetected(int)), this,
+	  SLOT(stopParent()));
   return errorCode;
 }
 

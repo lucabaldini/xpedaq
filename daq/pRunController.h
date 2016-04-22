@@ -56,8 +56,7 @@ class pRunController : public pFiniteStateMachine
   /*! \brief Basic destructor.*/
   ~pRunController()
     {;}
-  void connectToQuickUsb();
-  
+  unsigned long connectToQuickUsb();
   /*! \brief Return the member \ref pRunController::m_dataCollector.*/
   const inline pDataCollector *getDataCollector()
     {return m_dataCollector;}
@@ -118,7 +117,7 @@ class pRunController : public pFiniteStateMachine
   //void prepareStartRun();
 
  signals:
-  void usbConnectionError();
+  void usbConnectionError(unsigned long);
   /*! \brief Notify that the runId has changed.*/
   void runIdChanged(int runId);
   /*! \brief Notify that the number of elapsed acquisition seconds is
@@ -209,10 +208,6 @@ class pRunController : public pFiniteStateMachine
     \ref pRunController::m_headerFilePath to the output data binary file
     (\ref pRunController::m_outputFilePath).*/
   void writeHeader();
-  /*! \brief Loop over the USB ports searching for QuickUsb interfaces
-    connected and create the necessary controller
-    (\ref pRunController::m_usbController).*/
-  int createUsbModules();
 
  private slots:
   /*! \brief Update the elapsed time (emitting the related signals) and stop
