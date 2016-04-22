@@ -57,6 +57,7 @@ pMainWindow::pMainWindow()
   setupMenuBar();
   m_runController = new pRunController(this);
   setupConnections();
+  m_runController->connectToQuickUsb();
   m_userPreferencesTab->displayUserPreferences(preferences);
   m_lastVisualizationMode = preferences.getVisualizationMode();
   selectConfiguration(m_detectorCfgFilePath);
@@ -186,9 +187,9 @@ void pMainWindow::stop()
   m_transportBar->pressStopButton();
 }
 
-void pMainWindow::disableHardware()
+void pMainWindow::disableHardwareWidgets()
 {
-  //m_transportBar->setEnabled(0);
+  m_transportBar->setEnabled(0);
   m_thresholdSettingTab->getRefreshRefButton()->setEnabled(0);
 }
 
@@ -333,7 +334,9 @@ void pMainWindow::setupConnections()
   connect(m_thresholdSettingTab->getRefreshRefButton(), SIGNAL(clicked()),
   	  m_runController->getXpolFpga(), SLOT(readVrefDac()));
   connect(m_userPreferencesTab, SIGNAL(visualizetionModeChanged(int)),
-	  this, SLOT(changeVisualizationMode(int))); 
+	  this, SLOT(changeVisualizationMode(int)));
+  connect(m_runController, SIGNAL(usbConnectionError()),
+	  this, SLOT(disableHardwareWidgets()));
 }
 
 

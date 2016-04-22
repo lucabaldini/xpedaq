@@ -63,10 +63,13 @@ pRunController::pRunController(pMainWindow *parentWindow,
     QFile(cfgFilePath + ".sample").copy(cfgFilePath);
   }
   m_runIdCfgFilePath = cfgFilePath.toStdString();
+}
+
+void pRunController::connectToQuickUsb()
+{
   if (createUsbModules())
     {
-      m_parentWindow->disableHardware();
-      *xpollog::kWarning << "Hardware related widgets disabled." << endline;
+      emit usbConnectionError();
     }
   m_xpolFpga = new pXpolFpga(m_usbController);
   m_dataCollector = new pDataCollector(m_usbController);

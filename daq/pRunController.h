@@ -56,6 +56,8 @@ class pRunController : public pFiniteStateMachine
   /*! \brief Basic destructor.*/
   ~pRunController()
     {;}
+  void connectToQuickUsb();
+  
   /*! \brief Return the member \ref pRunController::m_dataCollector.*/
   const inline pDataCollector *getDataCollector()
     {return m_dataCollector;}
@@ -113,8 +115,10 @@ class pRunController : public pFiniteStateMachine
 
  public slots:
   void stopParent();
+  //void prepareStartRun();
 
  signals:
+  void usbConnectionError();
   /*! \brief Notify that the runId has changed.*/
   void runIdChanged(int runId);
   /*! \brief Notify that the number of elapsed acquisition seconds is

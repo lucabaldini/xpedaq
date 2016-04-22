@@ -67,7 +67,6 @@ class pMainWindow : public pQtMainWindowGui
   pUserPreferences *getUserPreferences();
   int getVisualizationMode();
   void displayConfiguration(pDetectorConfiguration *configuration, int mode);
-  void disableHardware();
   void start();
   void stop();
   inline pRunController *getRunController()
@@ -81,11 +80,12 @@ class pMainWindow : public pQtMainWindowGui
  protected:
 
  public slots:
-  void selectConfiguration();
-  void saveConfiguration(bool promptDialog = true);
-  void saveUserPreferences();
-  void changeVisualizationMode(int mode);
-  void displayReference(unsigned short reference);
+   void disableHardwareWidgets();
+   void selectConfiguration();
+   void saveConfiguration(bool promptDialog = true);
+   void saveUserPreferences();
+   void changeVisualizationMode(int mode);
+   void displayReference(unsigned short reference);
 
  private:
   pDaqDisplay *m_daqDisplay;
