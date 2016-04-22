@@ -55,10 +55,10 @@ class pFiniteStateMachine : public QObject
 
  public slots:
    
-  void start();
-  void stop();
-  void pause();
-  void reset();
+  void setRunning();
+  void setStopped();
+  void setPaused();
+  void setReset();
 
  protected:
 

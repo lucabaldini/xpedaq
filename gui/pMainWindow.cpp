@@ -305,13 +305,13 @@ void pMainWindow::setupLoggerConnections()
 void pMainWindow::setupConnections()
 {
   connect(m_transportBar, SIGNAL(start()),
-	  m_runController, SLOT(start()));
+	  m_runController, SLOT(setRunning()));
   connect(m_transportBar, SIGNAL(stop()),
-	  m_runController, SLOT(stop()));
+	  m_runController, SLOT(setStopped()));
   connect(m_transportBar, SIGNAL(pause()),
-	  m_runController, SLOT(pause()));
+	  m_runController, SLOT(setPaused()));
   connect(m_transportBar, SIGNAL(reset()),
-	  m_runController, SLOT(reset()));
+	  m_runController, SLOT(setReset()));
   connect(m_runController, SIGNAL(numAcquiredDataBlocksChanged(int)),
 	  m_daqDisplay, SLOT(updateNumDataBlocks(int)));
   connect(m_runController, SIGNAL(numAcquiredEventsChanged(int)),

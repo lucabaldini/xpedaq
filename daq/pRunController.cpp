@@ -115,7 +115,7 @@ unsigned long pRunController::connectToQuickUsb()
 
 /*!
   Called once and forever when the parent GUI window is instantiated. The
-  reset() method of the \ref pFiniteStateMachine class is called, the run
+  setReset() method of the \ref pFiniteStateMachine class is called, the run
   number is read from its text file and set and the data collector is reset.
   The main purpose of the function is to have the correct information on the
   data display of the main window when the window itself is created.
@@ -132,7 +132,7 @@ unsigned long pRunController::connectToQuickUsb()
 void pRunController::init()
 {
   *xpollog::kDebug << "Initializing the run controller... " << endline;
-  reset();
+  pFiniteStateMachine::setReset();
   resetTimer();
   setRunId(readRunId());
   m_dataCollector->reset();

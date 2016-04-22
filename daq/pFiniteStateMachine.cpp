@@ -72,7 +72,7 @@ QString pFiniteStateMachine::status()
   }
 }
 
-void pFiniteStateMachine::start()
+void pFiniteStateMachine::setRunning()
 {
   switch(m_statusCode) {
   case RESET:
@@ -96,7 +96,7 @@ void pFiniteStateMachine::start()
   }
 }
 
-void pFiniteStateMachine::stop()
+void pFiniteStateMachine::setStopped()
 {
   switch(m_statusCode) {
   case RESET:
@@ -119,7 +119,7 @@ void pFiniteStateMachine::stop()
   }
 }
 
-void pFiniteStateMachine::pause()
+void pFiniteStateMachine::setPaused()
 {
   switch(m_statusCode) {
   case RUNNING:
@@ -132,7 +132,7 @@ void pFiniteStateMachine::pause()
   }
 }
 
-void pFiniteStateMachine::reset()
+void pFiniteStateMachine::setReset()
 {
   switch(m_statusCode) {
   case STOPPED:
