@@ -1,6 +1,5 @@
 /***********************************************************************
-Copyright (C) 2007, 2008 by Luca Baldini (luca.baldini@pi.infn.it),
-Johan Bregeon, Massimo Minuti and Gloria Spandre.
+Copyright (C) 2007--2016 the X-ray Polarimetry Explorer (XPE) team.
 
 For the license terms see the file LICENSE, distributed along with this
 software.
@@ -90,7 +89,7 @@ unsigned long pRunController::connectToQuickUsb()
     m_usbController = new pUsbController(usbDeviceName);
   }
   // And this is the case where there are no QuickUsb interfaces attached:
-  // we parse the last error code and emit a usbConnectionError(errorCode)
+  // we parse the last error code and emit a quickusbError(errorCode)
   // signal.
   else {
     QuickUsbGetLastError(&errorCode);
@@ -100,11 +99,11 @@ unsigned long pRunController::connectToQuickUsb()
 		       << endline;
     }
     *xpollog::kError << "No USB module found." << endline;
-    emit usbConnectionError(errorCode);
+    emit quickusbError(errorCode);
   }
   // Irrespectively, we create the remaining objects.
   // Mind that if there's no USB connection, m_usbController is a null
-  // pointer. Do we have to do anything about it.
+  // pointer. Do we have to do anything about it?
   m_xpolFpga = new pXpolFpga(m_usbController);
   m_dataCollector = new pDataCollector(m_usbController);
   m_dataAcquisitionTimer = new QTimer();
@@ -122,7 +121,7 @@ unsigned long pRunController::connectToQuickUsb()
   data display of the main window when the window itself is created.
 
   \todo The \ref pRunController::resetTimer() method is called in the
-  \ref pRunController::fsm_startRun method so that it's effectively done twice.
+  \ref pRunController::fsmStartRun method so that it's effectively done twice.
   The same holds for the reset of the data collector. Look into that more
   carefully.
 
@@ -148,8 +147,8 @@ void pRunController::init()
 
   The slot is connected to the timeout() method of the 
   \ref m_dataAcquisitionTimer QTimer member which is created in the
-  constructor, started in the \ref fsm_startRun() method and stopped in the
-  \ref fsm_stopRun() method.
+  constructor, started in the \ref fsmStartRun() method and stopped in the
+  \ref fsmStopRun() method.
   Effectively the method is executed once per second (or whatever, depending
   on the QTimer settings) all the time while the data acquisition is running.
  
@@ -196,7 +195,7 @@ void pRunController::stopParent()
   Set the \ref m_elapsedSeconds member to zero and emit an
   \ref elapsedSecondsChanged signal.
 
-  Called in the \ref fsm_startRun method.
+  Called in the \ref fsmStartRun method.
 
   \todo Change the name to resetElapsedSeconds().
 
@@ -223,10 +222,9 @@ void pRunController::resetTimer()
 
 double pRunController::getAverageDaqEventRate()
 {
-  if (m_elapsedSeconds == 0)
-    {
-      return 0.0;
-    } else {
+  if (m_elapsedSeconds == 0) {
+    return 0.0;
+  } else {
     return getNumAcquiredEvents()/(double)m_elapsedSeconds; 
   }
 }
@@ -297,10 +295,8 @@ void pRunController::writeHeader()
   headerFile.writeBinary(m_outputFilePath);
 }
 
-void pRunController::fsm_setup()
-{
-  *xpollog::kInfo << "fsm_setup() does not execute code." << endline;
-}
+void pRunController::fsmSetup()
+{}
 
 /*!
   This is executed at the beginning of each data acquisition run (which is
@@ -332,7 +328,7 @@ void pRunController::fsm_setup()
   the configuratio is retrieved from the GUI or from a file (batch mode).
 */
 
-void pRunController::fsm_startRun()
+void pRunController::fsmStartRun()
 {
   *xpollog::kInfo << "Starting run controller..." << endline;
   incrementRunId();
@@ -385,7 +381,7 @@ void pRunController::fsm_startRun()
   times from the GUI.
 */
 
-void pRunController::fsm_stopRun()
+void pRunController::fsmStopRun()
 {
   *xpollog::kInfo << "Stopping run controller..." << endline;
   m_dataCollector->stop();
@@ -398,33 +394,24 @@ void pRunController::fsm_stopRun()
     m_elapsedSeconds << " seconds."<< endline;
 }
 
-void pRunController::fsm_pause()
+void pRunController::fsmPause()
 {
   *xpollog::kInfo << "Run controller paused." << endline;
   m_dataCollector->stop();
 }
 
-/*!
-  The data collector is restarted.
-*/
-
-void pRunController::fsm_resume()
+void pRunController::fsmResume()
 {
   *xpollog::kInfo << "Run controller restarted." << endline;
-  if (m_usbController->IsOpened())
-    {
-      m_dataCollector->start();
-    } else {
+  if (m_usbController->IsOpened()) {
+    m_dataCollector->start();
+  } else {
     *xpollog::kError << "The USB device is not open." << endline;
   }
 }
 
-void pRunController::fsm_stop()
-{
-  *xpollog::kInfo << "fsm_stop() does not execute code." << endline;
-}
+void pRunController::fsmStop()
+{}
 
-void pRunController::fsm_teardown()
-{
-  *xpollog::kInfo << "fsm_teardown() does not execute code." << endline;
-}
+void pRunController::fsmTeardown()
+{}

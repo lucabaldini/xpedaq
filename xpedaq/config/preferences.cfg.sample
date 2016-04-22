@@ -3,7 +3,7 @@
 //Write data file//
 1
 //Output root folder//
-$XPOL_DAQ_ROOT/data
+/data/work/xipe/xpedata
 //Multicast enabled//
 0
 //Multicast address//

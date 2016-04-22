@@ -1,6 +1,5 @@
 /***********************************************************************
-Copyright (C) 2007, 2008 by Luca Baldini (luca.baldini@pi.infn.it),
-Johan Bregeon, Massimo Minuti and Gloria Spandre.
+Copyright (C) 2007--2016 the X-ray Polarimetry Explorer (XPE) team.
 
 For the license terms see the file LICENSE, distributed along with this
 software.
@@ -22,58 +21,50 @@ with this program; if not, write to the Free Software Foundation Inc.,
 
 #include "pFiniteStateMachine.h"
 
-/*! The FSM is put into the UNDEFINED status ipon creation.*/
 
 pFiniteStateMachine::pFiniteStateMachine()
 {
-  m_statusCode = kUndefinedStatusCode;
+  m_statusCode = UNDEFINED;
 }
 
-/*! Do nothing destructor.*/
-
-pFiniteStateMachine::~pFiniteStateMachine()
-{
-  
-}
-
-int pFiniteStateMachine::getStatus()
+int pFiniteStateMachine::statusCode()
 {
   return m_statusCode;
 }
 
 int pFiniteStateMachine::isReset()
 {
-  return m_statusCode == kResetStatusCode;
+  return m_statusCode == RESET;
 }
 
 int pFiniteStateMachine::isStopped()
 {
-  return m_statusCode == kStoppedStatusCode;
+  return m_statusCode == STOPPED;
 }
 
 int pFiniteStateMachine::isRunning()
 {
-  return m_statusCode == kRunningStatusCode;
+  return m_statusCode == RUNNING;
 }
 
 int pFiniteStateMachine::isPaused()
 {
-  return m_statusCode == kPausedStatusCode;
+  return m_statusCode == PAUSED;
 }
 
-QString pFiniteStateMachine::getStatusString()
+QString pFiniteStateMachine::status()
 {
-  switch(m_statusCode){
-  case kResetStatusCode:
+  switch(m_statusCode) {
+  case RESET:
     return "RESET";
     break;
-  case kStoppedStatusCode:
+  case STOPPED:
     return "STOPPED";
     break;
-  case kRunningStatusCode:
+  case RUNNING:
     return "RUNNING";
     break;
-  case kPausedStatusCode:
+  case PAUSED:
     return "PAUSED";
     break;
   default:
@@ -83,22 +74,22 @@ QString pFiniteStateMachine::getStatusString()
 
 void pFiniteStateMachine::start()
 {
-  switch(m_statusCode){
-  case kResetStatusCode:
-    m_statusCode = kRunningStatusCode;
-    emit statusChanged(getStatusString());
-    fsm_setup();
-    fsm_startRun();
+  switch(m_statusCode) {
+  case RESET:
+    m_statusCode = RUNNING;
+    emit statusChanged(status());
+    fsmSetup();
+    fsmStartRun();
     break;
-  case kStoppedStatusCode:
-    m_statusCode = kRunningStatusCode;
-    emit statusChanged(getStatusString());
-    fsm_startRun();
+  case STOPPED:
+    m_statusCode = RUNNING;
+    emit statusChanged(status());
+    fsmStartRun();
     break;
-  case kPausedStatusCode:
-    m_statusCode = kRunningStatusCode;
-    emit statusChanged(getStatusString());
-    fsm_resume();
+  case PAUSED:
+    m_statusCode = RUNNING;
+    emit statusChanged(status());
+    fsmResume();
     break;
   default:
     ;
@@ -107,21 +98,21 @@ void pFiniteStateMachine::start()
 
 void pFiniteStateMachine::stop()
 {
-  switch(m_statusCode){
-  case kResetStatusCode:
-    m_statusCode = kStoppedStatusCode;
-    emit statusChanged(getStatusString());
-    fsm_setup();
+  switch(m_statusCode) {
+  case RESET:
+    m_statusCode = STOPPED;
+    emit statusChanged(status());
+    fsmSetup();
     break;
-  case kRunningStatusCode:
-    m_statusCode = kStoppedStatusCode;
-    emit statusChanged(getStatusString());
-    fsm_stopRun();
+  case RUNNING:
+    m_statusCode = STOPPED;
+    emit statusChanged(status());
+    fsmStopRun();
     break;
-  case kPausedStatusCode:
-    m_statusCode = kStoppedStatusCode;
-    emit statusChanged(getStatusString());
-    fsm_stop();
+  case PAUSED:
+    m_statusCode = STOPPED;
+    emit statusChanged(status());
+    fsmStop();
     break;
   default:
     ;
@@ -130,11 +121,11 @@ void pFiniteStateMachine::stop()
 
 void pFiniteStateMachine::pause()
 {
-  switch(m_statusCode){
-  case kRunningStatusCode:
-    m_statusCode = kPausedStatusCode;
-    emit statusChanged(getStatusString());
-    fsm_pause();
+  switch(m_statusCode) {
+  case RUNNING:
+    m_statusCode = PAUSED;
+    emit statusChanged(status());
+    fsmPause();
     break;
   default:
     ;
@@ -143,51 +134,16 @@ void pFiniteStateMachine::pause()
 
 void pFiniteStateMachine::reset()
 {
-  switch(m_statusCode){
-  case kStoppedStatusCode:
-    m_statusCode = kResetStatusCode;
-    emit statusChanged(getStatusString());
-    fsm_teardown();
+  switch(m_statusCode) {
+  case STOPPED:
+    m_statusCode = RESET;
+    emit statusChanged(status());
+    fsmTeardown();
     break;
-  case kUndefinedStatusCode:
-    m_statusCode = kResetStatusCode;
-    emit statusChanged(getStatusString());
+  case UNDEFINED:
+    m_statusCode = RESET;
+    emit statusChanged(status());
   default:
     ;
   }
-}
-
-void pFiniteStateMachine::fsm_setup()
-{
-  *xpollog::kDebug << "fsm_setup() not implemented." << endline;
-}
-
-void pFiniteStateMachine::fsm_teardown()
-{
-  *xpollog::kDebug << "fsm_teardown() not implemented." << endline;
-}
-
-void pFiniteStateMachine::fsm_startRun()
-{
-  *xpollog::kDebug << "fsm_startRun() not implemented." << endline;
-}
-
-void pFiniteStateMachine::fsm_stopRun()
-{
-  *xpollog::kDebug << "fsm_stopRun() not implemented." << endline;
-}
-
-void pFiniteStateMachine::fsm_pause()
-{
-  *xpollog::kDebug << "fsm_pause() not implemented." << endline;
-}
-
-void pFiniteStateMachine::fsm_resume()
-{
-  *xpollog::kDebug << "fsm_resume() not implemented." << endline;
-}
-
-void pFiniteStateMachine::fsm_stop()
-{
-  *xpollog::kDebug << "fsm_stop() not implemented." << endline;
 }

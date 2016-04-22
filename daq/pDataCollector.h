@@ -1,6 +1,5 @@
 /***********************************************************************
-Copyright (C) 2007, 2008 by Luca Baldini (luca.baldini@pi.infn.it),
-Johan Bregeon, Massimo Minuti and Gloria Spandre.
+Copyright (C) 2007--2016 the X-ray Polarimetry Explorer (XPE) team.
 
 For the license terms see the file LICENSE, distributed along with this
 software.
@@ -51,57 +50,42 @@ class pDataCollector : public QThread
 {
 
   Q_OBJECT
-
+  
  public:
 
-  /*! \brief Basic constructor.*/
   pDataCollector(pUsbController *usbController);
-  /*! \brief Destructor.*/
-  ~pDataCollector();
-  /*! \brief Reset the data collector.*/
+  ~pDataCollector() {;}
   void reset();
-  /*! \brief Setup the data collector.*/
   void setup(std::string outputFilePath, pUserPreferences *preferences,
 	     pDetectorConfiguration *configuration);
-  /*! \brief Return the number of acquired data blocks.*/
   inline int getNumAcquiredDataBlocks()
     {return m_dataFIFO->getNumAcquiredDataBlocks();}
-  /*! \brief Return the number of acquired Events.*/
   inline int getNumAcquiredEvents()
     {return m_dataFIFO->getNumAcquiredEvents();}
   inline double getInstantFpgaEventRate()
     {return m_dataFIFO->getLastDataBlockAverageEventRate();}
 
  signals:
-  /*! \brief Notify that a readout error has been detected. */
+
   void readoutErrorDetected(int errorCode);
 
  public slots:
-  /*! \brief Stop the data collector.*/
+
   void stop();
 
  protected:
-  /*! \brief Overloaded QThread method called when the QThread::start()
-   method is called.*/
+
   void run();
 
  private:
 
-  /*! \brief Flag indicating whether the data collector is running or not.*/
   bool m_running;
-  /*! \brief Pointer to the USB controller.*/
   pUsbController *m_usbController;
-  /*! \brief Pointer to the data FIFO.*/
   pDataFIFO *m_dataFIFO;
-  /*! \brief Path to the output file.*/ 
   std::string m_outputFilePath;
-  /*! \brief User preferences.*/
   pUserPreferences *m_userPreferences;
-  /*! \brief Detector configuration.*/
   pDetectorConfiguration *m_detectorConfiguration;
-  /*! \brief Convenience member telling whether the data radout is supposed
-    to be in full frame.*/
   bool m_fullFrame;
 };
 
-#endif
+#endif //PDATACOLLECTOR_H

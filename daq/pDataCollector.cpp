@@ -22,7 +22,6 @@ with this program; if not, write to the Free Software Foundation Inc.,
 
 #include "pDataCollector.h"
 
-/*! The usb controller is made class member.*/
 
 pDataCollector::pDataCollector(pUsbController *usbController):
   m_usbController(usbController)  
@@ -30,15 +29,8 @@ pDataCollector::pDataCollector(pUsbController *usbController):
 
 }
 
-/*! Do nothing destructor.*/
-
-pDataCollector::~pDataCollector()
-{
-  
-}
-
 /*! Called by the run controller in pRunController::init() and
-  pRunController::fsm_startRun(); namely at beginning and each time the
+  pRunController::fsmStartRun(); namely at beginning and each time the
   start button is pressed.
 
   \todo Don't think
