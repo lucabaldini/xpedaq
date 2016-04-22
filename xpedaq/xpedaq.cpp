@@ -44,11 +44,6 @@ int main(int argn, char *argv[])
 	  i++;
 	  window.getRunController()->setOutputFilePath(argv[i]);
 	}
-      else if (option == "-h")
-	{
-	  i++;
-	  window.getRunController()->setHeaderFilePath(argv[i]);
-	}
     }
   if (batchmode)
     {

@@ -30,7 +30,6 @@ with this program; if not, write to the Free Software Foundation Inc.,
 #include "pDataCollector.h"
 #include "pUsbController.h"
 #include "pXpolFpga.h"
-#include "pHeaderFile.h"
 #include "xpollog.h"
 #include "xpolio.h"
 #include "xpolenv.h"
@@ -68,8 +67,6 @@ class pRunController : public pFiniteStateMachine
     {return m_dataCollector->getInstantFpgaEventRate();}
   void setOutputFilePath(std::string outputFilePath)
     {m_outputFilePath = outputFilePath;}
-  void setHeaderFilePath(std::string headerFilePath)
-    {m_headerFilePath = headerFilePath;}
   void setMaxElapsedSeconds(int maxElapsedSeconds)
     {m_maxElapsedSeconds = maxElapsedSeconds;}
   void setMaxAcquiredDataBlocks(int maxAcquiredDataBlocks)
@@ -110,7 +107,6 @@ class pRunController : public pFiniteStateMachine
   // Candidates for removal.
   pMainWindow *m_parentWindow;
   bool m_closeParentOnStop;
-  std::string m_headerFilePath;
 
   // Sensible stuff.
   int m_maxElapsedSeconds;
@@ -130,7 +126,6 @@ class pRunController : public pFiniteStateMachine
   void writeRunId();
   void setRunId(int runId);
   void incrementRunId();
-  void writeHeader();
 
  private slots:
    

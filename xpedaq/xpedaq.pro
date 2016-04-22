@@ -47,7 +47,6 @@ HEADERS += pUsbController.h
 HEADERS += pXpolFpga.h
 HEADERS += pDetectorConfiguration.h
 HEADERS += pUserPreferences.h
-HEADERS += pHeaderFile.h
 
 HEADERS += pLoggerChannel.h
 HEADERS += pLogger.h
@@ -95,7 +94,6 @@ SOURCES += pUsbController.cpp
 SOURCES += pXpolFpga.cpp
 SOURCES += pDetectorConfiguration.cpp
 SOURCES += pUserPreferences.cpp
-SOURCES += pHeaderFile.cpp
 
 SOURCES += pLoggerChannel.cpp
 SOURCES += pLogger.cpp

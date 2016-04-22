@@ -51,7 +51,6 @@ pRunController::pRunController(pMainWindow *parentWindow,
 {
   m_closeParentOnStop = false;
   m_outputFilePath = xpolenv::kNullPath;
-  m_headerFilePath = xpolenv::kNullPath;
   // Create the runId.cfg file, if needed.
   QString cfgFilePath = QString(std::getenv("XPOL_DAQ_ROOT")) +
     QDir::separator() + "xpedaq" + QDir::separator() + "config" +
@@ -173,10 +172,9 @@ void pRunController::updateTimer()
   m_lastNumAcquiredEvents = getNumAcquiredEvents();
   if ((m_elapsedSeconds > m_maxElapsedSeconds)               ||
       (getNumAcquiredDataBlocks() > m_maxAcquiredDataBlocks) ||
-      (getNumAcquiredEvents() > m_maxAcquiredEvents))
-    {
-      stopParent();
-    }
+      (getNumAcquiredEvents() > m_maxAcquiredEvents)) {
+    stopParent();
+  }
 }
 
 void pRunController::stopParent()
@@ -184,11 +182,10 @@ void pRunController::stopParent()
   m_parentWindow->stop();
   while (m_dataCollector->isRunning())
     {};
-  if (m_closeParentOnStop)
-    {
-      *xpollog::kInfo << "Closing parent window..." << endline;
-      m_parentWindow->close();
-    }  
+  if (m_closeParentOnStop) {
+    *xpollog::kInfo << "Closing parent window..." << endline;
+    m_parentWindow->close();
+  }  
 }
 
 /*!
@@ -282,19 +279,6 @@ void pRunController::setRunId(int runId)
   emit runIdChanged(m_runId); 
 }
 
-/*!
-  Create a pHeaderFile object reading the necessary information from
-  the ascii file at \ref m_headerFilePath and write it in binary format
-  to the output data file. This is called only if the path to the
-  header file is explicitely passed to the run controller.
- */
-
-void pRunController::writeHeader()
-{
-  pHeaderFile headerFile(m_headerFilePath);
-  headerFile.writeBinary(m_outputFilePath);
-}
-
 void pRunController::fsmSetup()
 {}
 
@@ -309,10 +293,6 @@ void pRunController::fsmSetup()
   \li The path to the output data file {\ref m_outputFilePath} is generated
   from the run number, unless it has been explicitely set before (and therefore
   is different from {\ref xpolenv::kNullPath}).
-  \li If the path to the header file {\ref m_headerFilePath} has been set
-  before (and therefore is different from {\ref xpolenv::kNullPath}), the
-  content of the header file is copied in binary format into the data file
-  (\ref writeHeader()).
   \li The data collector \ref m_dataCollector is reset.
   \li The data collector \ref m_dataCollector and the FPGA controller
   \ref m_xpolFpga are set up according to the current configuration and
@@ -344,12 +324,7 @@ void pRunController::fsmStartRun()
     {
       m_outputFilePath = m_parentWindow->currentDataFilePath().toStdString();
     }
-  if (m_headerFilePath != xpolenv::kNullPath)
-    {
-      writeHeader();
-    }
   *xpollog::kDebug << "Output file path: " << m_outputFilePath << endline;
-  *xpollog::kDebug << "Header file path: " << m_headerFilePath << endline;
   m_dataCollector->reset();
   if (m_usbController->IsOpened())
     {
