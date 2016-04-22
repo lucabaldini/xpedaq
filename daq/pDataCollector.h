@@ -26,7 +26,7 @@ with this program; if not, write to the Free Software Foundation Inc.,
 #include <iostream>
 #include <QThread>
 #include "xpollog.h"
-#include "pUsbController.h"
+#include "pUsbControllerBase.h"
 #include "pDataFIFO.h"
 #include "pUserPreferences.h"
 #include "pDetectorConfiguration.h"
@@ -56,7 +56,7 @@ class pDataCollector : public QThread
  public:
 
   /*! \brief Basic constructor.*/
-  pDataCollector(pUsbController *usbController);
+  pDataCollector(pUsbControllerBase *usbController);
   /*! \brief Destructor.*/
   ~pDataCollector();
   /*! \brief Reset the data collector.*/
@@ -91,7 +91,7 @@ class pDataCollector : public QThread
   /*! \brief Flag indicating whether the data collector is running or not.*/
   bool m_running;
   /*! \brief Pointer to the USB controller.*/
-  pUsbController *m_usbController;
+  pUsbControllerBase *m_usbController;
   /*! \brief Pointer to the data FIFO.*/
   pDataFIFO *m_dataFIFO;
   /*! \brief Path to the output file.*/ 

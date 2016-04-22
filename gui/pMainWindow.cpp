@@ -62,7 +62,7 @@ pMainWindow::pMainWindow()
   selectConfiguration(m_detectorCfgFilePath);
   m_runController->init();
   showMessage("Data acquisition system ready", 2000);
-  //std::cout << currentOutputFolder().toStdString() << std::endl;
+  std::cout << currentDataFilePath().toStdString() << std::endl;
 }
 
 pMainWindow::~pMainWindow()
@@ -71,13 +71,26 @@ pMainWindow::~pMainWindow()
   saveConfiguration(false);
 }
 
+QString pMainWindow::currentDataIdentifier()
+{
+  return QString("%1").arg(m_daqDisplay->stationId(), 3, 10, QLatin1Char('0')) +
+    "_" + QString("%1").arg(m_daqDisplay->runId(), 6, 10, QLatin1Char('0'));
+}
+
 QString pMainWindow::currentOutputFolder()
 {
-  QString outputFolder = m_userPreferencesTab->outputRootFolder() +
-    QDir::separator() +
-    QString("%1").arg(m_daqDisplay->stationId(), 3, 10, QLatin1Char('0')) +
-    "_" + QString("%1").arg(m_daqDisplay->runId(), 6, 10, QLatin1Char('0')); 
-  return outputFolder;
+  return m_userPreferencesTab->outputRootFolder() + QDir::separator() +
+    currentDataIdentifier();
+}
+
+QString pMainWindow::currentDataFileName()
+{
+  return currentDataIdentifier() + ".mdat";
+}
+
+QString pMainWindow::currentDataFilePath()
+{
+  return currentOutputFolder() + QDir::separator() + currentDataFileName();
 }
 
 void pMainWindow::setupDaqDisplay()
@@ -176,7 +189,7 @@ void pMainWindow::stop()
 
 void pMainWindow::disableHardware()
 {
-  m_transportBar->setEnabled(0);
+  //m_transportBar->setEnabled(0);
   m_thresholdSettingTab->getRefreshRefButton()->setEnabled(0);
 }
 

@@ -93,34 +93,31 @@ int pRunController::createUsbModules()
 {
   *xpollog::kInfo << "Searching for USB module(s)... " << endline;
   char usbDeviceString[512];
-  if (QuickUsbFindModules(usbDeviceString, 512))
-    {
-      int numUsbDevices = 0;
-      char usbDeviceName[20];
-      char *usbDeviceStringPtr = usbDeviceString;
-      while (*usbDeviceStringPtr != '\0')
-	{
-	  *xpollog::kDebug << "Found " << usbDeviceStringPtr << "." << endline;
-	  strncpy(usbDeviceName, usbDeviceStringPtr, 20);
-	  usbDeviceStringPtr += strlen(usbDeviceStringPtr);
-	  numUsbDevices ++;
-	}
-      if (numUsbDevices > 1)
-	{
-	  *xpollog::kWarning << numUsbDevices << " modules found." << endline;
-	}
-      m_usbController = new pUsbController(usbDeviceName);
-      return 0;
+  if (QuickUsbFindModules(usbDeviceString, 512)) {
+    int numUsbDevices = 0;
+    char usbDeviceName[20];
+    char *usbDeviceStringPtr = usbDeviceString;
+    while (*usbDeviceStringPtr != '\0') {
+      *xpollog::kDebug << "Found " << usbDeviceStringPtr << "." << endline;
+      strncpy(usbDeviceName, usbDeviceStringPtr, 20);
+      usbDeviceStringPtr += strlen(usbDeviceStringPtr);
+      numUsbDevices ++;
     }
+    if (numUsbDevices > 1) {
+      *xpollog::kWarning << numUsbDevices << " modules found." << endline;
+    }
+    m_usbController = new pUsbController(usbDeviceName);
+    return 0;
+  }
   unsigned long errorCode;
   QuickUsbGetLastError(&errorCode);
-  if (errorCode > 0)
-    {
-      *xpollog::kError << "Error " << errorCode << ". "
-		       << pUsbController::getErrorDescription(errorCode)
-		       << endline;
-    }
-  *xpollog::kError << "No USB module found." << endline;  
+  if (errorCode > 0) {
+    *xpollog::kError << "Error " << errorCode << ". "
+		     << pUsbController::getErrorDescription(errorCode)
+		     << endline;
+  }
+  *xpollog::kError << "No USB module found." << endline;
+  m_usbController = new pUsbControllerBase();
   return errorCode;
 }
 
