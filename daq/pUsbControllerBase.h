@@ -34,6 +34,7 @@ class pUsbControllerBase
 
  public:
   pUsbControllerBase();
+  pUsbControllerBase(const char *devName);
   ~pUsbControllerBase();
   int setup();
   int readUsbSettings();

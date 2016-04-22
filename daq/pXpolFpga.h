@@ -25,7 +25,6 @@ with this program; if not, write to the Free Software Foundation Inc.,
 
 #include "xpollog.h"
 #include "xpoldetector.h"
-#include "pUsbControllerBase.h"
 #include "pUsbController.h"
 #include "pDetectorConfiguration.h"
 
@@ -35,7 +34,7 @@ class pXpolFpga : public QObject
   Q_OBJECT
 
  public:
-  pXpolFpga(pUsbControllerBase *usbController);
+  pXpolFpga(pUsbController *usbController);
   ~pXpolFpga();
 
   void setup(pDetectorConfiguration *configuration); 
@@ -59,7 +58,7 @@ class pXpolFpga : public QObject
    void serialWrite(unsigned short REG_ADD,unsigned short regdata);
    void mainSerialWrite(unsigned short REG_ADD,unsigned short regdata);
    unsigned short mainSiRead(unsigned short reg_address);
-   pUsbControllerBase *m_usbController;
+   pUsbController *m_usbController;
 
  public slots:
    unsigned short readVrefDac();

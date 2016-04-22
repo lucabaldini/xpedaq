@@ -22,11 +22,15 @@ with this program; if not, write to the Free Software Foundation Inc.,
 
 #include "pUsbControllerBase.h"
 
-
 pUsbControllerBase::pUsbControllerBase()
 {
-  *xpollog::kInfo << "Creating dummy USB controller..." << endline;
-  setup();
+
+}
+
+pUsbControllerBase::pUsbControllerBase(const char *devName)
+{
+  *xpollog::kInfo << "Creating USB controller for " << devName <<
+    "... " << endline;
 }
 
 pUsbControllerBase::~pUsbControllerBase()

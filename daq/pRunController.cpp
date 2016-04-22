@@ -117,7 +117,6 @@ int pRunController::createUsbModules()
 		     << endline;
   }
   *xpollog::kError << "No USB module found." << endline;
-  m_usbController = new pUsbControllerBase();
   return errorCode;
 }
 

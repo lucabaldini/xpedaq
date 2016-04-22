@@ -22,7 +22,7 @@ with this program; if not, write to the Free Software Foundation Inc.,
 
 #include "pXpolFpga.h"
 
-pXpolFpga::pXpolFpga(pUsbControllerBase *usbController)
+pXpolFpga::pXpolFpga(pUsbController *usbController)
 {
   m_usbController = usbController;
 }

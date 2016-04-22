@@ -99,7 +99,7 @@ int pUsbController::writePortDir(unsigned short address, unsigned char data)
 {
   *xpollog::kDebug << "Writing port dir at address " << address << " (0x" <<
     hex << address << dec << ")..." << flush;
-  if (!WritePortDir(address, data))
+  if (!CQuickUsb::WritePortDir(address, data))
     {
       *xpollog::kDebug << endline;
       return getLastErrorCode();
@@ -113,7 +113,7 @@ int pUsbController::writePort(unsigned short address, unsigned char *data,
 {
   *xpollog::kDebug << "Writing port at address " << address << " (0x" <<
     hex << address << dec << ")..." << flush;
-  if (!WritePort(address, data, length))
+  if (!CQuickUsb::WritePort(address, data, length))
     {
       *xpollog::kDebug << endline;
       return getLastErrorCode();

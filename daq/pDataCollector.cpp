@@ -24,7 +24,7 @@ with this program; if not, write to the Free Software Foundation Inc.,
 
 /*! The usb controller is made class member.*/
 
-pDataCollector::pDataCollector(pUsbControllerBase *usbController):
+pDataCollector::pDataCollector(pUsbController *usbController):
   m_usbController(usbController)  
 { 
 

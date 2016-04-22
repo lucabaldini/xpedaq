@@ -28,7 +28,6 @@ with this program; if not, write to the Free Software Foundation Inc.,
 #include "pMainWindow.h"
 #include "pFiniteStateMachine.h"
 #include "pDataCollector.h"
-#include "pUsbControllerBase.h"
 #include "pUsbController.h"
 #include "pXpolFpga.h"
 #include "pHeaderFile.h"
@@ -61,7 +60,7 @@ class pRunController : public pFiniteStateMachine
   const inline pDataCollector *getDataCollector()
     {return m_dataCollector;}
   /*! \brief Return the member \ref pRunController::m_usbController.*/
-  const inline pUsbControllerBase *getUsbController()
+  const inline pUsbController *getUsbController()
     {return m_usbController;}
   /*! \brief Return the member \ref pRunController::m_xpolFpga.*/
   pXpolFpga *getXpolFpga()
@@ -164,7 +163,7 @@ class pRunController : public pFiniteStateMachine
     parent window upon termination of the data collection.*/
   bool m_closeParentOnStop;
   /*! \brief The base USB controller object.*/
-  pUsbControllerBase *m_usbController;
+  pUsbController *m_usbController;
   /*! \brief The data collector object.*/
   pDataCollector *m_dataCollector;
   /*! \brief The base xpol FPGA object.*/

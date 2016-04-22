@@ -27,7 +27,6 @@ with this program; if not, write to the Free Software Foundation Inc.,
 
 #include "xpolutils.h"
 #include "xpollog.h"
-#include "pUsbControllerBase.h"
 #include "CQuickUsb.h"
 #include "QuickUSB.h"
 
@@ -181,7 +180,7 @@ with this program; if not, write to the Free Software Foundation Inc.,
 #define EP6EMPTYFLG	0x200 
 
 
-class pUsbController : public CQuickUsb, public pUsbControllerBase
+class pUsbController : public CQuickUsb
 {
 
  public:
