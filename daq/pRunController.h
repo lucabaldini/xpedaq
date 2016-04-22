@@ -54,6 +54,7 @@ class pRunController : public pFiniteStateMachine
 		 int dataAcquisitionTimerTimeout = 1000);
   ~pRunController() {;}
   unsigned long connectToQuickUsb();
+  void init();
   const inline pDataCollector *getDataCollector() {return m_dataCollector;}
   const inline pUsbController *getUsbController() {return m_usbController;}
   const inline pXpolFpga *getXpolFpga() {return m_xpolFpga;}
@@ -65,7 +66,6 @@ class pRunController : public pFiniteStateMachine
   double getInstantDaqEventRate();
   double getInstantFpgaEventRate()
     {return m_dataCollector->getInstantFpgaEventRate();}
-  void init();
   void setOutputFilePath(std::string outputFilePath)
     {m_outputFilePath = outputFilePath;}
   void setHeaderFilePath(std::string headerFilePath)
@@ -80,7 +80,8 @@ class pRunController : public pFiniteStateMachine
     {m_closeParentOnStop = batch;}
 
  public slots:
-   
+
+  // This should go away. 
   void stopParent();
 
  signals:
@@ -105,18 +106,21 @@ class pRunController : public pFiniteStateMachine
   void fsmStop();
 
  private:
-  
+
+  // Candidates for removal.
   pMainWindow *m_parentWindow;
+  bool m_closeParentOnStop;
+  std::string m_headerFilePath;
+
+  // Sensible stuff.
   int m_maxElapsedSeconds;
   int m_maxAcquiredEvents;
   int m_maxAcquiredDataBlocks;
-  bool m_closeParentOnStop;
   pUsbController *m_usbController;
   pDataCollector *m_dataCollector;
   pXpolFpga *m_xpolFpga;
   std::string m_runIdCfgFilePath;
   std::string m_outputFilePath;
-  std::string m_headerFilePath;
   int m_runId;
   QTimer *m_dataAcquisitionTimer;
   int m_dataAcquisitionTimerTimeout;
