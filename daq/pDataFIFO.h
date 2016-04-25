@@ -79,7 +79,7 @@ class pDataFIFO : pUdpSender
     {return m_acquiredEvents;}
   /*! \brief Return the average FPGA event rate in the last data block in the FIFO.*/
   inline double getLastDataBlockAverageEventRate()
-    {return m_buffer.back()->getAverageEventRate();}
+    {return m_buffer.back()->averageEventRate();}
   /*! \brief Empty the FIFO and write to file the content.*/
   void flush();
 

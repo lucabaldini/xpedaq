@@ -20,10 +20,29 @@ with this program; if not, write to the Free Software Foundation Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 ***********************************************************************/
 
-#include <iostream>
+#include <fstream>
+
+#include "xpollog.h"
+#include "pDataBlock.h"
+
 
 int main(int argn, char *argv[])
 {
+  std::string filePath = "../../data/test_data_correct.mdat";
+  *xpollog::kInfo << "Opening input file " << filePath << "..." << endline;
+  std::ifstream inputFile(filePath.c_str(), std::ios::binary);
+  std::streampos begin, end;
+  begin = inputFile.tellg();
+  inputFile.seekg (0, std::ios::end);
+  end = inputFile.tellg();
+  inputFile.seekg(0, std::ios::beg);
+  const unsigned long fileSize = end - begin;
+  *xpollog::kInfo << "Input file is " << fileSize << " bytes long." << endline;
 
+  unsigned char buffer[fileSize];
+  inputFile.read((char*)buffer, fileSize);
+  pDataBlock dataBlock(buffer, sizeof(buffer));
+  std::cout << dataBlock << std::endl;
+  inputFile.close();
   return 0;
 }

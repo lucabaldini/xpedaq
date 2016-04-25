@@ -1,6 +1,5 @@
 /***********************************************************************
-Copyright (C) 2007, 2008 by Luca Baldini (luca.baldini@pi.infn.it),
-Johan Bregeon, Massimo Minuti and Gloria Spandre.
+Copyright (C) 2007--2016 the X-ray Polarimetry Explorer (XPE) team.
 
 For the license terms see the file LICENSE, distributed along with this
 software.
@@ -29,12 +28,14 @@ with this program; if not, write to the Free Software Foundation Inc.,
   needed, located at <tt>0</tt>, <tt>NWORDS</tt> and <tt>2*NWORDS</tt>.
 */
 
-pDataBlock::pDataBlock(unsigned char *rawDataBlock)
+pDataBlock::pDataBlock(unsigned char *buffer) :
+  m_bufferSize(2*NWORDS),
+  m_errorSummary(0)
 { 
-  m_headerPositions.push_back(0);
-  m_headerPositions.push_back(NWORDS);
-  m_headerPositions.push_back(NWORDS*2);
-  m_rawDataBlock = rawDataBlock;
+  m_eventBounds.push_back(0);
+  m_eventBounds.push_back(NWORDS);
+  m_eventBounds.push_back(NWORDS*2);
+  m_rawBuffer = buffer;
 }
 
 /*!
@@ -45,7 +46,7 @@ pDataBlock::pDataBlock(unsigned char *rawDataBlock)
   is truncated; this must be taken into account when writing the data file.
   
   The entire data block is scanned and all the event headers found
-  are put into the \ref m_headerPositions variable.
+  are put into the \ref m_eventBounds variable.
   
   \todo Move the hard-coded 0xff into a header file (most likely the
   xpoldetector namespace).
@@ -54,71 +55,46 @@ pDataBlock::pDataBlock(unsigned char *rawDataBlock)
   explicitely and only if needed.
 */
 
-pDataBlock::pDataBlock(unsigned char *rawDataBlock, int bufferSize)
+pDataBlock::pDataBlock(unsigned char *buffer, int bufferSize) :
+  m_bufferSize(bufferSize),
+  m_errorSummary(0)
 { 
-  for (int i=0; i<bufferSize-1; i+=2)
-    {
-      if(rawDataBlock[i] == 0xff && rawDataBlock[i+1] == 0xff)
-	{
-	  m_headerPositions.push_back(i);
-	} 	 
+  for (int i = 0; i < bufferSize - 1; i += 2) {
+    if (buffer[i] == 0xff && buffer[i+1] == 0xff) {
+      m_eventBounds.push_back(i);
     }
-  m_rawDataBlock = rawDataBlock;
-}
-
-/*!
-  Effectively the function returns the last index in the
-  \ref m_headerPositions vector, which points to the end of the last event.
-  The rest of the data block, if any, is garbage and must be thrown away.
-*/
-
-int pDataBlock::getSize()
-{
-  if(m_headerPositions.empty())
-    {
-      return 0;
-    }
-  return m_headerPositions.back();
-}
-
-/*!
-  The number of events is effectively the number of elements in
-  \ref m_headerPositions, decremented by one unit.
-*/
-
-int pDataBlock::getNumEvents()
-{
-  if(m_headerPositions.empty())
-    {
-      return 0;
-    }
-  return m_headerPositions.size() - 1;
+  }
+  m_rawBuffer = buffer;
 }
 
 /*!
   The data word is properly byte-swapped.
 
-  \param eventId The event number in the data block.
-  \param offser The offset (in bits) from the event header.
+  \param event The event number in the data block.
+  \param offset The offset (in bits) from the event header.
 */
 
-int pDataBlock::getDataWord(int eventId, int offset)
+unsigned int pDataBlock::dataWord(unsigned int event, unsigned int offset) const
 {
-  if (eventId < 0)
-    {
-      eventId = 0;
-    }
-  else if (eventId >= getNumEvents())
-    {
-      eventId = getNumEvents() - 1;
-    }
-  return _BITESWAP_(m_rawDataBlock[m_headerPositions[eventId] + offset],
-		    m_rawDataBlock[m_headerPositions[eventId] + offset + 8]); 
+
+  if (event >= numEvents()) {
+    event = numEvents() - 1;
+  }
+  return _BYTESWAP_(m_rawBuffer[m_eventBounds[event] + offset],
+		    m_rawBuffer[m_eventBounds[event] + offset + 1]); 
 }
 
-double pDataBlock::getTimestamp(int eventId)
+/*!
+
+ */
+unsigned int pDataBlock::numPixels(unsigned int event) const
 {
-  return 0.8e-6*(getDataWord(eventId, 96) + 65534*getDataWord(eventId, 112));
+  return (xmax(event) - xmin(event) + 1)*(ymax(event) - ymin(event) + 1);
+}
+
+double pDataBlock::timestamp(unsigned int event) const
+{
+  return 0.8e-6*(dataWord(event, 12) + 65534*dataWord(event, 14));
 }
 
 /*!
@@ -127,12 +103,29 @@ double pDataBlock::getTimestamp(int eventId)
   and the timestamp of the last one in the data block.
  */
 
-double pDataBlock::getAverageEventRate()
+double pDataBlock::averageEventRate() const
 {
-  double elapsedTime = getTimestamp(getNumEvents()-1) - getTimestamp(0);
-  if (elapsedTime == 0.0)
-    {
-      return 0.0;
-    }
-  return getNumEvents()/elapsedTime;
+  double elapsedTime = timestamp(numEvents()-1) - timestamp(0);
+  if (elapsedTime == 0.0) {
+    return 0.0;
+  }
+  return numEvents()/elapsedTime;
+}
+
+/*!
+
+ */
+std::ostream& pDataBlock::fillStream(std::ostream& os) const
+{
+  os << "pDataBlock object with " << numEvents() << " event(s) in " << size()
+     << " bytes (error summary " << errorSummary() << ")." << std::endl;
+  for (unsigned int evt = 0; evt < numEvents(); evt ++) {
+    os << "#" << evt << " @ buf " << std::setfill('0') << std::setw(6)
+       << bufferId(evt) << "+" << std::setw(6) << offset(evt) << ", w("
+       << std::setfill(' ') << std::setw(3) << xmin(evt) << ", "
+       << std::setw(3) << ymin(evt) << ")--(" << std::setw(3) << xmax(evt)
+       << ", " << std::setw(3) << ymax(evt) << "), " << numPixels(evt)
+       << " pixels, " << timestamp(evt) << " s" << std::endl;
+  }
+  return os;
 }

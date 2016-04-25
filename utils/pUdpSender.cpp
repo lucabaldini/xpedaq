@@ -42,16 +42,16 @@ void pUdpSender::setPort(int port)
 
 void pUdpSender::broadcastDatagram(pDataBlock *block)
 {
-  write(block->getCharDataBlock(), block->getSize());
+  write(block->getCharDataBlock(), block->size());
 }
 
 void pUdpSender::broadcastEventByEvent(pDataBlock *block)
 {  
-  std::vector<int> headPos = block->getHeaderPositions();
-  std::vector<int>::iterator posIter;
-  for(posIter = headPos.begin(); posIter != headPos.end() - 1; posIter++)
+  std::vector<int> evtBounds = block->eventBounds();
+  std::vector<int>::iterator bound;
+  for(bound = evtBounds.begin(); bound != evtBounds.end() - 1; bound++)
     {
-      write(block->getCharDataBlock(*posIter), *(posIter+1) - *posIter);
+      write(block->getCharDataBlock(*bound), *(bound + 1) - *bound);
     }
 }
 

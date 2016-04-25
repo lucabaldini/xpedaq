@@ -1,6 +1,5 @@
 /***********************************************************************
-Copyright (C) 2007, 2008 by Luca Baldini (luca.baldini@pi.infn.it),
-Johan Bregeon, Massimo Minuti and Gloria Spandre.
+Copyright (C) 2007--2016 the X-ray Polarimetry Explorer (XPE) team.
 
 For the license terms see the file LICENSE, distributed along with this
 software.
@@ -26,9 +25,10 @@ with this program; if not, write to the Free Software Foundation Inc.,
 #include <vector>
 #include <iostream>
 #include <sstream>
+#include <iomanip>
 #include "pUsbController.h"
 
-#define _BITESWAP_(x1, x2) (((x2 & 0xff) << 8) | (x1 & 0xff))
+#define _BYTESWAP_(x1, x2) (((x2 & 0xff) << 8) | (x1 & 0xff))
 
 /*! \brief Class describing a data block.
 
@@ -44,80 +44,61 @@ with this program; if not, write to the Free Software Foundation Inc.,
   
 class pDataBlock
 {
-
+  
  public:
 
-  /*! \brief Constructor used in full-frame mode.*/
   pDataBlock(unsigned char *rawDataBlock);
-  /*! \brief Constructor used in windowed mode.*/
   pDataBlock(unsigned char *rawDataBlock, int bufferSize);
-  /*! \brief Do nothing destructor.*/
-  ~pDataBlock()
-    {;}
-  /*! \brief Return the whole raw data block.*/
-  inline unsigned char *getRawDataBlock()
-    {return m_rawDataBlock;}
-  /*! \brief Return the raw data block element at a given position.*/
-  inline unsigned char getRawDataBlock(int index)
-    {return m_rawDataBlock[index];}
-  /*! \brief Return the whole raw data block, casted to char*.*/
-  inline char *getCharDataBlock()
-    {return (char*)m_rawDataBlock;}
-  /*! \brief Return an element of the raw data block, casted to char*.*/
+  ~pDataBlock() {;}
+
+  // These are used for the UDP socket. I am not sure they belong here.
+  inline char *getCharDataBlock() {return (char*)m_rawBuffer;}
   inline char *getCharDataBlock(int index)
-    {return (char*)(m_rawDataBlock + index);}
-  /*! \brief Return the vector containing the headers position.*/
-  inline std::vector<int> getHeaderPositions()
-    {return m_headerPositions;}
-  /*! \brief Return the block size (0 if the block is empty).*/
-  int getSize();
-  /*! \brief Return the number of events into the data block (0 if the block is empty).*/
-  int getNumEvents();
-  /*! \brief Return a single 16 bit data word from the data block.*/
-  int getDataWord(int eventId, int offset);
-  /*! \brief Return the header for a given event.*/
-  int getHeader(int eventId)
-    {return getDataWord(eventId, 0);}
-  /*! \brief Return the window x min for a given event.*/
-  int getWindowMinX(int eventId)
-    {return getDataWord(eventId, 16);}
-  /*! \brief Return the window x max for a given event.*/
-  int getWindowMaxX(int eventId)
-    {return getDataWord(eventId, 32);}
-  /*! \brief Return the window y min for a given event.*/
-  int getWindowMinY(int eventId)
-    {return getDataWord(eventId, 48);}
-  /*! \brief Return the window y max for a given event.*/
-  int getWindowMaxY(int eventId)
-    {return getDataWord(eventId, 64);}
-  /*! \brief Return the event number for a given event.*/
-  int getEventNumber(int eventId)
-    {return getDataWord(eventId, 80);}
-  /*! \brief Return the timestamp (in seconds) of a given event in the data block.*/
-  double getTimestamp(int eventId);
-  /*! \brief Return the average event rate of the data block.*/
-  double getAverageEventRate();
+    {return (char*)(m_rawBuffer + index);}
+
+  inline unsigned char rawBuffer() const {return *m_rawBuffer;}
+  inline std::vector<int> eventBounds() const {return m_eventBounds;}
+  inline unsigned int errorSummary() const {return m_errorSummary;}
+
+  unsigned int size() const {return m_bufferSize;}
+  unsigned int numEvents() const {return m_eventBounds.size();}
+  unsigned int offset(unsigned int event) const {return m_eventBounds[event];}
+  unsigned int header(unsigned int event) const {return dataWord(event, 0);}
+  unsigned int xmin(unsigned int event) const {return dataWord(event, 2);}
+  unsigned int xmax(unsigned int event) const {return dataWord(event, 4);}
+  unsigned int ymin(unsigned int event) const {return dataWord(event, 6);}
+  unsigned int ymax(unsigned int event) const {return dataWord(event, 8);}
+  unsigned int bufferId(unsigned int event) const {return dataWord(event, 10);}
+  unsigned int numPixels(unsigned int event) const;
+  double timestamp(unsigned int event) const;
+  double averageEventRate() const;
+
+  std::ostream& fillStream(std::ostream& os) const;
+  friend std::ostream& operator<<(std::ostream& os, const pDataBlock& block)
+    {return block.fillStream(os);}
 
  private:
 
-  /*! \brief The raw data block as read from the FPGA.  
+  /*! \brief The raw data block as read from the FPGA.
+  */  
+  unsigned char *m_rawBuffer;
 
-    This is stored, no matter what the acquisition mode is. In the most
-    general case it should look like:
-    \verbatim
-    | HEADER-DATA | HEADER-DATA | ... | HEADER-DATA | HEADER-TRUNC_DATA
-    |    event    |    event    | ... |    event    |      garbage
-    \endverbatim*/  
-  unsigned char *m_rawDataBlock;
-  /*! \brief STL vector containing the raw data array index values at which
-    the headers of the various events are located.
+  /*
+   */
+  unsigned int m_bufferSize;
+  
+  /*! \brief Vector containing the raw data array index values at which
+    the offsets of the various events are located.
+  */
+  std::vector<int> m_eventBounds;
 
-    This is calculated in the constructor and stored along with the raw data
-    block. The first element points to the beginning of the first event
-    (and should be zero under normal conditions) while the last element points
-    to the end of the last event. If the data block contains n events, there
-    should be n+1 elements in the \ref m_headerPositions member.*/
-  std::vector<int> m_headerPositions;
+  /* 
+   */
+  unsigned int m_errorSummary;
+
+  /*
+   */
+  unsigned int dataWord(unsigned int event, unsigned int offset) const; 
 };
 
 #endif

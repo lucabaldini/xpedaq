@@ -87,10 +87,10 @@ pDataFIFO::~pDataFIFO()
 void pDataFIFO::fill(pDataBlock *dataBlock)
 {
   m_buffer.push_back(dataBlock);
-  m_numEvents += dataBlock->getNumEvents();
-  m_size += dataBlock->getSize();
+  m_numEvents += dataBlock->numEvents();
+  m_size += dataBlock->size();
   m_acquiredDataBlocks += 1;
-  m_acquiredEvents += dataBlock->getNumEvents();
+  m_acquiredEvents += dataBlock->numEvents();
   if(m_multicastEnabled)
     {  
       broadcastEventByEvent(dataBlock);
@@ -105,7 +105,7 @@ void pDataFIFO::flush()
        m_iterator++)
     {
       outputFile->write((*m_iterator)->getCharDataBlock(),
-			(*m_iterator)->getSize());
+			(*m_iterator)->size());
     }
   xpolio::kIOManager->closeOutputFile(outputFile);
   m_buffer.clear();
