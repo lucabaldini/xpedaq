@@ -29,7 +29,6 @@
 # Automatically generated files and folders.
 bin/*
 build/*
-data/*
 log/*
 moc/*
 doc/html/*
