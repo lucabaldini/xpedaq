@@ -29,6 +29,7 @@ with this program; if not, write to the Free Software Foundation Inc.,
 int main(int argn, char *argv[])
 {
   std::string filePath = "../../data/test_data_correct.mdat";
+  //std::string filePath = "../../data/test_data_error.mdat";
   *xpollog::kInfo << "Opening input file " << filePath << "..." << endline;
   std::ifstream inputFile(filePath.c_str(), std::ios::binary);
   std::streampos begin, end;

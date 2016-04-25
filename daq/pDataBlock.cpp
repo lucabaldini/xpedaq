@@ -22,66 +22,60 @@ with this program; if not, write to the Free Software Foundation Inc.,
 #include "pDataBlock.h"
 
 /*!
-  In this case the structure of the data block is known a-priori, since
-  the event length is fixed. There are exactly two events per data block
-  and, assuming that each event is <tt>NWORDS</tt> long, three indexes are
-  needed, located at <tt>0</tt>, <tt>NWORDS</tt> and <tt>2*NWORDS</tt>.
+  Full frame mode (exactly two events with predetermined length in the buffer).
 */
 
 pDataBlock::pDataBlock(unsigned char *buffer) :
+  m_rawBuffer(buffer),
   m_bufferSize(2*NWORDS),
   m_errorSummary(0)
 { 
-  m_eventBounds.push_back(0);
-  m_eventBounds.push_back(NWORDS);
-  m_eventBounds.push_back(NWORDS*2);
-  m_rawBuffer = buffer;
+  m_eventOffset.push_back(0);
+  m_eventOffset.push_back(NWORDS);
+  for (unsigned int evt = 0; evt < 2; evt ++) {
+    if (header(evt) != 0xffff) {
+      m_errorSummary += 1;
+    }
+  }
 }
 
 /*!
-  This case is more tricky since the event size is variable and not
-  known a-priori. Also the buffer size (overall dimension of the raw data
-  block) is adjustable and passed to the constructor as a parameter.
-  The number of events therein is variable and most likely the last one
-  is truncated; this must be taken into account when writing the data file.
-  
-  The entire data block is scanned and all the event headers found
-  are put into the \ref m_eventBounds variable.
-  
-  \todo Move the hard-coded 0xff into a header file (most likely the
-  xpoldetector namespace).
-  
-  \todo Move the printInfo() outside the constructor. It should be called
-  explicitely and only if needed.
+  Window-mode (events with variable length).
 */
 
 pDataBlock::pDataBlock(unsigned char *buffer, int bufferSize) :
+  m_rawBuffer(buffer),
   m_bufferSize(bufferSize),
   m_errorSummary(0)
-{ 
-  for (int i = 0; i < bufferSize - 1; i += 2) {
-    if (buffer[i] == 0xff && buffer[i+1] == 0xff) {
-      m_eventBounds.push_back(i);
+{
+  unsigned int pos = 0;
+  unsigned int evt = 0;
+  while (pos < m_bufferSize) {
+    m_eventOffset.push_back(pos);
+    if (header(evt) != 0xffff) {
+      m_errorSummary += 1;
     }
+    pos += 20 + 2*numPixels(evt);
+    evt += 1;
   }
-  m_rawBuffer = buffer;
 }
 
 /*!
-  The data word is properly byte-swapped.
+  
+*/
 
-  \param event The event number in the data block.
-  \param offset The offset (in bits) from the event header.
+unsigned int pDataBlock::dataWord(unsigned int offset) const
+{
+  return _BYTESWAP_(m_rawBuffer[offset], m_rawBuffer[offset + 1]); 
+}
+
+/*!
+  
 */
 
 unsigned int pDataBlock::dataWord(unsigned int event, unsigned int offset) const
 {
-
-  if (event >= numEvents()) {
-    event = numEvents() - 1;
-  }
-  return _BYTESWAP_(m_rawBuffer[m_eventBounds[event] + offset],
-		    m_rawBuffer[m_eventBounds[event] + offset + 1]); 
+  return dataWord(m_eventOffset[event] + offset);
 }
 
 /*!
@@ -92,6 +86,9 @@ unsigned int pDataBlock::numPixels(unsigned int event) const
   return (xmax(event) - xmin(event) + 1)*(ymax(event) - ymin(event) + 1);
 }
 
+/*!
+
+ */
 double pDataBlock::timestamp(unsigned int event) const
 {
   return 0.8e-6*(dataWord(event, 12) + 65534*dataWord(event, 14));
@@ -113,7 +110,7 @@ double pDataBlock::averageEventRate() const
 }
 
 /*!
-
+  Terminal formatting.
  */
 std::ostream& pDataBlock::fillStream(std::ostream& os) const
 {

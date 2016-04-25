@@ -57,12 +57,11 @@ class pDataBlock
     {return (char*)(m_rawBuffer + index);}
 
   inline unsigned char rawBuffer() const {return *m_rawBuffer;}
-  inline std::vector<int> eventBounds() const {return m_eventBounds;}
+  inline std::vector<unsigned int> eventOffset() const {return m_eventOffset;}
   inline unsigned int errorSummary() const {return m_errorSummary;}
-
-  unsigned int size() const {return m_bufferSize;}
-  unsigned int numEvents() const {return m_eventBounds.size();}
-  unsigned int offset(unsigned int event) const {return m_eventBounds[event];}
+  inline unsigned int size() const {return m_bufferSize;}
+  unsigned int numEvents() const {return m_eventOffset.size();}
+  unsigned int offset(unsigned int event) const {return m_eventOffset[event];}
   unsigned int header(unsigned int event) const {return dataWord(event, 0);}
   unsigned int xmin(unsigned int event) const {return dataWord(event, 2);}
   unsigned int xmax(unsigned int event) const {return dataWord(event, 4);}
@@ -73,28 +72,32 @@ class pDataBlock
   double timestamp(unsigned int event) const;
   double averageEventRate() const;
 
+  // Terminal formatting.
   std::ostream& fillStream(std::ostream& os) const;
   friend std::ostream& operator<<(std::ostream& os, const pDataBlock& block)
     {return block.fillStream(os);}
 
  private:
 
-  /*! \brief The raw data block as read from the FPGA.
-  */  
+  /*!\brief The raw data block as read from the FPGA.
+   */ 
   unsigned char *m_rawBuffer;
 
-  /*
+  /* \brief Size of the raw buffer in bytes.
    */
   unsigned int m_bufferSize;
   
-  /*! \brief Vector containing the raw data array index values at which
-    the offsets of the various events are located.
-  */
-  std::vector<int> m_eventBounds;
+  /*! \brief Vector of the event offsets, relative to the start of the buffer.
+   */
+  std::vector<unsigned int> m_eventOffset;
 
-  /* 
+  /*! \brief Data block error summary (0 if the buffer is good).
    */
   unsigned int m_errorSummary;
+
+  /*
+   */
+  unsigned int dataWord(unsigned int offset) const;
 
   /*
    */

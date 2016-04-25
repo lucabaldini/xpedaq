@@ -91,10 +91,9 @@ void pDataFIFO::fill(pDataBlock *dataBlock)
   m_size += dataBlock->size();
   m_acquiredDataBlocks += 1;
   m_acquiredEvents += dataBlock->numEvents();
-  if(m_multicastEnabled)
-    {  
-      broadcastEventByEvent(dataBlock);
-    }
+  if (m_multicastEnabled) {  
+    broadcastEventByEvent(dataBlock);
+  }
 }
 
 void pDataFIFO::flush()

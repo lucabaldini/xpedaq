@@ -69,23 +69,18 @@ void pDataCollector::run()
   m_usbController->startSequencer();
   m_running = true;
   int errorCode = 0;
-  while(m_running)
-  {
+  while (m_running) {
     errorCode = m_usbController->readData(dataBuffer, &dataBufferDimension);
-    if (errorCode)
-      {
-        m_running = false;
-	emit readoutErrorDetected(errorCode);
+    if (errorCode) {
+      m_running = false;
+      emit readoutErrorDetected(errorCode);
+    } else {
+      if (m_fullFrame) {
+	m_dataFIFO->fill(new pDataBlock(dataBuffer));
       } else {
-      if(m_fullFrame)
-	{
-	  m_dataFIFO->fill(new pDataBlock(dataBuffer));
-	}
-      else
-	{
-	  m_dataFIFO->fill(new pDataBlock(dataBuffer,
-		      m_detectorConfiguration->getMaxBufferSize()));
-	}
+	m_dataFIFO->fill(new pDataBlock(dataBuffer,
+	    m_detectorConfiguration->getMaxBufferSize()));
+      }
       m_dataFIFO->flush();
     }
   }

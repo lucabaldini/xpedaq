@@ -47,11 +47,11 @@ void pUdpSender::broadcastDatagram(pDataBlock *block)
 
 void pUdpSender::broadcastEventByEvent(pDataBlock *block)
 {  
-  std::vector<int> evtBounds = block->eventBounds();
-  std::vector<int>::iterator bound;
-  for(bound = evtBounds.begin(); bound != evtBounds.end() - 1; bound++)
+  std::vector<unsigned int> evtOffset = block->eventOffset();
+  std::vector<unsigned int>::iterator offset;
+  for(offset = evtOffset.begin(); offset != evtOffset.end() - 1; offset++)
     {
-      write(block->getCharDataBlock(*bound), *(bound + 1) - *bound);
+      write(block->getCharDataBlock(*offset), *(offset + 1) - *offset);
     }
 }
 
