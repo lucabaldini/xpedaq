@@ -23,7 +23,10 @@ with this program; if not, write to the Free Software Foundation Inc.,
 #define PDATACOLLECTOR_H
 
 #include <iostream>
+#include <ctime>
+
 #include <QThread>
+
 #include "xpollog.h"
 #include "pDataFIFO.h"
 #include "pUserPreferences.h"
@@ -86,6 +89,7 @@ class pDataCollector : public QThread
   pUserPreferences *m_userPreferences;
   pDetectorConfiguration *m_detectorConfiguration;
   bool m_fullFrame;
+  unsigned int m_startSeconds;
 };
 
 #endif //PDATACOLLECTOR_H

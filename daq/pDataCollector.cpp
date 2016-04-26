@@ -62,6 +62,10 @@ void pDataCollector::stop()
 
 void pDataCollector::run()
 {
+  time_t timer;
+  time(&timer);
+  m_startSeconds = (unsigned int)timer;
+  *xpollog::kInfo << "Start time = " << m_startSeconds << " s." << endline;
   m_dataFIFO = new pDataFIFO(m_outputFilePath, m_userPreferences);
   unsigned long dataBufferDimension = SRAM_DIM*2;
   unsigned char dataBuffer[SRAM_DIM*2];
