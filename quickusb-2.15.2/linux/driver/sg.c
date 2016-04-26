@@ -127,8 +127,7 @@ void qusb_sg_complete(struct urb *urb)
         complete(&io->complete);
 
         // Complete the asynchronous request
-        //aio_complete(req->iocb, io->status, req->io.bytes);
-	req->iocb->ki_complete(req->iocb, io->status, req->io.bytes);
+        aio_complete(req->iocb, io->status, req->io.bytes);
         QUSB_PRINTK(("Asynchronous request complete (%i, %i, %p)\n", (int)io->status, (int)req->io.bytes, req->iocb));
         
         // Handle internal request serialization
