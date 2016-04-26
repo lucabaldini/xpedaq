@@ -42,9 +42,9 @@ quickusb-*/linux/driver/i686/
 quickusb-*/linux/driver/x86_64/
 quickusb-*/linux/driver/Module.symvers
 quickusb-*/linux/driver/modules.order
+
 xpedaq/config/*.cfg
+xpedaq/moc
 
-xpedaq/moc/* 
-
-xpesrv/moc/* 
+xpesrv/moc
 xpesrv/preferences.cfg
