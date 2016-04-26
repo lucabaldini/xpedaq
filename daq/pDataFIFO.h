@@ -1,6 +1,5 @@
 /***********************************************************************
-Copyright (C) 2007, 2008 by Luca Baldini (luca.baldini@pi.infn.it),
-Johan Bregeon, Massimo Minuti and Gloria Spandre.
+Copyright (C) 2007--2016 the X-ray Polarimetry Explorer (XPE) team.
 
 For the license terms see the file LICENSE, distributed along with this
 software.
@@ -52,54 +51,51 @@ class pDataFIFO : pUdpSender
 {
 
  public:
-
-  /*! \brief Basic constructor.*/
   pDataFIFO(std::string outputFilePath, pUserPreferences *preferences);
-  /*! \brief Destructor.*/
-  ~pDataFIFO();
-  /*! \brief Put a data block into the FIFO.*/
+  ~pDataFIFO() {;}
   void fill(pDataBlock *dataBlock);
-  /*! \brief Return the number of blocks <i>currently</i> into the FIFO.*/
-  inline int getNumDataBlocks()
-    {return m_buffer.size();}
-  /*! \brief Return the number of events <i>currently</i> into the FIFO.*/
-  inline int getNumEvents()
-    {return m_numEvents;}
-  /*! \brief Return the <i>current</i> total size of the FIFO.*/
-  inline int getSize()
-    {return m_size;}
-  /*! \brief Return true if the FIFO is empty.*/
-  inline bool isEmpty()
-    {return m_buffer.empty();}
-  /*! \brief Return the number of blocks acquired since the creation time.*/
-  inline int getNumAcquiredDataBlocks()
-    {return m_acquiredDataBlocks;}
-  /*! \brief Return the number of events acquired since the creation tim.*/
-  inline int getNumAcquiredEvents()
-    {return m_acquiredEvents;}
-  /*! \brief Return the average FPGA event rate in the last data block in the FIFO.*/
+  inline int getNumDataBlocks() const {return m_buffer.size();}
+  inline int getNumEvents() const {return m_numEvents;}
+  inline int getSize() const {return m_size;}
+  inline bool isEmpty() const {return m_buffer.empty();}
+  inline int getNumAcquiredDataBlocks() const {return m_acquiredDataBlocks;}
+  inline int getNumAcquiredEvents() const {return m_acquiredEvents;}
   inline double getLastDataBlockAverageEventRate()
     {return m_buffer.back()->averageEventRate();}
-  /*! \brief Empty the FIFO and write to file the content.*/
   void flush();
 
  private:
 
-  /*! \brief Basic STL container for the data block.*/
+  /*! \brief Basic STL container for the data block.
+   */
   std::vector<pDataBlock *> m_buffer;
-  /*! \brief Iterator over the STL vector. Used while flushing for looping.*/
+  
+  /*! \brief Iterator over the STL vector. Used while flushing for looping.
+   */
   std::vector<pDataBlock *>::iterator m_iterator;
-  /*! \brief The total number of events <i>currently</i> into the FIFO.*/
+  
+  /*! \brief The total number of events <i>currently</i> into the FIFO.
+   */
   int m_numEvents;
-  /*! \brief The total <i>current</i> size of the FIFO.*/
+  
+  /*! \brief The total <i>current</i> size of the FIFO.
+   */
   int m_size;
-  /*! \brief The number of blocks acquired since the fifo has been created.*/
+  
+  /*! \brief The number of blocks acquired since the fifo has been created.
+   */
   int m_acquiredDataBlocks;
-  /*! \brief The number of events acquired since the fifo has been created.*/
+  
+  /*! \brief The number of events acquired since the fifo has been created.
+   */
   int m_acquiredEvents;
-  /*! \brief The path to the output data file.*/
+  
+  /*! \brief The path to the output data file.
+   */
   std::string m_outputFilePath;
-  /*! \brief Flag telling whether the multicast is enabled or not.*/
+  
+  /*! \brief Flag telling whether the multicast is enabled or not.
+   */
   bool m_multicastEnabled;
 };
 

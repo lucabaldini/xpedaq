@@ -72,7 +72,6 @@ unsigned int pDataBlock::dataWord(unsigned int offset) const
 /*!
   
 */
-
 unsigned int pDataBlock::dataWord(unsigned int event, unsigned int offset) const
 {
   return dataWord(m_offsetVec[event] + offset);

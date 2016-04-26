@@ -1,6 +1,5 @@
 /***********************************************************************
-Copyright (C) 2007, 2008 by Luca Baldini (luca.baldini@pi.infn.it),
-Johan Bregeon, Massimo Minuti and Gloria Spandre.
+Copyright (C) 2007--2016 the X-ray Polarimetry Explorer (XPE) team.
 
 For the license terms see the file LICENSE, distributed along with this
 software.
@@ -54,25 +53,17 @@ with this program; if not, write to the Free Software Foundation Inc.,
 
 pDataFIFO::pDataFIFO(std::string outputFilePath,
 		     pUserPreferences *preferences):
+  m_numEvents(0),
+  m_size(0),
+  m_acquiredDataBlocks(0),
+  m_acquiredEvents(0),
   m_outputFilePath(outputFilePath)
 {
   m_multicastEnabled = preferences->multicastEnabled();
-  if (m_multicastEnabled)
-    {
-      setHostAddress(preferences->getMulticastAddress());
-      setPort(preferences->getMulticastPort());
-    }
-  m_numEvents = 0;
-  m_size = 0;
-  m_acquiredDataBlocks = 0;
-  m_acquiredEvents = 0;
-}
-
-/*! Do nothing destructor.*/
-
-pDataFIFO::~pDataFIFO()
-{
-  
+  if (m_multicastEnabled) {
+    setHostAddress(preferences->getMulticastAddress());
+    setPort(preferences->getMulticastPort());
+  }
 }
 
 /*! The data block is pushed back into the FIFO and the event counter is
@@ -86,13 +77,18 @@ pDataFIFO::~pDataFIFO()
 
 void pDataFIFO::fill(pDataBlock *dataBlock)
 {
-  m_buffer.push_back(dataBlock);
-  m_numEvents += dataBlock->numEvents();
-  m_size += dataBlock->size();
-  m_acquiredDataBlocks += 1;
-  m_acquiredEvents += dataBlock->numEvents();
-  if (m_multicastEnabled) {  
-    broadcastEventByEvent(dataBlock);
+  if (dataBlock->errorSummary()) {
+    *xpollog::kError << "Data block contains error(s)." << endline;
+    std::cerr << *dataBlock << std::endl;
+  } else {
+    m_buffer.push_back(dataBlock);
+    m_numEvents += dataBlock->numEvents();
+    m_size += dataBlock->size();
+    m_acquiredDataBlocks += 1;
+    m_acquiredEvents += dataBlock->numEvents();
+    if (m_multicastEnabled) {  
+      broadcastEventByEvent(dataBlock);
+    }
   }
 }
 
@@ -101,11 +97,10 @@ void pDataFIFO::flush()
   std::ofstream *outputFile = xpolio::kIOManager->
     openOutputFile(m_outputFilePath, true, true);
   for (m_iterator = m_buffer.begin(); m_iterator != m_buffer.end();
-       m_iterator++)
-    {
-      outputFile->write((*m_iterator)->getCharDataBlock(),
-			(*m_iterator)->size());
-    }
+       m_iterator++) {
+    outputFile->write((*m_iterator)->getCharDataBlock(),
+		      (*m_iterator)->size());
+  }
   xpolio::kIOManager->closeOutputFile(outputFile);
   m_buffer.clear();
   m_numEvents = 0;
