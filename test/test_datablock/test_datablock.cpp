@@ -26,10 +26,11 @@ with this program; if not, write to the Free Software Foundation Inc.,
 #include "pDataBlock.h"
 
 
-int main(int argn, char *argv[])
+int main()//int argn, char *argv[])
 {
   std::string filePath = "../../data/test_data_correct.mdat";
   //std::string filePath = "../../data/test_data_error.mdat";
+  //std::string filePath = "../../../xpedata/033_000012/data_033_000012.mdat";
   *xpollog::kInfo << "Opening input file " << filePath << "..." << endline;
   std::ifstream inputFile(filePath.c_str(), std::ios::binary);
   std::streampos begin, end;
@@ -43,6 +44,7 @@ int main(int argn, char *argv[])
   unsigned char buffer[fileSize];
   inputFile.read((char*)buffer, fileSize);
   pDataBlock dataBlock(buffer, (unsigned int)sizeof(buffer));
+  //dataBlock.setStartSeconds(3333);
   std::cout << dataBlock << std::endl;
   inputFile.close();
   return 0;

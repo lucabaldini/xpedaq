@@ -63,6 +63,7 @@ class pDataFIFO : pUdpSender
   inline double getLastDataBlockAverageEventRate()
     {return m_buffer.back()->averageEventRate();}
   void flush();
+  void setStartSeconds(unsigned int startSeconds);
 
  private:
 

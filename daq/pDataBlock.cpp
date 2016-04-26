@@ -54,16 +54,33 @@ pDataBlock::pDataBlock(unsigned char *buffer, unsigned int bufferSize) :
     if (header(evt) != 0xffff) {
       m_errorSummary += 1;
     }
-    pos += 20 + 2*numPixels(evt);
+    pos += ADC_START + 2*numPixels(evt);
     evt += 1;
   }
   m_size = pos;
 }
 
 /*!
+  Overwrite the 4 unused bytes in the event header to add the number of
+  seconds since January 1, 1970 at the start time (poor man's attemp at an
+  absolute timestamp).
+*/
+void pDataBlock::setStartSeconds(unsigned int startSeconds)
+{
+  if (errorSummary() == 0) {
+    for (unsigned int evt = 0; evt < numEvents(); evt ++) {
+      unsigned int offset = m_offsetVec[evt] + SECONDS_1;
+      m_rawBuffer[offset + 0] = (startSeconds & 0x00ff0000) >> 16;
+      m_rawBuffer[offset + 1] = (startSeconds & 0xff000000) >> 24;
+      m_rawBuffer[offset + 2] = (startSeconds & 0x000000ff) >> 0;
+      m_rawBuffer[offset + 3] = (startSeconds & 0x0000ff00) >> 8;
+    }
+  }
+}
+
+/*!
   
 */
-
 unsigned int pDataBlock::dataWord(unsigned int offset) const
 {
   return _BYTESWAP_(m_rawBuffer[offset], m_rawBuffer[offset + 1]); 
@@ -80,6 +97,54 @@ unsigned int pDataBlock::dataWord(unsigned int event, unsigned int offset) const
 /*!
 
  */
+unsigned int pDataBlock::header(unsigned int event) const
+{
+  return dataWord(event, HEADER);
+}
+
+/*!
+
+ */
+unsigned int pDataBlock::xmin(unsigned int event) const
+{
+  return dataWord(event, WINDOW_X_MIN);
+}
+
+/*!
+
+ */
+unsigned int pDataBlock::xmax(unsigned int event) const
+{
+  return dataWord(event, WINDOW_X_MAX);
+}
+
+/*!
+
+ */
+unsigned int pDataBlock::ymin(unsigned int event) const
+{
+  return dataWord(event, WINDOW_Y_MIN);
+}
+
+/*!
+
+ */
+unsigned int pDataBlock::ymax(unsigned int event) const
+{
+  return dataWord(event, WINDOW_Y_MAX);
+}
+
+/*!
+
+ */
+unsigned int pDataBlock::bufferId(unsigned int event) const
+{
+  return dataWord(event, BUFFER_ID);
+}
+
+/*!
+
+ */
 unsigned int pDataBlock::numPixels(unsigned int event) const
 {
   return (xmax(event) - xmin(event) + 1)*(ymax(event) - ymin(event) + 1);
@@ -90,7 +155,9 @@ unsigned int pDataBlock::numPixels(unsigned int event) const
  */
 double pDataBlock::timestamp(unsigned int event) const
 {
-  return 0.8e-6*(dataWord(event, 12) + 65534*dataWord(event, 14));
+  return dataWord(event, SECONDS_2) + 65536*dataWord(event, SECONDS_1) +
+    0.8e-6*(dataWord(event, MICROSECONDS_1) + 
+	    65534*dataWord(event, MICROSECONDS_2));
 }
 
 /*!

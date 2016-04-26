@@ -92,6 +92,14 @@ void pDataFIFO::fill(pDataBlock *dataBlock)
   }
 }
 
+void pDataFIFO::setStartSeconds(unsigned int startSeconds)
+{
+  for (m_iterator = m_buffer.begin(); m_iterator != m_buffer.end();
+       m_iterator++) {
+    (*m_iterator)->setStartSeconds(startSeconds);
+  }
+}
+
 void pDataFIFO::flush()
 {
   std::ofstream *outputFile = xpolio::kIOManager->

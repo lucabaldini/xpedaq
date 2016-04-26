@@ -62,15 +62,17 @@ class pDataBlock
   inline unsigned int size() const {return m_size;}
   unsigned int numEvents() const {return m_offsetVec.size();}
   unsigned int offset(unsigned int event) const {return m_offsetVec[event];}
-  unsigned int header(unsigned int event) const {return dataWord(event, 0);}
-  unsigned int xmin(unsigned int event) const {return dataWord(event, 2);}
-  unsigned int xmax(unsigned int event) const {return dataWord(event, 4);}
-  unsigned int ymin(unsigned int event) const {return dataWord(event, 6);}
-  unsigned int ymax(unsigned int event) const {return dataWord(event, 8);}
-  unsigned int bufferId(unsigned int event) const {return dataWord(event, 10);}
+  unsigned int header(unsigned int event) const;
+  unsigned int xmin(unsigned int event) const;
+  unsigned int xmax(unsigned int event) const;
+  unsigned int ymin(unsigned int event) const;
+  unsigned int ymax(unsigned int event) const;
+  unsigned int bufferId(unsigned int event) const;
   unsigned int numPixels(unsigned int event) const;
   double timestamp(unsigned int event) const;
   double averageEventRate() const;
+
+  void setStartSeconds(unsigned int startSeconds);
 
   // Terminal formatting.
   std::ostream& fillStream(std::ostream& os) const;
@@ -78,6 +80,21 @@ class pDataBlock
     {return block.fillStream(os);}
 
  private:
+
+  enum WordOffset
+  {
+    HEADER = 0,
+    WINDOW_X_MIN = 2,
+    WINDOW_X_MAX = 4,
+    WINDOW_Y_MIN = 6,
+    WINDOW_Y_MAX = 8,
+    BUFFER_ID = 10,
+    MICROSECONDS_1 = 12,
+    MICROSECONDS_2 = 14,
+    SECONDS_1 = 16,
+    SECONDS_2 = 18,
+    ADC_START = 20
+  };
 
   /*!\brief The raw data block as read from the FPGA.
    */ 

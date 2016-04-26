@@ -85,6 +85,7 @@ void pDataCollector::run()
 	m_dataFIFO->fill(new pDataBlock(dataBuffer,
 	    m_detectorConfiguration->getMaxBufferSize()));
       }
+      m_dataFIFO->setStartSeconds(m_startSeconds);
       m_dataFIFO->flush();
     }
   }
