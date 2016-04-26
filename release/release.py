@@ -29,7 +29,7 @@ logging.basicConfig(level=logging.DEBUG)
 
 XPEDAQ_ROOT = os.environ['XPOL_DAQ_ROOT']
 
-SRC_VERSION_FILE_PATH = os.path.join(XPEDAQ_ROOT, '__version__.h')
+VERSION_FILE_PATH = os.path.join(XPEDAQ_ROOT, '__version__.h')
 BUILD_DATE = time.strftime('%a, %d %b %Y %H:%M:%S %z')
 
 TAG_MODES = ['major', 'minor', 'patch']
@@ -45,7 +45,7 @@ def cmd(command):
 def readTag():
     """ Read the current tag from the c++ version header.
     """
-    return open(SRC_VERSION_FILE_PATH).readline().split()[-1].strip('"')
+    return open(VERSION_FILE_PATH).readline().split()[-1].strip('"')
 
 def updateVersionFile(mode):
     """ Update the version files with the new tag and build date.
@@ -65,9 +65,8 @@ def updateVersionFile(mode):
     else:
         abort('Unknown release mode %s.' % mode)
     nextTag = '%s.%s.%s' % (version, release, patch)
-    logging.info('Writing new tag (%s) to %s...' %\
-                    (nextTag, SRC_VERSION_FILE_PATH))
-    outputFile = open(SRC_VERSION_FILE_PATH, 'w')
+    logging.info('Writing new tag (%s) to %s...' % (nextTag, VERSION_FILE_PATH))
+    outputFile = open(VERSION_FILE_PATH, 'w')
     outputFile.writelines('#define __XPEDAQ_VERSION__ "%s"\n' % nextTag)
     outputFile.writelines('#define __XPEDAQ_BUILD_DATE__ "%s"\n' % BUILD_DATE)
     outputFile.close()
