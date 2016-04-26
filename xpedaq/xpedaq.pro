@@ -1,3 +1,4 @@
+INCLUDEPATH += ..
 INCLUDEPATH += ../gui
 DEPENDPATH  += ../gui
 INCLUDEPATH += ../daq
@@ -10,7 +11,7 @@ include(../quickusb-2.15.2/quickusb.pro)
 HEADERS += xpolgui.h
 HEADERS += xpoldetector.h
 HEADERS += xpolfpga.h
-HEADERS += xpolutils.h
+HEADERS += xpedaqutils.h
 HEADERS += xpollog.h
 HEADERS += xpolio.h
 HEADERS += xpolenv.h
@@ -57,7 +58,7 @@ HEADERS += pUdpSender.h
 SOURCES += xpolgui.cpp
 SOURCES += xpoldetector.cpp
 SOURCES += xpolfpga.cpp
-SOURCES += xpolutils.cpp
+SOURCES += xpedaqutils.cpp
 SOURCES += xpollog.cpp
 SOURCES += xpolio.cpp
 SOURCES += xpolenv.cpp

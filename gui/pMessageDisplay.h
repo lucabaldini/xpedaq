@@ -28,7 +28,7 @@ with this program; if not, write to the Free Software Foundation Inc.,
 #include <QTextEdit>
 
 #include "pQtGroupBoxWidget.h"
-#include "xpolutils.h"
+
 
 namespace{
   QFont MESSAGE_DISPLAY_FONT("Courier", 8);

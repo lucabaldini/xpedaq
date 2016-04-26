@@ -26,11 +26,14 @@ with this program; if not, write to the Free Software Foundation Inc.,
 #include <stdlib.h>
 
 #include "xServerGui.h"
+#include "xpedaqutils.h"
 
 int main(int argc, char *argv[])
 {
-    QApplication app(argc, argv);
-    xServerGui mainWindow;
-    mainWindow.show();
-    return mainWindow.exec();
+  xpedaqutils::startmsg();
+  
+  QApplication app(argc, argv);
+  xServerGui mainWindow;
+  mainWindow.show();
+  return mainWindow.exec();
 }

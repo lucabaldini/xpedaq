@@ -3,9 +3,12 @@
 #include <QObject>
 
 #include "pMainWindow.h"
+#include "xpedaqutils.h"
 
 int main(int argn, char *argv[])
 {
+  xpedaqutils::startmsg();
+  
   bool autostart = false;
   bool batchmode = false;
   
