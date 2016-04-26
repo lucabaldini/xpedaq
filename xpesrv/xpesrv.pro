@@ -1,4 +1,5 @@
 INCLUDEPATH += ..
+DEPENDPATH  += ..
 INCLUDEPATH += ../utils
 DEPENDPATH  += ../utils
 INCLUDEPATH += ../daq
@@ -13,6 +14,7 @@ windows {
   CONFIG += qt thread console
 }
 
+HEADERS += __version__.h
 HEADERS += xServer.h
 HEADERS += xServerGui.h
 HEADERS += pUdpSender.h

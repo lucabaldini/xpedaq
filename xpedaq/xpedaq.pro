@@ -1,4 +1,5 @@
 INCLUDEPATH += ..
+DEPENDPATH  += ..
 INCLUDEPATH += ../gui
 DEPENDPATH  += ../gui
 INCLUDEPATH += ../daq
@@ -8,6 +9,7 @@ DEPENDPATH  += ../utils
 
 include(../quickusb-2.15.2/quickusb.pro)
 
+HEADERS += __version__.h
 HEADERS += xpolgui.h
 HEADERS += xpoldetector.h
 HEADERS += xpolfpga.h
