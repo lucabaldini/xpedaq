@@ -48,7 +48,7 @@ class pDataBlock
  public:
 
   pDataBlock(unsigned char *rawDataBlock);
-  pDataBlock(unsigned char *rawDataBlock, int bufferSize);
+  pDataBlock(unsigned char *rawDataBlock, unsigned int bufferSize);
   ~pDataBlock() {;}
 
   // These are used for the UDP socket. I am not sure they belong here.
@@ -57,11 +57,11 @@ class pDataBlock
     {return (char*)(m_rawBuffer + index);}
 
   inline unsigned char rawBuffer() const {return *m_rawBuffer;}
-  inline std::vector<unsigned int> eventOffset() const {return m_eventOffset;}
+  inline std::vector<unsigned int> offsetVec() const {return m_offsetVec;}
   inline unsigned int errorSummary() const {return m_errorSummary;}
-  inline unsigned int size() const {return m_bufferSize;}
-  unsigned int numEvents() const {return m_eventOffset.size();}
-  unsigned int offset(unsigned int event) const {return m_eventOffset[event];}
+  inline unsigned int size() const {return m_size;}
+  unsigned int numEvents() const {return m_offsetVec.size();}
+  unsigned int offset(unsigned int event) const {return m_offsetVec[event];}
   unsigned int header(unsigned int event) const {return dataWord(event, 0);}
   unsigned int xmin(unsigned int event) const {return dataWord(event, 2);}
   unsigned int xmax(unsigned int event) const {return dataWord(event, 4);}
@@ -83,13 +83,13 @@ class pDataBlock
    */ 
   unsigned char *m_rawBuffer;
 
-  /* \brief Size of the raw buffer in bytes.
+  /* \brief Size of the useful part of the buffer in bytes.
    */
-  unsigned int m_bufferSize;
+  unsigned int m_size;
   
   /*! \brief Vector of the event offsets, relative to the start of the buffer.
    */
-  std::vector<unsigned int> m_eventOffset;
+  std::vector<unsigned int> m_offsetVec;
 
   /*! \brief Data block error summary (0 if the buffer is good).
    */

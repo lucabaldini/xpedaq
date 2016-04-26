@@ -27,11 +27,11 @@ with this program; if not, write to the Free Software Foundation Inc.,
 
 pDataBlock::pDataBlock(unsigned char *buffer) :
   m_rawBuffer(buffer),
-  m_bufferSize(2*NWORDS),
+  m_size(2*NWORDS),
   m_errorSummary(0)
 { 
-  m_eventOffset.push_back(0);
-  m_eventOffset.push_back(NWORDS);
+  m_offsetVec.push_back(0);
+  m_offsetVec.push_back(NWORDS);
   for (unsigned int evt = 0; evt < 2; evt ++) {
     if (header(evt) != 0xffff) {
       m_errorSummary += 1;
@@ -43,21 +43,21 @@ pDataBlock::pDataBlock(unsigned char *buffer) :
   Window-mode (events with variable length).
 */
 
-pDataBlock::pDataBlock(unsigned char *buffer, int bufferSize) :
+pDataBlock::pDataBlock(unsigned char *buffer, unsigned int bufferSize) :
   m_rawBuffer(buffer),
-  m_bufferSize(bufferSize),
   m_errorSummary(0)
 {
   unsigned int pos = 0;
   unsigned int evt = 0;
-  while (pos < m_bufferSize) {
-    m_eventOffset.push_back(pos);
+  while (pos < bufferSize) {
+    m_offsetVec.push_back(pos);
     if (header(evt) != 0xffff) {
       m_errorSummary += 1;
     }
     pos += 20 + 2*numPixels(evt);
     evt += 1;
   }
+  m_size = pos;
 }
 
 /*!
@@ -75,7 +75,7 @@ unsigned int pDataBlock::dataWord(unsigned int offset) const
 
 unsigned int pDataBlock::dataWord(unsigned int event, unsigned int offset) const
 {
-  return dataWord(m_eventOffset[event] + offset);
+  return dataWord(m_offsetVec[event] + offset);
 }
 
 /*!
@@ -102,7 +102,7 @@ double pDataBlock::timestamp(unsigned int event) const
 
 double pDataBlock::averageEventRate() const
 {
-  double elapsedTime = timestamp(numEvents()-1) - timestamp(0);
+  double elapsedTime = timestamp(numEvents() - 1) - timestamp(0);
   if (elapsedTime == 0.0) {
     return 0.0;
   }

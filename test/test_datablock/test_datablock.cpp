@@ -42,7 +42,7 @@ int main(int argn, char *argv[])
 
   unsigned char buffer[fileSize];
   inputFile.read((char*)buffer, fileSize);
-  pDataBlock dataBlock(buffer, sizeof(buffer));
+  pDataBlock dataBlock(buffer, (unsigned int)sizeof(buffer));
   std::cout << dataBlock << std::endl;
   inputFile.close();
   return 0;
