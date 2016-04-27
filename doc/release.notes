@@ -1,6 +1,7 @@
 
 * Log files written in the output folder, along with all the other data
   products (closing issue #1).
+* $XPOL_DAQ_ROOT changed $XPEDAQ_ROOT (issue #49).
 
 
 -------------------------------------------------------------------------------
