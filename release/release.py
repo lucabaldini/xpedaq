@@ -96,7 +96,6 @@ def tag(mode):
     msg = 'Prepare for tag %s.' % tag
     cmd('git commit -a -m "%s"' % msg)
     cmd('git push')
-    cmd('hg tag %s' % tag, verbose = True, dryRun = dryRun)
     msg = 'tagging version %s' % tag
     cmd('git tag -a %s -m "%s"' % (tag, msg))
     cmd('git push --tags')
