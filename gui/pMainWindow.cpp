@@ -56,8 +56,8 @@ pMainWindow::pMainWindow()
   setupActions();
   setupMenuBar();
   m_runController = new pRunController(this);
-  setupConnections();
   m_runController->connectToQuickUsb();
+  setupConnections();
   m_userPreferencesTab->displayUserPreferences(preferences);
   m_lastVisualizationMode = preferences.getVisualizationMode();
   selectConfiguration(m_detectorCfgFilePath);
