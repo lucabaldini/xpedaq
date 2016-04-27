@@ -1,4 +1,7 @@
 
+-------------------------------------------------------------------------------
+xpedaq (0.2.0) - Wed, 27 Apr 2016 09:39:31 +0200
+-------------------------------------------------------------------------------
 * Log files written in the output folder, along with all the other data
   products (closing issue #1).
 * $XPOL_DAQ_ROOT changed $XPEDAQ_ROOT (issue #49).
