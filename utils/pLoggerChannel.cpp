@@ -31,7 +31,7 @@ pLoggerChannel::pLoggerChannel(std::string name)
     m_logFileEnabled(false)
 {
   m_baseString = new QString("");
-  m_headerString = new QString(("[" + m_name + "][%1] : ").c_str());
+  m_headerString = new QString(("[" + m_name + "] : ").c_str());
   m_messageBuffer = new QTextStream(m_baseString);
 }
 
@@ -66,7 +66,7 @@ std::string pLoggerChannel::getTimestamp()
 void pLoggerChannel::flush()
 {
   if (m_lineTerminated) {
-    write(m_headerString->arg(getTimestamp().c_str()));
+    write(*m_headerString);
   }
   write(*m_baseString);
   reset();
