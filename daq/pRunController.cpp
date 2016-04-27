@@ -52,7 +52,7 @@ pRunController::pRunController(pMainWindow *parentWindow,
   m_closeParentOnStop = false;
   m_outputFilePath = xpolenv::kNullPath;
   // Create the runId.cfg file, if needed.
-  QString cfgFilePath = QString(std::getenv("XPOL_DAQ_ROOT")) +
+  QString cfgFilePath = QString(std::getenv("XPEDAQ_ROOT")) +
     QDir::separator() + "xpedaq" + QDir::separator() + "config" +
     QDir::separator() + "runId.cfg";
   if (!QFile(cfgFilePath).exists()) {

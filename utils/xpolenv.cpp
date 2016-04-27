@@ -22,11 +22,9 @@ with this program; if not, write to the Free Software Foundation Inc.,
 
 #include "xpolenv.h"
 
-/*!
-  Points to <tt>XPOL_DAQ_ROOT</tt>.
-*/
+
 std::string xpolenv::kDaqRootDirPath =
-  xpolenv::getEnvironmentVariable("XPOL_DAQ_ROOT");
+  xpolenv::getEnvironmentVariable("XPEDAQ_ROOT");
 std::string xpolenv::kNullPath = "";
 
 #ifdef  __WIN32__
@@ -54,11 +52,11 @@ std::string xpolenv::kDaqGuiDirPath =
 std::string xpolenv::kDaqPixmapsDirPath =
   xpolenv::join(xpolenv::kDaqGuiDirPath, "pixmaps");
 /*!
-  Points to the environmental variable <tt>XPOL_DAQ_DATA</tt> if it is set,
+  Points to the environmental variable <tt>XPEDAQ_DATA</tt> if it is set,
   to <tt>{\ref kDaqRootDirPath}/data/</tt> otherwise.
 */
 std::string xpolenv::kDaqDataDirPath =
-  xpolenv::getEnvironmentVariable("XPOL_DAQ_DATA",
+  xpolenv::getEnvironmentVariable("XPEDAQ_DATA",
 				  xpolenv::appendToDaqRoot("data"));
 
 /*! \param varName
@@ -109,7 +107,7 @@ std::string xpolenv::join(std::string path1, std::string path2)
 }
 
 /*! \param path
-  The path to be appended to <tt>XPOL_DAQ_ROOT</tt>.
+  The path to be appended to <tt>XPEDAQ_ROOT</tt>.
 */
 std::string xpolenv::appendToDaqRoot(std::string path)
 {

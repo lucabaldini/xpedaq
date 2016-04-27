@@ -26,7 +26,7 @@ import logging
 logging.basicConfig(level=logging.DEBUG)
 
 PACKAGE_NAME = 'xpedaq'
-XPEDAQ_ROOT = os.environ['XPOL_DAQ_ROOT']
+XPEDAQ_ROOT = os.environ['XPEDAQ_ROOT']
 VERSION_FILE_PATH = os.path.join(XPEDAQ_ROOT, '__version__.h')
 RELEASE_NOTES_FILE_PATH = os.path.join(XPEDAQ_ROOT, 'doc', 'release.notes')
 BUILD_DATE = time.strftime('%a, %d %b %Y %H:%M:%S %z')

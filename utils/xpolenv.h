@@ -28,40 +28,21 @@ with this program; if not, write to the Free Software Foundation Inc.,
 
 /*! \brief Namespace containing all the relevant information about the
   environment in which the application is running.
-
-  The <tt>XPOL_DAQ_ROOT</tt> environmental variable must be defined and
-  point to the root of the package installation.
-  There are two other environmental variables which can be optionally set:
-  <tt>XPOL_DAQ_DATA</tt> identifies the folder where the data are written and
-  <tt>XPOL_DAQ_LOG</tt> defines the folder for the log files. If not set,
-  those two paths get their default values (see following details).
  */
 
 
 namespace xpolenv{
-  /*! \brief Path to the base installation directory.*/
   extern std::string kDaqRootDirPath;
-  /*! \brief Dummy empty path (actually an empty string).*/
   extern std::string kNullPath;
-  /*! \brief Directory separator (either "/" or "\" depending on the os).*/
   extern std::string kDirSeparator;
-  /*! \brief Path to the folder containing the configuration files.*/
   extern std::string kDaqConfigDirPath;
-  /*! \brief Path to the folder containing the GUI classes.*/
   extern std::string kDaqGuiDirPath;
-  /*! \brief Path to the folder containing the necessary GUI pixmaps.*/
   extern std::string kDaqPixmapsDirPath;
-  /*! \brief Path to the folder in which the data are written.*/
   extern std::string kDaqDataDirPath;
-  /*! \brief Return the value of an environmental variable.*/
   extern std::string getEnvironmentVariable(std::string varName);
-  /*! \brief Return the value of an environmental variable.*/
   extern std::string getEnvironmentVariable(std::string varName,
 					    std::string defaultPath);
-  /*! \brief Concatenate two paths inserting the correct separator.*/
   extern std::string join(std::string path1, std::string path2);
-  /*! \brief Append a path (typically a file name) to
-    {\ref xpolenv::kDaqRootDirPath}.*/
   extern std::string appendToDaqRoot(std::string path);
 }
 

@@ -25,7 +25,7 @@ with this program; if not, write to the Free Software Foundation Inc.,
 pMainWindow::pMainWindow()
 {
   // Create the preferences.cfg file, if needed.
-  QString cfgFilePath = QString(std::getenv("XPOL_DAQ_ROOT")) +
+  QString cfgFilePath = QString(std::getenv("XPEDAQ_ROOT")) +
     QDir::separator() + "xpedaq" + QDir::separator() + "config" +
     QDir::separator() + "preferences.cfg";
   if (!QFile(cfgFilePath).exists()) {
@@ -35,7 +35,7 @@ pMainWindow::pMainWindow()
   }
   m_preferencesCfgFilePath = cfgFilePath.toStdString();
   // Create the detector.cfg file, if needed.
-  cfgFilePath = QString(std::getenv("XPOL_DAQ_ROOT")) +
+  cfgFilePath = QString(std::getenv("XPEDAQ_ROOT")) +
     QDir::separator() + "xpedaq" + QDir::separator() + "config" +
     QDir::separator() + "detector.cfg";
   if (!QFile(cfgFilePath).exists()) {
@@ -99,7 +99,7 @@ void pMainWindow::setupDaqDisplay()
   m_daqDisplay->freezeSize(DISPLAYS_WIDTH, -1);
   m_mainGridLayout->addWidget(m_daqDisplay, 0, 0, Qt::AlignTop);
   // Read the station Id from the proper configuration file.
-  QString cfgFilePath = QString(std::getenv("XPOL_DAQ_ROOT")) +
+  QString cfgFilePath = QString(std::getenv("XPEDAQ_ROOT")) +
     QDir::separator() + "xpedaq" + QDir::separator() + "config" +
     QDir::separator() + "stationId.cfg";
   if (!QFile(cfgFilePath).exists()) {
