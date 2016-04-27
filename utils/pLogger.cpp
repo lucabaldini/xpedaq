@@ -60,7 +60,6 @@ void pLogger::setDisplayLevel(int level)
 
 void pLogger::enableLogFile(bool enable)
 {
-  std::cout << "Enable file " << enable << std::endl;
   m_debugChannel->enableLogFile(enable);
   m_infoChannel->enableLogFile(enable);
   m_warningChannel->enableLogFile(enable);
