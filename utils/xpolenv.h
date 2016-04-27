@@ -1,6 +1,5 @@
 /***********************************************************************
-Copyright (C) 2007, 2008 by Luca Baldini (luca.baldini@pi.infn.it),
-Johan Bregeon, Massimo Minuti and Gloria Spandre.
+Copyright (C) 2007--2016 the X-ray Polarimetry Explorer (XPE) team.
 
 For the license terms see the file LICENSE, distributed along with this
 software.
@@ -28,8 +27,7 @@ with this program; if not, write to the Free Software Foundation Inc.,
 
 /*! \brief Namespace containing all the relevant information about the
   environment in which the application is running.
- */
-
+*/
 
 namespace xpolenv{
   extern std::string kDaqRootDirPath;
@@ -38,7 +36,6 @@ namespace xpolenv{
   extern std::string kDaqConfigDirPath;
   extern std::string kDaqGuiDirPath;
   extern std::string kDaqPixmapsDirPath;
-  extern std::string kDaqDataDirPath;
   extern std::string getEnvironmentVariable(std::string varName);
   extern std::string getEnvironmentVariable(std::string varName,
 					    std::string defaultPath);

@@ -1,6 +1,5 @@
 /***********************************************************************
-Copyright (C) 2007, 2008 by Luca Baldini (luca.baldini@pi.infn.it),
-Johan Bregeon, Massimo Minuti and Gloria Spandre.
+Copyright (C) 2007--2016 the X-ray Polarimetry Explorer (XPE) team.
 
 For the license terms see the file LICENSE, distributed along with this
 software.
@@ -25,6 +24,7 @@ with this program; if not, write to the Free Software Foundation Inc.,
 
 std::string xpolenv::kDaqRootDirPath =
   xpolenv::getEnvironmentVariable("XPEDAQ_ROOT");
+
 std::string xpolenv::kNullPath = "";
 
 #ifdef  __WIN32__
@@ -35,40 +35,18 @@ std::string xpolenv::kDirSeparator = "\\";
 std::string xpolenv::kDirSeparator = "/";
 #endif
 
+std::string xpolenv::kDaqConfigDirPath = xpolenv::appendToDaqRoot("config");
 
-/*!
-  Points to <tt>{\ref kDaqRootDirPath}/config/</tt>.
-*/
-std::string xpolenv::kDaqConfigDirPath =
-  xpolenv::appendToDaqRoot("config");
-/*!
-  Points to <tt>{\ref kDaqRootDirPath}/gui/</tt>.
-*/
-std::string xpolenv::kDaqGuiDirPath =
-  xpolenv::appendToDaqRoot("gui");
-/*!
-  Points to <tt>{\ref kDaqGuiDirPath}/pixmaps/</tt>.
-*/
+std::string xpolenv::kDaqGuiDirPath = xpolenv::appendToDaqRoot("gui");
+
 std::string xpolenv::kDaqPixmapsDirPath =
   xpolenv::join(xpolenv::kDaqGuiDirPath, "pixmaps");
-/*!
-  Points to the environmental variable <tt>XPEDAQ_DATA</tt> if it is set,
-  to <tt>{\ref kDaqRootDirPath}/data/</tt> otherwise.
-*/
-std::string xpolenv::kDaqDataDirPath =
-  xpolenv::getEnvironmentVariable("XPEDAQ_DATA",
-				  xpolenv::appendToDaqRoot("data"));
 
-/*! \param varName
-  The name of the environmental variable.
 
-  If the variable is not set the program exit with an error message.
-*/
 std::string xpolenv::getEnvironmentVariable(std::string varName)
 {
-  char *variable = ::getenv(varName.c_str());
-  if (variable == NULL)
-  {
+  char *variable = std::getenv(varName.c_str());
+  if (variable == NULL) {
     std::cout << "Environmental variable " << varName << " not defined."
 	      << std::endl;
     exit(1);
@@ -77,38 +55,22 @@ std::string xpolenv::getEnvironmentVariable(std::string varName)
   }
 }
 
-/*! \param varName
-  The name of the environmental variable.
-  \param defaultPath
-  The path which is returned if the environmental variable is not defined.
-
-  Used to retrieve the optional environmental variables.
-*/
 std::string xpolenv::getEnvironmentVariable(std::string varName,
 					    std::string defaultPath)
 {
   char *variable = std::getenv(varName.c_str());
-  if (variable == NULL)
-  {
+  if (variable == NULL) {
     return defaultPath;
   } else {
     return std::string(variable);
   }
 }
 
-/*! \param path1
-  The first part of the path to be concatenated.
-  \param path2
-  The second part of the path to be concatenated.
-*/
 std::string xpolenv::join(std::string path1, std::string path2)
 {
   return path1 + xpolenv::kDirSeparator + path2; 
 }
 
-/*! \param path
-  The path to be appended to <tt>XPEDAQ_ROOT</tt>.
-*/
 std::string xpolenv::appendToDaqRoot(std::string path)
 {
   return join(xpolenv::kDaqRootDirPath, path);
