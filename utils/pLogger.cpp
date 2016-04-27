@@ -1,6 +1,5 @@
 /***********************************************************************
-Copyright (C) 2007, 2008 by Luca Baldini (luca.baldini@pi.infn.it),
-Johan Bregeon, Massimo Minuti and Gloria Spandre.
+Copyright (C) 2007--2016 the X-ray Polarimetry Explorer (XPE) team.
 
 For the license terms see the file LICENSE, distributed along with this
 software.
@@ -20,38 +19,27 @@ with this program; if not, write to the Free Software Foundation Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 ***********************************************************************/
 
+
 #include "pLogger.h"
+
 
 pLogger::pLogger(int terminalLevel, int displayLevel)
 {
-  setLogFilePath();
-  m_debugChannel   = new pLoggerChannel("DEBUG", m_logFilePath);  
-  m_infoChannel    = new pLoggerChannel("INFO ", m_logFilePath);  
-  m_warningChannel = new pLoggerChannel("WARN ", m_logFilePath);  
-  m_errorChannel   = new pLoggerChannel("ERROR", m_logFilePath);
+  m_debugChannel = new pLoggerChannel("DEBUG");  
+  m_infoChannel = new pLoggerChannel("INFO ");  
+  m_warningChannel = new pLoggerChannel("WARN ");  
+  m_errorChannel = new pLoggerChannel("ERROR");
   setTerminalLevel(terminalLevel);
   setDisplayLevel(displayLevel);
+  enableLogFile(false);
 }
 
-pLogger::~pLogger()
+void pLogger::setLogFilePath(std::string filePath)
 {
-
-}
-
-void pLogger::setLogFilePath()
-{
-  time_t timestamp;
-  time(&timestamp);
-  struct tm *timeinfo = localtime(&timestamp);
-  char timestring[50];
-  strftime(timestring , 50, "%Y-%m-%d_%H-%M-%S", timeinfo);
-  std::string fileName = std::string(timestring) + ".log";
-  if (char *var = std::getenv("XPOL_DAQ_LOG")) {
-    m_logFileDir = var;
-  } else {
-    m_logFileDir = std::string(std::getenv("XPOL_DAQ_ROOT")) + "/log";
-  }
-  m_logFilePath = m_logFileDir + "/" + fileName;
+  m_debugChannel->setLogFilePath(filePath);
+  m_infoChannel->setLogFilePath(filePath);
+  m_warningChannel->setLogFilePath(filePath);
+  m_errorChannel->setLogFilePath(filePath);
 }
 
 void pLogger::setTerminalLevel(int level)
@@ -72,8 +60,12 @@ void pLogger::setDisplayLevel(int level)
 
 void pLogger::enableLogFile(bool enable)
 {
+  std::cout << "Enable file " << enable << std::endl;
   m_debugChannel->enableLogFile(enable);
   m_infoChannel->enableLogFile(enable);
   m_warningChannel->enableLogFile(enable);
   m_errorChannel->enableLogFile(enable);
+  if (!enable) {
+    setLogFilePath("NULL");
+  }
 }

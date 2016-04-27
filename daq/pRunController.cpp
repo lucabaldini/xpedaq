@@ -319,21 +319,27 @@ void pRunController::fsmStartRun()
       "..." << endline;
     QDir().mkpath(outputFolder);
   }
+  // Set the output path for the logger.
+  QString logFilePath = outputFolder + QDir::separator() +
+    m_parentWindow->currentDataIdentifier() + ".log";
+  std::cout << logFilePath.toStdString() << std::endl;
+  xpollog::kLogger->setLogFilePath(logFilePath.toStdString());
+  xpollog::kLogger->enableLogFile(true);
+  // Save the run info.
   m_parentWindow->saveRunInfo(outputFolder);
-  if (m_outputFilePath == xpolenv::kNullPath)
-    {
-      m_outputFilePath = m_parentWindow->currentDataFilePath().toStdString();
-    }
+  // Why do we need this?
+  if (m_outputFilePath == xpolenv::kNullPath) {
+    m_outputFilePath = m_parentWindow->currentDataFilePath().toStdString();
+  }
   *xpollog::kDebug << "Output file path: " << m_outputFilePath << endline;
   m_dataCollector->reset();
-  if (m_usbController->IsOpened())
-    {
-      m_xpolFpga->setup(m_parentWindow->getConfiguration());
-      m_dataCollector->setup(m_outputFilePath,
-			     m_parentWindow->getUserPreferences(),
-			     m_parentWindow->getConfiguration());
-      m_dataCollector->start();
-    } else {
+  if (m_usbController->IsOpened()) {
+    m_xpolFpga->setup(m_parentWindow->getConfiguration());
+    m_dataCollector->setup(m_outputFilePath,
+			   m_parentWindow->getUserPreferences(),
+			   m_parentWindow->getConfiguration());
+    m_dataCollector->start();
+  } else {
     *xpollog::kError << "The USB device is not open." << endline;
   }
   resetTimer();
@@ -367,6 +373,7 @@ void pRunController::fsmStopRun()
   *xpollog::kInfo << getNumAcquiredEvents() << " events (" <<
     getNumAcquiredDataBlocks() << " data blocks) acquired in "<<
     m_elapsedSeconds << " seconds."<< endline;
+  xpollog::kLogger->enableLogFile(false);
 }
 
 void pRunController::fsmPause()

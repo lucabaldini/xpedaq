@@ -1,6 +1,5 @@
 /***********************************************************************
-Copyright (C) 2007, 2008 by Luca Baldini (luca.baldini@pi.infn.it),
-Johan Bregeon, Massimo Minuti and Gloria Spandre.
+Copyright (C) 2007--2016 the X-ray Polarimetry Explorer (XPE) team.
 
 For the license terms see the file LICENSE, distributed along with this
 software.
@@ -34,20 +33,15 @@ class pLogger
  public:
 
   pLogger(int terminalLevel = Debug, int displayLevel = Debug);
-  ~pLogger();  
-  inline pLoggerChannel *debug() const
-    {return m_debugChannel;}
-  inline pLoggerChannel *info() const
-    {return m_infoChannel;}
-  inline pLoggerChannel *warning() const
-    {return m_warningChannel;}
-  inline pLoggerChannel *error() const
-    {return m_errorChannel;}
-  inline std::string getLogFilePath() const
-    {return m_logFilePath;}
+  ~pLogger() {;}  
+  inline pLoggerChannel *debug() const {return m_debugChannel;}
+  inline pLoggerChannel *info() const {return m_infoChannel;}
+  inline pLoggerChannel *warning() const {return m_warningChannel;}
+  inline pLoggerChannel *error() const {return m_errorChannel;}
   void setTerminalLevel(int level);
   void setDisplayLevel(int level);
   void enableLogFile(bool enable);
+  void setLogFilePath(std::string filePath);
 
   enum LoggerLevel{
     Debug,
@@ -57,13 +51,12 @@ class pLogger
   };
 
  private:
+  
   pLoggerChannel *m_debugChannel;
   pLoggerChannel *m_infoChannel;
   pLoggerChannel *m_warningChannel;
   pLoggerChannel *m_errorChannel;
   std::string m_logFilePath;
-  std::string m_logFileDir;
-  void setLogFilePath();
 };
 
-#endif
+#endif //PLOGGER_H

@@ -1,6 +1,5 @@
 /***********************************************************************
-Copyright (C) 2007, 2008 by Luca Baldini (luca.baldini@pi.infn.it),
-Johan Bregeon, Massimo Minuti and Gloria Spandre.
+Copyright (C) 2007--2016 the X-ray Polarimetry Explorer (XPE) team.
 
 For the license terms see the file LICENSE, distributed along with this
 software.
@@ -23,26 +22,17 @@ with this program; if not, write to the Free Software Foundation Inc.,
 #include "pLoggerChannel.h"
 
 
-pLoggerChannel::pLoggerChannel(std::string name, std::string logFilePath)
-  : m_name(name), m_logFilePath(logFilePath)
+pLoggerChannel::pLoggerChannel(std::string name)
+  : m_name(name),
+    m_logFilePath("NULL"),
+    m_lineTerminated(true),
+    m_terminalEnabled(false),
+    m_displayEnabled(false),
+    m_logFileEnabled(false)
 {
   m_baseString = new QString("");
   m_headerString = new QString(("[" + m_name + "][%1] : ").c_str());
   m_messageBuffer = new QTextStream(m_baseString);
-  m_lineTerminated = true;
-  enable(true);
-}
-
-pLoggerChannel::~pLoggerChannel()
-{
-
-}
-
-void pLoggerChannel::enable(bool enabled)
-{
-  enableTerminal(enabled);
-  enableDisplay(enabled);
-  enableLogFile(enabled);
 }
 
 void pLoggerChannel::reset()
@@ -52,21 +42,18 @@ void pLoggerChannel::reset()
 
 void pLoggerChannel::write(const QString &s)
 {
-  if (m_terminalEnabled)
-    {
-      std::cout << s.toStdString();
-    }
-  if (m_displayEnabled)
-    {
-      emit message(s);
-    }
-  if (m_logFileEnabled)
-    {
-      std::ofstream logFile(m_logFilePath.c_str(),
-			    std::ios_base::out | std::ios_base::app);
-      logFile << s.toStdString();
-      logFile.close();
-    }
+  if (m_terminalEnabled) {
+    std::cout << s.toStdString();
+  }
+  if (m_displayEnabled) {
+    emit message(s);
+  }
+  if (m_logFileEnabled) {
+    std::ofstream logFile(m_logFilePath.c_str(),
+			  std::ios_base::out | std::ios_base::app);
+    logFile << s.toStdString();
+    logFile.close();
+  }
   m_lineTerminated = (s.right(1) == "\n");
 }
 
@@ -78,10 +65,9 @@ std::string pLoggerChannel::getTimestamp()
 
 void pLoggerChannel::flush()
 {
-  if (m_lineTerminated)
-    {
-      write(m_headerString->arg(getTimestamp().c_str()));
-    }
+  if (m_lineTerminated) {
+    write(m_headerString->arg(getTimestamp().c_str()));
+  }
   write(*m_baseString);
   reset();
 }

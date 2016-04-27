@@ -1,6 +1,5 @@
 /***********************************************************************
-Copyright (C) 2007, 2008 by Luca Baldini (luca.baldini@pi.infn.it),
-Johan Bregeon, Massimo Minuti and Gloria Spandre.
+Copyright (C) 2007--2016 the X-ray Polarimetry Explorer (XPE) team.
 
 For the license terms see the file LICENSE, distributed along with this
 software.
@@ -28,7 +27,6 @@ with this program; if not, write to the Free Software Foundation Inc.,
 #include <QString>
 #include <iostream>
 #include <fstream>
-// cs:
 #include <time.h>
 
 class pLoggerChannel : public QObject
@@ -36,19 +34,14 @@ class pLoggerChannel : public QObject
   Q_OBJECT
 
  public:
-  pLoggerChannel(std::string name, std::string logFilePath);
-  ~pLoggerChannel();
-  inline std::string getName() const
-    {return m_name;}
-  inline bool lineTerminated() const
-    {return m_lineTerminated;}
-  inline void enableTerminal(bool enabled)
-    {m_terminalEnabled = enabled;}
-  inline void enableDisplay(bool enabled)
-    {m_displayEnabled = enabled;}
-  inline void enableLogFile(bool enabled)
-    {m_logFileEnabled = enabled;}
-  void enable(bool enabled);
+  pLoggerChannel(std::string name);
+  ~pLoggerChannel() {;}
+  inline std::string getName() const {return m_name;}
+  inline bool lineTerminated() const {return m_lineTerminated;}
+  inline void enableTerminal(bool enabled) {m_terminalEnabled = enabled;}
+  inline void enableDisplay(bool enabled) {m_displayEnabled = enabled;}
+  inline void enableLogFile(bool enabled) {m_logFileEnabled = enabled;}
+  inline void setLogFilePath(std::string filePath) {m_logFilePath = filePath;}
   pLoggerChannel &operator<<(bool b);
   pLoggerChannel &operator<<(char ch);
   pLoggerChannel &operator<<(signed short i);
@@ -94,4 +87,4 @@ pLoggerChannel &endline(pLoggerChannel &channel);
 pLoggerChannel &hex(pLoggerChannel &channel);
 pLoggerChannel &dec(pLoggerChannel &channel);
 
-#endif
+#endif //PLOGGERCHANNEL_H
