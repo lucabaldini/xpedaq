@@ -1,11 +1,24 @@
+
+equals(QT_MAJOR_VERSION, 4) {
+  DEPENDPATH  += ..
+  DEPENDPATH  += ../gui
+  DEPENDPATH  += ../daq
+  DEPENDPATH  += ../utils
+  QT += network
+  }
+
+equals(QT_MAJOR_VERSION, 5) {
+  VPATH  += ..
+  VPATH  += ../gui
+  VPATH  += ../daq
+  VPATH  += ../utils
+  QT += network opengl
+  }
+
 INCLUDEPATH += ..
-DEPENDPATH  += ..
 INCLUDEPATH += ../gui
-DEPENDPATH  += ../gui
 INCLUDEPATH += ../daq
-DEPENDPATH  += ../daq
 INCLUDEPATH += ../utils
-DEPENDPATH  += ../utils
 
 include(../quickusb-2.15.2/quickusb.pro)
 
@@ -105,8 +118,6 @@ SOURCES += xpedaq.cpp
 
 OBJECTS_DIR = build
 MOC_DIR = moc
-
-QT += network
 
 TARGET = xpedaq
 DESTDIR = ../bin
