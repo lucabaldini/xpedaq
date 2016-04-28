@@ -67,13 +67,10 @@ void pUdpSender::broadcastDatagram(unsigned char *datagram, int datagramsize)
 
 void pUdpSender::write(char *data, int size)
 {
-  //*xpollog::kDebug << "Multicasting " << size << " bytes to " <<
-  //  m_hostAddress.toString() << " on port " << m_port << "..." << endline;
   int numBytes = m_udpSocket->writeDatagram(data, size, m_hostAddress, m_port);
-  int errorCode = m_udpSocket->error();
-  if (errorCode > 0)
-    {
-      *xpollog::kDebug << "UDP socket error. " << numBytes <<
-	" bytes multicasted (error code " << errorCode << ")." << endline;
-    }
+  if (numBytes < 0) {
+    int errorCode = m_udpSocket->error();
+    *xpollog::kDebug << "UDP socket error. " << numBytes <<
+	"/" << size << " bytes multicasted (error code " << errorCode << ")." << endline;
+  }
 }
