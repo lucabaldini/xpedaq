@@ -26,7 +26,8 @@
 *.app
 
 # Automatically generated files and folders.
-bin/*
+bin/xpedaq
+bin/xpesrv
 build/*
 log/*
 moc/*

@@ -4,6 +4,7 @@
 * Old file removed (closing issue #52).
 * Change the order of connections in pMainWindow (closing issue #57).
 * Fix for issue #54.
+* Added a python script to playback binary files (issue #61).
 
 
 -------------------------------------------------------------------------------
