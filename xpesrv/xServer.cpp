@@ -28,7 +28,6 @@ with this program; if not, write to the Free Software Foundation Inc.,
 #define COMB(x1,x2) (((x2 & 0xff)<<8)|x1 & 0xff)
 
 xServer::xServer(QWidget *parent)
-  : QThread(parent)
 {
   m_running = false;
 }

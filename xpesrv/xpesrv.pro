@@ -12,7 +12,7 @@ equals(QT_MAJOR_VERSION, 5) {
   VPATH  += ../gui
   VPATH  += ../daq
   VPATH  += ../utils
-  QT += network opengl
+  QT += network opengl core
   }
 
 INCLUDEPATH += ..
