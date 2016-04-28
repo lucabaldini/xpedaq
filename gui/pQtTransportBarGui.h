@@ -49,7 +49,7 @@ class pQtTransportBarGui : public pQtGroupBoxWidget
 
  private:
   
-  void setupButtons();
+  void setupButtons(bool minimal = true);
 };
 
 #endif

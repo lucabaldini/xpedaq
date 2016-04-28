@@ -22,8 +22,8 @@ with this program; if not, write to the Free Software Foundation Inc.,
 #include "pTransportBar.h"
 
 
-pTransportBar::pTransportBar(QWidget *parent)
-  : pQtTransportBarGui(parent)
+pTransportBar::pTransportBar(QWidget *parent) :
+  pQtTransportBarGui(parent)
 {
   setupConnections();
   setupToolTips();
@@ -44,16 +44,24 @@ void pTransportBar::setupConnections()
 {
   connect(m_startButton, SIGNAL(clicked()), this, SLOT(startButtonPressed()));
   connect(m_stopButton,  SIGNAL(clicked()), this, SLOT(stopButtonPressed()));
-  connect(m_pauseButton, SIGNAL(clicked()), this, SLOT(pauseButtonPressed()));
-  connect(m_resetButton, SIGNAL(clicked()), this, SLOT(resetButtonPressed()));
+  if (m_pauseButton != NULL) {
+    connect(m_pauseButton, SIGNAL(clicked()), this, SLOT(pauseButtonPressed()));
+  }
+  if (m_resetButton != NULL) {
+    connect(m_resetButton, SIGNAL(clicked()), this, SLOT(resetButtonPressed()));
+  }
 }
 
 void pTransportBar::setupToolTips()
 {
   m_startButton->setToolTip("Start the data acquisition");
   m_stopButton->setToolTip("Stop the data acquisition");
-  m_pauseButton->setToolTip("Pause the data acquisition");
-  m_resetButton->setToolTip("Reset the run controller");
+  if (m_pauseButton != NULL) {
+    m_pauseButton->setToolTip("Pause the data acquisition");
+  }
+  if (m_resetButton != NULL) {
+    m_resetButton->setToolTip("Reset the run controller");
+  }
 }
 
 void pTransportBar::startButtonPressed()
@@ -82,32 +90,48 @@ void pTransportBar::resetButtonPressed()
 
 void pTransportBar::setRunning()
 {
-  m_resetButton->setEnabled(0);
+  if (m_resetButton != NULL) {
+    m_resetButton->setEnabled(0);
+  }
   m_stopButton->setEnabled(1);
-  m_pauseButton->setEnabled(1);
+  if (m_pauseButton != NULL) {
+    m_pauseButton->setEnabled(1);
+  }
   m_startButton->setEnabled(0);
 }
 
 void pTransportBar::setPaused()
 {
-  m_resetButton->setEnabled(0);
+  if (m_resetButton != NULL) {
+    m_resetButton->setEnabled(0);
+  }
   m_stopButton->setEnabled(1);
-  m_pauseButton->setEnabled(0);
+  if (m_pauseButton != NULL) {
+    m_pauseButton->setEnabled(0);
+  }
   m_startButton->setEnabled(1);
 }
 
 void pTransportBar::setStopped()
 {
-  m_resetButton->setEnabled(1);
+  if (m_resetButton != NULL) {
+    m_resetButton->setEnabled(1);
+  }
   m_stopButton->setEnabled(0);
-  m_pauseButton->setEnabled(0);
+  if (m_pauseButton != NULL) {
+    m_pauseButton->setEnabled(0);
+  }
   m_startButton->setEnabled(1);
 }
 
 void pTransportBar::setReset()
 {
-  m_resetButton->setEnabled(0);
+  if (m_resetButton != NULL) {
+    m_resetButton->setEnabled(0);
+  }
   m_stopButton->setEnabled(0);
-  m_pauseButton->setEnabled(0);
+  if (m_pauseButton != NULL) {
+    m_pauseButton->setEnabled(0);
+  }
   m_startButton->setEnabled(1);
 }

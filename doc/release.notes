@@ -2,6 +2,7 @@
 * Project files modified to support compilation against both Qt 4 and Qt 5
   (issue #62).
 * Obsolete dir test removed.
+* Reset and pause buttons in the transport bar hidden by default (issue #54).
 
 
 -------------------------------------------------------------------------------

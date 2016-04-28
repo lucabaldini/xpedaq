@@ -21,38 +21,56 @@ with this program; if not, write to the Free Software Foundation Inc.,
 
 #include "pQtTransportBarGui.h"
 
-pQtTransportBarGui::pQtTransportBarGui(QWidget *parent)
-  : pQtGroupBoxWidget(parent)
+pQtTransportBarGui::pQtTransportBarGui(QWidget *parent) :
+  pQtGroupBoxWidget(parent),
+  m_resetButton(NULL),
+  m_stopButton(NULL),
+  m_pauseButton(NULL),
+  m_startButton(NULL)
 {
   setupButtons();
   setTitle("Transport bar");
   freezeSize();
 }
 
-void pQtTransportBarGui::setupButtons()
+void pQtTransportBarGui::setupButtons(bool minimal)
 {
-  m_resetButton = new pQtCustomPushButton(m_mainGroupBox, "reset");
+  if (!minimal) {
+    m_resetButton = new pQtCustomPushButton(m_mainGroupBox, "reset");
+    m_pauseButton = new pQtCustomPushButton(m_mainGroupBox, "pause");
+  }
   m_stopButton  = new pQtCustomPushButton(m_mainGroupBox, "stop");
-  m_pauseButton = new pQtCustomPushButton(m_mainGroupBox, "pause");
   m_startButton = new pQtCustomPushButton(m_mainGroupBox, "start");
-  addWidget(m_resetButton, 0, 0);
+  if (m_resetButton != NULL) {
+    addWidget(m_resetButton, 0, 0);
+  }
   addWidget(m_stopButton , 0, 1);
-  addWidget(m_pauseButton, 0, 2);
+  if (m_pauseButton != NULL) {
+    addWidget(m_pauseButton, 0, 2);
+  }
   addWidget(m_startButton, 0, 3);
 }
 
 void pQtTransportBarGui::enable()
 {
-  m_resetButton->setEnabled(1);
+  if (m_resetButton != NULL) {
+    m_resetButton->setEnabled(1);
+  }
   m_stopButton->setEnabled(1);
-  m_pauseButton->setEnabled(1);
+  if (m_pauseButton != NULL) {
+    m_pauseButton->setEnabled(1);
+  }
   m_startButton->setEnabled(1);
 }
 
 void pQtTransportBarGui::disable()
 {
-  m_resetButton->setEnabled(0);
+  if (m_resetButton != NULL) {
+    m_resetButton->setEnabled(0);
+  }
   m_stopButton->setEnabled(0);
-  m_pauseButton->setEnabled(0);
+  if (m_pauseButton != NULL) {
+    m_pauseButton->setEnabled(0);
+  }
   m_startButton->setEnabled(0);
 }
