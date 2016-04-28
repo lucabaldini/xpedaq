@@ -3,6 +3,7 @@
   (issue #62).
 * Obsolete dir test removed.
 * Reset and pause buttons in the transport bar hidden by default (issue #54).
+* pQtCustomTabWidget class removed (issue #63).
 
 
 -------------------------------------------------------------------------------
