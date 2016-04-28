@@ -1,7 +1,9 @@
 
-* Move one signal-slot connection in pMainWindos (closing issue #53).
+* Move one signal-slot connection in pMainWindow (closing issue #53).
 * pUsbControllerBase removed from xpedaq.pro.
 * Old file removed (closing issue #52).
+* Change the order of connections in pMainWindow (closing issue #57).
+* Fix for issue #54.
 
 
 -------------------------------------------------------------------------------
