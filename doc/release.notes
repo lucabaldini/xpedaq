@@ -4,7 +4,8 @@
 * Old file removed (closing issue #52).
 * Change the order of connections in pMainWindow (closing issue #57).
 * Fix for issue #54.
-* Added a python script to playback binary files (issue #61).
+* Added a python script to playback binary files (closing issue #61).
+* Fix for the missing timestamp in the binary data stream (closing issue #33).
 
 
 -------------------------------------------------------------------------------
