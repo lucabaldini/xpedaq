@@ -56,6 +56,10 @@ pMainWindow::pMainWindow()
   setupActions();
   setupMenuBar();
   m_runController = new pRunController(this);
+  // This connection needs to be here in order to intercept error signals
+  // from QuickUsb.
+  connect(m_runController, SIGNAL(quickusbError(unsigned long)),
+	  this, SLOT(disableHardwareWidgets()));
   m_runController->connectToQuickUsb();
   setupConnections();
   m_userPreferencesTab->displayUserPreferences(preferences);
@@ -335,8 +339,6 @@ void pMainWindow::setupConnections()
   	  m_runController->getXpolFpga(), SLOT(readVrefDac()));
   connect(m_userPreferencesTab, SIGNAL(visualizetionModeChanged(int)),
 	  this, SLOT(changeVisualizationMode(int)));
-  connect(m_runController, SIGNAL(quickusbError(unsigned long)),
-	  this, SLOT(disableHardwareWidgets()));
 }
 
 
