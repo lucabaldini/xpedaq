@@ -393,7 +393,9 @@ void pRunController::fsmResume()
 }
 
 void pRunController::fsmStop()
-{}
+{
+  fsmStopRun();
+}
 
 void pRunController::fsmTeardown()
 {}
