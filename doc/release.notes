@@ -1,7 +1,7 @@
 
 * Project files modified to support compilation against both Qt 4 and Qt 5
   (issue #62).
-* Obsolete dir testdatablock removed.
+* Obsolete dir test removed.
 
 
 -------------------------------------------------------------------------------
