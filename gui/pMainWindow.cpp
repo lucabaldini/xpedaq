@@ -134,7 +134,7 @@ void pMainWindow::setupTransportBar()
 
 void pMainWindow::setupTabWidget()
 {
-  m_mainTabWidget  = new pQtCustomTabWidget(m_centralWidget);
+  m_mainTabWidget = new QTabWidget(m_centralWidget);
   m_mainGridLayout->addWidget(m_mainTabWidget, 0, 1, 3, 1);
   m_readoutModeTab = new pReadoutModeTab();
   m_mainTabWidget->addTab(m_readoutModeTab, "Readout");

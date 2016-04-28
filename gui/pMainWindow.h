@@ -34,7 +34,6 @@ with this program; if not, write to the Free Software Foundation Inc.,
 #include "pDaqDisplay.h"
 #include "pMessageDisplay.h"
 #include "pTransportBar.h"
-#include "pQtCustomTabWidget.h"
 #include "pReadoutModeTab.h"
 #include "pThresholdSettingTab.h"
 #include "pAdvancedSettingsTab.h"
@@ -91,7 +90,7 @@ class pMainWindow : public pQtMainWindowGui
   pDaqDisplay *m_daqDisplay;
   pMessageDisplay *m_messageDisplay;
   pTransportBar *m_transportBar;
-  pQtCustomTabWidget *m_mainTabWidget;
+  QTabWidget *m_mainTabWidget;
   pReadoutModeTab *m_readoutModeTab;
   pThresholdSettingTab *m_thresholdSettingTab;
   pAdvancedSettingsTab *m_advancedSettingsTab;
