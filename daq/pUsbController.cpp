@@ -73,11 +73,10 @@ int pUsbController::readSetting(unsigned short address, unsigned short *value)
 
 int pUsbController::readData(unsigned char *data, unsigned long *length)
 {
-  if (!ReadData(data, length))
-    {
-      *xpollog::kDebug << endline;
-      return getLastErrorCode();
-    }
+  if (!ReadData(data, length)) {
+    *xpollog::kDebug << endline;
+    return getLastErrorCode();
+  }
   return 0;
 }
 
@@ -86,24 +85,22 @@ int pUsbController::writeSetting(unsigned short address, unsigned short value)
   *xpollog::kDebug << "Writing " << value << " (0x" << hex << value << ")" <<
     dec << " to address " << address << " (0x" << hex << address << dec <<
     ")" << "..." << flush;
-   if (!WriteSetting(address, value))
-    {
-      *xpollog::kDebug << endline;
-      return getLastErrorCode();
-    }
-   *xpollog::kDebug << "Done." << endline;
-   return 0;
+  if (!WriteSetting(address, value)) {
+    *xpollog::kDebug << endline;
+    return getLastErrorCode();
+  }
+  *xpollog::kDebug << "Done." << endline;
+  return 0;
 }
 
 int pUsbController::writePortDir(unsigned short address, unsigned char data)
 {
   *xpollog::kDebug << "Writing port dir at address " << address << " (0x" <<
     hex << address << dec << ")..." << flush;
-  if (!CQuickUsb::WritePortDir(address, data))
-    {
-      *xpollog::kDebug << endline;
-      return getLastErrorCode();
-    }
+  if (!CQuickUsb::WritePortDir(address, data)) {
+    *xpollog::kDebug << endline;
+    return getLastErrorCode();
+  }
   *xpollog::kDebug << "Done." << endline;
   return 0;
 }
@@ -137,20 +134,17 @@ int pUsbController::setup()
 {
   *xpollog::kInfo << "Setting up the USB controller..." << endline;
   *xpollog::kInfo << "Performing initial configuration check..." << endline;
-  if (readUsbSettings())
-    {
-      exit(1);
-    }
+  if (readUsbSettings()) {
+    exit(1);
+  }
   *xpollog::kInfo << "Configuring the USB controller..." << endline;
-  if (writeUsbSettings())
-    {
-      exit(1);
-    }
+  if (writeUsbSettings()) {
+    exit(1);
+  }
   *xpollog::kInfo << "Verifying configuration..." << endline;
-  if (readUsbSettings())
-    {
-      exit(1);
-    }
+  if (readUsbSettings()) {
+    exit(1);
+  }
   setTimeout(TIMEOUTMS);
   stopSequencer();
   flushQUsbFIFO();
@@ -177,31 +171,23 @@ int pUsbController::writeUsbSettings()
   unsigned short value = 0;
   errorCode += readSetting(SETTING_WORDWIDE    , &value);
   errorCode += writeSetting(SETTING_WORDWIDE   , value | WORDWIDE_SETT);
-
   errorCode += writeSetting(SETTING_EP26CONFIG , 0xe2);
-
   errorCode += readSetting(SETTING_DATAADDRESS , &value);
   errorCode += writeSetting(SETTING_DATAADDRESS, value | DATAADDRESS_SETT);
-
   errorCode += readSetting(SETTING_FIFO_CONFIG , &value);
   errorCode += writeSetting(SETTING_FIFO_CONFIG, (value | 0x00f3) & 0xffe7);
-
   errorCode += writePortDir(PORTC, (unsigned char)ALLOUTPUT);
   resetSequencer();
-
   errorCode += writeSetting(SETTING_PORTACCFG  , 0X4000);
   errorCode += writePortDir(PORTA, (unsigned char)ALLINPUT);
-
   errorCode += writePortDir(PORTE, (unsigned char)0xbf);
-
-
   return errorCode;
 }
 
 int pUsbController::startSequencer()
 {
   *xpollog::kInfo << "Starting QuickUsb sequencer..." << endline;
-  unsigned char value[1] = {0xf5};
+  unsigned char value[1] = {0xc5};
   return writePort(PORTC, value, 1);
 }
 
