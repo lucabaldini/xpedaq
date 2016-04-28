@@ -73,7 +73,7 @@ void pUdpSender::write(char *data, int size)
   int errorCode = m_udpSocket->error();
   if (errorCode > 0)
     {
-      *xpollog::kError << "UDP socket error. " << numBytes <<
+      *xpollog::kDebug << "UDP socket error. " << numBytes <<
 	" bytes multicasted (error code " << errorCode << ")." << endline;
     }
 }
