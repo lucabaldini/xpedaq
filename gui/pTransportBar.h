@@ -1,6 +1,5 @@
 /***********************************************************************
-Copyright (C) 2007, 2008 by Luca Baldini (luca.baldini@pi.infn.it),
-Johan Bregeon, Massimo Minuti and Gloria Spandre.
+Copyright (C) 2007--2016 the X-ray Polarimetry Explorer (XPE) team.
 
 For the license terms see the file LICENSE, distributed along with this
 software.
@@ -31,22 +30,25 @@ with this program; if not, write to the Free Software Foundation Inc.,
 
 class pTransportBar : public pQtTransportBarGui
 {
-
+  
   Q_OBJECT
 
  public:
+  
   pTransportBar(QWidget *parent);
   ~pTransportBar() {;}
   void pressStartButton();
   void pressStopButton();
-
+  
  private slots:
+    
   void startButtonPressed();
   void stopButtonPressed();
   void pauseButtonPressed();
   void resetButtonPressed();
 
  private:
+
   void setupConnections();
   void setupToolTips();
   void setRunning();
@@ -55,6 +57,7 @@ class pTransportBar : public pQtTransportBarGui
   void setReset();
 
  signals:
+
   void start();
   void stop();
   void pause();

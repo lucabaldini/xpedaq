@@ -1,6 +1,5 @@
 /***********************************************************************
-Copyright (C) 2007, 2008 by Luca Baldini (luca.baldini@pi.infn.it),
-Johan Bregeon, Massimo Minuti and Gloria Spandre.
+Copyright (C) 2007--2016 the X-ray Polarimetry Explorer (XPE) team.
 
 For the license terms see the file LICENSE, distributed along with this
 software.
@@ -35,18 +34,21 @@ class pQtTransportBarGui : public pQtGroupBoxWidget
 {
 
  public:
+  
   pQtTransportBarGui(QWidget *parent);
   ~pQtTransportBarGui() {;}
   void enable();
   void disable();
 
  protected:
+  
   pQtCustomPushButton *m_resetButton;
   pQtCustomPushButton *m_stopButton;
   pQtCustomPushButton *m_pauseButton;
   pQtCustomPushButton *m_startButton;
 
  private:
+  
   void setupButtons();
 };
 
