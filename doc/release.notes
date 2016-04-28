@@ -1,4 +1,7 @@
 
+-------------------------------------------------------------------------------
+xpedaq (0.3.0) - Thu, 28 Apr 2016 14:16:33 +0200
+-------------------------------------------------------------------------------
 * Move one signal-slot connection in pMainWindow (closing issue #53).
 * pUsbControllerBase removed from xpedaq.pro.
 * Old file removed (closing issue #52).
