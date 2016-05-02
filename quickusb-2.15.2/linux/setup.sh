@@ -15,8 +15,6 @@ qusb_install_kernel_module()
 	make
 	echo "Copying kernel module..."
 	sudo cp $(uname -m)/qusb_lnx.ko $KM_INSTALL_PATH
-	echo "Running insmod..."
-	sudo insmod $KM_INSTALL_PATH/qusb_lnx.ko
 	cd -
     fi
 }
