@@ -1,4 +1,7 @@
 
+-------------------------------------------------------------------------------
+xpedaq (0.3.3) - Mon, 02 May 2016 20:50:44 +0200
+-------------------------------------------------------------------------------
 * Project files modified to support compilation against both Qt 4 and Qt 5
   (issue #62).
 * Obsolete dir test removed.

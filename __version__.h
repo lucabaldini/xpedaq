@@ -1,2 +1,2 @@
-#define __XPEDAQ_VERSION__ "0.3.2"
-#define __XPEDAQ_BUILD_DATE__ "Thu, 28 Apr 2016 14:51:07 +0200"
+#define __XPEDAQ_VERSION__ "0.3.3"
+#define __XPEDAQ_BUILD_DATE__ "Mon, 02 May 2016 20:50:44 +0200"
