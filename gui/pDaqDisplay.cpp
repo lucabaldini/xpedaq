@@ -1,6 +1,5 @@
 /***********************************************************************
-Copyright (C) 2007, 2008 by Luca Baldini (luca.baldini@pi.infn.it),
-Johan Bregeon, Massimo Minuti and Gloria Spandre.
+Copyright (C) 2007--2016 the X-ray Polarimetry Explorer (XPE) team.
 
 For the license terms see the file LICENSE, distributed along with this
 software.
@@ -34,5 +33,4 @@ pDaqDisplay::pDaqDisplay(QWidget *parent)
   m_elapsedTimeLabel = addField("Elapsed time [s]");
   m_averageDaqEventRateLabel = addField("Average DAQ event rate [Hz]");
   m_instantDaqEventRateLabel = addField("Instant DAQ event rate [Hz]");
-  m_instantFpgaEventRateLabel = addField("Instant FPGA event rate [Hz]");
 }

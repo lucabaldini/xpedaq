@@ -1,6 +1,5 @@
 /***********************************************************************
-Copyright (C) 2007, 2008 by Luca Baldini (luca.baldini@pi.infn.it),
-Johan Bregeon, Massimo Minuti and Gloria Spandre.
+Copyright (C) 2007--2016 the X-ray Polarimetry Explorer (XPE) team.
 
 For the license terms see the file LICENSE, distributed along with this
 software.
@@ -31,6 +30,7 @@ with this program; if not, write to the Free Software Foundation Inc.,
 #include "pQtCustomTextLabel.h"
 #include "pQtDisplayGui.h"
 
+
 /*! \brief Widget for displaying data acquisition related information.
 
 \todo Could be implemented better with a stl container of pQtCustomTextLabel objects and
@@ -42,34 +42,32 @@ class pDaqDisplay : public pQtDisplayGui
   Q_OBJECT
 
  public:
+  
   pDaqDisplay(QWidget *parent);
   ~pDaqDisplay() {;}
 
+  
  public slots:
-  inline int stationId() const
-    {return m_stationIdLabel->text().toInt();}
-  void updateStationId(int stationId)
-    {m_stationIdLabel->setText(stationId);}
-  inline int runId() const
-    {return m_runIdLabel->text().toInt();}
-  void updateRunId(int runId)
-    {m_runIdLabel->setText(runId);}
-  void updateStatus(QString status)
-    {m_statusLabel->setText(status);}
+   
+  int stationId() const {return m_stationIdLabel->text().toInt();}
+  int runId() const {return m_runIdLabel->text().toInt();}
+  
+  void updateStationId(int stationId) {m_stationIdLabel->setText(stationId);}
+  void updateRunId(int runId) {m_runIdLabel->setText(runId);}
+  void updateStatus(QString status) {m_statusLabel->setText(status);}
   void updateNumDataBlocks(int numDataBlocks)
     {m_numDataBlocksLabel->setText(numDataBlocks);}
-  void updateNumEvents(int numEvents)
-    {m_numEventsLabel->setText(numEvents);}
+  void updateNumEvents(int numEvents) {m_numEventsLabel->setText(numEvents);}
   void updateElapsedSeconds(int elapsedSeconds)
     {m_elapsedTimeLabel->setText(elapsedSeconds);}
   void updateAverageDaqRate(double rate)
     {m_averageDaqEventRateLabel->setText(rate);}
   void updateInstantDaqRate(double rate)
     {m_instantDaqEventRateLabel->setText(rate);}
-  void updateInstantFpgaRate(double rate)
-    {m_instantFpgaEventRateLabel->setText(rate);}
 
+  
  private:
+  
   pQtCustomTextLabel *m_stationIdLabel;
   pQtCustomTextLabel *m_runIdLabel;
   pQtCustomTextLabel *m_statusLabel;
@@ -78,7 +76,6 @@ class pDaqDisplay : public pQtDisplayGui
   pQtCustomTextLabel *m_elapsedTimeLabel;
   pQtCustomTextLabel *m_averageDaqEventRateLabel;
   pQtCustomTextLabel *m_instantDaqEventRateLabel;
-  pQtCustomTextLabel *m_instantFpgaEventRateLabel;
 };
 
-#endif
+#endif //PDAQDISPLAY_H
