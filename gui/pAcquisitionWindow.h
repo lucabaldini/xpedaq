@@ -66,6 +66,7 @@ class pAcquisitionWindow : public pQtMainWindowGui
   pUserPreferences *userPreferences();
   int visualizationMode();
   void displayConfiguration(pDetectorConfiguration *configuration, int mode);
+  void displayUserPreferences(pUserPreferences *preferences);
   void start();
   void stop();
   inline pRunController *runController() const {return m_runController;}

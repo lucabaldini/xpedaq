@@ -1,6 +1,5 @@
 /***********************************************************************
-Copyright (C) 2007, 2008 by Luca Baldini (luca.baldini@pi.infn.it),
-Johan Bregeon, Massimo Minuti and Gloria Spandre.
+Copyright (C) 2007--2016 the X-ray Polarimetry Explorer (XPE) team.
 
 For the license terms see the file LICENSE, distributed along with this
 software.
@@ -26,6 +25,8 @@ with this program; if not, write to the Free Software Foundation Inc.,
 #include <iostream>
 
 #include <QString>
+#include <QLineEdit>
+#include <QSpinBox>
 
 #include "pQtCustomTextLabel.h"
 #include "pQtCustomTab.h"
@@ -36,12 +37,35 @@ class pUsbControlTab : public pQtCustomTab
   Q_OBJECT
 
  public:
+
   pUsbControlTab();
   ~pUsbControlTab() {;}
-
+  int timeout() const;
+  
+  
  public slots:
 
+   void updateInfo(QString deviceName, QString driverVersion,
+		   QString dllVersion, QString firmwareVersion);
+   void setTimeout(int timeout);
+   
+
  private:
+
+  void setupWidgets();
+  pQtCustomTextLabel *m_statusLabel;
+  QLineEdit *m_statusDisplay;
+  pQtCustomTextLabel *m_deviceNameLabel;
+  QLineEdit *m_deviceNameDisplay;
+  pQtCustomTextLabel *m_driverVersionLabel;
+  QLineEdit *m_driverVersionDisplay;
+  pQtCustomTextLabel *m_dllVersionLabel;
+  QLineEdit *m_dllVersionDisplay;
+  pQtCustomTextLabel *m_firmwareVersionLabel;
+  QLineEdit *m_firmwareVersionDisplay;
+  pQtCustomTextLabel *m_timeoutLabel;
+  QSpinBox *m_timeoutSpinBox;
+  pQtCustomTextLabel *m_timeoutUnitsLabel;
 };
 
-#endif
+#endif //PUSBCONTROLTAB_H

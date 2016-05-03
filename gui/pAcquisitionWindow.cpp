@@ -34,10 +34,14 @@ pAcquisitionWindow::pAcquisitionWindow()
   connect(m_runController->usbController(),
 	  SIGNAL(quickusbError(unsigned long)),
 	  this, SLOT(disableHardwareWidgets()));
+  connect(m_runController->usbController(),
+	  SIGNAL(connected(QString, QString, QString, QString)),
+	  m_usbControlTab,
+	  SLOT(updateInfo(QString, QString, QString, QString)));
   m_runController->connectUsb();
   setupConnections();
   pUserPreferences *preferences = m_runController->userPreferences();
-  m_userPreferencesTab->displayUserPreferences(*preferences);
+  displayUserPreferences(preferences);
   m_lastVisualizationMode = preferences->visualizationMode();
   pDetectorConfiguration *configuration =
     m_runController->detectorConfiguration();  
@@ -181,7 +185,9 @@ pDetectorConfiguration *pAcquisitionWindow::detectorConfiguration(int mode)
  */
 pUserPreferences *pAcquisitionWindow::userPreferences()
 {
-  return m_userPreferencesTab->getUserPreferences();
+  pUserPreferences *preferences = m_userPreferencesTab->getUserPreferences();
+  preferences->setUsbTimeout(m_usbControlTab->timeout());
+  return preferences;
 }
 
 
@@ -201,6 +207,15 @@ void pAcquisitionWindow::displayConfiguration(pDetectorConfiguration *configurat
   m_readoutModeTab->displayConfiguration(configuration, mode);
   m_thresholdSettingTab->displayConfiguration(configuration, mode);
   m_advancedSettingsTab->displayConfiguration(configuration);
+}
+
+
+/*!
+ */
+void pAcquisitionWindow::displayUserPreferences(pUserPreferences *preferences)
+{
+  m_userPreferencesTab->displayUserPreferences(*preferences);
+  m_usbControlTab->setTimeout(preferences->usbTimeout());
 }
 
 

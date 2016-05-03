@@ -184,7 +184,6 @@ short unsigned int pThresholdSettingTab::getReference()
 void pThresholdSettingTab::displayReference(unsigned short reference,
 					    int visualizationMode)
 {
-  *xpollog::kDebug << "Updating reference voltage." << endline;
   if (visualizationMode == xpolgui::kDacVisualizationCode){
     m_referenceDisplay->setText(QString::number(reference));
     m_referenceUnitsLabel->setText(xpolgui::kDACUnitsLabel);

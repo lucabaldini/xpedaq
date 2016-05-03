@@ -137,7 +137,7 @@ int pRunController::readStationId() const
 void pRunController::setStationId(int stationId)
 {
   m_stationId = stationId;
-  emit stationIdSet(m_stationId); 
+  emit stationIdSet(m_stationId);
 }
 
 
@@ -292,6 +292,7 @@ void pRunController::fsmStartRun()
   saveRunInfo();
   m_dataCollector->reset();
   if (m_usbController->IsOpened()) {
+    m_usbController->setTimeout(m_userPreferences->usbTimeout());
     m_xpolFpga->setup(m_detectorConfiguration);
     m_dataCollector->setup(dataFilePath(), m_userPreferences,
 			   m_detectorConfiguration);

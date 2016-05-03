@@ -1,5 +1,7 @@
 
 * Minor refactoring of the USB controller.
+* USB setting tab implemented and working (closing issue #64).
+* USB timeout setting exposed through the GUI (closing issue #71).
 
 
 -------------------------------------------------------------------------------

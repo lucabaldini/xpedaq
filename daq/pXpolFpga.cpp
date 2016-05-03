@@ -85,7 +85,6 @@ void pXpolFpga::mainSerialWrite(unsigned short REG_ADD,unsigned short regdata)
 //PE[3] is SCLK, PE[7] is SO_EN, PE[6] is datain (output from fpga)
 //MSb first!!!!!!
 unsigned short pXpolFpga::mainSiRead(unsigned short reg_address){
-  *xpollog::kInfo << "CS: begin mainSiRead with reg_address " << reg_address << endline;
   unsigned char clkpulse_vect[3];
   unsigned char data;
   unsigned short length=1,i;
@@ -379,7 +378,8 @@ unsigned short pXpolFpga::readVrefDac()
   mainSerialWrite((unsigned short) XPM_STATUS_REG,(unsigned short) AD2_RUN);
   // Read the register
   unsigned short vref_dac = mainSiRead((unsigned short)XPM_AD2_DATA);
-  *xpollog::kInfo << "CS: reading value vref_dac " << vref_dac << endline;	
+  *xpollog::kDebug << "Reading reference voltage... " << vref_dac
+		   << " DAC" << endline;	
   // Emit a signal to update the main GUI
   emit thresholdRefRead(vref_dac); 
   return vref_dac;

@@ -23,6 +23,8 @@ with this program; if not, write to the Free Software Foundation Inc.,
 #define PUSBCONTROLLER_H
 
 #include <iostream>
+#include <string>
+#include <sstream>
 
 #include "xpollog.h"
 #include "CQuickUsb.h"
@@ -188,6 +190,11 @@ class pUsbController : public QObject, public CQuickUsb
   pUsbController();
   ~pUsbController();
   unsigned long connect();
+
+  std::string deviceName();
+  std::string driverVersion();
+  std::string dllVersion();
+  std::string firmwareVersion();
   
   int setup();
   int readUsbSettings();
@@ -204,6 +211,7 @@ class pUsbController : public QObject, public CQuickUsb
   int writePortDir(unsigned short address, unsigned char data);
   int writePort(unsigned short address, unsigned char *data,
 		unsigned short length);
+  unsigned long timeout() const {return m_timeout;}
   int setTimeout(unsigned long timeout);
   static std::string errorDescription(unsigned long errorCode);
   static std::string errorResolution(unsigned long errorCode);
@@ -211,7 +219,8 @@ class pUsbController : public QObject, public CQuickUsb
 
  signals:
 
-  void connected(char *deviceName);
+  void connected(QString deviceName, QString driverVersion, QString dllVersion,
+		 QString firmwareVersion);
   void quickusbError(unsigned long errorCode);
 
     
@@ -219,6 +228,9 @@ class pUsbController : public QObject, public CQuickUsb
 
  private:
 
+  /// \brief Private bookkeping member to keep track of the current timeout.
+  unsigned long m_timeout;
+  
 };
 
 #endif

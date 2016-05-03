@@ -39,25 +39,33 @@ unsigned long pUsbController::connect()
   char moduleString[512];
   if (QuickUsbFindModules(moduleString, 512)) {
     int numUsbDevices = 0;
-    char deviceName[20];
+    char devName[20];
     char *moduleStringPtr = moduleString;
     while (*moduleStringPtr != '\0') {
       *xpollog::kDebug << "Found " << moduleStringPtr << "." << endline;
-      strncpy(deviceName, moduleStringPtr, 20);
+      strncpy(devName, moduleStringPtr, 20);
       moduleStringPtr += strlen(moduleStringPtr);
       numUsbDevices ++;
     }
     if (numUsbDevices > 1) {
       *xpollog::kWarning << numUsbDevices << " modules found, using "
-			 << deviceName << "..." << endline;
+			 << devName << "..." << endline;
     }
-    SetName(deviceName);
+    SetName(devName);
     if (!Open()) {
       *xpollog::kError << "Could not open the USB device." << endline;
       exit(1);
     }
-    emit connected(deviceName);
-    setup();
+    *xpollog::kInfo << "Device name " << deviceName() << "." << endline;
+    *xpollog::kInfo << "Driver version " << driverVersion() << "." << endline;
+    *xpollog::kInfo << "Dll version " << dllVersion() << "." << endline;
+    *xpollog::kInfo << "Firmware version " << firmwareVersion() << "."
+		    << endline;
+    emit connected(QString::fromStdString(deviceName()),
+		   QString::fromStdString(driverVersion()),
+		   QString::fromStdString(dllVersion()),
+		   QString::fromStdString(firmwareVersion()));
+    setup();  
   } else {
     QuickUsbGetLastError(&errorCode);
     if (errorCode > 0) {
@@ -67,6 +75,50 @@ unsigned long pUsbController::connect()
     emit quickusbError(errorCode);
   }
   return errorCode;
+}
+
+
+/*!
+ */
+std::string pUsbController::deviceName()
+{
+  return std::string(GetDeviceName());
+}
+
+
+/*!
+ */
+std::string pUsbController::driverVersion()
+{
+  short unsigned int major, minor, build;
+  std::stringstream version("");
+  GetDriverVersion(&major, &minor, &build);
+  version << major << "." << minor << "." << build;
+  return version.str();
+}
+  
+
+/*!
+ */
+std::string pUsbController::dllVersion()
+{
+  short unsigned int major, minor, build;
+  std::stringstream version("");
+  GetDllVersion(&major, &minor, &build);
+  version << major << "." << minor << "." << build;
+  return version.str();
+}
+
+
+/*!
+ */
+std::string pUsbController::firmwareVersion()
+{
+  short unsigned int major, minor, build;
+  std::stringstream version("");
+  GetFirmwareVersion(&major, &minor, &build);
+  version << major << "." << minor << "." << build;
+  return version.str();
 }
 
 
@@ -187,6 +239,7 @@ int pUsbController::setTimeout(unsigned long timeout)
     *xpollog::kDebug << endline;
     return lastErrorCode();
   }
+  m_timeout = timeout;
   *xpollog::kDebug << " Done." << endline;
   return 0;
 }
@@ -294,15 +347,18 @@ int pUsbController::flushQUsbFIFO()
   unsigned short status = 0;
   long unsigned int length = SRAM_DIM*2;
   unsigned char buffer[SRAM_DIM*2];
+  // Keep track of the previou timeout.
+  unsigned long prevTimeout = timeout();
+  // Set a short timeout.
   errorCode += setTimeout(1000);
   errorCode += readSetting(SETTING_SLAVEFIFOFLAGS, &status);
-  if(status & EP6EMPTYFLG)
-    {
-      *xpollog::kDebug << "QuickUsb FIFO is empty." << endline;
-    } else {
-      errorCode += readData((unsigned char*)buffer, &length);
-    }
-  errorCode += setTimeout(TIMEOUTMS);
+  if (status & EP6EMPTYFLG) {
+    *xpollog::kDebug << "QuickUsb FIFO is empty." << endline;
+  } else {
+    errorCode += readData((unsigned char*)buffer, &length);
+  }
+  // Restore the previous timeout.
+  errorCode += setTimeout(prevTimeout);
   return errorCode;
 }
 

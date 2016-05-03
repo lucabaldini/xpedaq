@@ -16,3 +16,5 @@
 0
 //Logger display level//
 0
+//USB timeout//
+5000

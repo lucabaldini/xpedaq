@@ -59,6 +59,8 @@ void pUserPreferences::writeToFile(std::string filePath)
   xpolio::kIOManager->write(outputFile, loggerTerminalLevel());
   xpolio::kIOManager->write(outputFile, "//Logger display level//");
   xpolio::kIOManager->write(outputFile, loggerDisplayLevel());
+  xpolio::kIOManager->write(outputFile, "//USB timeout//");
+  xpolio::kIOManager->write(outputFile, usbTimeout());
   xpolio::kIOManager->closeOutputFile(outputFile);
 }
 
@@ -85,6 +87,8 @@ void pUserPreferences::readFromFile(std::string filePath)
   setLoggerTerminalLevel(xpolio::kIOManager->readInteger(inputFile));
   xpolio::kIOManager->skipLine(inputFile);
   setLoggerDisplayLevel(xpolio::kIOManager->readInteger(inputFile));
+  xpolio::kIOManager->skipLine(inputFile);
+  setUsbTimeout(xpolio::kIOManager->readInteger(inputFile));
   xpolio::kIOManager->closeInputFile(inputFile);
 }
 
@@ -103,6 +107,7 @@ std::ostream& pUserPreferences::fillStream(std::ostream& os) const
   os << "Log file enabled: " << logFileEnabled() << std::endl;
   os << "Logger terminal level: " << loggerTerminalLevel() << std::endl;
   os << "Logger display level: " << loggerDisplayLevel() << std::endl;
+  os << "USB timeout: " << usbTimeout() << std::endl;
   os << xpedaqutils::hline();
   return os;
 }

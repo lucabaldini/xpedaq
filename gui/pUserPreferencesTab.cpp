@@ -29,6 +29,7 @@ with this program; if not, write to the Free Software Foundation Inc.,
 pUserPreferencesTab::pUserPreferencesTab()
   : pQtCustomTab("Preferences")
 {
+  m_groupBoxGridLayout->setColumnMinimumWidth(0, 250);
   m_loggerDebugString = "DEBUG";
   m_loggerInfoString = "INFO";
   m_loggerWarningString = "WARNING";
