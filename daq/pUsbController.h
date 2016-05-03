@@ -187,6 +187,8 @@ class pUsbController : public QObject, public CQuickUsb
 
   pUsbController();
   ~pUsbController();
+  unsigned long connect();
+  
   int setup();
   int readUsbSettings();
   int writeUsbSettings();

@@ -30,11 +30,11 @@ pAcquisitionWindow::pAcquisitionWindow()
   setupTransportBar();
   setupTabWidget();
   m_runController = new pRunController();
-  // This connection needs to be here in order to intercept error signals
-  // from QuickUsb.
-  connect(m_runController, SIGNAL(quickusbError(unsigned long)),
+  // This connection needs to be here in order to intercept error signals.
+  connect(m_runController->usbController(),
+	  SIGNAL(quickusbError(unsigned long)),
 	  this, SLOT(disableHardwareWidgets()));
-  m_runController->connectToQuickUsb();
+  m_runController->connectUsb();
   setupConnections();
   pUserPreferences *preferences = m_runController->userPreferences();
   m_userPreferencesTab->displayUserPreferences(*preferences);

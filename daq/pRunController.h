@@ -44,7 +44,7 @@ class pRunController : public pFiniteStateMachine
   pRunController(int maxSeconds = 604800, int maxEvents = 100000000,
 		 int maxDataBlocks = 50000000);
   ~pRunController() {;}
-  unsigned long connectToQuickUsb();
+  unsigned long connectUsb();
   void init();
   inline pDataCollector *dataCollector() const {return m_dataCollector;}
   inline pUsbController *usbController() const {return m_usbController;}
@@ -86,7 +86,6 @@ class pRunController : public pFiniteStateMachine
 
   void stationIdSet(int stationId);
   void runIdChanged(int runId);
-  void quickusbError(unsigned long errorCode);
   void elapsedSecondsChanged(int elapsedSeconds);
   void numDataBlocksChanged(int numDataBlocks);
   void numEventsChanged(int numEvents);

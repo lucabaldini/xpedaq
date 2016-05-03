@@ -22,9 +22,17 @@ with this program; if not, write to the Free Software Foundation Inc.,
 #include "pUsbController.h"
 
 
-/*!
+/*! Do-nothing constructor.
  */
 pUsbController::pUsbController()
+{
+
+}
+
+
+/*! Connect to the QuickUsb interface.
+ */
+unsigned long pUsbController::connect()
 {
   *xpollog::kInfo << "Searching for USB module(s)... " << endline;
   unsigned long errorCode = 0;
@@ -58,6 +66,7 @@ pUsbController::pUsbController()
     *xpollog::kError << "Could not connect to USB." << endline;
     emit quickusbError(errorCode);
   }
+  return errorCode;
 }
 
 

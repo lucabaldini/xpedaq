@@ -55,7 +55,19 @@ pRunController::pRunController(int maxSeconds, int maxEvents, int maxDataBlocks)
   m_timer = new QTimer();
   m_timer->setInterval(1000);
   connect(m_timer, SIGNAL(timeout()), this, SLOT(updateRunInfo()));
+  m_usbController = new pUsbController();
+  m_xpolFpga = new pXpolFpga(m_usbController);
+  m_dataCollector = new pDataCollector(m_usbController);
 }
+
+
+/*!
+ */
+unsigned long pRunController::connectUsb()
+{
+  return m_usbController->connect();
+}
+
 
 
 /*! Basic initialization. This is not part of constructor because when the
@@ -242,20 +254,6 @@ void pRunController::resetRunInfo()
   emit numEventsChanged(0);
   emit averageEventRateChanged(0.);
   emit instantEventRateChanged(0.);
-}
-
-
-/*!
- */
-unsigned long pRunController::connectToQuickUsb()
-{
-  m_usbController = new pUsbController();
-  if (m_usbController->lastErrorCode()) {
-      emit quickusbError(m_usbController->lastErrorCode());
-    }
-  m_xpolFpga = new pXpolFpga(m_usbController);
-  m_dataCollector = new pDataCollector(m_usbController);
-  return m_usbController->lastErrorCode();
 }
 
 
