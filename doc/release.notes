@@ -1,4 +1,7 @@
 
+-------------------------------------------------------------------------------
+xpedaq (0.5.0) - Tue, 03 May 2016 19:49:23 +0200
+-------------------------------------------------------------------------------
 * Minor refactoring of the USB controller.
 * USB setting tab implemented and working (closing issue #64).
 * USB timeout setting exposed through the GUI (closing issue #71).
