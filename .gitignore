@@ -27,6 +27,7 @@
 
 # Automatically generated files and folders.
 bin/xpedaq
+bin/xpepeds
 bin/xpesrv
 build/*
 log/*
@@ -45,6 +46,8 @@ quickusb-*/linux/driver/modules.order
 
 xpedaq/config/*.cfg
 xpedaq/moc
+
+xpepeds/moc
 
 xpesrv/moc
 xpesrv/preferences.cfg
