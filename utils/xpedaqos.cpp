@@ -30,6 +30,8 @@ std::string xpedaqos::kSeparator = "/";
 #endif
 
 
+/*!
+ */
 std::string xpedaqos::environ(std::string name)
 {
   char *path = std::getenv(name.c_str());
@@ -42,32 +44,106 @@ std::string xpedaqos::environ(std::string name)
   }
 }
 
+
+/*!
+ */
 std::string xpedaqos::join(std::string p1, std::string p2)
 {
   return p1 + xpedaqos::kSeparator + p2;
 }
 
+
+/*!
+ */
 std::string xpedaqos::join(std::string p1, std::string p2, std::string p3)
 {
   return xpedaqos::join(join(p1, p2), p3);
 }
 
+
+/*!
+ */
 std::string xpedaqos::join(std::string p1, std::string p2, std::string p3,
 			   std::string p4)
 {
   return xpedaqos::join(join(p1, p2, p3), p4);
 }
 
+
+/*!
+ */
 std::string xpedaqos::join(std::string p1, std::string p2, std::string p3,
 			   std::string p4, std::string p5)
 {
   return xpedaqos::join(join(p1, p2, p3, p4), p5);
 }
 
+
+/*!
+ */
+std::string xpedaqos::rjoin(std::string p1)
+{
+  return xpedaqos::join(xpedaqos::environ("XPEDAQ_ROOT"), p1);
+}
+
+
+/*!
+ */
+std::string xpedaqos::rjoin(std::string p1, std::string p2)
+{
+  return xpedaqos::join(rjoin(p1), p2);
+}
+
+
+/*!
+ */
+std::string xpedaqos::rjoin(std::string p1, std::string p2, std::string p3)
+{
+  return xpedaqos::join(rjoin(p1), p2, p3);
+}
+
+
+/*!
+ */
+std::string xpedaqos::rjoin(std::string p1, std::string p2, std::string p3,
+			    std::string p4)
+{
+  return xpedaqos::join(rjoin(p1), p2, p3, p4);
+}
+
+
+/*!
+ */
 void xpedaqos::mkdir(std::string path)
 {
   if (!QDir(QString::fromStdString(path)).exists()) {
     *xpollog::kInfo << "Creating " << path << "..." << endline;
     QDir().mkpath(QString::fromStdString(path));
   }
+}
+
+
+/*!
+ */
+bool xpedaqos::fileExists(std::string path)
+{
+  return QFile(QString::fromStdString(path)).exists();
+}
+
+
+
+/*!
+ */
+bool xpedaqos::folderExists(std::string path)
+{
+  return QDir(QString::fromStdString(path)).exists();
+}
+
+
+/*!
+ */
+void xpedaqos::copyFile(std::string src, std::string dest)
+{
+  *xpollog::kInfo << "Copying " << src << " to " << dest << "..." << endline;
+  QFile(QString::fromStdString(src)).copy(QString::fromStdString(dest));
 }

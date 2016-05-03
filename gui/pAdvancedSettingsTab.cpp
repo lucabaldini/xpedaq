@@ -250,10 +250,10 @@ void pAdvancedSettingsTab::displayMaxWindowSize(unsigned short int size)
 void pAdvancedSettingsTab::displayConfiguration(pDetectorConfiguration
 						*configuration)
 {
-  displayTimingCode(configuration->getTimingCode());
-  displayNumPedsSamples(configuration->getNumPedSamples());
-  displayPedSubDelay(configuration->getPedSampleDelay());
-  displayTrgEnableDelay(configuration->getTrgEnableDelay());
-  displayMinWindowSize(configuration->getMinWindowSize());
-  displayMaxWindowSize(configuration->getMaxWindowSize());
+  displayTimingCode(configuration->timingCode());
+  displayNumPedsSamples(configuration->numPedSamples());
+  displayPedSubDelay(configuration->pedSampleDelay());
+  displayTrgEnableDelay(configuration->trgEnableDelay());
+  displayMinWindowSize(configuration->minWindowSize());
+  displayMaxWindowSize(configuration->maxWindowSize());
 }

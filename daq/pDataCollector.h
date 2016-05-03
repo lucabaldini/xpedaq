@@ -61,12 +61,8 @@ class pDataCollector : public QThread
   void reset();
   void setup(std::string outputFilePath, pUserPreferences *preferences,
 	     pDetectorConfiguration *configuration);
-  inline int getNumAcquiredDataBlocks()
-    {return m_dataFIFO->getNumAcquiredDataBlocks();}
-  inline int getNumAcquiredEvents()
-    {return m_dataFIFO->getNumAcquiredEvents();}
-  inline double getInstantFpgaEventRate()
-    {return m_dataFIFO->getLastDataBlockAverageEventRate();}
+  int numDataBlocks() const {return m_dataFIFO->getNumAcquiredDataBlocks();}
+  int numEvents() const {return m_dataFIFO->getNumAcquiredEvents();}
 
  signals:
 

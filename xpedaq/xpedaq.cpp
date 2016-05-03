@@ -9,8 +9,8 @@ int main(int argn, char *argv[])
 {
   xpedaqutils::startmsg();
   
-  bool autostart = false;
-  bool batchmode = false;
+  //bool autostart = false;
+  //bool batchmode = false;
   
   QApplication app(argn, argv);
   pMainWindow window;
@@ -18,48 +18,48 @@ int main(int argn, char *argv[])
   for (int i = 1; i < argn; i++)
     {
       std::string option = argv[i];
-      if (option == "-s")
-	{
-	  autostart = true;
-	}
-      else if (option == "-b")
-	{
-	  batchmode = true;
-	  autostart = true;
-	}
-      else if (option == "-t")
+      //if (option == "-s")
+      //	{
+      //	  autostart = true;
+      //	}
+      //else if (option == "-b")
+      //{
+      //  batchmode = true;
+      //  autostart = true;
+      //}
+      if (option == "-t")
 	{
 	  i++;
-	  window.getRunController()->setMaxElapsedSeconds(atoi(argv[i]));
+	  window.runController()->setMaxSeconds(atoi(argv[i]));
 	}
       else if (option == "-n")
 	{
 	  i++;
-	  window.getRunController()->setMaxAcquiredEvents(atoi(argv[i]));
+	  window.runController()->setMaxEvents(atoi(argv[i]));
 	}
       else if (option == "-d")
 	{
 	  i++;
-	  window.getRunController()->setMaxAcquiredDataBlocks(atoi(argv[i]));
+	  window.runController()->setMaxDataBlocks(atoi(argv[i]));
 	}
-      else if (option == "-o")
-	{
-	  i++;
-	  window.getRunController()->setOutputFilePath(argv[i]);
-	}
+      //else if (option == "-o")
+      ///	{
+      //  i++;
+      //  window.getRunController()->setOutputFilePath(argv[i]);
+      //	}
     }
-  if (batchmode)
-    {
-      window.getRunController()->setBatch();
-    }
-  else
-    {
-      window.show();
-    }
-  if (autostart)
-    {
-      window.start();
-    }
+  //if (batchmode)
+  // {
+  //  window.getRunController()->setBatch();
+  // }
+  //else
+  // {
+  window.show();
+  //  }
+  //if (autostart)
+  //  {
+  //    window.start();
+  // }
   return app.exec();
 }
 

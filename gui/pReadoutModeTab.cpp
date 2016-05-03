@@ -140,11 +140,11 @@ void pReadoutModeTab::disableBufferModeWidgets(bool disable)
 
 unsigned short int pReadoutModeTab::getReadoutMode()
 {
-  if (m_fullFrameRadioButton->isChecked()){
+  if (m_fullFrameRadioButton->isChecked()) {
     return xpoldetector::kFullFrameReadoutCode;
-  } else if (m_windowRadioButton->isChecked()){
+  } else if (m_windowRadioButton->isChecked()) {
     return xpoldetector::kWindowedReadoutCode;
-  } else if (m_chargeInjectionRadioButton->isChecked()){
+  } else if (m_chargeInjectionRadioButton->isChecked()) {
     return xpoldetector::kChargeInjectionReadoutCode;
   } else {
     return xpoldetector::kUndefinedReadoutCode;
@@ -257,10 +257,10 @@ void pReadoutModeTab::displayConfiguration(pDetectorConfiguration
 					   *configuration,
 					   int visualizationMode)
 {
-  displayReadoutMode(configuration->getReadoutMode());
-  displayBufferMode(configuration->getBufferMode());
-  displayCalibrationSignal(configuration->getCalibrationDac(),
+  displayReadoutMode(configuration->readoutMode());
+  displayBufferMode(configuration->bufferMode());
+  displayCalibrationSignal(configuration->calibrationDac(),
 			   visualizationMode);
-  displayPixelAddressX(configuration->getPixelAddressX());
-  displayPixelAddressY(configuration->getPixelAddressY());
+  displayPixelAddressX(configuration->pixelAddressX());
+  displayPixelAddressY(configuration->pixelAddressY());
 }

@@ -40,7 +40,15 @@ namespace xpedaqos{
 			  std::string p4);
   extern std::string join(std::string p1, std::string p2, std::string p3,
 			  std::string p4, std::string p5);
+  extern std::string rjoin(std::string p1);
+  extern std::string rjoin(std::string p1, std::string p2);
+  extern std::string rjoin(std::string p1, std::string p2, std::string p3);
+  extern std::string rjoin(std::string p1, std::string p2, std::string p3,
+			   std::string p4);
   extern void mkdir(std::string path);
+  extern bool fileExists(std::string path);
+  extern bool folderExists(std::string path);
+  extern void copyFile(std::string src, std::string dest);
 }
 
 #endif //XPEDAQOS_H

@@ -1,6 +1,5 @@
 /***********************************************************************
-Copyright (C) 2007, 2008 by Luca Baldini (luca.baldini@pi.infn.it),
-Johan Bregeon, Massimo Minuti and Gloria Spandre.
+Copyright (C) 2007--2016 the X-ray Polarimetry Explorer (XPE) team.
 
 For the license terms see the file LICENSE, distributed along with this
 software.
@@ -27,6 +26,12 @@ pDetectorConfiguration::pDetectorConfiguration()
 
 }
 
+
+pDetectorConfiguration::pDetectorConfiguration(std::string filePath)
+{
+  readFromFile(filePath);
+}
+
 void pDetectorConfiguration::setReadoutMode(unsigned short int mode)
 {
   if (mode == xpoldetector::kFullFrameReadoutCode ||
@@ -42,10 +47,10 @@ void pDetectorConfiguration::setReadoutMode(unsigned short int mode)
 void pDetectorConfiguration::setThresholdDac(int clusterId,
 					     unsigned short int dacSetting)
 {
-  if (dacSetting > xpoldetector::kThresholdDacMax){
+  if (dacSetting > xpoldetector::kThresholdDacMax) {
     m_thresholdDac[clusterId] = xpoldetector::kThresholdDacMax;
     *xpollog::kWarning << "Threshold out of range." << endline;
-  } else if (dacSetting < xpoldetector::kThresholdDacMin){
+  } else if (dacSetting < xpoldetector::kThresholdDacMin) {
     m_thresholdDac[clusterId] = xpoldetector::kThresholdDacMin;
     *xpollog::kWarning << "Threshold out of range." << endline;
   } else {
@@ -54,23 +59,22 @@ void pDetectorConfiguration::setThresholdDac(int clusterId,
 }
 void pDetectorConfiguration::setCalibrationDac(unsigned short int dacSetting)
 {
-  if (dacSetting > xpoldetector::kCalibrationDacMax){
+  if (dacSetting > xpoldetector::kCalibrationDacMax) {
     m_calibrationDac = xpoldetector::kCalibrationDacMax;
-  } else if (dacSetting < xpoldetector::kCalibrationDacMin){
+  } else if (dacSetting < xpoldetector::kCalibrationDacMin) {
     m_calibrationDac = xpoldetector::kCalibrationDacMin;
   } else {
     m_calibrationDac = dacSetting;
   }
 }
 
-int pDetectorConfiguration::getMaxBufferSize()
+int pDetectorConfiguration::maxBufferSize() const
 {
-  if(m_bufferMode == xpoldetector::kSmallBufferMode)
-    {
-      return xpoldetector::kSmallBufferSize;
-    } else {
-      return xpoldetector::kLargeBufferSize;
-    }
+  if (m_bufferMode == xpoldetector::kSmallBufferMode) {
+    return xpoldetector::kSmallBufferSize;
+  } else {
+    return xpoldetector::kLargeBufferSize;
+  }
 }
 
 void pDetectorConfiguration::writeToFile(std::string filePath)
@@ -79,31 +83,31 @@ void pDetectorConfiguration::writeToFile(std::string filePath)
     "... " << endline;
   std::ofstream *outputFile = xpolio::kIOManager->openOutputFile(filePath);
   xpolio::kIOManager->write(outputFile, "//readout_mode//");
-  xpolio::kIOManager->write(outputFile, getReadoutMode());
+  xpolio::kIOManager->write(outputFile, readoutMode());
   xpolio::kIOManager->write(outputFile, "//buffer_mode//");
-  xpolio::kIOManager->write(outputFile, getBufferMode());
+  xpolio::kIOManager->write(outputFile, bufferMode());
   xpolio::kIOManager->write(outputFile, "//calibration_dac//");
-  xpolio::kIOManager->write(outputFile, getCalibrationDac());
+  xpolio::kIOManager->write(outputFile, calibrationDac());
   xpolio::kIOManager->write(outputFile, "//pixel_address_x//");
-  xpolio::kIOManager->write(outputFile, getPixelAddressX());
+  xpolio::kIOManager->write(outputFile, pixelAddressX());
   xpolio::kIOManager->write(outputFile, "//pixel_address_y//");
-  xpolio::kIOManager->write(outputFile, getPixelAddressY());
+  xpolio::kIOManager->write(outputFile, pixelAddressY());
   xpolio::kIOManager->write(outputFile, "//threshold_dacs//");
-  for (int i = 0; i <  NUM_READOUT_CLUSTERS; i++){
-    xpolio::kIOManager->write(outputFile, getThresholdDac(i));
+  for (int i = 0; i <  NUM_READOUT_CLUSTERS; i++) {
+    xpolio::kIOManager->write(outputFile, thresholdDac(i));
   }
   xpolio::kIOManager->write(outputFile, "//timing_code//");
-  xpolio::kIOManager->write(outputFile, getTimingCode());
+  xpolio::kIOManager->write(outputFile, timingCode());
   xpolio::kIOManager->write(outputFile, "//num_ped_samples//");
-  xpolio::kIOManager->write(outputFile, getNumPedSamples());
+  xpolio::kIOManager->write(outputFile, numPedSamples());
   xpolio::kIOManager->write(outputFile, "//ped_sample_delay//");
-  xpolio::kIOManager->write(outputFile, getPedSampleDelay());
+  xpolio::kIOManager->write(outputFile, pedSampleDelay());
   xpolio::kIOManager->write(outputFile, "//trg_enable_delay//");
-  xpolio::kIOManager->write(outputFile, getTrgEnableDelay());
+  xpolio::kIOManager->write(outputFile, trgEnableDelay());
   xpolio::kIOManager->write(outputFile, "//min_window_size//");
-  xpolio::kIOManager->write(outputFile, getMinWindowSize());
+  xpolio::kIOManager->write(outputFile, minWindowSize());
   xpolio::kIOManager->write(outputFile, "//max_window_size//");
-  xpolio::kIOManager->write(outputFile, getMaxWindowSize());
+  xpolio::kIOManager->write(outputFile, maxWindowSize());
   xpolio::kIOManager->closeOutputFile(outputFile);
 }
 
@@ -123,7 +127,7 @@ void pDetectorConfiguration::readFromFile(std::string filePath)
   xpolio::kIOManager->skipLine(inputFile);
   setPixelAddressY(xpolio::kIOManager->readUnsignedShort(inputFile));
   xpolio::kIOManager->skipLine(inputFile);
-  for (int i = 0; i <  NUM_READOUT_CLUSTERS; i++){
+  for (int i = 0; i <  NUM_READOUT_CLUSTERS; i++) {
     setThresholdDac(i, xpolio::kIOManager->readUnsignedShort(inputFile));
   }
   xpolio::kIOManager->skipLine(inputFile);
@@ -139,4 +143,31 @@ void pDetectorConfiguration::readFromFile(std::string filePath)
   xpolio::kIOManager->skipLine(inputFile);
   setMaxWindowSize(xpolio::kIOManager->readUnsignedShort(inputFile));
   xpolio::kIOManager->closeInputFile(inputFile);
+}
+
+
+/*!
+ */
+std::ostream& pDetectorConfiguration::fillStream(std::ostream& os) const
+{
+  os << xpedaqutils::title("Detector configuration", true);
+  os << "Readout mode: " << readoutMode() << std::endl;
+  os << "Buffer mode: " << bufferMode() << std::endl;
+  os << "Calibration DAC: " << calibrationDac() << std::endl;
+  os << "Pixel address x: " << pixelAddressX() << std::endl;
+  os << "Pixel address y: " << pixelAddressY() << std::endl;
+  os << "Threshold DACs: ";
+  for (int i = 0; i <  NUM_READOUT_CLUSTERS; i++) {
+    os << thresholdDac(i) << " ";
+  }
+  os << std::endl;
+  os << "Timing code: " << static_cast<unsigned short> (timingCode())
+     << std::endl;
+  os << "# samples for pedestals: " << numPedSamples() << std::endl;
+  os << "Pedestal sample delay: " << pedSampleDelay() << std::endl;
+  os << "Trigger enable delay: " << trgEnableDelay() << std::endl;
+  os << "Minimum window size: " << minWindowSize() << std::endl;
+  os << "Maximum window size: " << maxWindowSize() << std::endl;
+  os << xpedaqutils::hline();
+  return os;
 }

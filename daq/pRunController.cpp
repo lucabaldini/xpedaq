@@ -21,48 +21,232 @@ with this program; if not, write to the Free Software Foundation Inc.,
 
 #include "pRunController.h"
 
-/*!
-  The USB ports are scanned searching for QuickUSB module(s) connected;
-  effectively \ref createUsbModules() is the first method called. If a
-  QuickUsb module is found the \ref m_usbController is created and,
-  immediately after, \ref m_xpolFpga \ref m_dataCollector are also created.
-  Otherwise all the widgets which potentially interact with the hardware are
-  disabled; the rest may be useful for the debug.
-  The connections are set up.
 
-  \todo Think about wheter it could be handy not to disable any widget but
-  rather create a <i>dummy</i> \ref pRunController::m_usbController in case
-  the hardware is not available. It may require some work, but it could be
-  worth it in terms of debugging capability.
 
-  \todo Move the connections setup in a separate function.
+/*! Basic constructor.
  */
-
-pRunController::pRunController(pMainWindow *parentWindow,
-			       int maxElapsedSeconds,
-			       int maxAcquiredEvents,
-			       int maxAcquiredDataBlocks,
-			       int dataAcquisitionTimerTimeout)
-  :m_parentWindow(parentWindow),
-   m_maxElapsedSeconds(maxElapsedSeconds),
-   m_maxAcquiredEvents(maxAcquiredEvents),
-   m_maxAcquiredDataBlocks(maxAcquiredDataBlocks),
-   m_dataAcquisitionTimerTimeout(dataAcquisitionTimerTimeout)
+pRunController::pRunController(int maxSeconds, int maxEvents, int maxDataBlocks)
+  : m_maxSeconds(maxSeconds),
+    m_maxEvents(maxEvents),
+    m_maxDataBlocks(maxDataBlocks),
+    m_startSeconds(0),
+    m_stopSeconds(0)
 {
-  m_closeParentOnStop = false;
-  m_outputFilePath = xpolenv::kNullPath;
-  // Create the runId.cfg file, if needed.
-  QString cfgFilePath = QString(std::getenv("XPEDAQ_ROOT")) +
-    QDir::separator() + "xpedaq" + QDir::separator() + "config" +
-    QDir::separator() + "runId.cfg";
-  if (!QFile(cfgFilePath).exists()) {
-    *xpollog::kInfo << "Creating " << cfgFilePath.toStdString() <<
-      "..." << endline;
-    QFile(cfgFilePath + ".sample").copy(cfgFilePath);
+  m_stationIdFilePath = xpedaqos::rjoin("xpedaq", "config", "stationId.cfg");
+  if (!xpedaqos::fileExists(m_stationIdFilePath)) {
+    *xpollog::kError << "Could not find " << m_stationIdFilePath << endline;
+    exit(1);
   }
-  m_runIdCfgFilePath = cfgFilePath.toStdString();
+  m_runIdFilePath = xpedaqos::rjoin("xpedaq", "config", "runId.cfg");
+  if (!xpedaqos::fileExists(m_runIdFilePath)) {
+    xpedaqos::copyFile(m_runIdFilePath + ".sample", m_runIdFilePath);
+  }
+  m_configFilePath = xpedaqos::rjoin("xpedaq", "config", "detector.cfg");
+  if (!xpedaqos::fileExists(m_configFilePath)) {
+    xpedaqos::copyFile(m_configFilePath + ".sample", m_configFilePath);
+  }
+  m_preferencesFilePath = xpedaqos::rjoin("xpedaq", "config",
+					  "preferences.cfg");
+  if (!xpedaqos::fileExists(m_preferencesFilePath)) {
+    xpedaqos::copyFile(m_preferencesFilePath + ".sample",
+		       m_preferencesFilePath);
+  }
+  setupRun();
+  m_timer = new QTimer();
+  m_timer->setInterval(1000);
+  connect(m_timer, SIGNAL(timeout()), this, SLOT(updateRunInfo()));
 }
 
+
+/*! Basic initialization. This is not part of constructor because when the
+  run controller is instantiated from a parent GUI we need to setup the
+  connections properly before we call this.
+ */
+void pRunController::init()
+{
+  *xpollog::kDebug << "Initializing the run controller... " << endline;
+  pFiniteStateMachine::setReset();
+  setStationId(readStationId());
+  setRunId(readRunId());
+  resetRunInfo();
+  m_dataCollector->reset();
+  *xpollog::kDebug << "Run controller initialized." << endline;
+}
+
+
+/*!
+ */
+void pRunController::setupRun(pDetectorConfiguration *configuration,
+			      pUserPreferences *preferences)
+{
+  *xpollog::kInfo << "Setting up run..." << endline;
+  m_detectorConfiguration = configuration;
+  m_userPreferences = preferences;
+  // The following two lines are duplicated and should be refactored.
+  xpollog::kLogger->setTerminalLevel(m_userPreferences->loggerTerminalLevel());
+  xpollog::kLogger->setDisplayLevel(m_userPreferences->loggerDisplayLevel());
+}
+
+
+/*!
+ */
+void pRunController::setupRun(std::string configFilePath,
+			      std::string preferencesFilePath)
+{ 
+  m_detectorConfiguration = new pDetectorConfiguration(configFilePath);
+  m_userPreferences = new pUserPreferences(preferencesFilePath);
+  xpollog::kLogger->setTerminalLevel(m_userPreferences->loggerTerminalLevel());
+  xpollog::kLogger->setDisplayLevel(m_userPreferences->loggerDisplayLevel());
+}
+
+
+/*!
+ */
+void pRunController::setupRun()
+{
+  setupRun(m_configFilePath, m_preferencesFilePath);
+}
+
+
+/*!
+ */
+int pRunController::readStationId() const
+{
+  *xpollog::kDebug << "Reading station ID from " << m_stationIdFilePath <<
+    "...";
+  int stationId = xpolio::kIOManager->getInteger(m_stationIdFilePath);
+  *xpollog::kDebug << " (" << stationId << ")." << endline;
+  return stationId;
+}
+
+
+/*! Set the station identifier and emit a stationIdSet() signal.
+ */
+void pRunController::setStationId(int stationId)
+{
+  m_stationId = stationId;
+  emit stationIdSet(m_stationId); 
+}
+
+
+/*! 
+ */
+int pRunController::readRunId() const
+{
+  *xpollog::kDebug << "Reading run ID from " << m_runIdFilePath <<  "...";
+  int runId = xpolio::kIOManager->getInteger(m_runIdFilePath);
+  *xpollog::kDebug << " (" << runId << ")." << endline;
+  return runId;
+}
+
+
+/*!
+ */
+void pRunController::writeRunId() const
+{
+  *xpollog::kDebug << "Writing run Id to " << m_runIdFilePath <<
+    "... " << endline;
+  xpolio::kIOManager->put(m_runIdFilePath, m_runId);
+}
+
+
+/*! Set the run identifier and emit a runIdChanged() signal. Mind this is 
+  not writing the new run identifier to file.
+ */
+void pRunController::setRunId(int runId)
+{
+  m_runId = runId;
+  emit runIdChanged(m_runId); 
+}
+
+
+/*! Increment the run identifier by one unit and write the new value into
+  the proper configuration file.
+ */
+void pRunController::incrementRunId()
+{
+  setRunId(m_runId + 1);
+  writeRunId();
+}
+
+
+/*! This is read from the system time.
+ */
+int pRunController::currentSeconds() const
+{
+  return static_cast<int> (time(NULL));
+}
+
+
+/*! Return the difference between the current seconds and the seconds latched
+  at the start time.
+*/
+int pRunController::elapsedSeconds() const
+{
+  return currentSeconds() - m_startSeconds;
+}
+
+
+/*! Return the ratio between the number of events acquired by the data
+  collector and the number of elapsed seconds.
+*/
+double pRunController::averageEventRate() const
+{
+  if (elapsedSeconds() == 0) {
+    return 0.0;
+  } else {
+    return numEvents()/(double)elapsedSeconds(); 
+  }
+}
+
+
+/*! 
+ */
+double pRunController::instantEventRate() const
+{
+  // Need to come back to this one. This should be possible without
+  // keeping track of m_lastNumAcquiredEvents.
+  //return 1000.0*(getNumAcquiredEvents() - m_lastNumAcquiredEvents)/
+  //  m_timer->interval();
+  return 0.;
+}
+
+
+/*! This is connected to an underlying QTimer object that is started at the
+  start run and is meant to signal the outside world that the run information
+  (e.g. elapsed time and number of events collected) has changed. Most notably,
+  these signals are intercepted by the main GUI to display the run info.
+*/
+void pRunController::updateRunInfo()
+{
+  emit elapsedSecondsChanged(elapsedSeconds());
+  emit numDataBlocksChanged(numDataBlocks());
+  emit numEventsChanged(numEvents());
+  emit averageEventRateChanged(averageEventRate());
+  emit instantEventRateChanged(instantEventRate());
+  if ((elapsedSeconds() > m_maxSeconds)   ||
+      (numDataBlocks() > m_maxDataBlocks) ||
+      (numEvents() > m_maxEvents)) {
+    setStopped();
+  }
+}
+
+
+/*! Similar to the updateRunInfo() in spirit---except that here we're sending
+  out a bunch of zeros.
+*/
+void pRunController::resetRunInfo()
+{
+  emit elapsedSecondsChanged(0);
+  emit numDataBlocksChanged(0);
+  emit numEventsChanged(0);
+  emit averageEventRateChanged(0.);
+  emit instantEventRateChanged(0.);
+}
+
+
+/*!
+ */
 unsigned long pRunController::connectToQuickUsb()
 {
   *xpollog::kInfo << "Searching for USB module(s)... " << endline;
@@ -105,283 +289,89 @@ unsigned long pRunController::connectToQuickUsb()
   // pointer. Do we have to do anything about it?
   m_xpolFpga = new pXpolFpga(m_usbController);
   m_dataCollector = new pDataCollector(m_usbController);
-  m_dataAcquisitionTimer = new QTimer();
-  connect(m_dataAcquisitionTimer, SIGNAL(timeout()), this, SLOT(updateTimer()));
-  connect(m_dataCollector, SIGNAL(readoutErrorDetected(int)), this,
-	  SLOT(stopParent()));
   return errorCode;
 }
 
-/*!
-  Called once and forever when the parent GUI window is instantiated. The
-  setReset() method of the \ref pFiniteStateMachine class is called, the run
-  number is read from its text file and set and the data collector is reset.
-  The main purpose of the function is to have the correct information on the
-  data display of the main window when the window itself is created.
 
-  \todo The \ref pRunController::resetTimer() method is called in the
-  \ref pRunController::fsmStartRun method so that it's effectively done twice.
-  The same holds for the reset of the data collector. Look into that more
-  carefully.
-
-  \todo Why not move the whole block into the constructor? Is there any
-  particular reason for calling it from the main window?
+/*! Nothing to do here.
  */
-
-void pRunController::init()
-{
-  *xpollog::kDebug << "Initializing the run controller... " << endline;
-  pFiniteStateMachine::setReset();
-  resetTimer();
-  setRunId(readRunId());
-  m_dataCollector->reset();
-  *xpollog::kDebug << "Run controller initialized." << endline;
-}
-
-/*!
-  The number of elapsed seconds is incremented and the necessary signals
-  (connected with the parent window, if any) are emitted. In case one
-  of the stop criteria (on the elapsed time or the number of acquired data
-  blocks or event) is satisfied, the acquisition is stopped.
-
-  The slot is connected to the timeout() method of the 
-  \ref m_dataAcquisitionTimer QTimer member which is created in the
-  constructor, started in the \ref fsmStartRun() method and stopped in the
-  \ref fsmStopRun() method.
-  Effectively the method is executed once per second (or whatever, depending
-  on the QTimer settings) all the time while the data acquisition is running.
- 
-  Also note that the number of acquired events or data blocks is also
-  checked once per second, at the moment, so that typically more data blocks
-  and events of those requested will be acquired.
- 
-  \todo Fix the m_closeParent thing (eventually will go away).
-  
-  \todo Change the name of the method to updateElapsedSeconds().
- */
-
-void pRunController::updateTimer()
-{
-  m_elapsedSeconds ++;
-  emit elapsedSecondsChanged(m_elapsedSeconds);
-  emit numAcquiredDataBlocksChanged(getNumAcquiredDataBlocks());
-  emit numAcquiredEventsChanged(getNumAcquiredEvents());
-  emit averageEventRateChanged(getAverageDaqEventRate());
-  emit instantEventRateChanged(getInstantDaqEventRate());
-  emit instantFpgaEventRateChanged(0.0);
-  m_lastNumAcquiredEvents = getNumAcquiredEvents();
-  if ((m_elapsedSeconds > m_maxElapsedSeconds)               ||
-      (getNumAcquiredDataBlocks() > m_maxAcquiredDataBlocks) ||
-      (getNumAcquiredEvents() > m_maxAcquiredEvents)) {
-    stopParent();
-  }
-}
-
-void pRunController::stopParent()
-{
-  m_parentWindow->stop();
-  while (m_dataCollector->isRunning())
-    {};
-  if (m_closeParentOnStop) {
-    *xpollog::kInfo << "Closing parent window..." << endline;
-    m_parentWindow->close();
-  }  
-}
-
-/*!
-  Set the \ref m_elapsedSeconds member to zero and emit an
-  \ref elapsedSecondsChanged signal.
-
-  Called in the \ref fsmStartRun method.
-
-  \todo Change the name to resetElapsedSeconds().
-
-  \todo Check whether this should really be a slot, since it does not seem to
-  be connected to anything.
- */
-
-void pRunController::resetTimer()
-{
-  m_lastNumAcquiredEvents = 0;
-  m_elapsedSeconds = 0;
-  emit elapsedSecondsChanged(m_elapsedSeconds);
-  emit numAcquiredDataBlocksChanged(0);
-  emit numAcquiredEventsChanged(0);
-  emit averageEventRateChanged(0.0);
-  emit instantEventRateChanged(0.0);
-  emit instantFpgaEventRateChanged(0.0);
-}
-
-/*!
-  Return the ratio between the number of events acquired by the
-  data collector and the number of elapsed seconds.
- */
-
-double pRunController::getAverageDaqEventRate()
-{
-  if (m_elapsedSeconds == 0) {
-    return 0.0;
-  } else {
-    return getNumAcquiredEvents()/(double)m_elapsedSeconds; 
-  }
-}
-
-double pRunController::getInstantDaqEventRate()
-{
-  return 1000.0*(getNumAcquiredEvents() - m_lastNumAcquiredEvents)/
-    m_dataAcquisitionTimerTimeout;
-}
-
-/*!
-  \return The run number.
-*/
-
-int pRunController::readRunId()
-{
-  *xpollog::kDebug << "Reading run Id from " << m_runIdCfgFilePath <<
-    "..." << endline;
-  return xpolio::kIOManager->getInteger(m_runIdCfgFilePath);
-}
-
-void pRunController::writeRunId()
-{
-  *xpollog::kDebug << "Writing run Id to " << m_runIdCfgFilePath <<
-    "... " << endline;
-  xpolio::kIOManager->put(m_runIdCfgFilePath, m_runId);
-}
-
-/*!
-  After it has been incremented, the new run number is immediately written
-  to file.
- */
-
-void pRunController::incrementRunId()
-{
-  setRunId(m_runId + 1);
-  writeRunId();
-}
-
-/*!
-  This changes the \ref m_runId member and emit a \ref runIdChanged signal
-  so that the rest of the world knows; it <i>does not</i> write the runId
-  to file.
-  This is because this method is called both in the \ref init() method (where
-  the run number does not need to be written to file) and in the
-  \ref incrementRunId() method.
-
-  \param runId
-  The run number.
- */
-
-void pRunController::setRunId(int runId)
-{
-  m_runId = runId;
-  emit runIdChanged(m_runId); 
-}
-
 void pRunController::fsmSetup()
-{}
+{
+
+}
+
 
 /*!
-  This is executed at the beginning of each data acquisition run (which is
-  essentially each time the start button is pressed on the transport bar of the
-  main window or right after the run controller is created, if the program
-  is run in batch mode).
-  
-  Here is a list of the operations which are executed:
-  \li The run number is incremented (\ref incrementRunId()).
-  \li The path to the output data file {\ref m_outputFilePath} is generated
-  from the run number, unless it has been explicitely set before (and therefore
-  is different from {\ref xpolenv::kNullPath}).
-  \li The data collector \ref m_dataCollector is reset.
-  \li The data collector \ref m_dataCollector and the FPGA controller
-  \ref m_xpolFpga are set up according to the current configuration and
-  user preferences.
-  \li The data acquisition timer is reset (\ref resetTimer()) and restarted.
-
-  \todo Create the path to the output data file in a separate method, to be
-  used by the "dummy" run controller when running in test mode.
-
-  \todo Create a m_configuration member and implement a setConfiguration()
-  method with two different prototypes, accepting a *pDetectorConfiguration
-  and a std::string (file path) as parameters, respectively, to be used when
-  the configuratio is retrieved from the GUI or from a file (batch mode).
-*/
-
+ */
 void pRunController::fsmStartRun()
 {
   *xpollog::kInfo << "Starting run controller..." << endline;
   incrementRunId();
-  // Create the output folder, if it does not exist.
-  QString outputFolder = m_parentWindow->currentOutputFolder();
-  if (!QDir(outputFolder).exists()) {
-    *xpollog::kInfo << "Creating " << outputFolder.toStdString() <<
-      "..." << endline;
-    QDir().mkpath(outputFolder);
+  // Create the output folder.
+  std::string outputFolder = outputFolderPath();
+  if (!xpedaqos::folderExists(outputFolder)) {
+    xpedaqos::mkdir(outputFolder);
   }
-  // Set the output path for the logger.
-  QString logFilePath = outputFolder + QDir::separator() +
-    m_parentWindow->currentDataIdentifier() + ".log";
-  std::cout << logFilePath.toStdString() << std::endl;
-  xpollog::kLogger->setLogFilePath(logFilePath.toStdString());
+  *xpollog::kDebug << "Output file set to " << dataFilePath() << "." << endline;
+  // Set the log file path.
+  std::string logFile = logFilePath();
+  *xpollog::kInfo << "Redirecting logger to " << logFile << "..." << endline;
+  xpollog::kLogger->setLogFilePath(logFile);
   xpollog::kLogger->enableLogFile(true);
   // Save the run info.
-  m_parentWindow->saveRunInfo(outputFolder);
-  // Why do we need this?
-  if (m_outputFilePath == xpolenv::kNullPath) {
-    m_outputFilePath = m_parentWindow->currentDataFilePath().toStdString();
-  }
-  *xpollog::kDebug << "Output file path: " << m_outputFilePath << endline;
+  std::stringstream configurationInfo("");
+  configurationInfo << *m_detectorConfiguration;
+  std::stringstream preferencesInfo("");
+  preferencesInfo << *m_userPreferences;
+  *xpollog::kDebug << "Settings at start run...\n" << configurationInfo.str()
+		   << preferencesInfo.str() << endline;
+  saveRunInfo();
   m_dataCollector->reset();
   if (m_usbController->IsOpened()) {
-    m_xpolFpga->setup(m_parentWindow->getConfiguration());
-    m_dataCollector->setup(m_outputFilePath,
-			   m_parentWindow->getUserPreferences(),
-			   m_parentWindow->getConfiguration());
+    m_xpolFpga->setup(m_detectorConfiguration);
+    m_dataCollector->setup(dataFilePath(), m_userPreferences,
+			   m_detectorConfiguration);
     m_dataCollector->start();
   } else {
     *xpollog::kError << "The USB device is not open." << endline;
+    exit(1);
   }
-  resetTimer();
-  m_dataAcquisitionTimer->start(m_dataAcquisitionTimerTimeout);
-  *xpollog::kInfo << "Run controller started." << endline;
+  m_startSeconds = currentSeconds();
+  resetRunInfo();
+  m_timer->start();
+  *xpollog::kInfo << "Run controller started at " << m_startSeconds
+		  << " s (since January 1, 1970)." << endline;
 }
 
 /*!
-  This is executed at the end of each data acquisition run (which is
-  essentially each time the stop button is pressed on the transport bar of the
-  main window or right after the acquisition is done, if the program is run
-  in batch mode).
-  
-  Here is a list of the operations which are executed:
-  \li The data collector \ref m_dataCollector is stopped.
-  \li The data acquisition timer \ref m_dataAcquisitionTimer is stopped.
-  \li The path to the output file \ref m_outputFilePath is set to
-  \ref xpolenv::kNullPath. This is done in order to prevent the run controller
-  from overwriting over and over again the same file when started multiple]
-  times from the GUI.
 */
-
 void pRunController::fsmStopRun()
 {
   *xpollog::kInfo << "Stopping run controller..." << endline;
   m_dataCollector->stop();
-  m_dataAcquisitionTimer->stop();
-  m_outputFilePath = xpolenv::kNullPath;
-  *xpollog::kDebug << "Output file path: " << m_outputFilePath << endline;
-  *xpollog::kInfo << "Run controller stopped." << endline;
-  *xpollog::kInfo << getNumAcquiredEvents() << " events (" <<
-    getNumAcquiredDataBlocks() << " data blocks) acquired in "<<
-    m_elapsedSeconds << " seconds."<< endline;
+  m_stopSeconds = currentSeconds();
+  m_timer->stop();
+  *xpollog::kInfo << "Run controller stopped at " << m_stopSeconds
+		  << " s (since January 1, 1970)." << endline;
+  *xpollog::kInfo << numEvents() << " events (" <<
+    numDataBlocks() << " data blocks) acquired in "<<
+    elapsedSeconds() << " seconds."<< endline;
+  *xpollog::kInfo << "Disconnecting logger from file..." << endline;
   xpollog::kLogger->enableLogFile(false);
 }
 
+
+/*!
+ */
 void pRunController::fsmPause()
 {
   *xpollog::kInfo << "Run controller paused." << endline;
   m_dataCollector->stop();
 }
 
+
+/*!
+ */
 void pRunController::fsmResume()
 {
   *xpollog::kInfo << "Run controller restarted." << endline;
@@ -389,13 +379,102 @@ void pRunController::fsmResume()
     m_dataCollector->start();
   } else {
     *xpollog::kError << "The USB device is not open." << endline;
+    exit(1);
   }
 }
 
+
+/*!
+ */
 void pRunController::fsmStop()
 {
   fsmStopRun();
 }
 
+
+/*! Nothing to do here.
+ */
 void pRunController::fsmTeardown()
-{}
+{
+
+}
+
+
+/*!
+ */
+std::string pRunController::outputFolderPath() const
+{
+  return xpedaqos::join(m_userPreferences->outputFolder(), baseFileName());
+}
+
+
+/*!
+ */
+std::string pRunController::baseFileName() const
+{
+  std::ostringstream name;
+  name << std::setw(3) << std::setfill('0') << m_stationId << "_"
+       << std::setw(7) << m_runId;
+  return name.str();
+}
+
+
+/*!
+ */
+std::string pRunController::dataFilePath() const
+{
+  std::string fileName = baseFileName() + "_data.mdat";
+  return xpedaqos::join(outputFolderPath(), fileName);
+}
+
+
+/*!
+ */
+std::string pRunController::logFilePath() const
+{
+  std::string fileName = baseFileName() + ".log";
+  return xpedaqos::join(outputFolderPath(), fileName);
+}
+
+
+/*!
+ */
+std::string pRunController::reportFilePath() const
+{
+  std::string fileName = baseFileName() + "_report.pdf";
+  return xpedaqos::join(outputFolderPath(), fileName);
+}
+
+
+/*!
+ */
+std::string pRunController::detectorConfigurationFilePath() const
+{
+  std::string fileName = baseFileName() + "_detector.cfg";
+  return xpedaqos::join(outputFolderPath(), fileName);
+}
+
+
+/*!
+ */
+std::string pRunController::userPreferencesFilePath() const
+{
+  std::string fileName = baseFileName() + "_preferences.cfg";
+  return xpedaqos::join(outputFolderPath(), fileName);
+}
+
+
+/*! This is actually saving a copy of the detector configuration both
+  in the default locations (to be reused, e.g, when the GUI is restarted) and 
+  in the output folder for permanent future reference.
+
+  (This function is called at the start run, right before the data acquisition
+  is actually started.)
+*/
+void pRunController::saveRunInfo() const
+{
+  m_detectorConfiguration->writeToFile(m_configFilePath);
+  m_detectorConfiguration->writeToFile(detectorConfigurationFilePath());
+  m_userPreferences->writeToFile(m_preferencesFilePath);
+  m_userPreferences->writeToFile(userPreferencesFilePath());
+}

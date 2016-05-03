@@ -1,6 +1,5 @@
 /***********************************************************************
-Copyright (C) 2007, 2008 by Luca Baldini (luca.baldini@pi.infn.it),
-Johan Bregeon, Massimo Minuti and Gloria Spandre.
+Copyright (C) 2007--2016 the X-ray Polarimetry Explorer (XPE) team.
 
 For the license terms see the file LICENSE, distributed along with this
 software.
@@ -43,7 +42,7 @@ void pUserPreferences::writeToFile(std::string filePath)
     "..." << endline;
   std::ofstream *outputFile = xpolio::kIOManager->openOutputFile(filePath);
   xpolio::kIOManager->write(outputFile, "//Visualization mode//");
-  xpolio::kIOManager->write(outputFile, getVisualizationMode());
+  xpolio::kIOManager->write(outputFile, visualizationMode());
   xpolio::kIOManager->write(outputFile, "//Write data file//");
   xpolio::kIOManager->write(outputFile, dataFileEnabled());
   xpolio::kIOManager->write(outputFile, "//Output root folder//");
@@ -51,15 +50,15 @@ void pUserPreferences::writeToFile(std::string filePath)
   xpolio::kIOManager->write(outputFile, "//Multicast enabled//");
   xpolio::kIOManager->write(outputFile, multicastEnabled());
   xpolio::kIOManager->write(outputFile, "//Multicast address//");
-  xpolio::kIOManager->write(outputFile, getMulticastAddress());
+  xpolio::kIOManager->write(outputFile, multicastAddress());
   xpolio::kIOManager->write(outputFile, "//Multicast port//");
-  xpolio::kIOManager->write(outputFile, getMulticastPort());
+  xpolio::kIOManager->write(outputFile, multicastPort());
   xpolio::kIOManager->write(outputFile, "//Write log file//");
   xpolio::kIOManager->write(outputFile, logFileEnabled());
   xpolio::kIOManager->write(outputFile, "//Logger terminal level//");
-  xpolio::kIOManager->write(outputFile, getLoggerTerminalLevel());
+  xpolio::kIOManager->write(outputFile, loggerTerminalLevel());
   xpolio::kIOManager->write(outputFile, "//Logger display level//");
-  xpolio::kIOManager->write(outputFile, getLoggerDisplayLevel());
+  xpolio::kIOManager->write(outputFile, loggerDisplayLevel());
   xpolio::kIOManager->closeOutputFile(outputFile);
 }
 
@@ -87,4 +86,23 @@ void pUserPreferences::readFromFile(std::string filePath)
   xpolio::kIOManager->skipLine(inputFile);
   setLoggerDisplayLevel(xpolio::kIOManager->readInteger(inputFile));
   xpolio::kIOManager->closeInputFile(inputFile);
+}
+
+
+/*!
+ */
+std::ostream& pUserPreferences::fillStream(std::ostream& os) const
+{
+  os << xpedaqutils::title("User preferences", true);
+  os << "Visualization mode: " << visualizationMode() << std::endl;
+  os << "Output data file enabled: " << dataFileEnabled() << std::endl;
+  os << "Output root folder: " << outputFolder() << std::endl;
+  os << "Multicast enabled: " << multicastEnabled() << std::endl;
+  os << "Multicast address: " << multicastAddress() << std::endl;
+  os << "Multicast port: " << multicastPort() << std::endl;
+  os << "Log file enabled: " << logFileEnabled() << std::endl;
+  os << "Logger terminal level: " << loggerTerminalLevel() << std::endl;
+  os << "Logger display level: " << loggerDisplayLevel() << std::endl;
+  os << xpedaqutils::hline();
+  return os;
 }

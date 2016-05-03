@@ -61,8 +61,8 @@ pDataFIFO::pDataFIFO(std::string outputFilePath,
 {
   m_multicastEnabled = preferences->multicastEnabled();
   if (m_multicastEnabled) {
-    setHostAddress(preferences->getMulticastAddress());
-    setPort(preferences->getMulticastPort());
+    setHostAddress(preferences->multicastAddress());
+    setPort(preferences->multicastPort());
   }
 }
 

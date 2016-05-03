@@ -234,14 +234,11 @@ pUserPreferences *pUserPreferencesTab::getUserPreferences()
 
 void pUserPreferencesTab::displayUserPreferences(pUserPreferences preferences)
 {
-  if (preferences.getVisualizationMode() ==
-      xpolgui::kDacVisualizationCode){
+  if (preferences.visualizationMode() == xpolgui::kDacVisualizationCode) {
     m_daqVisualizationButton->setChecked(true);
-  } else if (preferences.getVisualizationMode() ==
-	     xpolgui::kVoltageVisualizationCode){
+  } else if (preferences.visualizationMode() == xpolgui::kVoltageVisualizationCode) {
     m_voltageVisualizationButton->setChecked(true);
-  } else if (preferences.getVisualizationMode() ==
-	     xpolgui::kChargeVisualizationCode){
+  } else if (preferences.visualizationMode() == xpolgui::kChargeVisualizationCode){
     m_chargeVisualizationButton->setChecked(true);
   } else {
     *xpollog::kError << "Invalid display." << endline;
@@ -250,12 +247,12 @@ void pUserPreferencesTab::displayUserPreferences(pUserPreferences preferences)
   setOutputFodler(preferences.outputFolder());
   m_enableMulticastCheckBox->setChecked(preferences.multicastEnabled());
   enableMulticastWidgets(preferences.multicastEnabled());
-  setMulticastAddress(preferences.getMulticastAddress());
-  setMulticastPort(preferences.getMulticastPort());
+  setMulticastAddress(preferences.multicastAddress());
+  setMulticastPort(preferences.multicastPort());
   m_loggerTerminalLevelComboBox->
-    setCurrentIndex(preferences.getLoggerTerminalLevel());
+    setCurrentIndex(preferences.loggerTerminalLevel());
   m_loggerDisplayLevelComboBox->
-    setCurrentIndex(preferences.getLoggerDisplayLevel());
+    setCurrentIndex(preferences.loggerDisplayLevel());
   m_enableLogFileCheckBox->setChecked(preferences.logFileEnabled());
 }
 

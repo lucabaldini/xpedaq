@@ -1,6 +1,5 @@
 /***********************************************************************
-Copyright (C) 2007, 2008 by Luca Baldini (luca.baldini@pi.infn.it),
-Johan Bregeon, Massimo Minuti and Gloria Spandre.
+Copyright (C) 2007--2016 the X-ray Polarimetry Explorer (XPE) team.
 
 For the license terms see the file LICENSE, distributed along with this
 software.
@@ -60,33 +59,32 @@ class pMainWindow : public pQtMainWindowGui
   Q_OBJECT
 
  public:
+  
   pMainWindow();
   ~pMainWindow();
-  pDetectorConfiguration *getConfiguration(int mode = -1);
-  pUserPreferences *getUserPreferences();
-  int getVisualizationMode();
+  pDetectorConfiguration *detectorConfiguration(int mode = -1);
+  pUserPreferences *userPreferences();
+  int visualizationMode();
   void displayConfiguration(pDetectorConfiguration *configuration, int mode);
   void start();
   void stop();
-  inline pRunController *getRunController()
-    {return m_runController;}
-  QString currentDataIdentifier();
-  QString currentOutputFolder();
-  QString currentDataFileName();
-  QString currentDataFilePath();
-  void saveRunInfo(QString folderPath);
+  inline pRunController *runController() const {return m_runController;}
+  
 
  protected:
 
+  
  public slots:
-   void disableHardwareWidgets();
-   void selectConfiguration();
-   void saveConfiguration(bool promptDialog = true);
-   void saveUserPreferences();
-   void changeVisualizationMode(int mode);
-   void displayReference(unsigned short reference);
+   
+  void disableHardwareWidgets();
+  void changeVisualizationMode(int mode);
+  void displayReference(unsigned short reference);
+  void startRun();
+  void stopRun();
 
+   
  private:
+   
   pDaqDisplay *m_daqDisplay;
   pMessageDisplay *m_messageDisplay;
   pTransportBar *m_transportBar;
@@ -99,21 +97,13 @@ class pMainWindow : public pQtMainWindowGui
   pUsbControlTab *m_usbControlTab;
   pUserPreferencesTab *m_userPreferencesTab;
   pRunController *m_runController;
-  QAction *m_selectConfigurationAction;
-  QAction *m_saveConfigurationAction;
-  QAction *m_savePreferencesAction;
   int m_lastVisualizationMode;
-  std::string m_preferencesCfgFilePath;
-  std::string m_detectorCfgFilePath;
   void setupDaqDisplay();
   void setupMessageDisplay();
   void setupTransportBar();
   void setupTabWidget();
-  void setupActions();
-  void setupMenuBar();
   void setupConnections();
   void setupLoggerConnections();
-  void selectConfiguration(std::string filePath);
 };
 
-#endif
+#endif //PMAINWINDOW_H

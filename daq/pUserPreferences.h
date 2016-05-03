@@ -1,6 +1,5 @@
 /***********************************************************************
-Copyright (C) 2007, 2008 by Luca Baldini (luca.baldini@pi.infn.it),
-Johan Bregeon, Massimo Minuti and Gloria Spandre.
+Copyright (C) 2007--2016 the X-ray Polarimetry Explorer (XPE) team.
 
 For the license terms see the file LICENSE, distributed along with this
 software.
@@ -25,6 +24,7 @@ with this program; if not, write to the Free Software Foundation Inc.,
 
 #include <iostream>
 
+#include "xpedaqutils.h"
 #include "xpollog.h"
 #include "xpolio.h"
 
@@ -36,44 +36,41 @@ class pUserPreferences
   pUserPreferences();
   pUserPreferences(std::string filePath);
   ~pUserPreferences();
-  inline unsigned short int getVisualizationMode() const
-    {return m_visualizationMode;}
+
+  // Access methods.
+  inline unsigned short int visualizationMode()
+    const {return m_visualizationMode;}
+  inline bool dataFileEnabled() const {return m_dataFileEnabled;}
+  inline std::string outputFolder() const {return m_outputFolder;}
+  inline bool multicastEnabled() const {return m_multicastEnabled;}
+  inline std::string multicastAddress() const {return m_multicastAddress;}
+  inline int multicastPort() const {return m_multicastPort;}
+  inline bool logFileEnabled() const {return m_logFileEnabled;}
+  inline int loggerTerminalLevel() const {return m_loggerTerminalLevel;}
+  inline int loggerDisplayLevel() const {return m_loggerDisplayLevel;}
+  
+  // Set methods.
   inline void setVisualizationMode(unsigned short int mode)
     {m_visualizationMode = mode;}
-  inline bool dataFileEnabled() const
-    {return m_dataFileEnabled;}
-  inline void enableDataFile(bool enable)
-    {m_dataFileEnabled = enable;}
-  inline std::string outputFolder() const
-    {return m_outputFolder;}
-  inline void setOutputFolder(std::string path)
-    {m_outputFolder = path;}
-  inline bool multicastEnabled() const
-    {return m_multicastEnabled;}
-  inline void enableMulticast(bool enable)
-    {m_multicastEnabled = enable;}
-  inline std::string getMulticastAddress() const
-    {return m_multicastAddress;}
+  inline void enableDataFile(bool enable) {m_dataFileEnabled = enable;}
+  inline void setOutputFolder(std::string path) {m_outputFolder = path;}
+  inline void enableMulticast(bool enable) {m_multicastEnabled = enable;}
   inline void setMulticastAddress(std::string address)
     {m_multicastAddress = address;}
-  inline int getMulticastPort() const
-    {return m_multicastPort;}
-  inline void setMulticastPort(int port)
-    {m_multicastPort = port;}
-  inline bool logFileEnabled() const
-    {return m_logFileEnabled;}
-  inline void enableLogFile(bool enable)
-    {m_logFileEnabled = enable;}
-  inline int getLoggerTerminalLevel() const
-    {return m_loggerTerminalLevel;}
-  inline void setLoggerTerminalLevel(int level)
-    {m_loggerTerminalLevel = level;}
-  inline int getLoggerDisplayLevel() const
-    {return m_loggerDisplayLevel;}
-  inline void setLoggerDisplayLevel(int level)
-    {m_loggerDisplayLevel = level;}
+  inline void setMulticastPort(int port) {m_multicastPort = port;}
+  inline void enableLogFile(bool enable) {m_logFileEnabled = enable;}
+  inline void setLoggerTerminalLevel(int level) {m_loggerTerminalLevel = level;}
+  inline void setLoggerDisplayLevel(int level) {m_loggerDisplayLevel = level;}
+
+  // Read/write to/from file.
   void writeToFile(std::string filePath);
-  void readFromFile(std::string filePath);  
+  void readFromFile(std::string filePath);
+
+  // Terminal formatting.
+  std::ostream& fillStream(std::ostream& os) const;
+  friend std::ostream& operator<<(std::ostream& os,
+				  const pUserPreferences& preferences)
+  {return preferences.fillStream(os);}
   
  protected:
 

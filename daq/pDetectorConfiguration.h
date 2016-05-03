@@ -1,6 +1,5 @@
 /***********************************************************************
-Copyright (C) 2007, 2008 by Luca Baldini (luca.baldini@pi.infn.it),
-Johan Bregeon, Massimo Minuti and Gloria Spandre.
+Copyright (C) 2007--2016 the X-ray Polarimetry Explorer (XPE) team.
 
 For the license terms see the file LICENSE, distributed along with this
 software.
@@ -23,7 +22,7 @@ with this program; if not, write to the Free Software Foundation Inc.,
 #ifndef PDETECTORCONFIGURATION_H
 #define PDETECTORCONFIGURATION_H
 
-//#include "pUsbController.h"  //cannot do that QThreads complains
+#include "xpedaqutils.h"
 #include "xpoldetector.h"
 #include "xpolio.h"
 #include "xpollog.h"
@@ -33,78 +32,64 @@ class pDetectorConfiguration
 {
 
  public:
+  
   pDetectorConfiguration();
+  pDetectorConfiguration(std::string filePath);
   ~pDetectorConfiguration() {;}
-  inline unsigned short int getReadoutMode()
-    {return m_readoutMode;}
+
+  // Access functions.
+  inline unsigned short int readoutMode() const {return m_readoutMode;}
+  inline unsigned short int *thresholdDac() {return m_thresholdDac;}
+  inline unsigned short int thresholdDac(int clusterId) const
+  {return m_thresholdDac[clusterId];}
+  inline unsigned short int calibrationDac() const {return m_calibrationDac;}
+  inline unsigned short int pixelAddressX() const {return m_pixelAddressX;}
+  inline unsigned short int pixelAddressY()const {return m_pixelAddressY;}
+  inline unsigned char timingCode()const {return m_timingCode;}
+  inline unsigned short int numPedSamples() const {return m_numPedSamples;}
+  inline unsigned short int pedSampleDelay() const {return m_pedSampleDelay;}
+  inline unsigned short int trgEnableDelay() const {return m_trgEnableDelay;}
+  inline unsigned short int minWindowSize() const {return m_minWindowSize;}
+  inline unsigned short int maxWindowSize() const {return m_maxWindowSize;}
+  inline unsigned short int probeAddressA() const {return m_probeAddressA;}
+  inline unsigned short int probeAddressB() const {return m_probeAddressB;}
+  inline unsigned short int probeAddressC() const {return m_probeAddressC;}
+  inline unsigned short int bufferMode() const {return m_bufferMode;}
+  inline unsigned short int adcTestPattern() {return m_adcTestPattern;}
+  int maxBufferSize() const;
+
+  // Set functions.
   void setReadoutMode(unsigned short int mode);
-  inline unsigned short int *getThresholdDac()
-    {return m_thresholdDac;}
-  inline unsigned short int getThresholdDac(int clusterId)
-    {return m_thresholdDac[clusterId];}
   void setThresholdDac(int clusterId, unsigned short int dacSetting);
-  unsigned short int getCalibrationDac()
-    {return m_calibrationDac;}
   void setCalibrationDac(unsigned short int dacSetting);
-  inline unsigned short int getPixelAddressX()
-    {return m_pixelAddressX;}
   void setPixelAddressX(unsigned short int address)
-    {m_pixelAddressX = address;}
-  inline unsigned short int getPixelAddressY()
-    {return m_pixelAddressY;}
-  void setPixelAddressY(unsigned short int address)
-    {m_pixelAddressY = address;}
-  inline unsigned char getTimingCode()
-    {return m_timingCode;}
-  void setTimingCode(unsigned char code)
-    {m_timingCode = code;}
-  inline unsigned short int getNumPedSamples()
-    {return m_numPedSamples;}
-  void setNumPedSamples(unsigned short int samples)
-    {m_numPedSamples = samples;}
-  inline unsigned short int getPedSampleDelay()
-    {return m_pedSampleDelay;}
-  void setPedSampleDelay(unsigned short int delay)
-    {m_pedSampleDelay = delay;}
-  inline unsigned short int getTrgEnableDelay()
-    {return m_trgEnableDelay;}
-  void setTrgEnableDelay(unsigned short int delay)
-    {m_trgEnableDelay = delay;}
-  inline unsigned short int getMinWindowSize()
-    {return m_minWindowSize;}
-  void setMinWindowSize(unsigned short int size)
-    {m_minWindowSize = size;}
-  inline unsigned short int getMaxWindowSize()
-    {return m_maxWindowSize;}
-  void setMaxWindowSize(unsigned short int size)
-    {m_maxWindowSize = size;}
-  inline unsigned short int getProbeAddressA()
-    {return m_probeAddressA;}
-  void setProbeAddressA(unsigned short int address)
-    {m_probeAddressA = address;}
-  inline unsigned short int getProbeAddressB()
-    {return m_probeAddressB;}
-  void setProbeAddressB(unsigned short int address)
-    {m_probeAddressB = address;}
-  inline unsigned short int getProbeAddressC()
-    {return m_probeAddressC;}
-  void setProbeAddressC(unsigned short int address)
-    {m_probeAddressC = address;}
-  inline unsigned short int getBufferMode()
-    {return m_bufferMode;}
-  void setBufferMode(unsigned short int mode)
-    {m_bufferMode = mode;}
-  int getMaxBufferSize();
-  inline unsigned short int adcTestPattern()
-    {return m_adcTestPattern;}
+  {m_pixelAddressX = address;}
+  void setPixelAddressY(unsigned short int address) {m_pixelAddressY = address;}
+  void setTimingCode(unsigned char code) {m_timingCode = code;}
+  void setNumPedSamples(unsigned short int samples) {m_numPedSamples = samples;}
+  void setPedSampleDelay(unsigned short int delay) {m_pedSampleDelay = delay;}
+  void setTrgEnableDelay(unsigned short int delay) {m_trgEnableDelay = delay;}
+  void setMinWindowSize(unsigned short int size) {m_minWindowSize = size;}
+  void setMaxWindowSize(unsigned short int size) {m_maxWindowSize = size;}
+  void setProbeAddressA(unsigned short int address) {m_probeAddressA = address;}
+  void setProbeAddressB(unsigned short int address) {m_probeAddressB = address;}
+  void setProbeAddressC(unsigned short int address) {m_probeAddressC = address;}
+  void setBufferMode(unsigned short int mode) {m_bufferMode = mode;}
   void setAdcTestPattern(unsigned short int pattern)
-    {m_adcTestPattern = pattern;}
+  {m_adcTestPattern = pattern;}
   void writeToFile(std::string filePath);
   void readFromFile(std::string filePath);
+
+  // Terminal formatting.
+  std::ostream& fillStream(std::ostream& os) const;
+  friend std::ostream& operator<<(std::ostream& os,
+				  const pDetectorConfiguration& configuration)
+  {return configuration.fillStream(os);}
 
  protected:
 
  private:
+  
   unsigned short int m_readoutMode;
   unsigned short int m_thresholdDac[NUM_READOUT_CLUSTERS];
   unsigned short int m_calibrationDac;
@@ -123,4 +108,4 @@ class pDetectorConfiguration
   unsigned short int m_bufferMode;
 };
 
-#endif
+#endif //PDETECTORCONFIGURATION_H

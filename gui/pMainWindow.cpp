@@ -1,6 +1,5 @@
 /***********************************************************************
-Copyright (C) 2007, 2008 by Luca Baldini (luca.baldini@pi.infn.it),
-Johan Bregeon, Massimo Minuti and Gloria Spandre.
+Copyright (C) 2007--2016 the X-ray Polarimetry Explorer (XPE) team.
 
 For the license terms see the file LICENSE, distributed along with this
 software.
@@ -22,103 +21,68 @@ with this program; if not, write to the Free Software Foundation Inc.,
 
 #include "pMainWindow.h"
 
+
 pMainWindow::pMainWindow()
-{
-  // Create the preferences.cfg file, if needed.
-  QString cfgFilePath = QString(std::getenv("XPEDAQ_ROOT")) +
-    QDir::separator() + "xpedaq" + QDir::separator() + "config" +
-    QDir::separator() + "preferences.cfg";
-  if (!QFile(cfgFilePath).exists()) {
-    *xpollog::kInfo << "Creating " << cfgFilePath.toStdString() <<
-      "..." << endline;
-    QFile(cfgFilePath + ".sample").copy(cfgFilePath);
-  }
-  m_preferencesCfgFilePath = cfgFilePath.toStdString();
-  // Create the detector.cfg file, if needed.
-  cfgFilePath = QString(std::getenv("XPEDAQ_ROOT")) +
-    QDir::separator() + "xpedaq" + QDir::separator() + "config" +
-    QDir::separator() + "detector.cfg";
-  if (!QFile(cfgFilePath).exists()) {
-    *xpollog::kInfo << "Creating " << cfgFilePath.toStdString() <<
-      "..." << endline;
-    QFile(cfgFilePath + ".sample").copy(cfgFilePath);
-  }
-  m_detectorCfgFilePath = cfgFilePath.toStdString();
-  // Move on.
-  pUserPreferences preferences = pUserPreferences(m_preferencesCfgFilePath);
-  xpollog::kLogger->setTerminalLevel(preferences.getLoggerTerminalLevel());
-  xpollog::kLogger->setDisplayLevel(preferences.getLoggerDisplayLevel());
+{  
   setupDaqDisplay();
   setupMessageDisplay();
   setupLoggerConnections();
   setupTransportBar();
   setupTabWidget();
-  setupActions();
-  setupMenuBar();
-  m_runController = new pRunController(this);
+  m_runController = new pRunController();
   // This connection needs to be here in order to intercept error signals
   // from QuickUsb.
   connect(m_runController, SIGNAL(quickusbError(unsigned long)),
 	  this, SLOT(disableHardwareWidgets()));
   m_runController->connectToQuickUsb();
   setupConnections();
-  m_userPreferencesTab->displayUserPreferences(preferences);
-  m_lastVisualizationMode = preferences.getVisualizationMode();
-  selectConfiguration(m_detectorCfgFilePath);
+  pUserPreferences *preferences = m_runController->userPreferences();
+  m_userPreferencesTab->displayUserPreferences(*preferences);
+  m_lastVisualizationMode = preferences->visualizationMode();
+  pDetectorConfiguration *configuration =
+    m_runController->detectorConfiguration();  
+  displayConfiguration(configuration, preferences->visualizationMode());
   m_runController->init();
   showMessage("Data acquisition system ready", 2000);
 }
 
 pMainWindow::~pMainWindow()
 {
-  saveUserPreferences();
-  saveConfiguration(false);
+  // Do we want to save the detector config and user preferences, here?
+  // (Note that this is done at the start run.)
+  delete m_runController;
 }
 
-QString pMainWindow::currentDataIdentifier()
+
+/*! Pass the configuration from the GUI to the run controller and start the run.
+ */
+void pMainWindow::startRun()
 {
-  return QString("%1").arg(m_daqDisplay->stationId(), 3, 10, QLatin1Char('0')) +
-    "_" + QString("%1").arg(m_daqDisplay->runId(), 6, 10, QLatin1Char('0'));
+  m_runController->setupRun(detectorConfiguration(), userPreferences());
+  m_runController->setRunning();
 }
 
-QString pMainWindow::currentOutputFolder()
+
+/*! Stop the run controller.
+ */
+void pMainWindow::stopRun()
 {
-  return m_userPreferencesTab->outputRootFolder() + QDir::separator() +
-    currentDataIdentifier();
+  m_runController->setStopped();
 }
 
-QString pMainWindow::currentDataFileName()
-{
-  return "data_" + currentDataIdentifier() + ".mdat";
-}
 
-QString pMainWindow::currentDataFilePath()
-{
-  return currentOutputFolder() + QDir::separator() + currentDataFileName();
-}
-
+/*!
+ */
 void pMainWindow::setupDaqDisplay()
 {
   m_daqDisplay = new pDaqDisplay(m_centralWidget);
   m_daqDisplay->freezeSize(DISPLAYS_WIDTH, -1);
   m_mainGridLayout->addWidget(m_daqDisplay, 0, 0, Qt::AlignTop);
-  // Read the station Id from the proper configuration file.
-  QString cfgFilePath = QString(std::getenv("XPEDAQ_ROOT")) +
-    QDir::separator() + "xpedaq" + QDir::separator() + "config" +
-    QDir::separator() + "stationId.cfg";
-  if (!QFile(cfgFilePath).exists()) {
-    *xpollog::kError << "Could not find " << cfgFilePath.toStdString() <<
-      "." << endline;
-    *xpollog::kError << "Need a station identifier to start the DAQ." <<
-      endline;
-    exit(1);
-  }
-  *xpollog::kDebug << "Reading station Id from " <<
-    cfgFilePath.toStdString() << "..." << endline;
-  int stationId = xpolio::kIOManager->getInteger(cfgFilePath.toStdString());
-  m_daqDisplay->updateStationId(stationId);
 }
 
+
+/*!
+ */
 void pMainWindow::setupMessageDisplay()
 {
   m_messageDisplay = new pMessageDisplay(m_centralWidget);
@@ -126,12 +90,18 @@ void pMainWindow::setupMessageDisplay()
   m_mainGridLayout->addWidget(m_messageDisplay, 1, 0, Qt::AlignCenter);
 }
 
+
+/*!
+ */
 void pMainWindow::setupTransportBar()
 {
   m_transportBar   = new pTransportBar(m_centralWidget);
   m_mainGridLayout->addWidget(m_transportBar, 2, 0, Qt::AlignBottom);
 }
 
+
+/*!
+ */
 void pMainWindow::setupTabWidget()
 {
   m_mainTabWidget = new QTabWidget(m_centralWidget);
@@ -152,55 +122,38 @@ void pMainWindow::setupTabWidget()
   m_mainTabWidget->addTab(m_userPreferencesTab, "Preferences");
 }
 
-void pMainWindow::setupActions()
-{
-  m_selectConfigurationAction = new QAction("&Select configuration", this);
-  m_selectConfigurationAction->setShortcut(tr("Ctrl+L"));
-  m_selectConfigurationAction->setStatusTip("Select a configuration");
-  connect(m_selectConfigurationAction, SIGNAL(triggered()),
-	  this, SLOT(selectConfiguration()));
-  m_saveConfigurationAction = new QAction("&Save current configuration", this);
-  m_saveConfigurationAction->setShortcut(tr("Ctrl+S"));
-  m_saveConfigurationAction->setStatusTip("Save the configuration");
-  connect(m_saveConfigurationAction, SIGNAL(triggered()),
-	  this, SLOT(saveConfiguration()));
-  m_savePreferencesAction = new QAction("&Save preferences", this);
-  m_savePreferencesAction->setShortcut(tr("Ctrl+P"));
-  m_savePreferencesAction->setStatusTip("Save current user preferences");
-  connect(m_savePreferencesAction, SIGNAL(triggered()),
-	  this, SLOT(saveUserPreferences()));
-}
 
-void pMainWindow::setupMenuBar()
-{
-  m_fileMenu->addAction(m_selectConfigurationAction);
-  m_fileMenu->addAction(m_saveConfigurationAction);
-  m_fileMenu->addSeparator();
-  m_fileMenu->addAction(m_savePreferencesAction);
-  m_fileMenu->addSeparator();
-  m_fileMenu->addAction(m_quitAction);
-}
-
+/*!
+ */
 void pMainWindow::start()
 {
   m_transportBar->pressStartButton();
 }
 
+
+/*!
+ */
 void pMainWindow::stop()
 {
   m_transportBar->pressStopButton();
 }
 
+
+/*!
+ */
 void pMainWindow::disableHardwareWidgets()
 {
   m_transportBar->setEnabled(0);
   m_thresholdSettingTab->getRefreshRefButton()->setEnabled(0);
 }
 
-pDetectorConfiguration *pMainWindow::getConfiguration(int mode)
+
+/*!
+ */
+pDetectorConfiguration *pMainWindow::detectorConfiguration(int mode)
 {
   if (mode == -1){
-    mode = getVisualizationMode();
+    mode = visualizationMode();
   }
   pDetectorConfiguration *configuration = new pDetectorConfiguration();
   configuration->setReadoutMode(m_readoutModeTab->getReadoutMode());
@@ -223,58 +176,25 @@ pDetectorConfiguration *pMainWindow::getConfiguration(int mode)
   return configuration;
 }
 
-pUserPreferences *pMainWindow::getUserPreferences()
+
+/*!
+ */
+pUserPreferences *pMainWindow::userPreferences()
 {
   return m_userPreferencesTab->getUserPreferences();
 }
 
-int pMainWindow::getVisualizationMode()
+
+/*!
+ */
+int pMainWindow::visualizationMode()
 {
-  return getUserPreferences()->getVisualizationMode();
+  return userPreferences()->visualizationMode();
 }
 
-void pMainWindow::selectConfiguration()
-{
-  QString windowTitle = "Select a configuration";
-  QString defaultDir  = QString::fromStdString(xpolenv::kDaqConfigDirPath);
-  QString filePattern = "xPol configuration files (*.cfg)";
-  QString filePath    = QFileDialog::getOpenFileName(this, windowTitle,
-						     defaultDir, filePattern);
-  if (!(filePath.isNull())){
-    selectConfiguration((char*)filePath.toLocal8Bit().constData());
-  }
-}
 
-void pMainWindow::selectConfiguration(std::string filePath)
-{
-  pDetectorConfiguration configuration = pDetectorConfiguration();
-  configuration.readFromFile(filePath);
-  displayConfiguration(&configuration,
-		       getUserPreferences()->getVisualizationMode());
-}
-
-void pMainWindow::saveConfiguration(bool promptDialog)
-{
-  if (promptDialog)
-    {
-      QString windowTitle = "Save the current configuration";
-      QString defaultDir = QString::fromStdString(xpolenv::kDaqConfigDirPath);
-      QString filePattern = "xPol configuration files (*.cfg)";
-      QString filePath = QFileDialog::getSaveFileName(this, windowTitle,
-						      defaultDir, filePattern);
-      if (!(filePath.isNull())){
-	getConfiguration()->writeToFile(filePath.toStdString());
-      }
-    } else {
-    getConfiguration()->writeToFile(m_detectorCfgFilePath);
-  }
-}
-
-void pMainWindow::saveUserPreferences()
-{
-  getUserPreferences()->writeToFile(m_preferencesCfgFilePath);
-}
-
+/*!
+ */
 void pMainWindow::displayConfiguration(pDetectorConfiguration *configuration,
 				       int mode)
 {
@@ -283,55 +203,62 @@ void pMainWindow::displayConfiguration(pDetectorConfiguration *configuration,
   m_advancedSettingsTab->displayConfiguration(configuration);
 }
 
+
+/*!
+ */
 void pMainWindow::displayReference(unsigned short reference)
 {
-  m_thresholdSettingTab->displayReference(reference, getVisualizationMode());
+  m_thresholdSettingTab->displayReference(reference, visualizationMode());
 }
 
+
+/*!
+ */
 void pMainWindow::changeVisualizationMode(int mode)
 {
-  displayConfiguration(getConfiguration(m_lastVisualizationMode), mode);
+  displayConfiguration(detectorConfiguration(m_lastVisualizationMode), mode);
   m_lastVisualizationMode = mode;
 }
 
+
+/*!
+ */
 void pMainWindow::setupLoggerConnections()
 {
-  connect(xpollog::kDebug, SIGNAL(message(QString)),
-	  m_messageDisplay, SLOT(showMessage(QString)));
-  connect(xpollog::kInfo, SIGNAL(message(QString)),
-	  m_messageDisplay, SLOT(showMessage(QString)));
-  connect(xpollog::kWarning, SIGNAL(message(QString)),
-	  m_messageDisplay, SLOT(showMessage(QString)));
-  connect(xpollog::kError, SIGNAL(message(QString)),
-	  m_messageDisplay, SLOT(showMessage(QString)));
+  connect(xpollog::kDebug, SIGNAL(message(QString)), m_messageDisplay,
+	  SLOT(showMessage(QString)));
+  connect(xpollog::kInfo, SIGNAL(message(QString)), m_messageDisplay,
+	  SLOT(showMessage(QString)));
+  connect(xpollog::kWarning, SIGNAL(message(QString)), m_messageDisplay,
+	  SLOT(showMessage(QString)));
+  connect(xpollog::kError, SIGNAL(message(QString)), m_messageDisplay,
+	  SLOT(showMessage(QString)));
 }
 
+
+/*!
+ */
 void pMainWindow::setupConnections()
 {
-  connect(m_transportBar, SIGNAL(start()),
-	  m_runController, SLOT(setRunning()));
-  connect(m_transportBar, SIGNAL(stop()),
-	  m_runController, SLOT(setStopped()));
-  connect(m_transportBar, SIGNAL(pause()),
-	  m_runController, SLOT(setPaused()));
-  connect(m_transportBar, SIGNAL(reset()),
-	  m_runController, SLOT(setReset()));
-  connect(m_runController, SIGNAL(numAcquiredDataBlocksChanged(int)),
+  connect(m_transportBar, SIGNAL(start()), this, SLOT(startRun()));
+  connect(m_transportBar, SIGNAL(stop()), this, SLOT(stopRun()));
+
+  connect(m_runController, SIGNAL(stationIdSet(int)), m_daqDisplay,
+	  SLOT(updateStationId(int)));
+  connect(m_runController, SIGNAL(runIdChanged(int)), m_daqDisplay,
+	  SLOT(updateRunId(int)));
+  connect(m_runController, SIGNAL(statusChanged(QString)), m_daqDisplay,
+	  SLOT(updateStatus(QString)));
+  connect(m_runController, SIGNAL(numDataBlocksChanged(int)),
 	  m_daqDisplay, SLOT(updateNumDataBlocks(int)));
-  connect(m_runController, SIGNAL(numAcquiredEventsChanged(int)),
+  connect(m_runController, SIGNAL(numEventsChanged(int)),
 	  m_daqDisplay, SLOT(updateNumEvents(int)));
-  connect(m_runController, SIGNAL(runIdChanged(int)),
-	  m_daqDisplay, SLOT(updateRunId(int)));
-  connect(m_runController, SIGNAL(statusChanged(QString)),
-	  m_daqDisplay, SLOT(updateStatus(QString)));
   connect(m_runController, SIGNAL(elapsedSecondsChanged(int)),
 	  m_daqDisplay, SLOT(updateElapsedSeconds(int)));
   connect(m_runController, SIGNAL(averageEventRateChanged(double)),
 	  m_daqDisplay, SLOT(updateAverageDaqRate(double)));
   connect(m_runController, SIGNAL(instantEventRateChanged(double)),
 	  m_daqDisplay, SLOT(updateInstantDaqRate(double)));
-  connect(m_runController, SIGNAL(instantFpgaEventRateChanged(double)),
-	  m_daqDisplay, SLOT(updateInstantFpgaRate(double)));
   connect(m_runController->getXpolFpga(),
 	  SIGNAL(thresholdRefRead(unsigned short)),
 	  this, SLOT(displayReference(unsigned short)));
@@ -339,16 +266,4 @@ void pMainWindow::setupConnections()
   	  m_runController->getXpolFpga(), SLOT(readVrefDac()));
   connect(m_userPreferencesTab, SIGNAL(visualizetionModeChanged(int)),
 	  this, SLOT(changeVisualizationMode(int)));
-}
-
-
-void pMainWindow::saveRunInfo(QString folderPath)
-{
-  QString dataId = currentDataIdentifier();
-  QString cfgFilePath = folderPath + QDir::separator() + "detector_" +
-    dataId + ".cfg";
-  getConfiguration()->writeToFile(cfgFilePath.toStdString());
-  cfgFilePath = folderPath + QDir::separator() + "preferences_" +
-    dataId + ".cfg";
-  getUserPreferences()->writeToFile(cfgFilePath.toStdString());
 }

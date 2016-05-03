@@ -241,6 +241,6 @@ void pThresholdSettingTab::displayConfiguration(pDetectorConfiguration
 						int visualizationMode)
 {
   for (int i = 0; i < NUM_READOUT_CLUSTERS; i++){
-    displayThreshold(i, configuration->getThresholdDac(i), visualizationMode);
+    displayThreshold(i, configuration->thresholdDac(i), visualizationMode);
   }
 }

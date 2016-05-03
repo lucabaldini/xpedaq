@@ -171,21 +171,21 @@ void pXpolFpga::configWindowedMode(pDetectorConfiguration *configuration)
 {
   *xpollog::kInfo << "Configuring FPGA in Windowed mode..." << endline;	
   unsigned short conf = 0 ;
-  if(configuration->getReadoutMode()==xpoldetector::kChargeInjectionReadoutCode)
+  if(configuration->readoutMode()==xpoldetector::kChargeInjectionReadoutCode)
     conf = (unsigned short)WINDOWED_INJ;
-  else if(configuration->getReadoutMode()==xpoldetector::kWindowedReadoutCode)
+  else if(configuration->readoutMode()==xpoldetector::kWindowedReadoutCode)
     conf = (unsigned short)WINDOWED_EVT;
 
   
   // Discharge Width in unit of 50us tics - standard is 10 = 500us
   //serialWrite((unsigned short)14,0xa); 
-  unsigned short dischargeWidth = configuration->getPedSampleDelay();  
+  unsigned short dischargeWidth = configuration->pedSampleDelay();  
   serialWrite((unsigned short)14, dischargeWidth);
   
   // Trigger Enable Delay after analog reset
   // window dimension limit in unit of 512 channels
-  unsigned short disTriggerWidth = configuration->getTrgEnableDelay();
-  unsigned short win_dlim = configuration->getMaxWindowSize();
+  unsigned short disTriggerWidth = configuration->trgEnableDelay();
+  unsigned short win_dlim = configuration->maxWindowSize();
   // Put parhentesis here around |.
   serialWrite((unsigned short)XPOL_DANGEROUS_REG,
 	      (disTriggerWidth&0xf) | ((win_dlim<<4) & 0xf0));
@@ -199,7 +199,7 @@ void pXpolFpga::configWindowedMode(pDetectorConfiguration *configuration)
   mainSerialWrite((unsigned short) XPM_TRG_CNT_STATUS_REG, (unsigned short)(XPM_TRG_CNT_STATUS_DATA|0x1));
   
   // Define the Minimum number of pixels to be read in the Window : (DIM = x*32) 
-  unsigned short winMinSize = configuration->getMinWindowSize();
+  unsigned short winMinSize = configuration->minWindowSize();
   serialWrite((unsigned short)XPOL_MIN_WIN_DIM_REG, winMinSize);    
   serialWrite((unsigned short)XPOL_WPULSE_REG,(conf>>6)&0x7);//modesel,usemh,runb 
   serialWrite((unsigned short)XPOL_SIGNAL_REG,(conf>>9)&0x1);//EnabletriggWindow
@@ -222,12 +222,12 @@ void pXpolFpga::configWindowedMode(pDetectorConfiguration *configuration)
   // MSB correspond to the clock frequency : (Code|Value)&0xF (0x0 is 10MHz, 0x20 is 5MHz, 0x40 is 2.5MHz, 0x60 is 1.25MHz)
   // LSB correspond to the clock shift : Code&0x1F in unit of 25ns
   // 0x37 was standard value
-  serialWrite((unsigned short)12, configuration->getTimingCode());
+  serialWrite((unsigned short)12, configuration->timingCode());
   
   //SET number of total readings(data+peds)
   // how many pedestals do you want to take between 2 events.
   // When 1 : no pedestal substraction
-  unsigned short numSamples = configuration->getNumPedSamples();
+  unsigned short numSamples = configuration->numPedSamples();
   // We have to write the total number of samples to be acquired, i.e. 1 (the
   // actual data readout) + numSamples (the number of samples for pedestal
   // subtraction).
@@ -272,7 +272,7 @@ void pXpolFpga::configXPMWindowed(pDetectorConfiguration *configuration)
   // Buffer Mode (SMALL_BUFFER)
   // 1 means sending ~10 events in a loop
   // 0 means sending ~600 events in a loop
-  unsigned short bufferMode = configuration->getBufferMode();
+  unsigned short bufferMode = configuration->bufferMode();
   mainSerialWrite((unsigned short) XPM_MISC_SEL_REG, bufferMode);
   *xpollog::kDebug << "Setting buffer mode to " << bufferMode << endline;
 
@@ -289,10 +289,10 @@ void pXpolFpga::configXPMWindowed(pDetectorConfiguration *configuration)
 
   //Tells the FPGA where to inject charge
   // It has to be done here b/c this
-  writeAddress(configuration->getPixelAddressX(), configuration->getPixelAddressY());
+  writeAddress(configuration->pixelAddressX(), configuration->pixelAddressY());
   
-  *xpollog::kDebug << "Pixel (" << configuration->getPixelAddressX() <<
-    ", " << configuration->getPixelAddressY() <<
+  *xpollog::kDebug << "Pixel (" << configuration->pixelAddressX() <<
+    ", " << configuration->pixelAddressY() <<
     ") selected for charge injection." << endline;
 }
 
@@ -303,8 +303,8 @@ void pXpolFpga::setDacThreshold(pDetectorConfiguration *configuration)
   unsigned short us_temp=0, us_tempbuffer[16], copythreshold[15];
   
   // Get the thresholds and the calibration signal values from the configuration
-  unsigned short *trh_buffer       = configuration->getThresholdDac();
-  unsigned short calibrationSignal = configuration->getCalibrationDac();
+  unsigned short *trh_buffer       = configuration->thresholdDac();
+  unsigned short calibrationSignal = configuration->calibrationDac();
   
   // Reads the reference voltage in DAC and sum it to the thresholds - To Be Fixed later
   unsigned short vref_dac = readVrefDac();
@@ -407,7 +407,7 @@ void pXpolFpga::configDAC(pDetectorConfiguration *configuration)
 void pXpolFpga::setup(pDetectorConfiguration *configuration) 
 {
   // Setting FPGA configuration
-  if(configuration->getReadoutMode()==xpoldetector::kChargeInjectionReadoutCode){
+  if (configuration->readoutMode()==xpoldetector::kChargeInjectionReadoutCode) {
     // Sequence : XPM to be Configured before Windowed Mode
     *xpollog::kInfo << "Starting Windowed Charge Injection Configuration" <<
       endline;
@@ -424,7 +424,7 @@ void pXpolFpga::setup(pDetectorConfiguration *configuration)
     // Configuring FPGA in windowed mode : WINDOWED_INJ, WINDOWED_EVT
     configWindowedMode(configuration);     
     *xpollog::kInfo << "Windowed Charge Injection Configuration Done." << endline;
-  } else if(configuration->getReadoutMode()==xpoldetector::kWindowedReadoutCode){
+  } else if (configuration->readoutMode()==xpoldetector::kWindowedReadoutCode){
     // Sequence : XPM to be Configured before Windowed Mode	 
     *xpollog::kInfo << "Starting Windowed Event Configuration" << endline;
     // Configuring DAC settings
@@ -433,7 +433,7 @@ void pXpolFpga::setup(pDetectorConfiguration *configuration)
     configXPMWindowed(configuration);
     // Configuring FPGA in windowed mode : WINDOWED_INJ, WINDOWED_EVT
     configWindowedMode(configuration);      
-  } else if(configuration->getReadoutMode()==xpoldetector::kFullFrameReadoutCode){
+  } else if(configuration->readoutMode()==xpoldetector::kFullFrameReadoutCode){
     *xpollog::kInfo << "Starting Full Frame Configuration" << endline;
     // Configuring FPGA in full frame mode
     configFullFrame((unsigned short)FULLFRAME_MH);

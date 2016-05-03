@@ -30,14 +30,12 @@ with this program; if not, write to the Free Software Foundation Inc.,
 #include "pDataCollector.h"
 #include "pUsbController.h"
 #include "pXpolFpga.h"
+#include "xpedaqos.h"
 #include "xpollog.h"
 #include "xpolio.h"
 #include "xpolenv.h"
 
 class pMainWindow;
-
-
-/*! \brief The run controller (responsible for the data acquisition).*/
 
 class pRunController : public pFiniteStateMachine
 {
@@ -46,52 +44,59 @@ class pRunController : public pFiniteStateMachine
   
  public:
   
-  pRunController(pMainWindow *parentWindow,
-		 int maxElapsedSeconds = 604800,
-		 int maxAcquiredEvents = 100000000,
-		 int maxAcquiredDataBlocks = 50000000,
-		 int dataAcquisitionTimerTimeout = 1000);
+  pRunController(int maxSeconds = 604800, int maxEvents = 100000000,
+		 int maxDataBlocks = 50000000);
   ~pRunController() {;}
   unsigned long connectToQuickUsb();
   void init();
-  const inline pDataCollector *getDataCollector() {return m_dataCollector;}
-  const inline pUsbController *getUsbController() {return m_usbController;}
-  const inline pXpolFpga *getXpolFpga() {return m_xpolFpga;}
-  inline int getNumAcquiredDataBlocks()
-    {return m_dataCollector->getNumAcquiredDataBlocks();}
-  inline int getNumAcquiredEvents()
-    {return m_dataCollector->getNumAcquiredEvents();}
-  double getAverageDaqEventRate();
-  double getInstantDaqEventRate();
-  double getInstantFpgaEventRate()
-    {return m_dataCollector->getInstantFpgaEventRate();}
-  void setOutputFilePath(std::string outputFilePath)
-    {m_outputFilePath = outputFilePath;}
-  void setMaxElapsedSeconds(int maxElapsedSeconds)
-    {m_maxElapsedSeconds = maxElapsedSeconds;}
-  void setMaxAcquiredDataBlocks(int maxAcquiredDataBlocks)
-    {m_maxAcquiredDataBlocks = maxAcquiredDataBlocks;}
-  void setMaxAcquiredEvents(int maxAcquiredEvents)
-    {m_maxAcquiredEvents = maxAcquiredEvents;}
-  inline void setBatch(bool batch = true)
-    {m_closeParentOnStop = batch;}
+  inline pDataCollector *getDataCollector() const {return m_dataCollector;}
+  inline pUsbController *getUsbController() const {return m_usbController;}
+  inline pXpolFpga *getXpolFpga() const {return m_xpolFpga;}
+  inline pDetectorConfiguration *detectorConfiguration()
+    const {return m_detectorConfiguration;}
+  inline pUserPreferences *userPreferences() const {return m_userPreferences;}
 
+  /// \brief Setup all the relevant run information.
+  void setupRun(pDetectorConfiguration *configuration,
+		pUserPreferences *preferences);
+
+  /// \brief Same thing but reading the info from file.
+  void setupRun(std::string configFilePath, std::string preferencesFilePath);
+
+  /// \brief Same thing but reading the stuff from the default files.
+  void setupRun();
+  
+  /// \brief Return the current value of the system time.
+  int currentSeconds() const;
+
+  /// \brief Return the time elapsed since the start run. 
+  int elapsedSeconds() const;
+
+  int numDataBlocks() const {return m_dataCollector->numDataBlocks();}
+  int numEvents() const {return m_dataCollector->numEvents();}
+  double averageEventRate() const;
+  double instantEventRate() const;
+  void setMaxSeconds(int maxSeconds) {m_maxSeconds = maxSeconds;}
+  void setMaxDataBlocks(int maxDataBlocks) {m_maxDataBlocks = maxDataBlocks;}
+  void setMaxEvents(int maxEvents) {m_maxEvents = maxEvents;}
+
+  
  public slots:
 
-  // This should go away. 
-  void stopParent();
-
- signals:
   
-  void quickusbError(unsigned long errorCode);
+  
+ signals:
+
+  void stationIdSet(int stationId);
   void runIdChanged(int runId);
+  void quickusbError(unsigned long errorCode);
   void elapsedSecondsChanged(int elapsedSeconds);
-  void numAcquiredDataBlocksChanged(int numDataBlocks);
-  void numAcquiredEventsChanged(int numEvents);
+  void numDataBlocksChanged(int numDataBlocks);
+  void numEventsChanged(int numEvents);
   void averageEventRateChanged(double rate);
   void instantEventRateChanged(double rate);
-  void instantFpgaEventRateChanged(double rate);
 
+  
  protected:
   
   void fsmSetup();
@@ -102,35 +107,107 @@ class pRunController : public pFiniteStateMachine
   void fsmResume();
   void fsmStop();
 
+  
  private:
 
-  // Candidates for removal.
-  pMainWindow *m_parentWindow;
-  bool m_closeParentOnStop;
+  /// \brief Maximum duration (in s) for the data acquisition.
+  int m_maxSeconds;
 
-  // Sensible stuff.
-  int m_maxElapsedSeconds;
-  int m_maxAcquiredEvents;
-  int m_maxAcquiredDataBlocks;
-  pUsbController *m_usbController;
-  pDataCollector *m_dataCollector;
-  pXpolFpga *m_xpolFpga;
-  std::string m_runIdCfgFilePath;
-  std::string m_outputFilePath;
+  /// \brief Maximum number of events to be collected.
+  int m_maxEvents;
+
+  /// \brief Maximum number of data blocks to be collected.
+  int m_maxDataBlocks;
+
+  /// \brief Path to the configuration file containing the station identifier.
+  std::string m_stationIdFilePath;
+
+  /// \brief Station identifier for the machine where the DAQ is running.
+  int m_stationId;
+
+  /// \brief Read the station identifier from the proper file.
+  int readStationId() const;
+
+  /// \brief Set the current station identifier.
+  void setStationId(int stationId);
+
+  /// \brief Path to the configuration file containing the run identifier.
+  std::string m_runIdFilePath;
+
+  /// \brief Current run identifier.
   int m_runId;
-  QTimer *m_dataAcquisitionTimer;
-  int m_dataAcquisitionTimerTimeout;
-  int m_elapsedSeconds;
-  int m_lastNumAcquiredEvents;
-  int readRunId();
-  void writeRunId();
+
+  /// \brief Read the current run identifier from the proper file.
+  int readRunId() const;
+
+  /// \brief Write the current run identifier to the proper file.
+  void writeRunId() const;
+
+  /// \brief Set the current run identifier.
   void setRunId(int runId);
+
+  /// \brief Increment the current run identifier.
   void incrementRunId();
+
+  /// \brief QTimer object for the data acquisition.
+  QTimer *m_timer;
+
+  /// \brief The value of the system time, latched at the start run.
+  int m_startSeconds;
+
+  /// \brief The value of the system time, latched at the stop run.
+  int m_stopSeconds;
+
+  /// \brief Path to the default detector configuration file path.
+  std::string m_configFilePath;
+
+  /// \brief Path to the default user preferences configuration file path.
+  std::string m_preferencesFilePath;
+  
+  /// \brief Return the path to the current output folder.
+  std::string outputFolderPath() const;
+
+  /// \brief Return the base string to compose the paths to the output files.
+  std::string baseFileName() const;
+
+  /// \brief Return the path to the current output data file. 
+  std::string dataFilePath() const;
+
+  /// \brief Return the path to the current log file.
+  std::string logFilePath() const;
+
+  /// \brief Return the path to the curret run report.
+  std::string reportFilePath() const;
+
+  /// \brief Return the path to the (output copy) of the configuration file.
+  std::string detectorConfigurationFilePath() const;
+
+  /// \brief Return the path to the (output copy) of the preferences file.
+  std::string userPreferencesFilePath() const;
+
+  /// \brief Save the run info into the output folder.
+  void saveRunInfo() const;
+
+  /// \brief Pointer to the USB controller member object.
+  pUsbController *m_usbController;
+
+  /// \brief Pointer to the data collector member object.
+  pDataCollector *m_dataCollector;
+
+  /// \brief Pointer to the FPGA member object.
+  pXpolFpga *m_xpolFpga;
+
+  /// \brief Pointer to the detector configuration member object.
+  pDetectorConfiguration *m_detectorConfiguration;
+
+  /// \brief Pointer to the user preferences member object.
+  pUserPreferences *m_userPreferences;
+  
 
  private slots:
    
-  void updateTimer();
-  void resetTimer();
+  void updateRunInfo();
+  void resetRunInfo();
 };
 
 #endif //PRUNCONTROLLER_H

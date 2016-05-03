@@ -65,7 +65,6 @@ void pDataCollector::run()
   time_t timer;
   time(&timer);
   m_startSeconds = (unsigned int)timer;
-  *xpollog::kInfo << "Start time = " << m_startSeconds << " s." << endline;
   m_dataFIFO = new pDataFIFO(m_outputFilePath, m_userPreferences);
   unsigned long dataBufferDimension = SRAM_DIM*2;
   unsigned char dataBuffer[SRAM_DIM*2];
@@ -83,7 +82,7 @@ void pDataCollector::run()
 	m_dataFIFO->fill(new pDataBlock(dataBuffer));
       } else {
 	m_dataFIFO->fill(new pDataBlock(dataBuffer,
-	    m_detectorConfiguration->getMaxBufferSize()));
+	    m_detectorConfiguration->maxBufferSize()));
       }
       m_dataFIFO->setStartSeconds(m_startSeconds);
       m_dataFIFO->flush();
@@ -92,7 +91,6 @@ void pDataCollector::run()
   m_usbController->stopSequencer();
   m_usbController->flushQUsbFIFO();
   m_usbController->resetSequencer();
-
   m_usbController->readUsbSettings();
   m_usbController->writeUsbSettings();
   m_usbController->readUsbSettings();
@@ -111,6 +109,6 @@ void pDataCollector::setup(std::string outputFilePath,
   m_outputFilePath = outputFilePath;
   m_userPreferences = preferences;
   m_detectorConfiguration = configuration;
-  m_fullFrame = (m_detectorConfiguration->getReadoutMode() ==
+  m_fullFrame = (m_detectorConfiguration->readoutMode() ==
 		 xpoldetector::kFullFrameReadoutCode);
 }
