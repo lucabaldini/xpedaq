@@ -259,11 +259,11 @@ void pMainWindow::setupConnections()
 	  m_daqDisplay, SLOT(updateAverageDaqRate(double)));
   connect(m_runController, SIGNAL(instantEventRateChanged(double)),
 	  m_daqDisplay, SLOT(updateInstantDaqRate(double)));
-  connect(m_runController->getXpolFpga(),
+  connect(m_runController->xpolFpga(),
 	  SIGNAL(thresholdRefRead(unsigned short)),
 	  this, SLOT(displayReference(unsigned short)));
   connect(m_thresholdSettingTab->getRefreshRefButton(), SIGNAL(clicked()),
-  	  m_runController->getXpolFpga(), SLOT(readVrefDac()));
+  	  m_runController->xpolFpga(), SLOT(readVrefDac()));
   connect(m_userPreferencesTab, SIGNAL(visualizetionModeChanged(int)),
 	  this, SLOT(changeVisualizationMode(int)));
 }

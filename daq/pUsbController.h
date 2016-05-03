@@ -1,6 +1,5 @@
 /***********************************************************************
-Copyright (C) 2007, 2008 by Luca Baldini (luca.baldini@pi.infn.it),
-Johan Bregeon, Massimo Minuti and Gloria Spandre.
+Copyright (C) 2007--2016 the X-ray Polarimetry Explorer (XPE) team.
 
 For the license terms see the file LICENSE, distributed along with this
 software.
@@ -179,11 +178,14 @@ with this program; if not, write to the Free Software Foundation Inc.,
 #define EP6EMPTYFLG	0x200 
 
 
-class pUsbController : public CQuickUsb
+class pUsbController : public QObject, public CQuickUsb
 {
 
+  Q_OBJECT
+
  public:
-  pUsbController(const char *devName);
+
+  pUsbController();
   ~pUsbController();
   int setup();
   int readUsbSettings();
@@ -192,7 +194,7 @@ class pUsbController : public CQuickUsb
   int stopSequencer();
   int resetSequencer();
   int flushQUsbFIFO();
-  unsigned long getLastErrorCode();
+  unsigned long lastErrorCode();
   void errorSummary(unsigned long errorCode);
   int readSetting(unsigned short address, unsigned short *value);
   int readData(unsigned char *data, unsigned long *length);
@@ -201,12 +203,16 @@ class pUsbController : public CQuickUsb
   int writePort(unsigned short address, unsigned char *data,
 		unsigned short length);
   int setTimeout(unsigned long timeout);
-  /*! \brief Return the error description as reported on the QuickUsb data
-   sheet.*/
-  static std::string getErrorDescription(unsigned long errorCode);
-  /*! \brief Return the error resolution as reported on the QuickUsb data
-   sheet.*/
-  static std::string getErrorResolution(unsigned long errorCode);
+  static std::string errorDescription(unsigned long errorCode);
+  static std::string errorResolution(unsigned long errorCode);
+
+
+ signals:
+
+  void connected(char *deviceName);
+  void quickusbError(unsigned long errorCode);
+
+    
  protected:
 
  private:

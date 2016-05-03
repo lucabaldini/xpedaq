@@ -49,9 +49,9 @@ class pRunController : public pFiniteStateMachine
   ~pRunController() {;}
   unsigned long connectToQuickUsb();
   void init();
-  inline pDataCollector *getDataCollector() const {return m_dataCollector;}
-  inline pUsbController *getUsbController() const {return m_usbController;}
-  inline pXpolFpga *getXpolFpga() const {return m_xpolFpga;}
+  inline pDataCollector *dataCollector() const {return m_dataCollector;}
+  inline pUsbController *usbController() const {return m_usbController;}
+  inline pXpolFpga *xpolFpga() const {return m_xpolFpga;}
   inline pDetectorConfiguration *detectorConfiguration()
     const {return m_detectorConfiguration;}
   inline pUserPreferences *userPreferences() const {return m_userPreferences;}

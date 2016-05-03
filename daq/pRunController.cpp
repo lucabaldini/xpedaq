@@ -249,47 +249,13 @@ void pRunController::resetRunInfo()
  */
 unsigned long pRunController::connectToQuickUsb()
 {
-  *xpollog::kInfo << "Searching for USB module(s)... " << endline;
-  unsigned long errorCode = 0;
-  char usbDeviceString[512];
-  // Execute the QuickUsb::QuickUsbFindModules and see what's connected.
-  // If this finds something, we go ahead and parse the return string.
-  if (QuickUsbFindModules(usbDeviceString, 512)) {
-    int numUsbDevices = 0;
-    char usbDeviceName[20];
-    char *usbDeviceStringPtr = usbDeviceString;
-    while (*usbDeviceStringPtr != '\0') {
-      *xpollog::kDebug << "Found " << usbDeviceStringPtr << "." << endline;
-      strncpy(usbDeviceName, usbDeviceStringPtr, 20);
-      usbDeviceStringPtr += strlen(usbDeviceStringPtr);
-      numUsbDevices ++;
+  m_usbController = new pUsbController();
+  if (m_usbController->lastErrorCode()) {
+      emit quickusbError(m_usbController->lastErrorCode());
     }
-    // We're not equipped to handle more than one device, yet.
-    if (numUsbDevices > 1) {
-      *xpollog::kWarning << numUsbDevices << " modules found." << endline;
-    }
-    // Create the pUsbController object.
-    m_usbController = new pUsbController(usbDeviceName);
-  }
-  // And this is the case where there are no QuickUsb interfaces attached:
-  // we parse the last error code and emit a quickusbError(errorCode)
-  // signal.
-  else {
-    QuickUsbGetLastError(&errorCode);
-    if (errorCode > 0) {
-      *xpollog::kError << "Error " << errorCode << ". "
-		       << pUsbController::getErrorDescription(errorCode)
-		       << endline;
-    }
-    *xpollog::kError << "No USB module found." << endline;
-    emit quickusbError(errorCode);
-  }
-  // Irrespectively, we create the remaining objects.
-  // Mind that if there's no USB connection, m_usbController is a null
-  // pointer. Do we have to do anything about it?
   m_xpolFpga = new pXpolFpga(m_usbController);
   m_dataCollector = new pDataCollector(m_usbController);
-  return errorCode;
+  return m_usbController->lastErrorCode();
 }
 
 
