@@ -80,7 +80,7 @@ void pReadoutModeTab::setupCalibrationWidgets()
   m_groupBoxGridLayout->addWidget(m_calPixAddressXLabel, row, 0);
   m_groupBoxGridLayout->addWidget(m_calPixAddressXSpinBox, row , 1);
   row ++;
-  m_calPixAddressYLabel = new pQtCustomTextLabel(this, "Pixel address x");
+  m_calPixAddressYLabel = new pQtCustomTextLabel(this, "Pixel address y");
   m_calPixAddressYSpinBox = new QSpinBox(this);
   m_calPixAddressYSpinBox->setMinimum(0);
   m_calPixAddressYSpinBox->setMaximum(xpoldetector::kNumPixelsY);

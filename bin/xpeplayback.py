@@ -69,6 +69,16 @@ class pXpeEvent:
         """
         return (self.s2 + self.s1*65536)
 
+    def adc_index(self, ix, iy):
+        """ Return the index of the (ix, iy) channel in the adc_counts list
+        Assuming we follow Gloria convention in the recon, see issue #72
+        """
+        return (iy - self.ymin) + (ix-self.xmin)*(self.ymax-self.ymin+1)
+        
+
+    def get_adc(self, ix, iy):
+        return self.adc_counts[self.adc_index(ix, iy)]
+
     def __str__(self):
         """
         """
@@ -110,10 +120,10 @@ class pXpeBinaryFile(file):
         if header != pXpeEvent.HEADER:
             logging.error('Event header mismatch (got %s).' % hex(header))
             raise StopIteration()
-        xmin = self.read_word()
-        xmax = self.read_word()
         ymin = self.read_word()
         ymax = self.read_word()
+        xmin = self.read_word()
+        xmax = self.read_word()
         num_pixels = (xmax - xmin + 1)*(ymax - ymin + 1)
         buffer_id = self.read_word()
         t1 = self.read_word()
