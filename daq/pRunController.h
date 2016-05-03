@@ -25,7 +25,6 @@ with this program; if not, write to the Free Software Foundation Inc.,
 #include <iostream>
 #include <QTimer>
 
-#include "pMainWindow.h"
 #include "pFiniteStateMachine.h"
 #include "pDataCollector.h"
 #include "pUsbController.h"
@@ -33,9 +32,7 @@ with this program; if not, write to the Free Software Foundation Inc.,
 #include "xpedaqos.h"
 #include "xpollog.h"
 #include "xpolio.h"
-#include "xpolenv.h"
 
-class pMainWindow;
 
 class pRunController : public pFiniteStateMachine
 {

@@ -19,8 +19,8 @@ with this program; if not, write to the Free Software Foundation Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 ***********************************************************************/
 
-#ifndef PMAINWINDOW_H
-#define PMAINWINDOW_H
+#ifndef PACQUISITIONWINDOW_H
+#define PACQUISITIONWINDOW_H
 
 #include <iostream>
 
@@ -53,15 +53,15 @@ namespace gui{
 using namespace gui;
 
 
-class pMainWindow : public pQtMainWindowGui
+class pAcquisitionWindow : public pQtMainWindowGui
 {
 
   Q_OBJECT
 
  public:
   
-  pMainWindow();
-  ~pMainWindow();
+  pAcquisitionWindow();
+  ~pAcquisitionWindow();
   pDetectorConfiguration *detectorConfiguration(int mode = -1);
   pUserPreferences *userPreferences();
   int visualizationMode();
@@ -106,4 +106,4 @@ class pMainWindow : public pQtMainWindowGui
   void setupLoggerConnections();
 };
 
-#endif //PMAINWINDOW_H
+#endif //PACQUISITIONWINDOW_H

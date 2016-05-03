@@ -2,7 +2,7 @@
 #include <QString>
 #include <QObject>
 
-#include "pMainWindow.h"
+#include "xpedaqWindow.h"
 #include "xpedaqutils.h"
 
 int main(int argn, char *argv[])
@@ -13,7 +13,7 @@ int main(int argn, char *argv[])
   //bool batchmode = false;
   
   QApplication app(argn, argv);
-  pMainWindow window;
+  xpedaqWindow window;
 
   for (int i = 1; i < argn; i++)
     {

@@ -2,6 +2,8 @@
 * Field for the FPGA instant rate removed from the main data display.
 * Significant refactoring of the pUsbController class (initialization moved
   out of the pRunController class).
+* pMainWindow class renamed to pAcquisitionWindow.
+* Separate main window class created for xpedaq. 
 
 
 -------------------------------------------------------------------------------

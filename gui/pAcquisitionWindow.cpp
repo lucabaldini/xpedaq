@@ -19,10 +19,10 @@ with this program; if not, write to the Free Software Foundation Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 ***********************************************************************/
 
-#include "pMainWindow.h"
+#include "pAcquisitionWindow.h"
 
 
-pMainWindow::pMainWindow()
+pAcquisitionWindow::pAcquisitionWindow()
 {  
   setupDaqDisplay();
   setupMessageDisplay();
@@ -46,7 +46,7 @@ pMainWindow::pMainWindow()
   showMessage("Data acquisition system ready", 2000);
 }
 
-pMainWindow::~pMainWindow()
+pAcquisitionWindow::~pAcquisitionWindow()
 {
   // Do we want to save the detector config and user preferences, here?
   // (Note that this is done at the start run.)
@@ -56,7 +56,7 @@ pMainWindow::~pMainWindow()
 
 /*! Pass the configuration from the GUI to the run controller and start the run.
  */
-void pMainWindow::startRun()
+void pAcquisitionWindow::startRun()
 {
   m_runController->setupRun(detectorConfiguration(), userPreferences());
   m_runController->setRunning();
@@ -65,7 +65,7 @@ void pMainWindow::startRun()
 
 /*! Stop the run controller.
  */
-void pMainWindow::stopRun()
+void pAcquisitionWindow::stopRun()
 {
   m_runController->setStopped();
 }
@@ -73,7 +73,7 @@ void pMainWindow::stopRun()
 
 /*!
  */
-void pMainWindow::setupDaqDisplay()
+void pAcquisitionWindow::setupDaqDisplay()
 {
   m_daqDisplay = new pDaqDisplay(m_centralWidget);
   m_daqDisplay->freezeSize(DISPLAYS_WIDTH, -1);
@@ -83,7 +83,7 @@ void pMainWindow::setupDaqDisplay()
 
 /*!
  */
-void pMainWindow::setupMessageDisplay()
+void pAcquisitionWindow::setupMessageDisplay()
 {
   m_messageDisplay = new pMessageDisplay(m_centralWidget);
   m_messageDisplay->freezeSize(DISPLAYS_WIDTH, 200);
@@ -93,7 +93,7 @@ void pMainWindow::setupMessageDisplay()
 
 /*!
  */
-void pMainWindow::setupTransportBar()
+void pAcquisitionWindow::setupTransportBar()
 {
   m_transportBar   = new pTransportBar(m_centralWidget);
   m_mainGridLayout->addWidget(m_transportBar, 2, 0, Qt::AlignBottom);
@@ -102,7 +102,7 @@ void pMainWindow::setupTransportBar()
 
 /*!
  */
-void pMainWindow::setupTabWidget()
+void pAcquisitionWindow::setupTabWidget()
 {
   m_mainTabWidget = new QTabWidget(m_centralWidget);
   m_mainGridLayout->addWidget(m_mainTabWidget, 0, 1, 3, 1);
@@ -125,7 +125,7 @@ void pMainWindow::setupTabWidget()
 
 /*!
  */
-void pMainWindow::start()
+void pAcquisitionWindow::start()
 {
   m_transportBar->pressStartButton();
 }
@@ -133,7 +133,7 @@ void pMainWindow::start()
 
 /*!
  */
-void pMainWindow::stop()
+void pAcquisitionWindow::stop()
 {
   m_transportBar->pressStopButton();
 }
@@ -141,7 +141,7 @@ void pMainWindow::stop()
 
 /*!
  */
-void pMainWindow::disableHardwareWidgets()
+void pAcquisitionWindow::disableHardwareWidgets()
 {
   m_transportBar->setEnabled(0);
   m_thresholdSettingTab->getRefreshRefButton()->setEnabled(0);
@@ -150,7 +150,7 @@ void pMainWindow::disableHardwareWidgets()
 
 /*!
  */
-pDetectorConfiguration *pMainWindow::detectorConfiguration(int mode)
+pDetectorConfiguration *pAcquisitionWindow::detectorConfiguration(int mode)
 {
   if (mode == -1){
     mode = visualizationMode();
@@ -179,7 +179,7 @@ pDetectorConfiguration *pMainWindow::detectorConfiguration(int mode)
 
 /*!
  */
-pUserPreferences *pMainWindow::userPreferences()
+pUserPreferences *pAcquisitionWindow::userPreferences()
 {
   return m_userPreferencesTab->getUserPreferences();
 }
@@ -187,7 +187,7 @@ pUserPreferences *pMainWindow::userPreferences()
 
 /*!
  */
-int pMainWindow::visualizationMode()
+int pAcquisitionWindow::visualizationMode()
 {
   return userPreferences()->visualizationMode();
 }
@@ -195,7 +195,7 @@ int pMainWindow::visualizationMode()
 
 /*!
  */
-void pMainWindow::displayConfiguration(pDetectorConfiguration *configuration,
+void pAcquisitionWindow::displayConfiguration(pDetectorConfiguration *configuration,
 				       int mode)
 {
   m_readoutModeTab->displayConfiguration(configuration, mode);
@@ -206,7 +206,7 @@ void pMainWindow::displayConfiguration(pDetectorConfiguration *configuration,
 
 /*!
  */
-void pMainWindow::displayReference(unsigned short reference)
+void pAcquisitionWindow::displayReference(unsigned short reference)
 {
   m_thresholdSettingTab->displayReference(reference, visualizationMode());
 }
@@ -214,7 +214,7 @@ void pMainWindow::displayReference(unsigned short reference)
 
 /*!
  */
-void pMainWindow::changeVisualizationMode(int mode)
+void pAcquisitionWindow::changeVisualizationMode(int mode)
 {
   displayConfiguration(detectorConfiguration(m_lastVisualizationMode), mode);
   m_lastVisualizationMode = mode;
@@ -223,7 +223,7 @@ void pMainWindow::changeVisualizationMode(int mode)
 
 /*!
  */
-void pMainWindow::setupLoggerConnections()
+void pAcquisitionWindow::setupLoggerConnections()
 {
   connect(xpollog::kDebug, SIGNAL(message(QString)), m_messageDisplay,
 	  SLOT(showMessage(QString)));
@@ -238,7 +238,7 @@ void pMainWindow::setupLoggerConnections()
 
 /*!
  */
-void pMainWindow::setupConnections()
+void pAcquisitionWindow::setupConnections()
 {
   connect(m_transportBar, SIGNAL(start()), this, SLOT(startRun()));
   connect(m_transportBar, SIGNAL(stop()), this, SLOT(stopRun()));

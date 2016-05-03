@@ -50,7 +50,8 @@ HEADERS += pProbeSettingTab.h
 HEADERS += pUsbControlTab.h
 HEADERS += pUserPreferencesTab.h
 HEADERS += pQtMainWindowGui.h
-HEADERS += pMainWindow.h
+HEADERS += pAcquisitionWindow.h
+HEADERS += xpedaqWindow.h
 
 HEADERS += pFiniteStateMachine.h
 HEADERS += pDataCollector.h
@@ -96,7 +97,8 @@ SOURCES += pProbeSettingTab.cpp
 SOURCES += pUsbControlTab.cpp
 SOURCES += pUserPreferencesTab.cpp
 SOURCES += pQtMainWindowGui.cpp
-SOURCES += pMainWindow.cpp
+SOURCES += pAcquisitionWindow.cpp
+SOURCES += xpedaqWindow.cpp
 
 SOURCES += pFiniteStateMachine.cpp
 SOURCES += pDataCollector.cpp
