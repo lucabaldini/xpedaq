@@ -20,8 +20,8 @@ with this program; if not, write to the Free Software Foundation Inc.,
 ***********************************************************************/
 
 
-#ifndef PXPEDAQWINDOW_H
-#define PXPEDAQWINDOW_H
+#ifndef XPEDAQWINDOW_H
+#define XPEDAQWINDOW_H
 
 #include "pAcquisitionWindow.h"
 
@@ -38,4 +38,4 @@ class xpedaqWindow : public pAcquisitionWindow
   
 };
 
-#endif //PXPEDAQWINDOW_H
+#endif //XPEDAQWINDOW_H
