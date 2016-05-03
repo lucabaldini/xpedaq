@@ -3,7 +3,8 @@
 * Significant refactoring of the pUsbController class (initialization moved
   out of the pRunController class).
 * pMainWindow class renamed to pAcquisitionWindow.
-* Separate main window class created for xpedaq. 
+* Separate main window class created for xpedaq.
+* Skeleton of a xpepeds application added.
 
 
 -------------------------------------------------------------------------------
