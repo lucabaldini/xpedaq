@@ -46,6 +46,8 @@ pAcquisitionWindow::pAcquisitionWindow(pRunController &runController)
   pDetectorConfiguration *configuration =
     m_runController->detectorConfiguration();  
   displayConfiguration(configuration, preferences->visualizationMode());
+  pTriggerMask *triggerMask = m_runController->triggerMask();
+  displayTriggerMask(triggerMask);
   m_runController->init();
   showMessage("Data acquisition system ready", 2000);
 }
@@ -62,7 +64,8 @@ pAcquisitionWindow::~pAcquisitionWindow()
  */
 void pAcquisitionWindow::startRun()
 {
-  m_runController->setupRun(detectorConfiguration(), userPreferences());
+  m_runController->setupRun(detectorConfiguration(), userPreferences(),
+			    triggerMask());
   m_runController->setRunning();
 }
 
@@ -193,6 +196,14 @@ pUserPreferences *pAcquisitionWindow::userPreferences()
 
 /*!
  */
+pTriggerMask *pAcquisitionWindow::triggerMask()
+{
+  return m_triggerSettingTab->triggerMask();
+}
+
+
+/*!
+ */
 int pAcquisitionWindow::visualizationMode()
 {
   return userPreferences()->visualizationMode();
@@ -216,6 +227,14 @@ void pAcquisitionWindow::displayUserPreferences(pUserPreferences *preferences)
 {
   m_userPreferencesTab->displayUserPreferences(*preferences);
   m_usbControlTab->setTimeout(preferences->usbTimeout());
+}
+
+
+/*!
+ */
+void pAcquisitionWindow::displayTriggerMask(pTriggerMask *triggerMask)
+{
+  m_triggerSettingTab->displayTriggerMask(triggerMask);
 }
 
 

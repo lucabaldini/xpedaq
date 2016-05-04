@@ -42,6 +42,7 @@ with this program; if not, write to the Free Software Foundation Inc.,
 #include "pRunController.h"
 #include "pDetectorConfiguration.h"
 #include "pUserPreferences.h"
+#include "pTriggerMask.h"
 
 class pRunController;
 
@@ -63,9 +64,11 @@ class pAcquisitionWindow : public pQtMainWindowGui
   ~pAcquisitionWindow();
   pDetectorConfiguration *detectorConfiguration(int mode = -1);
   pUserPreferences *userPreferences();
+  pTriggerMask *triggerMask();
   int visualizationMode();
   void displayConfiguration(pDetectorConfiguration *configuration, int mode);
   void displayUserPreferences(pUserPreferences *preferences);
+  void displayTriggerMask(pTriggerMask *triggerMask);
   void start();
   void stop();
   pRunController *runController() const {return m_runController;}

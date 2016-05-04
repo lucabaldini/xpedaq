@@ -26,14 +26,16 @@ with this program; if not, write to the Free Software Foundation Inc.,
 /*! Basic constructor.
  */
 pRunController::pRunController(std::string configFilePath,
-			       std::string preferencesFilePath)
+			       std::string preferencesFilePath,
+			       std::string trgMaskFilePath)
   : m_maxSeconds(2592000),
     m_maxEvents(259200000),
     m_maxDataBlocks(2592000),
     m_startSeconds(0),
     m_stopSeconds(0),
     m_configFilePath(configFilePath),
-    m_preferencesFilePath(preferencesFilePath)
+    m_preferencesFilePath(preferencesFilePath),
+    m_trgMaskFilePath(trgMaskFilePath)
 {
   m_stationIdFilePath = xpedaqos::rjoin("config", "stationId.cfg");
   if (!xpedaqos::fileExists(m_stationIdFilePath)) {
@@ -50,6 +52,9 @@ pRunController::pRunController(std::string configFilePath,
   if (!xpedaqos::fileExists(m_preferencesFilePath)) {
     xpedaqos::copyFile(m_preferencesFilePath + ".sample",
 		       m_preferencesFilePath);
+  }
+  if (!xpedaqos::fileExists(m_trgMaskFilePath)) {
+    xpedaqos::copyFile(m_trgMaskFilePath + ".sample", m_trgMaskFilePath);
   }
   setupRun();
   m_timer = new QTimer();
@@ -89,11 +94,13 @@ void pRunController::init()
 /*!
  */
 void pRunController::setupRun(pDetectorConfiguration *configuration,
-			      pUserPreferences *preferences)
+			      pUserPreferences *preferences,
+			      pTriggerMask *triggerMask)
 {
   *xpollog::kInfo << "Setting up run..." << endline;
   m_detectorConfiguration = configuration;
   m_userPreferences = preferences;
+  m_triggerMask = triggerMask;
   // The following two lines are duplicated and should be refactored.
   xpollog::kLogger->setTerminalLevel(m_userPreferences->loggerTerminalLevel());
   xpollog::kLogger->setDisplayLevel(m_userPreferences->loggerDisplayLevel());
@@ -103,10 +110,12 @@ void pRunController::setupRun(pDetectorConfiguration *configuration,
 /*!
  */
 void pRunController::setupRun(std::string configFilePath,
-			      std::string preferencesFilePath)
+			      std::string preferencesFilePath,
+			      std::string trgMaskFilePath)
 { 
   m_detectorConfiguration = new pDetectorConfiguration(configFilePath);
   m_userPreferences = new pUserPreferences(preferencesFilePath);
+  m_triggerMask = new pTriggerMask(trgMaskFilePath);
   xpollog::kLogger->setTerminalLevel(m_userPreferences->loggerTerminalLevel());
   xpollog::kLogger->setDisplayLevel(m_userPreferences->loggerDisplayLevel());
 }
@@ -116,7 +125,7 @@ void pRunController::setupRun(std::string configFilePath,
  */
 void pRunController::setupRun()
 {
-  setupRun(m_configFilePath, m_preferencesFilePath);
+  setupRun(m_configFilePath, m_preferencesFilePath, m_trgMaskFilePath);
 }
 
 
@@ -307,8 +316,10 @@ void pRunController::fsmStartRun()
   configurationInfo << *m_detectorConfiguration;
   std::stringstream preferencesInfo("");
   preferencesInfo << *m_userPreferences;
+  std::stringstream trgMaskInfo("");
+  trgMaskInfo << *m_triggerMask;
   *xpollog::kDebug << "Settings at start run...\n" << configurationInfo.str()
-		   << preferencesInfo.str() << endline;
+		   << preferencesInfo.str() << trgMaskInfo.str() << endline;
   saveRunInfo();
   resetRunInfo();
   m_timer->start();
@@ -456,6 +467,14 @@ std::string pRunController::userPreferencesFilePath() const
 
 /*!
  */
+std::string pRunController::trgMaskFilePath() const
+{
+  return outputFilePath("trgmask.cfg");
+}
+
+
+/*!
+ */
 std::string pRunController::xpedaqVersionFilePath() const
 {
   return outputFilePath("version.h");
@@ -475,5 +494,7 @@ void pRunController::saveRunInfo() const
   m_detectorConfiguration->writeToFile(detectorConfigurationFilePath());
   m_userPreferences->writeToFile(m_preferencesFilePath);
   m_userPreferences->writeToFile(userPreferencesFilePath());
+  m_triggerMask->writeToFile(m_trgMaskFilePath);
+  m_triggerMask->writeToFile(trgMaskFilePath());
   xpedaqos::copyFile(xpedaqos::rjoin("__version__.h"), xpedaqVersionFilePath());
 }

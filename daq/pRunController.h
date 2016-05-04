@@ -32,6 +32,7 @@ with this program; if not, write to the Free Software Foundation Inc.,
 #include "xpedaqos.h"
 #include "xpollog.h"
 #include "xpolio.h"
+#include "pTriggerMask.h"
 
 
 class pRunController : public pFiniteStateMachine
@@ -41,7 +42,8 @@ class pRunController : public pFiniteStateMachine
   
  public:
   
-  pRunController(std::string configFilePath, std::string preferencesFilePath);
+  pRunController(std::string configFilePath, std::string preferencesFilePath,
+		 std::string trgMaskFilePath);
   ~pRunController() {;}
   unsigned long connectUsb();
   void init();
@@ -51,13 +53,15 @@ class pRunController : public pFiniteStateMachine
   pDetectorConfiguration *detectorConfiguration()
     const {return m_detectorConfiguration;}
   pUserPreferences *userPreferences() const {return m_userPreferences;}
+  pTriggerMask *triggerMask() const {return m_triggerMask;}
 
   /// \brief Setup all the relevant run information.
   void setupRun(pDetectorConfiguration *configuration,
-		pUserPreferences *preferences);
+		pUserPreferences *preferences, pTriggerMask *triggerMask);
 
   /// \brief Same thing but reading the info from file.
-  void setupRun(std::string configFilePath, std::string preferencesFilePath);
+  void setupRun(std::string configFilePath, std::string preferencesFilePath,
+		std::string trgMaskFilePath);
 
   /// \brief Same thing but reading the stuff from the default files.
   void setupRun();
@@ -157,11 +161,14 @@ class pRunController : public pFiniteStateMachine
   /// \brief The value of the system time, latched at the stop run.
   long int m_stopSeconds;
 
-  /// \brief Path to the default detector configuration file path.
+  /// \brief Path to the detector configuration file path.
   std::string m_configFilePath;
 
-  /// \brief Path to the default user preferences configuration file path.
+  /// \brief Path to the user preferences configuration file path.
   std::string m_preferencesFilePath;
+
+  /// \brief Path to the trigger mask configuration file path.
+  std::string m_trgMaskFilePath;
   
   /// \brief Return the path to the current output folder.
   std::string outputFolderPath() const;
@@ -187,6 +194,9 @@ class pRunController : public pFiniteStateMachine
   /// \brief Return the path to the (output copy) of the preferences file.
   std::string userPreferencesFilePath() const;
 
+  /// \brief Return the path to the (output copy) of the trigger mask file.
+  std::string trgMaskFilePath() const;
+
   /// \brief Return the path to the (output copy) of the version header file.
   std::string xpedaqVersionFilePath() const;
 
@@ -207,7 +217,10 @@ class pRunController : public pFiniteStateMachine
 
   /// \brief Pointer to the user preferences member object.
   pUserPreferences *m_userPreferences;
-  
+
+  /// \brief Pointer to the trigger mask member object.
+  pTriggerMask *m_triggerMask;
+ 
 
  private slots:
    

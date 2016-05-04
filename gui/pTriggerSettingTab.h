@@ -1,6 +1,5 @@
 /***********************************************************************
-Copyright (C) 2007, 2008 by Luca Baldini (luca.baldini@pi.infn.it),
-Johan Bregeon, Massimo Minuti and Gloria Spandre.
+Copyright (C) 2007--2016 the X-ray Polarimetry Explorer (XPE) team.
 
 For the license terms see the file LICENSE, distributed along with this
 software.
@@ -26,9 +25,14 @@ with this program; if not, write to the Free Software Foundation Inc.,
 #include <iostream>
 
 #include <QString>
+#include <QTableWidget>
+#include <QHeaderView>
+#include <QStringList>
 
 #include "pQtCustomTextLabel.h"
 #include "pQtCustomTab.h"
+#include "pTriggerMask.h"
+#include "xpoldetector.h"
 
 class pTriggerSettingTab : public pQtCustomTab
 {
@@ -36,12 +40,20 @@ class pTriggerSettingTab : public pQtCustomTab
   Q_OBJECT
 
  public:
+  
   pTriggerSettingTab();
   ~pTriggerSettingTab() {;}
+  pTriggerMask *triggerMask() const;
+
 
  public slots:
 
+   void displayTriggerMask(pTriggerMask *triggerMask);
+   
+
  private:
+
+  QTableWidget *m_tableWidget;
 };
 
 #endif
