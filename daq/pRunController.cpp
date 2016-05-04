@@ -199,15 +199,6 @@ long int pRunController::currentSeconds() const
 }
 
 
-/*! Return the difference between the current seconds and the seconds latched
-  at the start time.
-*/
-long int pRunController::elapsedSeconds() const
-{
-  return currentSeconds() - m_startSeconds;
-}
-
-
 /*!
  */
 std::string pRunController::startDatetime() const
@@ -351,11 +342,12 @@ void pRunController::fsmStopRun()
   *xpollog::kInfo << "Run controller stopped on " << stopDatetime()
 		  << " (" << m_stopSeconds << " s since January 1, 1970)."
 		  << endline;
-  *xpollog::kInfo << numEvents() << " events (" <<
-    numDataBlocks() << " data blocks) acquired in "<<
-    elapsedSeconds() << " seconds."<< endline;
+  *xpollog::kInfo << numEvents() << " events (" << numDataBlocks()
+		  << " data blocks) acquired in "<< runDuration()
+		  << " seconds."<< endline;
   *xpollog::kInfo << "Disconnecting logger from file..." << endline;
   xpollog::kLogger->enableLogFile(false);
+  writeRunStat(runStatFilePath());
 }
 
 
@@ -475,9 +467,35 @@ std::string pRunController::trgMaskFilePath() const
 
 /*!
  */
+std::string pRunController::runStatFilePath() const
+{
+  return outputFilePath("runstat.txt");
+}
+
+
+/*!
+ */
 std::string pRunController::xpedaqVersionFilePath() const
 {
   return outputFilePath("version.h");
+}
+
+
+/*!
+ */
+void pRunController::writeRunStat(std::string filePath) const
+{
+  *xpollog::kInfo << "Writing run statistics to " << filePath <<
+    "... " << endline;
+  std::ofstream *outputFile = xpolio::kIOManager->openOutputFile(filePath);
+  *outputFile << "Start date/time: " << startDatetime() << std::endl;
+  *outputFile << "Start seconds: " << m_startSeconds  << std::endl;
+  *outputFile << "Stop date/time: " << stopDatetime()  << std::endl;
+  *outputFile << "Stop seconds: " << m_stopSeconds  << std::endl;
+  *outputFile << "Run duration [s]: " << runDuration() << std::endl;
+  *outputFile << "Number of events: " << numEvents()  << std::endl;
+  *outputFile << "Number of data blocks: " << numDataBlocks()  << std::endl;  
+  xpolio::kIOManager->closeOutputFile(outputFile);
 }
 
 

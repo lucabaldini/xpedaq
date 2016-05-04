@@ -41,18 +41,37 @@ class pRunController : public pFiniteStateMachine
   Q_OBJECT
   
  public:
-  
+
+  ///\brief Constructor.
   pRunController(std::string configFilePath, std::string preferencesFilePath,
 		 std::string trgMaskFilePath);
+
+  ///\brief Destructor.
   ~pRunController() {;}
+
+  ///\brief Connect the underlying pUsbController object.
   unsigned long connectUsb();
+
+  ///\brief Initialize the run controller.
   void init();
+
+  ///\brief Return the underlying pDataCollector object.
   pDataCollector *dataCollector() const {return m_dataCollector;}
+
+  ///\brief Return the underlying pUsbController object.
   pUsbController *usbController() const {return m_usbController;}
+
+  ///\brief Return the underlying pXpolFpga object.
   pXpolFpga *xpolFpga() const {return m_xpolFpga;}
+
+  ///\brief Return the current detector configuration.
   pDetectorConfiguration *detectorConfiguration()
     const {return m_detectorConfiguration;}
+
+  ///\brief Return the current user preferences.
   pUserPreferences *userPreferences() const {return m_userPreferences;}
+
+  ///\brief Return the current trigger mask.
   pTriggerMask *triggerMask() const {return m_triggerMask;}
 
   /// \brief Setup all the relevant run information.
@@ -70,18 +89,42 @@ class pRunController : public pFiniteStateMachine
   long int currentSeconds() const;
 
   /// \brief Return the time elapsed since the start run. 
-  long int elapsedSeconds() const;
+  long int elapsedSeconds() const {return currentSeconds() - m_startSeconds;};
 
+  ///\brief Return the number of seconds since January 1, 1970 at the start run.
   long int startSeconds() const {return m_startSeconds;}
+
+  ///\brief Return the number of seconds since January 1, 1970 at the stop run.
   long int stopSeconds() const {return m_stopSeconds;}
+
+  ///\brief Return the date and time at the start run.
   std::string startDatetime() const;
+
+  ///\brief Return the date and time at the stop run.
   std::string stopDatetime() const;
+
+  ///\brief Return the run duration in seconds.
+  long int runDuration() const {return m_stopSeconds - m_startSeconds;}
+
+  ///\brief Return the number of data blocks collected.
   int numDataBlocks() const {return m_dataCollector->numDataBlocks();}
+
+  ///\brief Return the number of events collected.
   int numEvents() const {return m_dataCollector->numEvents();}
+
+  ///\brief Return the event rate averaged over the run.
   double averageEventRate() const;
+
+  ///\brief Return the average event rate for the last data block.
   double instantEventRate() const;
+
+  ///\brief Set the maximum running time.
   void setMaxSeconds(int maxSeconds) {m_maxSeconds = maxSeconds;}
+
+  ///\brief Set the maximum number of data blocks to be collected.
   void setMaxDataBlocks(int maxDataBlocks) {m_maxDataBlocks = maxDataBlocks;}
+
+  ///\brief Set the maximum number of events to be collected.
   void setMaxEvents(int maxEvents) {m_maxEvents = maxEvents;}
 
   
@@ -197,8 +240,14 @@ class pRunController : public pFiniteStateMachine
   /// \brief Return the path to the (output copy) of the trigger mask file.
   std::string trgMaskFilePath() const;
 
+  ///\brief Return the path to the output file with the run statistics.
+  std::string runStatFilePath() const;
+
   /// \brief Return the path to the (output copy) of the version header file.
   std::string xpedaqVersionFilePath() const;
+
+  ///\brief Write the relevant run statistics to a file.
+  void writeRunStat(std::string filePath) const;
 
   /// \brief Save the run info into the output folder.
   void saveRunInfo() const;
@@ -226,6 +275,7 @@ class pRunController : public pFiniteStateMachine
    
   void updateRunInfo();
   void resetRunInfo();
+
 };
 
 #endif //PRUNCONTROLLER_H
