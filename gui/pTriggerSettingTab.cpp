@@ -38,6 +38,26 @@ pTriggerSettingTab::pTriggerSettingTab()
   m_tableWidget->horizontalHeader()->setStretchLastSection(true);
   m_groupBoxGridLayout->addWidget(m_tableWidget, row, 0);
   freezeSize(xpolgui::kTabGroupBoxWidth);
+  //setContextMenuPolicy(Qt::CustomContextMenu);
+  //connect(this, SIGNAL(customContextMenuRequested(const QPoint&)),
+  //	  this, SLOT(showContextMenu(const QPoint&)));
+}
+
+
+/*!
+ */
+void pTriggerSettingTab::showContextMenu(const QPoint& pos)
+{
+  QPoint globalPos = mapToGlobal(pos);
+  QMenu menu;
+  menu.addAction("Add channel");
+  menu.addAction("Delete channel");
+  QAction* selectedItem = menu.exec(globalPos);
+  if (selectedItem) {
+    // something was chosen, do stuff
+  } else {
+    // nothing was chosen
+  }
 }
 
 

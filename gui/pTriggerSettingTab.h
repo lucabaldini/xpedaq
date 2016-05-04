@@ -28,6 +28,7 @@ with this program; if not, write to the Free Software Foundation Inc.,
 #include <QTableWidget>
 #include <QHeaderView>
 #include <QStringList>
+#include <QMenu>
 
 #include "pQtCustomTextLabel.h"
 #include "pQtCustomTab.h"
@@ -49,7 +50,8 @@ class pTriggerSettingTab : public pQtCustomTab
  public slots:
 
    void displayTriggerMask(pTriggerMask *triggerMask);
-   
+   void showContextMenu(const QPoint&);
+
 
  private:
 
