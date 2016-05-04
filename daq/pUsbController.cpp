@@ -147,7 +147,7 @@ unsigned long pUsbController::lastErrorCode()
  */
 void pUsbController::errorSummary(unsigned long errorCode)
 {
-  *xpollog::kError <<  "Error code " << errorCode << "---" <<
+  *xpollog::kError <<  "Error code " << errorCode << ": " <<
     errorDescription(errorCode) << endline;
 }
 

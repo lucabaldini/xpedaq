@@ -41,17 +41,16 @@ class pRunController : public pFiniteStateMachine
   
  public:
   
-  pRunController(int maxSeconds = 604800, int maxEvents = 100000000,
-		 int maxDataBlocks = 50000000);
+  pRunController();
   ~pRunController() {;}
   unsigned long connectUsb();
   void init();
-  inline pDataCollector *dataCollector() const {return m_dataCollector;}
-  inline pUsbController *usbController() const {return m_usbController;}
-  inline pXpolFpga *xpolFpga() const {return m_xpolFpga;}
-  inline pDetectorConfiguration *detectorConfiguration()
+  pDataCollector *dataCollector() const {return m_dataCollector;}
+  pUsbController *usbController() const {return m_usbController;}
+  pXpolFpga *xpolFpga() const {return m_xpolFpga;}
+  pDetectorConfiguration *detectorConfiguration()
     const {return m_detectorConfiguration;}
-  inline pUserPreferences *userPreferences() const {return m_userPreferences;}
+  pUserPreferences *userPreferences() const {return m_userPreferences;}
 
   /// \brief Setup all the relevant run information.
   void setupRun(pDetectorConfiguration *configuration,

@@ -25,10 +25,10 @@ with this program; if not, write to the Free Software Foundation Inc.,
 
 /*! Basic constructor.
  */
-pRunController::pRunController(int maxSeconds, int maxEvents, int maxDataBlocks)
-  : m_maxSeconds(maxSeconds),
-    m_maxEvents(maxEvents),
-    m_maxDataBlocks(maxDataBlocks),
+pRunController::pRunController()
+  : m_maxSeconds(2592000),
+    m_maxEvents(259200000),
+    m_maxDataBlocks(2592000),
     m_startSeconds(0),
     m_stopSeconds(0)
 {
