@@ -13,7 +13,13 @@ int main(int argn, char *argv[])
   //bool batchmode = false;
   
   QApplication app(argn, argv);
-  xpedaqWindow window;
+  std::string cfgFolderPath = xpedaqos::rjoin("xpedaq", "config");
+  std::string configFilePath = xpedaqos::join(cfgFolderPath, "detector.cfg");
+  std::string preferencesFilePath = xpedaqos::join(cfgFolderPath,
+						   "preferences.cfg");
+  pRunController *runController = new pRunController(configFilePath,
+						     preferencesFilePath);
+  xpedaqWindow window(*runController);
 
   for (int i = 1; i < argn; i++)
     {

@@ -33,7 +33,7 @@ class xpepedsWindow : public pAcquisitionWindow
 
  public:
   
-  xpepedsWindow();
+  xpepedsWindow(pRunController &runController);
   ~xpepedsWindow() {;}
   
 };

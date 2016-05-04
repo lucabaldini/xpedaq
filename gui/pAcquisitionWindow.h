@@ -59,7 +59,7 @@ class pAcquisitionWindow : public pQtMainWindowGui
 
  public:
   
-  pAcquisitionWindow();
+  pAcquisitionWindow(pRunController &runController);
   ~pAcquisitionWindow();
   pDetectorConfiguration *detectorConfiguration(int mode = -1);
   pUserPreferences *userPreferences();
@@ -68,7 +68,7 @@ class pAcquisitionWindow : public pQtMainWindowGui
   void displayUserPreferences(pUserPreferences *preferences);
   void start();
   void stop();
-  inline pRunController *runController() const {return m_runController;}
+  pRunController *runController() const {return m_runController;}
   
 
  protected:

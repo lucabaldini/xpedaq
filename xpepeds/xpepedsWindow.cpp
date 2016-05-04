@@ -23,7 +23,8 @@ with this program; if not, write to the Free Software Foundation Inc.,
 #include "xpepedsWindow.h"
 
 
-xpepedsWindow::xpepedsWindow()
+xpepedsWindow::xpepedsWindow(pRunController &runController) :
+  pAcquisitionWindow(runController)
 {
   QString title = "xpepeds version " + QString(__XPEDAQ_VERSION__);
   setWindowTitle(title);

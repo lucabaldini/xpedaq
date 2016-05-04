@@ -41,7 +41,7 @@ class pRunController : public pFiniteStateMachine
   
  public:
   
-  pRunController();
+  pRunController(std::string configFilePath, std::string preferencesFilePath);
   ~pRunController() {;}
   unsigned long connectUsb();
   void init();

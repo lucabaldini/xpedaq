@@ -23,7 +23,8 @@ with this program; if not, write to the Free Software Foundation Inc.,
 #include "xpedaqWindow.h"
 
 
-xpedaqWindow::xpedaqWindow()
+xpedaqWindow::xpedaqWindow(pRunController &runController) :
+  pAcquisitionWindow(runController)
 {
   QString title = "xpedaq version " + QString(__XPEDAQ_VERSION__);
   setWindowTitle(title);

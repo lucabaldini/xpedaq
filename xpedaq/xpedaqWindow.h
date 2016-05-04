@@ -33,7 +33,7 @@ class xpedaqWindow : public pAcquisitionWindow
 
  public:
   
-  xpedaqWindow();
+  xpedaqWindow(pRunController &runController);
   ~xpedaqWindow() {;}
   
 };

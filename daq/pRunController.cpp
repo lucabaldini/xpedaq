@@ -25,12 +25,15 @@ with this program; if not, write to the Free Software Foundation Inc.,
 
 /*! Basic constructor.
  */
-pRunController::pRunController()
+pRunController::pRunController(std::string configFilePath,
+			       std::string preferencesFilePath)
   : m_maxSeconds(2592000),
     m_maxEvents(259200000),
     m_maxDataBlocks(2592000),
     m_startSeconds(0),
-    m_stopSeconds(0)
+    m_stopSeconds(0),
+    m_configFilePath(configFilePath),
+    m_preferencesFilePath(preferencesFilePath)
 {
   m_stationIdFilePath = xpedaqos::rjoin("config", "stationId.cfg");
   if (!xpedaqos::fileExists(m_stationIdFilePath)) {
@@ -41,12 +44,9 @@ pRunController::pRunController()
   if (!xpedaqos::fileExists(m_runIdFilePath)) {
     xpedaqos::copyFile(m_runIdFilePath + ".sample", m_runIdFilePath);
   }
-  m_configFilePath = xpedaqos::rjoin("xpedaq", "config", "detector.cfg");
   if (!xpedaqos::fileExists(m_configFilePath)) {
     xpedaqos::copyFile(m_configFilePath + ".sample", m_configFilePath);
   }
-  m_preferencesFilePath = xpedaqos::rjoin("xpedaq", "config",
-					  "preferences.cfg");
   if (!xpedaqos::fileExists(m_preferencesFilePath)) {
     xpedaqos::copyFile(m_preferencesFilePath + ".sample",
 		       m_preferencesFilePath);

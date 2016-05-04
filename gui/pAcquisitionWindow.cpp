@@ -22,14 +22,14 @@ with this program; if not, write to the Free Software Foundation Inc.,
 #include "pAcquisitionWindow.h"
 
 
-pAcquisitionWindow::pAcquisitionWindow()
+pAcquisitionWindow::pAcquisitionWindow(pRunController &runController)
 {  
   setupDaqDisplay();
   setupMessageDisplay();
   setupLoggerConnections();
   setupTransportBar();
   setupTabWidget();
-  m_runController = new pRunController();
+  m_runController = &runController;
   // This connection needs to be here in order to intercept error signals.
   connect(m_runController->usbController(),
 	  SIGNAL(quickusbError(unsigned long)),
