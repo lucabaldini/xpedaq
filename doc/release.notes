@@ -1,4 +1,9 @@
 
+* Added some protections to xpedaqos::copyFile().
+* xpedaq version copied to the output folder on a run-by-run basis
+  (closing issue #67).
+
+
 -------------------------------------------------------------------------------
 xpedaq (0.6.0) - Wed, 04 May 2016 10:30:48 +0200
 -------------------------------------------------------------------------------

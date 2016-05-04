@@ -386,10 +386,17 @@ std::string pRunController::baseFileName() const
 
 /*!
  */
+std::string pRunController::outputFilePath(std::string fileName) const
+{
+  return xpedaqos::join(outputFolderPath(), baseFileName() + "_" + fileName);
+}
+
+
+/*!
+ */
 std::string pRunController::dataFilePath() const
 {
-  std::string fileName = baseFileName() + "_data.mdat";
-  return xpedaqos::join(outputFolderPath(), fileName);
+  return outputFilePath("data.mdat");
 }
 
 
@@ -397,8 +404,7 @@ std::string pRunController::dataFilePath() const
  */
 std::string pRunController::logFilePath() const
 {
-  std::string fileName = baseFileName() + ".log";
-  return xpedaqos::join(outputFolderPath(), fileName);
+  return outputFilePath("run.log");
 }
 
 
@@ -406,8 +412,7 @@ std::string pRunController::logFilePath() const
  */
 std::string pRunController::reportFilePath() const
 {
-  std::string fileName = baseFileName() + "_report.pdf";
-  return xpedaqos::join(outputFolderPath(), fileName);
+  return outputFilePath("report.pdf");
 }
 
 
@@ -415,8 +420,7 @@ std::string pRunController::reportFilePath() const
  */
 std::string pRunController::detectorConfigurationFilePath() const
 {
-  std::string fileName = baseFileName() + "_detector.cfg";
-  return xpedaqos::join(outputFolderPath(), fileName);
+  return outputFilePath("detector.cfg");
 }
 
 
@@ -424,8 +428,15 @@ std::string pRunController::detectorConfigurationFilePath() const
  */
 std::string pRunController::userPreferencesFilePath() const
 {
-  std::string fileName = baseFileName() + "_preferences.cfg";
-  return xpedaqos::join(outputFolderPath(), fileName);
+  return outputFilePath("preferences.cfg");
+}
+
+
+/*!
+ */
+std::string pRunController::xpedaqVersionFilePath() const
+{
+  return outputFilePath("version.h");
 }
 
 
@@ -442,4 +453,5 @@ void pRunController::saveRunInfo() const
   m_detectorConfiguration->writeToFile(detectorConfigurationFilePath());
   m_userPreferences->writeToFile(m_preferencesFilePath);
   m_userPreferences->writeToFile(userPreferencesFilePath());
+  xpedaqos::copyFile(xpedaqos::rjoin("__version__.h"), xpedaqVersionFilePath());
 }

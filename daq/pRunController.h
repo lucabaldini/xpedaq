@@ -165,6 +165,9 @@ class pRunController : public pFiniteStateMachine
   /// \brief Return the base string to compose the paths to the output files.
   std::string baseFileName() const;
 
+  /// \brief Return the path to a generic output file.
+  std::string outputFilePath(std::string fileName) const;
+
   /// \brief Return the path to the current output data file. 
   std::string dataFilePath() const;
 
@@ -179,6 +182,9 @@ class pRunController : public pFiniteStateMachine
 
   /// \brief Return the path to the (output copy) of the preferences file.
   std::string userPreferencesFilePath() const;
+
+  /// \brief Return the path to the (output copy) of the version header file.
+  std::string xpedaqVersionFilePath() const;
 
   /// \brief Save the run info into the output folder.
   void saveRunInfo() const;

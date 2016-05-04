@@ -142,8 +142,17 @@ bool xpedaqos::folderExists(std::string path)
 
 /*!
  */
-void xpedaqos::copyFile(std::string src, std::string dest)
+bool xpedaqos::copyFile(std::string src, std::string dest)
 {
   *xpollog::kInfo << "Copying " << src << " to " << dest << "..." << endline;
-  QFile(QString::fromStdString(src)).copy(QString::fromStdString(dest));
+  if (!fileExists(src)) {
+    *xpollog::kError << "Source file does not exist, could not copy file."
+		     << endline;
+    return false;
+  }
+  if (!QFile(QString::fromStdString(src)).copy(QString::fromStdString(dest))) {
+    *xpollog::kError << "Could not copy file." << endline;
+    return false;
+  }
+  return true;
 }
