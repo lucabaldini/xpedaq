@@ -28,7 +28,6 @@ with this program; if not, write to the Free Software Foundation Inc.,
 #include <QDir>
 
 #include "xpollog.h"
-#include "xpolenv.h"
 #include "pQtMainWindowGui.h"
 #include "pDaqDisplay.h"
 #include "pMessageDisplay.h"

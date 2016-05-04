@@ -1,6 +1,5 @@
 /***********************************************************************
-Copyright (C) 2007, 2008 by Luca Baldini (luca.baldini@pi.infn.it),
-Johan Bregeon, Massimo Minuti and Gloria Spandre.
+Copyright (C) 2007--2016 the X-ray Polarimetry Explorer (XPE) team.
 
 For the license terms see the file LICENSE, distributed along with this
 software.
@@ -34,10 +33,9 @@ pQtCustomPushButton::pQtCustomPushButton(QWidget *parent,
 
 void pQtCustomPushButton::setupIcon()
 {
-  std::string basePixmapPath = xpolenv::join(xpolenv::kDaqPixmapsDirPath,
-					     m_functionName);
-  std::string enabledPixmapPath = basePixmapPath + "_enabled.png";
-  std::string disabledPixmapPath = basePixmapPath + "_disabled.png";
+  std::string basePath = xpedaqos::rjoin("gui", "pixmaps", m_functionName);
+  std::string enabledPixmapPath = basePath + "_enabled.png";
+  std::string disabledPixmapPath = basePath + "_disabled.png";
   QIcon icon = QIcon(QString::fromStdString(enabledPixmapPath));
   icon.addPixmap(QPixmap(QString::fromStdString(disabledPixmapPath)),
 		 QIcon::Disabled);
