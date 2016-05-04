@@ -1,4 +1,7 @@
 
+-------------------------------------------------------------------------------
+xpedaq (0.6.0) - Wed, 04 May 2016 10:30:48 +0200
+-------------------------------------------------------------------------------
 * xpolenv.h/cpp removed.
 * runId.cfg(.sample) and stationId.cfg(.sample) moved to $XPEDAQ_ROOT/config
   (closing issue #69).
