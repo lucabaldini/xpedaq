@@ -184,7 +184,7 @@ void pRunController::incrementRunId()
 
 /*! This is read from the system time.
  */
-int pRunController::currentSeconds() const
+long int pRunController::currentSeconds() const
 {
   return static_cast<int> (time(NULL));
 }
@@ -193,9 +193,29 @@ int pRunController::currentSeconds() const
 /*! Return the difference between the current seconds and the seconds latched
   at the start time.
 */
-int pRunController::elapsedSeconds() const
+long int pRunController::elapsedSeconds() const
 {
   return currentSeconds() - m_startSeconds;
+}
+
+
+/*!
+ */
+std::string pRunController::startDatetime() const
+{
+  std::string datetime(ctime(&m_startSeconds));
+  datetime.erase(datetime.size() - 1);
+  return datetime;
+}
+
+
+/*!
+ */
+std::string pRunController::stopDatetime() const
+{
+  std::string datetime(ctime(&m_stopSeconds));
+  datetime.erase(datetime.size() - 1);
+  return datetime;
 }
 
 
@@ -290,6 +310,12 @@ void pRunController::fsmStartRun()
   *xpollog::kDebug << "Settings at start run...\n" << configurationInfo.str()
 		   << preferencesInfo.str() << endline;
   saveRunInfo();
+  resetRunInfo();
+  m_timer->start();
+  m_startSeconds = currentSeconds();
+  *xpollog::kInfo << "Run controller started on " << startDatetime()
+		  << " (" << m_startSeconds << " s since January 1, 1970)."
+		  << endline;
   m_dataCollector->reset();
   if (m_usbController->IsOpened()) {
     m_usbController->setTimeout(m_userPreferences->usbTimeout());
@@ -301,11 +327,6 @@ void pRunController::fsmStartRun()
     *xpollog::kError << "The USB device is not open." << endline;
     exit(1);
   }
-  m_startSeconds = currentSeconds();
-  resetRunInfo();
-  m_timer->start();
-  *xpollog::kInfo << "Run controller started at " << m_startSeconds
-		  << " s (since January 1, 1970)." << endline;
 }
 
 /*!
@@ -316,8 +337,9 @@ void pRunController::fsmStopRun()
   m_dataCollector->stop();
   m_stopSeconds = currentSeconds();
   m_timer->stop();
-  *xpollog::kInfo << "Run controller stopped at " << m_stopSeconds
-		  << " s (since January 1, 1970)." << endline;
+  *xpollog::kInfo << "Run controller stopped on " << stopDatetime()
+		  << " (" << m_stopSeconds << " s since January 1, 1970)."
+		  << endline;
   *xpollog::kInfo << numEvents() << " events (" <<
     numDataBlocks() << " data blocks) acquired in "<<
     elapsedSeconds() << " seconds."<< endline;

@@ -2,6 +2,7 @@
 * Added some protections to xpedaqos::copyFile().
 * xpedaq version copied to the output folder on a run-by-run basis
   (closing issue #67).
+* Start and stop dates logged out (closing issue #56).
 
 
 -------------------------------------------------------------------------------

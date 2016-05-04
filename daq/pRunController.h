@@ -63,11 +63,15 @@ class pRunController : public pFiniteStateMachine
   void setupRun();
   
   /// \brief Return the current value of the system time.
-  int currentSeconds() const;
+  long int currentSeconds() const;
 
   /// \brief Return the time elapsed since the start run. 
-  int elapsedSeconds() const;
+  long int elapsedSeconds() const;
 
+  long int startSeconds() const {return m_startSeconds;}
+  long int stopSeconds() const {return m_stopSeconds;}
+  std::string startDatetime() const;
+  std::string stopDatetime() const;
   int numDataBlocks() const {return m_dataCollector->numDataBlocks();}
   int numEvents() const {return m_dataCollector->numEvents();}
   double averageEventRate() const;
@@ -148,10 +152,10 @@ class pRunController : public pFiniteStateMachine
   QTimer *m_timer;
 
   /// \brief The value of the system time, latched at the start run.
-  int m_startSeconds;
+  long int m_startSeconds;
 
   /// \brief The value of the system time, latched at the stop run.
-  int m_stopSeconds;
+  long int m_stopSeconds;
 
   /// \brief Path to the default detector configuration file path.
   std::string m_configFilePath;
