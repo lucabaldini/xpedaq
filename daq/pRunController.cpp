@@ -32,12 +32,12 @@ pRunController::pRunController(int maxSeconds, int maxEvents, int maxDataBlocks)
     m_startSeconds(0),
     m_stopSeconds(0)
 {
-  m_stationIdFilePath = xpedaqos::rjoin("xpedaq", "config", "stationId.cfg");
+  m_stationIdFilePath = xpedaqos::rjoin("config", "stationId.cfg");
   if (!xpedaqos::fileExists(m_stationIdFilePath)) {
     *xpollog::kError << "Could not find " << m_stationIdFilePath << endline;
     exit(1);
   }
-  m_runIdFilePath = xpedaqos::rjoin("xpedaq", "config", "runId.cfg");
+  m_runIdFilePath = xpedaqos::rjoin("config", "runId.cfg");
   if (!xpedaqos::fileExists(m_runIdFilePath)) {
     xpedaqos::copyFile(m_runIdFilePath + ".sample", m_runIdFilePath);
   }
