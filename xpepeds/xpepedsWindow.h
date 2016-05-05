@@ -24,7 +24,7 @@ with this program; if not, write to the Free Software Foundation Inc.,
 #define XPEPEDSWINDOW_H
 
 #include "pAcquisitionWindow.h"
-
+#include "pDisplayWindow.h"
 
 class xpepedsWindow : public pAcquisitionWindow
 {
@@ -35,7 +35,16 @@ class xpepedsWindow : public pAcquisitionWindow
   
   xpepedsWindow(pRunController &runController);
   ~xpepedsWindow() {;}
+ 
+ public slots: 
+   
+   void showDisplayWindow();
+ 
+ private:
   
+  pDisplayWindow *m_displayWindow;
+  void setupConnections();
+
 };
 
 #endif //XPEPEDSWINDOW_H
