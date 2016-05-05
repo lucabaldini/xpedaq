@@ -65,17 +65,18 @@ class pDataCollector : public QThread
   int numEvents() const {return m_dataFIFO->getNumAcquiredEvents();}
 
  signals:
-
-  void readoutErrorDetected(int errorCode);
+  
 
  public slots:
 
   void stop();
 
+  
  protected:
 
   void run();
 
+  
  private:
 
   bool m_running;

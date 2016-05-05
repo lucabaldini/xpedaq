@@ -141,6 +141,8 @@ class pRunController : public pFiniteStateMachine
   void numEventsChanged(int numEvents);
   void averageEventRateChanged(double rate);
   void instantEventRateChanged(double rate);
+  void runStarted();
+  void runStopped();
 
   
  protected:

@@ -277,6 +277,7 @@ void pAcquisitionWindow::setupConnections()
   connect(m_transportBar, SIGNAL(start()), this, SLOT(startRun()));
   connect(m_transportBar, SIGNAL(stop()), this, SLOT(stopRun()));
 
+  connect(m_runController, SIGNAL(runStopped()), this, SLOT(stop()));
   connect(m_runController, SIGNAL(stationIdSet(int)), m_daqDisplay,
 	  SLOT(updateStationId(int)));
   connect(m_runController, SIGNAL(runIdChanged(int)), m_daqDisplay,

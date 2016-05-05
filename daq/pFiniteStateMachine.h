@@ -49,9 +49,11 @@ class pFiniteStateMachine : public QObject
   int isPaused();
   QString status();
 
+  
  signals:
 
   void statusChanged(QString status);
+  
 
  public slots:
    
@@ -60,6 +62,7 @@ class pFiniteStateMachine : public QObject
   void setPaused();
   void setReset();
 
+  
  protected:
 
   enum StatusCode

@@ -63,6 +63,9 @@ pRunController::pRunController(std::string configFilePath,
   m_usbController = new pUsbController();
   m_xpolFpga = new pXpolFpga(m_usbController);
   m_dataCollector = new pDataCollector(m_usbController);
+  // This ensures that when the data collection thread is finished, the
+  // run control is stopped.
+  connect(m_dataCollector, SIGNAL(finished()), this, SLOT(setStopped()));
 }
 
 
@@ -329,6 +332,7 @@ void pRunController::fsmStartRun()
     *xpollog::kError << "The USB device is not open." << endline;
     exit(1);
   }
+  emit runStarted();
 }
 
 /*!
@@ -348,6 +352,7 @@ void pRunController::fsmStopRun()
   *xpollog::kInfo << "Disconnecting logger from file..." << endline;
   xpollog::kLogger->enableLogFile(false);
   writeRunStat(runStatFilePath());
+  emit runStopped();
 }
 
 

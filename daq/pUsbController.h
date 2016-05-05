@@ -203,7 +203,7 @@ class pUsbController : public QObject, public CQuickUsb
   int stopSequencer();
   int resetSequencer();
   int flushQUsbFIFO();
-  unsigned long lastErrorCode();
+  unsigned long lastErrorCode(bool verbose=true);
   void errorSummary(unsigned long errorCode);
   int readSetting(unsigned short address, unsigned short *value);
   int readData(unsigned char *data, unsigned long *length);

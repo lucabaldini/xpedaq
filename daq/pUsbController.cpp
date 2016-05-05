@@ -135,10 +135,13 @@ pUsbController::~pUsbController()
 
 /*!
  */
-unsigned long pUsbController::lastErrorCode()
+unsigned long pUsbController::lastErrorCode(bool verbose)
 {
   unsigned long errorCode;
   QuickUsbGetLastError(&errorCode);
+  if (verbose) {
+    errorSummary(errorCode);
+  }
   return errorCode;
 }
 
@@ -174,7 +177,6 @@ int pUsbController::readSetting(unsigned short address, unsigned short *value)
 int pUsbController::readData(unsigned char *data, unsigned long *length)
 {
   if (!ReadData(data, length)) {
-    *xpollog::kDebug << endline;
     return lastErrorCode();
   }
   return 0;

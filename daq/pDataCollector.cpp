@@ -53,15 +53,16 @@ void pDataCollector::stop()
 
 /*!
   This is actually the core of the data acquisition. When the method is called:
-  \li A new \ref pDataFIFO object with the correct runtime parameters is created.
+  \li A new \ref pDataFIFO object with the correct runtime parameters is
+  created.
   \li The FPGA is reset and started.
-  \li The event loop is started; each time a data block is read out either a
-  \ref pDataCollector::readoutErrorDetected() signal is emitted (if there is a
-  readout error) or the data FIFO is filled.
+  \li The event loop is started.
 */
 
 void pDataCollector::run()
 {
+  // We keep track of the start time in the Run controller, so we want to
+  // change this.
   time_t timer;
   time(&timer);
   m_startSeconds = (unsigned int)timer;
@@ -76,7 +77,6 @@ void pDataCollector::run()
     errorCode = m_usbController->readData(dataBuffer, &dataBufferDimension);
     if (errorCode) {
       m_running = false;
-      emit readoutErrorDetected(errorCode);
     } else {
       if (m_fullFrame) {
 	m_dataFIFO->fill(new pDataBlock(dataBuffer));

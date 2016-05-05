@@ -69,8 +69,6 @@ class pAcquisitionWindow : public pQtMainWindowGui
   void displayConfiguration(pDetectorConfiguration *configuration, int mode);
   void displayUserPreferences(pUserPreferences *preferences);
   void displayTriggerMask(pTriggerMask *triggerMask);
-  void start();
-  void stop();
   pRunController *runController() const {return m_runController;}
   
 
@@ -82,6 +80,8 @@ class pAcquisitionWindow : public pQtMainWindowGui
   void disableHardwareWidgets();
   void changeVisualizationMode(int mode);
   void displayReference(unsigned short reference);
+  void start();
+  void stop();
   void startRun();
   void stopRun();
 
