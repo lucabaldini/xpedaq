@@ -4,6 +4,7 @@ equals(QT_MAJOR_VERSION, 4) {
   DEPENDPATH  += ../gui
   DEPENDPATH  += ../daq
   DEPENDPATH  += ../utils
+  DEPENDPATH  += ../qcustomplot
   QT += network
   }
 
@@ -12,6 +13,7 @@ equals(QT_MAJOR_VERSION, 5) {
   VPATH  += ../gui
   VPATH  += ../daq
   VPATH  += ../utils
+  VPATH  += ../qcustomplot
   QT += network opengl
   }
 
@@ -19,6 +21,7 @@ INCLUDEPATH += ..
 INCLUDEPATH += ../gui
 INCLUDEPATH += ../daq
 INCLUDEPATH += ../utils
+INCLUDEPATH  += ../qcustomplot
 
 include(../quickusb-2.15.2/quickusb.pro)
 

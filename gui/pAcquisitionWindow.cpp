@@ -275,7 +275,6 @@ void pAcquisitionWindow::setupLoggerConnections()
  */
 void pAcquisitionWindow::setupConnections()
 {
-  connect(m_transportBar, SIGNAL(start()), this, SLOT(startRun()));
   connect(m_transportBar, SIGNAL(stop()), this, SLOT(stopRun()));
 
   connect(m_runController, SIGNAL(runStopped()), this, SLOT(stop()));

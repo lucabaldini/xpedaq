@@ -24,6 +24,15 @@ logging.basicConfig(level=logging.DEBUG)
 
 
 import struct
+import numpy
+
+
+class pXpeFullFrameEvent:
+
+    """
+    """
+
+    pass
 
 
 class pXpeEvent:
@@ -86,6 +95,38 @@ class pXpeEvent:
                (self.buffer_id, self.xmin, self.ymin, self.xmax, self.ymax,
                 self.num_pixels(), self.start_seconds(), self.timestamp())
         return text
+
+
+class pXpeBinaryFileFullFrame(file):
+    
+    """Small class representing a binary file from the DAQ.
+    """
+
+    def __init__(self, filePath):
+        """Constructor.
+        """
+        logging.info('Opening input binary file %s...' % filePath)
+        file.__init__(self, filePath, 'rb')
+
+    def read_word(self):
+        """Read a single 2-bytes binary word from the file.
+        """
+        return struct.unpack('H', self.read(2))[0]
+
+    def __iter__(self):
+        """Iterator implementation.
+        """
+        return self
+
+    def next(self):
+        """Read the next event in the file.
+        """
+        data = []
+        for channel in xrange(13200):
+            for buffer in xrange(8):
+                data.append(self.read_word())
+        return numpy.array(data).reshape(8, 13200)
+            
 
 
 class pXpeBinaryFile(file):

@@ -21,11 +21,30 @@ with this program; if not, write to the Free Software Foundation Inc.,
 
 
 #include "xpepedsWindow.h"
+#include <iostream>
 
 
 xpepedsWindow::xpepedsWindow(pRunController &runController) :
   pAcquisitionWindow(runController)
 {
+  setupConnections();
   QString title = "xpepeds version " + QString(__XPEDAQ_VERSION__);
   setWindowTitle(title);
+  connect (m_transportBar, SIGNAL(start()), this, SLOT(showDisplayWindow()));
+}
+
+/*!
+ */
+void xpepedsWindow::showDisplayWindow()
+{
+  m_displayWindow = new pDisplayWindow();
+  m_displayWindow -> show();
+}
+
+/*!
+ */
+void xpepedsWindow::setupConnections()
+{
+  pAcquisitionWindow::setupConnections();
+  //connect(m_transportBar, SIGNAL(start()), this, SLOT(startRun()));
 }

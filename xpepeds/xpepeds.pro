@@ -4,6 +4,7 @@ equals(QT_MAJOR_VERSION, 4) {
   DEPENDPATH  += ../gui
   DEPENDPATH  += ../daq
   DEPENDPATH  += ../utils
+  DEPENDPATH  += ../qcustomplot
   QT += network
   }
 
@@ -12,6 +13,7 @@ equals(QT_MAJOR_VERSION, 5) {
   VPATH  += ../gui
   VPATH  += ../daq
   VPATH  += ../utils
+  VPATH  += ../qcustomplot
   QT += network opengl
   }
 
@@ -19,6 +21,7 @@ INCLUDEPATH += ..
 INCLUDEPATH += ../gui
 INCLUDEPATH += ../daq
 INCLUDEPATH += ../utils
+INCLUDEPATH  += ../qcustomplot
 
 include(../quickusb-2.15.2/quickusb.pro)
 
@@ -30,6 +33,8 @@ HEADERS += xpedaqutils.h
 HEADERS += xpedaqos.h
 HEADERS += xpollog.h
 HEADERS += xpolio.h
+
+HEADERS += qcustomplot.h
 
 HEADERS += pQtGridLayoutWidget.h
 HEADERS += pQtGroupBoxWidget.h
@@ -51,6 +56,8 @@ HEADERS += pUserPreferencesTab.h
 HEADERS += pQtMainWindowGui.h
 HEADERS += pAcquisitionWindow.h
 HEADERS += xpepedsWindow.h
+HEADERS += pDisplayWindow.h
+HEADERS += pedestalsMap.h
 
 HEADERS += pFiniteStateMachine.h
 HEADERS += pDataCollector.h
@@ -78,6 +85,8 @@ SOURCES += xpedaqos.cpp
 SOURCES += xpollog.cpp
 SOURCES += xpolio.cpp
 
+SOURCES += qcustomplot.cpp
+
 SOURCES += pQtGridLayoutWidget.cpp
 SOURCES += pQtGroupBoxWidget.cpp
 SOURCES += pQtCustomPushButton.cpp
@@ -98,6 +107,8 @@ SOURCES += pUserPreferencesTab.cpp
 SOURCES += pQtMainWindowGui.cpp
 SOURCES += pAcquisitionWindow.cpp
 SOURCES += xpepedsWindow.cpp
+SOURCES += pDisplayWindow.cpp
+SOURCES += pedestalsMap.cpp
 
 SOURCES += pFiniteStateMachine.cpp
 SOURCES += pDataCollector.cpp

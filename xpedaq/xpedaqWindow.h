@@ -36,6 +36,10 @@ class xpedaqWindow : public pAcquisitionWindow
   xpedaqWindow(pRunController &runController);
   ~xpedaqWindow() {;}
   
+ private: 
+  
+  void setupConnections();
+  
 };
 
 #endif //XPEDAQWINDOW_H

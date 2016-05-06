@@ -71,9 +71,6 @@ class pAcquisitionWindow : public pQtMainWindowGui
   void displayTriggerMask(pTriggerMask *triggerMask);
   pRunController *runController() const {return m_runController;}
   
-
- protected:
-
   
  public slots:
    
@@ -86,7 +83,7 @@ class pAcquisitionWindow : public pQtMainWindowGui
   void stopRun();
 
    
- private:
+ protected:
    
   pDaqDisplay *m_daqDisplay;
   pMessageDisplay *m_messageDisplay;

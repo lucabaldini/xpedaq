@@ -26,6 +26,13 @@ with this program; if not, write to the Free Software Foundation Inc.,
 xpedaqWindow::xpedaqWindow(pRunController &runController) :
   pAcquisitionWindow(runController)
 {
+  setupConnections();
   QString title = "xpedaq version " + QString(__XPEDAQ_VERSION__);
   setWindowTitle(title);
+}
+
+void xpedaqWindow::setupConnections()
+{
+  pAcquisitionWindow::setupConnections();
+  connect(m_transportBar, SIGNAL(start()), this, SLOT(startRun()));  
 }

@@ -22,7 +22,7 @@ with this program; if not, write to the Free Software Foundation Inc.,
 #include "pDataBlock.h"
 
 /*!
-  Full frame mode (exactly two events with predetermined length in the buffer).
+  Full frame mode (one event with fixed length).
 */
 
 pDataBlock::pDataBlock(unsigned char *buffer) :
@@ -31,12 +31,6 @@ pDataBlock::pDataBlock(unsigned char *buffer) :
   m_errorSummary(0)
 { 
   m_offsetVec.push_back(0);
-  m_offsetVec.push_back(NWORDS);
-  for (unsigned int evt = 0; evt < 2; evt ++) {
-    if (header(evt) != 0xffff) {
-      m_errorSummary += 1;
-    }
-  }
 }
 
 /*!
