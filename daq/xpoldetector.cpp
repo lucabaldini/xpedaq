@@ -157,4 +157,4 @@ unsigned short int xpoldetector::kSmallBufferMode = 0x1;
 unsigned short int xpoldetector::kLargeBufferMode = ~xpoldetector::kSmallBufferMode;
 
 int xpoldetector::kSmallBufferSize = 10000;
-int xpoldetector::kLargeBufferSize = 211968;  //rounded to 207 1024 data blocks
+int xpoldetector::kLargeBufferSize = 2*262144;

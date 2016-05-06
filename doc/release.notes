@@ -5,6 +5,7 @@
 * Added third party libraries for plotting (qcustmplot.h and qcustomplot.cpp)
   into the directory qcustomplot (issue #17)
 * Data acquisition stopped upon USB timeout (closing issue #78).
+* Quick fix for issue #80.
 
 
 -------------------------------------------------------------------------------
