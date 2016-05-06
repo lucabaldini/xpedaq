@@ -1,4 +1,7 @@
 
+-------------------------------------------------------------------------------
+xpedaq (0.8.0) - Fri, 06 May 2016 15:53:42 +0200
+-------------------------------------------------------------------------------
 * Start creating the facility for plotting pedestals (issue #11)
 * Start moving functionalities from pAcquisitionWindow class to its
   subclasses (issue #11)
