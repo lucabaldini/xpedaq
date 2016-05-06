@@ -1,4 +1,9 @@
 
+* Start creating the facility for plotting pedestals (issue #11)
+* Start moving functionalities from pAcquisitionWindow class to its
+  subclasses (issue #11)
+* Added third party libraries for plotting (qcustmplot.h and qcustomplot.cpp)
+  into the directory qcustomplot (issue #17)
 * Data acquisition stopped upon USB timeout (closing issue #78).
 
 
