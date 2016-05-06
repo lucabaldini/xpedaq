@@ -200,10 +200,8 @@ std::ostream& pDetectorConfiguration::fillStream(std::ostream& os) const
     os << thresholdDac(i) << " ";
   }
   os << std::endl;
-  //os << "Timing code: " << static_cast<unsigned short> (timingCode())
-  //   << std::endl;
-  os << "Clock frequency code " << clockFrequency() << std::endl;
-  os << "Clock shift " << clockShift() << std::endl;
+  os << "Clock frequency code: " << clockFrequency() << std::endl;
+  os << "Clock shift: " << clockShift() << std::endl;
   os << "# samples for pedestals: " << numPedSamples() << std::endl;
   os << "Pedestal sample delay: " << pedSampleDelay() << std::endl;
   os << "Trigger enable delay: " << trgEnableDelay() << std::endl;

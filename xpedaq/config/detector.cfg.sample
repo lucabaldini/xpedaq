@@ -1,39 +1,41 @@
-//readout_mode//
+//Readout mode//
 2
-//buffer_mode//
+//Buffer mode//
 1
-//calibration_dac//
+//Calibration dac//
 496
-//pixel_address_x//
+//Pixel address x//
 50
-//pixel_address_y//
+//Pixel address y//
 50
-//threshold_dacs//
-347
-347
-347
-347
-347
-347
-347
-347
-347
-347
-347
-347
-347
-347
-347
-347
-//timing_code//
-121
-//num_ped_samples//
-4
-//ped_sample_delay//
+//Threshold dacs//
+372
+372
+372
+372
+372
+372
+372
+372
+372
+372
+372
+372
+372
+372
+372
+372
+//Clock frequency code//
+96
+//Clock shift//
+25
+//# pedestal samples//
+2
+//Pedestal sample delay//
 10
-//trg_enable_delay//
-5
-//min_window_size//
-16
-//max_window_size//
+//Trigger enable delay//
+2
+//Minimum window size//
+1
+//Maximum window size//
 5
