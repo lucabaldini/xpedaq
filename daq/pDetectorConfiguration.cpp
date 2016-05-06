@@ -21,17 +21,25 @@ with this program; if not, write to the Free Software Foundation Inc.,
 
 #include "pDetectorConfiguration.h"
 
+
+/*!
+ */
 pDetectorConfiguration::pDetectorConfiguration()
 {
 
 }
 
 
+/*!
+ */
 pDetectorConfiguration::pDetectorConfiguration(std::string filePath)
 {
   readFromFile(filePath);
 }
 
+
+/*!
+ */
 void pDetectorConfiguration::setReadoutMode(unsigned short int mode)
 {
   if (mode == xpoldetector::kFullFrameReadoutCode ||
@@ -44,6 +52,9 @@ void pDetectorConfiguration::setReadoutMode(unsigned short int mode)
   }
 }
 
+
+/*!
+ */
 void pDetectorConfiguration::setThresholdDac(int clusterId,
 					     unsigned short int dacSetting)
 {
@@ -57,6 +68,10 @@ void pDetectorConfiguration::setThresholdDac(int clusterId,
     m_thresholdDac[clusterId] = dacSetting;
   }
 }
+
+
+/*!
+ */
 void pDetectorConfiguration::setCalibrationDac(unsigned short int dacSetting)
 {
   if (dacSetting > xpoldetector::kCalibrationDacMax) {
@@ -68,6 +83,17 @@ void pDetectorConfiguration::setCalibrationDac(unsigned short int dacSetting)
   }
 }
 
+
+/*!
+ */
+unsigned char pDetectorConfiguration::timingCode() const
+{
+  return m_clockFrequency | (m_clockShift & 0x1f);
+}
+
+
+/*!
+ */
 int pDetectorConfiguration::maxBufferSize() const
 {
   if (m_bufferMode == xpoldetector::kSmallBufferMode) {
@@ -77,40 +103,50 @@ int pDetectorConfiguration::maxBufferSize() const
   }
 }
 
+
+/*!
+ */
 void pDetectorConfiguration::writeToFile(std::string filePath)
 {
   *xpollog::kInfo << "Writing configuration to " << filePath <<
     "... " << endline;
   std::ofstream *outputFile = xpolio::kIOManager->openOutputFile(filePath);
-  xpolio::kIOManager->write(outputFile, "//readout_mode//");
+  xpolio::kIOManager->write(outputFile, "//Readout mode//");
   xpolio::kIOManager->write(outputFile, readoutMode());
-  xpolio::kIOManager->write(outputFile, "//buffer_mode//");
+  xpolio::kIOManager->write(outputFile, "//Buffer mode//");
   xpolio::kIOManager->write(outputFile, bufferMode());
-  xpolio::kIOManager->write(outputFile, "//calibration_dac//");
+  xpolio::kIOManager->write(outputFile, "//Calibration dac//");
   xpolio::kIOManager->write(outputFile, calibrationDac());
-  xpolio::kIOManager->write(outputFile, "//pixel_address_x//");
+  xpolio::kIOManager->write(outputFile, "//Pixel address x//");
   xpolio::kIOManager->write(outputFile, pixelAddressX());
-  xpolio::kIOManager->write(outputFile, "//pixel_address_y//");
+  xpolio::kIOManager->write(outputFile, "//Pixel address y//");
   xpolio::kIOManager->write(outputFile, pixelAddressY());
-  xpolio::kIOManager->write(outputFile, "//threshold_dacs//");
+  xpolio::kIOManager->write(outputFile, "//Threshold dacs//");
   for (int i = 0; i <  NUM_READOUT_CLUSTERS; i++) {
     xpolio::kIOManager->write(outputFile, thresholdDac(i));
   }
-  xpolio::kIOManager->write(outputFile, "//timing_code//");
-  xpolio::kIOManager->write(outputFile, timingCode());
-  xpolio::kIOManager->write(outputFile, "//num_ped_samples//");
+  //xpolio::kIOManager->write(outputFile, "//Timing code//");
+  //xpolio::kIOManager->write(outputFile, timingCode());
+  xpolio::kIOManager->write(outputFile, "//Clock frequency code//");
+  xpolio::kIOManager->write(outputFile, clockFrequency());
+  xpolio::kIOManager->write(outputFile, "//Clock shift//");
+  xpolio::kIOManager->write(outputFile, clockShift());
+  xpolio::kIOManager->write(outputFile, "//# pedestal samples//");
   xpolio::kIOManager->write(outputFile, numPedSamples());
-  xpolio::kIOManager->write(outputFile, "//ped_sample_delay//");
+  xpolio::kIOManager->write(outputFile, "//Pedestal sample delay//");
   xpolio::kIOManager->write(outputFile, pedSampleDelay());
-  xpolio::kIOManager->write(outputFile, "//trg_enable_delay//");
+  xpolio::kIOManager->write(outputFile, "//Trigger enable delay//");
   xpolio::kIOManager->write(outputFile, trgEnableDelay());
-  xpolio::kIOManager->write(outputFile, "//min_window_size//");
+  xpolio::kIOManager->write(outputFile, "//Minimum window size//");
   xpolio::kIOManager->write(outputFile, minWindowSize());
-  xpolio::kIOManager->write(outputFile, "//max_window_size//");
+  xpolio::kIOManager->write(outputFile, "//Maximum window size//");
   xpolio::kIOManager->write(outputFile, maxWindowSize());
   xpolio::kIOManager->closeOutputFile(outputFile);
 }
 
+
+/*!
+ */
 void pDetectorConfiguration::readFromFile(std::string filePath)
 {
   *xpollog::kInfo << "Reading configuration from " << filePath <<
@@ -131,7 +167,10 @@ void pDetectorConfiguration::readFromFile(std::string filePath)
     setThresholdDac(i, xpolio::kIOManager->readUnsignedShort(inputFile));
   }
   xpolio::kIOManager->skipLine(inputFile);
-  setTimingCode(xpolio::kIOManager->readUnsignedShort(inputFile));
+  //  setTimingCode(xpolio::kIOManager->readUnsignedShort(inputFile));
+  setClockFrequency(xpolio::kIOManager->readUnsignedShort(inputFile));
+  xpolio::kIOManager->skipLine(inputFile);
+  setClockShift(xpolio::kIOManager->readUnsignedShort(inputFile));
   xpolio::kIOManager->skipLine(inputFile);
   setNumPedSamples(xpolio::kIOManager->readUnsignedShort(inputFile));
   xpolio::kIOManager->skipLine(inputFile);
@@ -161,8 +200,10 @@ std::ostream& pDetectorConfiguration::fillStream(std::ostream& os) const
     os << thresholdDac(i) << " ";
   }
   os << std::endl;
-  os << "Timing code: " << static_cast<unsigned short> (timingCode())
-     << std::endl;
+  //os << "Timing code: " << static_cast<unsigned short> (timingCode())
+  //   << std::endl;
+  os << "Clock frequency code " << clockFrequency() << std::endl;
+  os << "Clock shift " << clockShift() << std::endl;
   os << "# samples for pedestals: " << numPedSamples() << std::endl;
   os << "Pedestal sample delay: " << pedSampleDelay() << std::endl;
   os << "Trigger enable delay: " << trgEnableDelay() << std::endl;

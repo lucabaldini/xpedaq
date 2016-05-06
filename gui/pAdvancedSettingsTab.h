@@ -1,6 +1,5 @@
 /***********************************************************************
-Copyright (C) 2007, 2008 by Luca Baldini (luca.baldini@pi.infn.it),
-Johan Bregeon, Massimo Minuti and Gloria Spandre.
+Copyright (C) 2007--2016 the X-ray Polarimetry Explorer (XPE) team.
 
 For the license terms see the file LICENSE, distributed along with this
 software.
@@ -43,20 +42,27 @@ class pAdvancedSettingsTab : public pQtCustomTab
 
   pAdvancedSettingsTab();
   ~pAdvancedSettingsTab() {;}
-  unsigned short int getTimingCode();
-  void displayTimingCode(unsigned short int code);
-  unsigned short int getNumPedSamples();
-  void displayNumPedsSamples(unsigned short int samples);
-  unsigned short int getPedSubDelay();
-  void displayPedSubDelay(unsigned short int delay);
-  unsigned short int getTrgEnableDelay();
-  void displayTrgEnableDelay(unsigned short int delay);
-  unsigned short int getMinWindowSize();
-  void displayMinWindowSize(unsigned short int size);
-  unsigned short int getMaxWindowSize();
-  void displayMaxWindowSize(unsigned short int size);
+
+  // Access functions.
+  unsigned short clockFrequency() const;
+  unsigned short clockShift() const;
+  unsigned short numPedSamples() const;
+  unsigned short pedSubDelay() const;
+  unsigned short trgEnableDelay() const;
+  unsigned short minWindowSize() const;
+  unsigned short maxWindowSize() const;
+
+  // Display functions.
+  void displayClockFrequency(unsigned short frequency);
+  void displayClockShift(unsigned short shift);
+  void displayNumPedsSamples(unsigned short samples);
+  void displayPedSubDelay(unsigned short delay);
+  void displayTrgEnableDelay(unsigned short delay);
+  void displayMinWindowSize(unsigned short size);
+  void displayMaxWindowSize(unsigned short size);
   void displayConfiguration(pDetectorConfiguration *configuration);
 
+  
  private:
   
   QString m_clockFasterLabel;

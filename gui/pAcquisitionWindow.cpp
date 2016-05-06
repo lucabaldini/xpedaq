@@ -161,7 +161,7 @@ pDetectorConfiguration *pAcquisitionWindow::detectorConfiguration(int mode)
 {
   if (mode == -1){
     mode = visualizationMode();
-  }
+  }  
   pDetectorConfiguration *configuration = new pDetectorConfiguration();
   configuration->setReadoutMode(m_readoutModeTab->getReadoutMode());
   configuration->setBufferMode(m_readoutModeTab->getBufferMode());
@@ -174,12 +174,13 @@ pDetectorConfiguration *pAcquisitionWindow::detectorConfiguration(int mode)
       configuration->
 	setThresholdDac(i, m_thresholdSettingTab->getThreshold(i, mode));
     }
-  configuration->setTimingCode(m_advancedSettingsTab->getTimingCode());
-  configuration->setNumPedSamples(m_advancedSettingsTab->getNumPedSamples());
-  configuration->setPedSampleDelay(m_advancedSettingsTab->getPedSubDelay());
-  configuration->setTrgEnableDelay(m_advancedSettingsTab->getTrgEnableDelay());
-  configuration->setMinWindowSize(m_advancedSettingsTab->getMinWindowSize());
-  configuration->setMaxWindowSize(m_advancedSettingsTab->getMaxWindowSize());
+  configuration->setClockFrequency(m_advancedSettingsTab->clockFrequency());
+  configuration->setClockShift(m_advancedSettingsTab->clockShift());
+  configuration->setNumPedSamples(m_advancedSettingsTab->numPedSamples());
+  configuration->setPedSampleDelay(m_advancedSettingsTab->pedSubDelay());
+  configuration->setTrgEnableDelay(m_advancedSettingsTab->trgEnableDelay());
+  configuration->setMinWindowSize(m_advancedSettingsTab->minWindowSize());
+  configuration->setMaxWindowSize(m_advancedSettingsTab->maxWindowSize());
   return configuration;
 }
 

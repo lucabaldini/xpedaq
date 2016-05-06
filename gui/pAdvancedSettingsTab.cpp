@@ -1,6 +1,5 @@
 /***********************************************************************
-Copyright (C) 2007, 2008 by Luca Baldini (luca.baldini@pi.infn.it),
-Johan Bregeon, Massimo Minuti and Gloria Spandre.
+Copyright (C) 2007--2016 the X-ray Polarimetry Explorer (XPE) team.
 
 For the license terms see the file LICENSE, distributed along with this
 software.
@@ -22,6 +21,9 @@ with this program; if not, write to the Free Software Foundation Inc.,
 
 #include "pAdvancedSettingsTab.h"
 
+
+/*!
+ */
 pAdvancedSettingsTab::pAdvancedSettingsTab()
   : pQtCustomTab("Advanced settings")
 {
@@ -42,6 +44,9 @@ pAdvancedSettingsTab::pAdvancedSettingsTab()
   freezeSize(xpolgui::kTabGroupBoxWidth);
 }
 
+
+/*!
+ */
 void pAdvancedSettingsTab::setupTimingWidgets()
 {
   int row = m_groupBoxGridLayout->rowCount();
@@ -69,6 +74,9 @@ void pAdvancedSettingsTab::setupTimingWidgets()
   m_groupBoxGridLayout->addWidget(m_clockShiftUnitsLabel, row, 2);
 }
 
+
+/*!
+ */
 void pAdvancedSettingsTab::setupPedSubWidgets()
 {
   int row = m_groupBoxGridLayout->rowCount();
@@ -108,6 +116,9 @@ void pAdvancedSettingsTab::setupPedSubWidgets()
   m_groupBoxGridLayout->addWidget(m_trgEnableDelayUnitsLabel, row, 2);
 }
 
+
+/*!
+ */
 void pAdvancedSettingsTab::setupWindowWidgets()
 {
   int row = m_groupBoxGridLayout->rowCount();
@@ -130,47 +141,37 @@ void pAdvancedSettingsTab::setupWindowWidgets()
   m_groupBoxGridLayout->addWidget(m_maxWindowSizeSpinBox, row, 1);
 }
 
-unsigned short int pAdvancedSettingsTab::getTimingCode()
+
+/*!
+ */
+unsigned short pAdvancedSettingsTab::clockFrequency() const
 {
-  int clockFreqCode;
-  int clockShiftCode;
   QString clockFreqString = m_clockFrequencyComboBox->currentText();
   if (clockFreqString == m_clockFasterLabel){
-    clockFreqCode = xpoldetector::kClockFasterFreqCode;
+    return xpoldetector::kClockFasterFreqCode;
   } else if (clockFreqString == m_clockFastLabel){
-    clockFreqCode = xpoldetector::kClockFastFreqCode;
+    return xpoldetector::kClockFastFreqCode;
   } else if (clockFreqString == m_clockSlowLabel){
-    clockFreqCode = xpoldetector::kClockSlowFreqCode;
+    return xpoldetector::kClockSlowFreqCode;
   } else if (clockFreqString == m_clockSlowerLabel){
-    clockFreqCode = xpoldetector::kClockSlowerFreqCode;
+    return xpoldetector::kClockSlowerFreqCode;
   } else {
-    // Put a warning here;
-    clockFreqCode = xpoldetector::kClockFasterFreqCode;
+    return xpoldetector::kClockFastFreqCode;
   }
-  clockShiftCode = m_clockShiftSpinBox->value()/xpoldetector::kClockShiftStep;
-  return clockFreqCode | (clockShiftCode & 0x1f);
 }
 
-void pAdvancedSettingsTab::displayTimingCode(unsigned short int code)
+
+/*!
+ */
+unsigned short pAdvancedSettingsTab::clockShift() const
 {
-  int clockFreqCode = (code & 0xe0);
-  int clockShiftCode = (code & 0x1f);
-  if (clockFreqCode == xpoldetector::kClockFasterFreqCode){
-    m_clockFrequencyComboBox->setCurrentIndex(0);
-  } else if (clockFreqCode == xpoldetector::kClockFastFreqCode){
-    m_clockFrequencyComboBox->setCurrentIndex(1);
-  } else if (clockFreqCode == xpoldetector::kClockSlowFreqCode){
-    m_clockFrequencyComboBox->setCurrentIndex(2);
-  } else if (clockFreqCode == xpoldetector::kClockSlowerFreqCode){
-    m_clockFrequencyComboBox->setCurrentIndex(3);
-  } else {
-    //Put a warning here;
-    m_clockFrequencyComboBox->setCurrentIndex(0);
-  }
-  m_clockShiftSpinBox->setValue(clockShiftCode*xpoldetector::kClockShiftStep);
+  return m_clockShiftSpinBox->value()/xpoldetector::kClockShiftStep;
 }
 
-unsigned short int pAdvancedSettingsTab::getNumPedSamples()
+
+/*!
+ */
+unsigned short pAdvancedSettingsTab::numPedSamples() const
 {
   QString numPedSamplesString = m_numPedSamplesComboBox->currentText();
   if (numPedSamplesString == m_subSamplesZeroLabel){
@@ -184,12 +185,72 @@ unsigned short int pAdvancedSettingsTab::getNumPedSamples()
   } else if (numPedSamplesString == m_subSamplesLargerLabel){
     return xpoldetector::kSubSamplesLarger;
   } else {
-    //Put a warning here;
     return xpoldetector::kSubSamplesZero;
   }
 }
 
-void pAdvancedSettingsTab::displayNumPedsSamples(unsigned short int samples)
+
+/*!
+ */
+unsigned short pAdvancedSettingsTab::pedSubDelay() const
+{
+  return m_pedSubDelaySpinBox->value()/xpoldetector::kPedSubDelayStep;
+}
+
+
+/*!
+ */
+unsigned short pAdvancedSettingsTab::trgEnableDelay() const
+{
+  return m_trgEnableDelaySpinBox->value()/xpoldetector::kTrgEnableDelayStep;
+}
+
+
+/*!
+ */
+unsigned short pAdvancedSettingsTab::minWindowSize() const
+{
+  return m_minWindowSizeSpinBox->value()/xpoldetector::kMinWindowSizeStep;
+}
+
+
+/*!
+ */
+unsigned short pAdvancedSettingsTab::maxWindowSize() const
+{
+  return m_maxWindowSizeSpinBox->value()/xpoldetector::kMaxWindowSizeStep;
+}
+
+
+/*!
+ */
+void pAdvancedSettingsTab::displayClockFrequency(unsigned short frequency)
+{
+  if (frequency == xpoldetector::kClockFasterFreqCode){
+    m_clockFrequencyComboBox->setCurrentIndex(0);
+  } else if (frequency == xpoldetector::kClockFastFreqCode){
+    m_clockFrequencyComboBox->setCurrentIndex(1);
+  } else if (frequency == xpoldetector::kClockSlowFreqCode){
+    m_clockFrequencyComboBox->setCurrentIndex(2);
+  } else if (frequency == xpoldetector::kClockSlowerFreqCode){
+    m_clockFrequencyComboBox->setCurrentIndex(3);
+  } else {
+    m_clockFrequencyComboBox->setCurrentIndex(1);
+  }
+}
+
+
+/*!
+ */
+void pAdvancedSettingsTab::displayClockShift(unsigned short shift)
+{
+  m_clockShiftSpinBox->setValue(shift*xpoldetector::kClockShiftStep);
+}
+
+
+/*!
+ */
+void pAdvancedSettingsTab::displayNumPedsSamples(unsigned short samples)
 {
   if (samples == xpoldetector::kSubSamplesZero){
     m_numPedSamplesComboBox->setCurrentIndex(0);
@@ -207,50 +268,46 @@ void pAdvancedSettingsTab::displayNumPedsSamples(unsigned short int samples)
   }
 }
 
-unsigned short int pAdvancedSettingsTab::getPedSubDelay()
-{
-  return m_pedSubDelaySpinBox->value()/xpoldetector::kPedSubDelayStep;
-}
 
-void pAdvancedSettingsTab::displayPedSubDelay(unsigned short int delay)
+/*!
+ */
+void pAdvancedSettingsTab::displayPedSubDelay(unsigned short delay)
 {
   m_pedSubDelaySpinBox->setValue(delay*xpoldetector::kPedSubDelayStep);
 }
 
-unsigned short int pAdvancedSettingsTab::getTrgEnableDelay()
-{
-  return m_trgEnableDelaySpinBox->value()/xpoldetector::kTrgEnableDelayStep;
-}
 
-void pAdvancedSettingsTab::displayTrgEnableDelay(unsigned short int delay)
+/*!
+ */
+void pAdvancedSettingsTab::displayTrgEnableDelay(unsigned short delay)
 {
   m_trgEnableDelaySpinBox->setValue(delay*xpoldetector::kTrgEnableDelayStep);
 }
 
-unsigned short int pAdvancedSettingsTab::getMinWindowSize()
-{
-  return m_minWindowSizeSpinBox->value()/xpoldetector::kMinWindowSizeStep;
-}
 
-void pAdvancedSettingsTab::displayMinWindowSize(unsigned short int size)
+/*!
+ */
+void pAdvancedSettingsTab::displayMinWindowSize(unsigned short size)
 {
   m_minWindowSizeSpinBox->setValue(size*xpoldetector::kMinWindowSizeStep);
 }
 
-unsigned short int pAdvancedSettingsTab::getMaxWindowSize()
-{
-  return m_maxWindowSizeSpinBox->value()/xpoldetector::kMaxWindowSizeStep;
-}
 
-void pAdvancedSettingsTab::displayMaxWindowSize(unsigned short int size)
+/*!
+ */
+void pAdvancedSettingsTab::displayMaxWindowSize(unsigned short size)
 {
   m_maxWindowSizeSpinBox->setValue(size*xpoldetector::kMaxWindowSizeStep);
 }
 
+
+/*!
+ */
 void pAdvancedSettingsTab::displayConfiguration(pDetectorConfiguration
 						*configuration)
 {
-  displayTimingCode(configuration->timingCode());
+  displayClockFrequency(configuration->clockFrequency());
+  displayClockShift(configuration->clockShift());
   displayNumPedsSamples(configuration->numPedSamples());
   displayPedSubDelay(configuration->pedSampleDelay());
   displayTrgEnableDelay(configuration->trgEnableDelay());
