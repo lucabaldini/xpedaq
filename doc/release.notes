@@ -6,6 +6,7 @@
   into the directory qcustomplot (issue #17)
 * Data acquisition stopped upon USB timeout (closing issue #78).
 * Quick fix for issue #80.
+* Quick fix for issue #81.
 
 
 -------------------------------------------------------------------------------
