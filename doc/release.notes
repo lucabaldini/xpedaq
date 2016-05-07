@@ -1,5 +1,6 @@
 
 * Refactoring of the timing code part in the main GUI (issue #79).
+* Some cleanup.
 
 
 -------------------------------------------------------------------------------
