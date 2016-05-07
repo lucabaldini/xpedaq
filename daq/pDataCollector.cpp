@@ -52,20 +52,11 @@ void pDataCollector::stop()
 }
 
 /*!
-  This is actually the core of the data acquisition. When the method is called:
-  \li A new \ref pDataFIFO object with the correct runtime parameters is
-  created.
-  \li The FPGA is reset and started.
-  \li The event loop is started.
+  This is actually the core of the data acquisition. 
 */
 
 void pDataCollector::run()
 {
-  // We keep track of the start time in the Run controller, so we want to
-  // change this.
-  time_t timer;
-  time(&timer);
-  m_startSeconds = (unsigned int)timer;
   m_dataFIFO = new pDataFIFO(m_outputFilePath, m_userPreferences);
   unsigned long dataBufferDimension = SRAM_DIM*2;
   unsigned char dataBuffer[SRAM_DIM*2];
@@ -102,11 +93,12 @@ void pDataCollector::run()
   pressed (not once and forever at the construction time).
 */
 
-void pDataCollector::setup(std::string outputFilePath,
-			   pUserPreferences *preferences,
-			   pDetectorConfiguration *configuration)
+void pDataCollector::setupRun(std::string outputFilePath, long int startSeconds,
+			      pUserPreferences *preferences,
+			      pDetectorConfiguration *configuration)
 {
   m_outputFilePath = outputFilePath;
+  m_startSeconds = startSeconds;
   m_userPreferences = preferences;
   m_detectorConfiguration = configuration;
   m_fullFrame = (m_detectorConfiguration->readoutMode() ==

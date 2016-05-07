@@ -325,8 +325,8 @@ void pRunController::fsmStartRun()
   if (m_usbController->IsOpened()) {
     m_usbController->setTimeout(m_userPreferences->usbTimeout());
     m_xpolFpga->setup(m_detectorConfiguration);
-    m_dataCollector->setup(dataFilePath(), m_userPreferences,
-			   m_detectorConfiguration);
+    m_dataCollector->setupRun(dataFilePath(), m_startSeconds, m_userPreferences,
+			      m_detectorConfiguration);
     m_dataCollector->start();
   } else {
     *xpollog::kError << "The USB device is not open." << endline;

@@ -59,8 +59,9 @@ class pDataCollector : public QThread
   pDataCollector(pUsbController *usbController);
   ~pDataCollector() {;}
   void reset();
-  void setup(std::string outputFilePath, pUserPreferences *preferences,
-	     pDetectorConfiguration *configuration);
+  void setupRun(std::string outputFilePath, long int startSeconds,
+		pUserPreferences *preferences,
+		pDetectorConfiguration *configuration);
   int numDataBlocks() const {return m_dataFIFO->getNumAcquiredDataBlocks();}
   int numEvents() const {return m_dataFIFO->getNumAcquiredEvents();}
 
@@ -85,8 +86,9 @@ class pDataCollector : public QThread
   std::string m_outputFilePath;
   pUserPreferences *m_userPreferences;
   pDetectorConfiguration *m_detectorConfiguration;
+  // This is effectively part of the configuration and might go away.
   bool m_fullFrame;
-  unsigned int m_startSeconds;
+  long int m_startSeconds;
 };
 
 #endif //PDATACOLLECTOR_H

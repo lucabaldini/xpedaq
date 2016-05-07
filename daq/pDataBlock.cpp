@@ -48,7 +48,7 @@ pDataBlock::pDataBlock(unsigned char *buffer, unsigned int bufferSize) :
     if (header(evt) != 0xffff) {
       m_errorSummary += 1;
     }
-    pos += ADC_START + 2*numPixels(evt);
+    pos += AdcStart + 2*numPixels(evt);
     evt += 1;
   }
   m_size = pos;
@@ -63,7 +63,7 @@ void pDataBlock::setStartSeconds(unsigned int startSeconds)
 {
   if (errorSummary() == 0) {
     for (unsigned int evt = 0; evt < numEvents(); evt ++) {
-      unsigned int offset = m_offsetVec[evt] + SECONDS_1;
+      unsigned int offset = m_offsetVec[evt] + Seconds;
       m_rawBuffer[offset + 0] = (startSeconds & 0x00ff0000) >> 16;
       m_rawBuffer[offset + 1] = (startSeconds & 0xff000000) >> 24;
       m_rawBuffer[offset + 2] = (startSeconds & 0x000000ff) >> 0;
@@ -93,7 +93,7 @@ unsigned int pDataBlock::dataWord(unsigned int event, unsigned int offset) const
  */
 unsigned int pDataBlock::header(unsigned int event) const
 {
-  return dataWord(event, HEADER);
+  return dataWord(event, Header);
 }
 
 /*!
@@ -101,7 +101,7 @@ unsigned int pDataBlock::header(unsigned int event) const
  */
 unsigned int pDataBlock::xmin(unsigned int event) const
 {
-  return dataWord(event, WINDOW_X_MIN);
+  return dataWord(event, WindowXMin);
 }
 
 /*!
@@ -109,7 +109,7 @@ unsigned int pDataBlock::xmin(unsigned int event) const
  */
 unsigned int pDataBlock::xmax(unsigned int event) const
 {
-  return dataWord(event, WINDOW_X_MAX);
+  return dataWord(event, WindowXMax);
 }
 
 /*!
@@ -117,7 +117,7 @@ unsigned int pDataBlock::xmax(unsigned int event) const
  */
 unsigned int pDataBlock::ymin(unsigned int event) const
 {
-  return dataWord(event, WINDOW_Y_MIN);
+  return dataWord(event, WindowYMin);
 }
 
 /*!
@@ -125,7 +125,7 @@ unsigned int pDataBlock::ymin(unsigned int event) const
  */
 unsigned int pDataBlock::ymax(unsigned int event) const
 {
-  return dataWord(event, WINDOW_Y_MAX);
+  return dataWord(event, WindowYMax);
 }
 
 /*!
@@ -133,7 +133,7 @@ unsigned int pDataBlock::ymax(unsigned int event) const
  */
 unsigned int pDataBlock::bufferId(unsigned int event) const
 {
-  return dataWord(event, BUFFER_ID);
+  return dataWord(event, BufferId);
 }
 
 /*!
@@ -149,9 +149,9 @@ unsigned int pDataBlock::numPixels(unsigned int event) const
  */
 double pDataBlock::timestamp(unsigned int event) const
 {
-  return dataWord(event, SECONDS_2) + 65536*dataWord(event, SECONDS_1) +
-    0.8e-6*(dataWord(event, MICROSECONDS_1) + 
-	    65534*dataWord(event, MICROSECONDS_2));
+  return dataWord(event, Seconds + 2) + 65536*dataWord(event, Seconds) +
+    0.8e-6*(dataWord(event, Microseconds) + 
+	    65534*dataWord(event, Microseconds + 2));
 }
 
 /*!

@@ -81,19 +81,16 @@ class pDataBlock
 
  private:
 
-  enum WordOffset
-  {
-    HEADER = 0,
-    WINDOW_X_MIN = 2,
-    WINDOW_X_MAX = 4,
-    WINDOW_Y_MIN = 6,
-    WINDOW_Y_MAX = 8,
-    BUFFER_ID = 10,
-    MICROSECONDS_1 = 12,
-    MICROSECONDS_2 = 14,
-    SECONDS_1 = 16,
-    SECONDS_2 = 18,
-    ADC_START = 20
+  enum WordOffset {
+    Header = 0,
+    WindowXMin = 2,
+    WindowXMax = 4,
+    WindowYMin = 6,
+    WindowYMax = 8,
+    BufferId = 10,
+    Microseconds = 12,
+    Seconds = 16,
+    AdcStart = 20
   };
 
   /*!\brief The raw data block as read from the FPGA.
