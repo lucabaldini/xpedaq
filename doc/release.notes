@@ -2,6 +2,7 @@
 * Refactoring of the timing code part in the main GUI (issue #79).
 * Some cleanup.
 * Put sensible default values in the detector configuration files (issue #79).
+* pyxpe folder created for the python libs.
 
 
 -------------------------------------------------------------------------------
