@@ -92,12 +92,12 @@ class pXpeEventWindowed(pXpeEventBase):
         """
         return self.HEADER_LENGTH + 2*self.num_pixels()
 
-    def num_rows(self):
+    def num_columns(self):
         """
         """
         return (self.xmax - self.xmin + 1)
 
-    def num_columns(self):
+    def num_rows(self):
         """
         """
         return (self.ymax - self.ymin + 1)
@@ -117,10 +117,10 @@ class pXpeEventWindowed(pXpeEventBase):
         """
         return (self.s2 + self.s1*65536)
         
-    def adc_value(self, row, col):
+    def adc_value(self, col, row):
         """Return the pulse height for a given pixel in the window.
         """
-        return self.adc_counts[row, col]
+        return self.adc_counts[col, row]
 
     def highest_pixel(self):
         """Return the coordinats of the pixel with the maximum value of
@@ -140,15 +140,15 @@ class pXpeEventWindowed(pXpeEventBase):
         """
         _fmt = '%%%dd' % width
         _max = self.highest_adc_value()
-        text = ' '*(width + 1)
+        text = '%4d+' % self.xmin
         for col in xrange(self.num_columns()):
             text += _fmt % col
         text += '\n'
-        text += ' '*(width + 1) + '-'*(width*self.num_columns()) + '\n'
+        text += '%4d+' % self.ymin + '-'*(width*self.num_columns()) + '\n'
         for row in xrange(self.num_rows()):
-            text += (_fmt % row) + '|' 
+            text += (_fmt % row) + '|'
             for col in xrange(self.num_columns()):
-                adc = self.adc_value(row, col)
+                adc = self.adc_value(col, row)
                 pix = _fmt % adc
                 if color and adc == _max:
                     pix = '%s%s%s' % (pAnsiColors.RED, pix, pAnsiColors.ENDC)
@@ -157,7 +157,7 @@ class pXpeEventWindowed(pXpeEventBase):
                 elif color and adc >= zero_suppression:
                     pix = '%s%s%s' % (pAnsiColors.GREEN, pix, pAnsiColors.ENDC)
                 text += pix
-            text += '\n'
+            text += '\n    |\n'
         return text
 
     def draw_ascii(self, threshold=10):
@@ -243,10 +243,10 @@ class pXpeBinaryFileWindowed(pXpeBinaryFileBase):
             logging.error('Event header mismatch (got %s).' % hex(header))
             raise StopIteration()
         ymin, ymax, xmin, xmax, buffer_id, t1, t2, s1, s2 = self.read_words(9)
-        num_rows = (xmax - xmin + 1)
-        num_columns = (ymax - ymin + 1)
+        num_columns = (xmax - xmin + 1)
+        num_rows = (ymax - ymin + 1)
         data = self.read_words(num_rows*num_columns)
-        adc_counts = numpy.array(data).reshape((num_rows, num_columns))
+        adc_counts = numpy.array(data).reshape((num_columns, num_rows))
         return pXpeEventWindowed(xmin, xmax, ymin, ymax,
                                  buffer_id, t1, t2, s1, s2, adc_counts)
 
