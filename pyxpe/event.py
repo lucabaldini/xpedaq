@@ -134,7 +134,8 @@ class pXpeEventWindowed(pXpeEventBase):
         """
         return self.adc_counts.max()
 
-    def ascii(self, zero_suppression=10, max_threshold=0.75, width=4):
+    def ascii(self, zero_suppression=10, max_threshold=0.75, width=4,
+              color=True):
         """Return a pretty-printed ASCII representation of the event.
         """
         _fmt = '%%%dd' % width
@@ -149,11 +150,11 @@ class pXpeEventWindowed(pXpeEventBase):
             for col in xrange(self.num_columns()):
                 adc = self.adc_value(row, col)
                 pix = _fmt % adc
-                if adc == _max:
+                if color and adc == _max:
                     pix = '%s%s%s' % (pAnsiColors.RED, pix, pAnsiColors.ENDC)
-                elif adc >= max_threshold*_max:
+                elif color and adc >= max_threshold*_max:
                     pix = '%s%s%s' % (pAnsiColors.YELLOW, pix, pAnsiColors.ENDC)
-                elif adc >= zero_suppression:
+                elif color and adc >= zero_suppression:
                     pix = '%s%s%s' % (pAnsiColors.GREEN, pix, pAnsiColors.ENDC)
                 text += pix
             text += '\n'
