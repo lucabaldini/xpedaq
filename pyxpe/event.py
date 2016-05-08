@@ -33,6 +33,19 @@ NUM_BUFFERS = 8
 NUM_PIXELS = PIXELS_PER_BUFFER*NUM_BUFFERS
 
 
+class pAnsiColors:
+    
+    HEADER = '\033[95m'
+    BLUE = '\033[94m'
+    GREEN = '\033[92m'
+    YELLOW = '\033[93m'
+    RED = '\033[91m'
+    ENDC = '\033[0m'
+    BOLD = '\033[1m'
+    UNDERLINE = '\033[4m'
+
+
+    
 class pXpeEventBase:
 
     """
@@ -104,17 +117,52 @@ class pXpeEventWindowed(pXpeEventBase):
         """
         return (self.s2 + self.s1*65536)
         
-    def adc_value(self, row, column):
+    def adc_value(self, row, col):
         """Return the pulse height for a given pixel in the window.
         """
-        return self.adc_counts[row, column]
+        return self.adc_counts[row, col]
 
-    def draw_ascii(self):
+    def highest_pixel(self):
+        """Return the coordinats of the pixel with the maximum value of
+        ADC counts.
+        """
+        return numpy.unravel_index(numpy.argmax(self.adc_counts),
+                                   self.adc_counts.shape)
+
+    def highest_adc_value(self):
+        """Return the maximum value of ADC counts for the pixels in the event.
+        """
+        return self.adc_counts.max()
+
+    def ascii(self, zero_suppression=10, max_threshold=0.75, width=4):
+        """Return a pretty-printed ASCII representation of the event.
+        """
+        _fmt = '%%%dd' % width
+        _max = self.highest_adc_value()
+        text = ' '*(width + 1)
+        for col in xrange(self.num_columns()):
+            text += _fmt % col
+        text += '\n'
+        text += ' '*(width + 1) + '-'*(width*self.num_columns()) + '\n'
+        for row in xrange(self.num_rows()):
+            text += (_fmt % row) + '|' 
+            for col in xrange(self.num_columns()):
+                adc = self.adc_value(row, col)
+                pix = _fmt % adc
+                if adc == _max:
+                    pix = '%s%s%s' % (pAnsiColors.RED, pix, pAnsiColors.ENDC)
+                elif adc >= max_threshold*_max:
+                    pix = '%s%s%s' % (pAnsiColors.YELLOW, pix, pAnsiColors.ENDC)
+                elif adc >= zero_suppression:
+                    pix = '%s%s%s' % (pAnsiColors.GREEN, pix, pAnsiColors.ENDC)
+                text += pix
+            text += '\n'
+        return text
+
+    def draw_ascii(self, threshold=10):
         """
         """
-        # This should be done properly
-        numpy.set_printoptions(linewidth=100)
-        print self.adc_counts
+        print(self.ascii())
 
     def __str__(self):
         """
