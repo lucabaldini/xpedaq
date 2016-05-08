@@ -3,6 +3,7 @@
 * Some cleanup.
 * Put sensible default values in the detector configuration files (issue #79).
 * pyxpe folder created for the python libs.
+* Display functionalisties added to the playback python script.
 
 
 -------------------------------------------------------------------------------
