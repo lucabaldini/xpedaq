@@ -34,7 +34,7 @@ if __name__ == '__main__':
                         help='number of events to be read')
     args = parser.parse_args()
 
-    input_file = pXpeBinaryFile(args.binfile)
+    input_file = pXpeBinaryFileWindowed(args.binfile)
     input_file.seek(args.offset)
     for evt in xrange(args.numevents):
         print input_file.next()

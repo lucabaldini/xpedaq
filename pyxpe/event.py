@@ -27,7 +27,13 @@ import struct
 import numpy
 
 
-class pXpeFullFrameEvent:
+
+PIXELS_PER_BUFFER = 13200
+NUM_BUFFERS = 8
+NUM_PIXELS = PIXELS_PER_BUFFER*NUM_BUFFERS
+
+
+class pXpeEventBase:
 
     """
     """
@@ -35,13 +41,23 @@ class pXpeFullFrameEvent:
     pass
 
 
-class pXpeEvent:
+
+class pXpeEventFullFrame(pXpeEventBase):
+
+    """
+    """
+
+    pass
+
+
+
+class pXpeEventWindowed(pXpeEventBase):
     
     """
     """
     
-    HEADER = 65535
-    HEADER_LEN = 20
+    HEADER_MARKER = 65535
+    HEADER_LENGTH = 20
     
     def __init__(self, xmin, xmax, ymin, ymax, buffer_id, t1, t2, s1, s2,
                  adc_counts):
@@ -58,17 +74,27 @@ class pXpeEvent:
         self.s2 = s2
         self.adc_counts = adc_counts
 
-    def num_bytes(self):
+    def size(self):
         """Return the total number of bytes in the event.
         """
-        return self.HEADER_LEN + 2*self.num_pixels()
+        return self.HEADER_LENGTH + 2*self.num_pixels()
+
+    def num_rows(self):
+        """
+        """
+        return (self.xmax - self.xmin + 1)
+
+    def num_columns(self):
+        """
+        """
+        return (self.ymax - self.ymin + 1)
 
     def num_pixels(self):
         """Return the total number of pixels in the window.
         """
-        return (self.xmax - self.xmin + 1)*(self.ymax - self.ymin + 1)
+        return self.num_rows()*self.num_columns()
 
-    def timestamp(self):
+    def microseconds(self):
         """Return the timestamp from the FPGA.
         """
         return (self.t1 + self.t2*65534)*0.8e-6
@@ -77,29 +103,32 @@ class pXpeEvent:
         """Return the seconds from the start run.
         """
         return (self.s2 + self.s1*65536)
-
-    def adc_index(self, ix, iy):
-        """ Return the index of the (ix, iy) channel in the adc_counts list
-        Assuming we follow Gloria convention in the recon, see issue #72
-        """
-        return (iy - self.ymin) + (ix-self.xmin)*(self.ymax-self.ymin+1)
         
+    def adc_value(self, row, column):
+        """Return the pulse height for a given pixel in the window.
+        """
+        return self.adc_counts[row, column]
 
-    def get_adc(self, ix, iy):
-        return self.adc_counts[self.adc_index(ix, iy)]
+    def draw_ascii(self):
+        """
+        """
+        # This should be done properly
+        numpy.set_printoptions(linewidth=100)
+        print self.adc_counts
 
     def __str__(self):
         """
         """
         text = 'buffer %5d, w(%3d, %3d)--(%3d, %3d), %d px, t = %d + %.5f s' %\
                (self.buffer_id, self.xmin, self.ymin, self.xmax, self.ymax,
-                self.num_pixels(), self.start_seconds(), self.timestamp())
+                self.num_pixels(), self.start_seconds(), self.microseconds())
         return text
 
 
-class pXpeBinaryFileFullFrame(file):
-    
-    """Small class representing a binary file from the DAQ.
+
+class pXpeBinaryFileBase(file):
+
+    """ Base class for a xpedaq binary file.
     """
 
     def __init__(self, filePath):
@@ -109,9 +138,18 @@ class pXpeBinaryFileFullFrame(file):
         file.__init__(self, filePath, 'rb')
 
     def read_word(self):
-        """Read a single 2-bytes binary word from the file.
+        """Read and byte-swap a single 2-bytes binary word from file.
+
+        Note that struct.unpack returns a tuple even when we read a single
+        number, and here we're returning the first (and only) element of the
+        tuple.
         """
         return struct.unpack('H', self.read(2))[0]
+
+    def read_words(self, num_words):
+        """Read and byte-swap a fixed number of 2-bytes binary words from file.
+        """
+        return struct.unpack('%dH' % num_words, self.read(2*num_words))
 
     def __iter__(self):
         """Iterator implementation.
@@ -119,36 +157,30 @@ class pXpeBinaryFileFullFrame(file):
         return self
 
     def next(self):
+        """Do-nothing next() method to be reimplemented in the derived classes.
+        """
+        pass
+
+        
+
+class pXpeBinaryFileFullFrame(pXpeBinaryFileBase):
+    
+    """Binary file acquired in full-frame mode.
+    """
+
+    def next(self):
         """Read the next event in the file.
         """
-        data = []
-        for channel in xrange(13200):
-            for buffer in xrange(8):
-                data.append(self.read_word())
-        return numpy.array(data).reshape(8, 13200)
+        data = self.read_words(NUM_PIXELS)
+        adc_counts = numpy.array(data).reshape(NUM_BUFFERS, PIXELS_PER_BUFFER)
+        return adc_counts
             
 
 
-class pXpeBinaryFile(file):
+class pXpeBinaryFileWindowed(pXpeBinaryFileBase):
     
-    """Small class representing a binary file from the DAQ.
+    """Binary file acquired in windowed mode.
     """
-
-    def __init__(self, filePath):
-        """Constructor.
-        """
-        logging.info('Opening input binary file %s...' % filePath)
-        file.__init__(self, filePath, 'rb')
-
-    def read_word(self):
-        """Read a single 2-bytes binary word from the file.
-        """
-        return struct.unpack('H', self.read(2))[0]
-
-    def __iter__(self):
-        """Iterator implementation.
-        """
-        return self
 
     def next(self):
         """Read the next event in the file.
@@ -158,21 +190,40 @@ class pXpeBinaryFile(file):
         except Exception, e:
             print(e)
             raise StopIteration()
-        if header != pXpeEvent.HEADER:
+        if header != pXpeEventWindowed.HEADER_MARKER:
             logging.error('Event header mismatch (got %s).' % hex(header))
             raise StopIteration()
-        ymin = self.read_word()
-        ymax = self.read_word()
-        xmin = self.read_word()
-        xmax = self.read_word()
-        num_pixels = (xmax - xmin + 1)*(ymax - ymin + 1)
-        buffer_id = self.read_word()
-        t1 = self.read_word()
-        t2 = self.read_word()
-        s1 = self.read_word()
-        s2 = self.read_word()
-        adc_counts = []
-        for i in xrange(num_pixels):
-            adc_counts.append(self.read_word())
-        return pXpeEvent(xmin, xmax, ymin, ymax, buffer_id, t1, t2, s1, s2,
-                         adc_counts)
+        ymin, ymax, xmin, xmax, buffer_id, t1, t2, s1, s2 = self.read_words(9)
+        num_rows = (xmax - xmin + 1)
+        num_columns = (ymax - ymin + 1)
+        data = self.read_words(num_rows*num_columns)
+        adc_counts = numpy.array(data).reshape((num_rows, num_columns))
+        return pXpeEventWindowed(xmin, xmax, ymin, ymax,
+                                 buffer_id, t1, t2, s1, s2, adc_counts)
+
+
+
+def test_windowed(filePath, num_events):
+    """
+    """
+    input_file = pXpeBinaryFileWindowed(filePath)
+    for i in xrange(args.num_events):
+        event = input_file.next()
+        print event
+        event.draw_ascii()
+    
+
+        
+if __name__ == '__main__':
+    import argparse
+    formatter = argparse.ArgumentDefaultsHelpFormatter
+    parser = argparse.ArgumentParser(formatter_class=formatter)
+    parser.add_argument('infile', type=str,
+                        help='the input binary file')
+    parser.add_argument('-o', '--offset', type=int, default=0,
+                        help='offset (in bytes) of the desired event header')
+    parser.add_argument('-n', '--num-events', type=int, default=10,
+                        help='number of events to be read')
+    args = parser.parse_args()
+    print args
+    test_windowed(args.infile, args.num_events)
