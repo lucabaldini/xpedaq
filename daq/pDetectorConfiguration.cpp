@@ -86,7 +86,7 @@ void pDetectorConfiguration::setCalibrationDac(unsigned short int dacSetting)
 
 /*!
  */
-unsigned char pDetectorConfiguration::timingCode() const
+unsigned short pDetectorConfiguration::timingCode() const
 {
   return m_clockFrequency | (m_clockShift & 0x1f);
 }

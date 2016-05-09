@@ -47,7 +47,7 @@ class pDetectorConfiguration
   unsigned short pixelAddressY() const {return m_pixelAddressY;}
   unsigned short clockFrequency() const {return m_clockFrequency;}
   unsigned short clockShift() const {return m_clockShift;}
-  unsigned char timingCode() const;
+  unsigned short timingCode() const;
   unsigned short numPedSamples() const {return m_numPedSamples;}
   unsigned short pedSampleDelay() const {return m_pedSampleDelay;}
   unsigned short trgEnableDelay() const {return m_trgEnableDelay;}
