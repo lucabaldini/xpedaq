@@ -3,7 +3,7 @@
 //Buffer mode//
 65534
 //Calibration dac//
-496
+310
 //Pixel address x//
 50
 //Pixel address y//
@@ -36,6 +36,6 @@
 //Trigger enable delay//
 5
 //Minimum window size//
-16
+8
 //Maximum window size//
 5
