@@ -44,7 +44,7 @@ class pDetectorConfiguration
   {return m_thresholdDac[clusterId];}
   unsigned short calibrationDac() const {return m_calibrationDac;}
   unsigned short pixelAddressX() const {return m_pixelAddressX;}
-  unsigned short pixelAddressY()const {return m_pixelAddressY;}
+  unsigned short pixelAddressY() const {return m_pixelAddressY;}
   unsigned short clockFrequency() const {return m_clockFrequency;}
   unsigned short clockShift() const {return m_clockShift;}
   unsigned char timingCode() const;
