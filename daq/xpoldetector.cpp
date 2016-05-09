@@ -150,8 +150,8 @@ const unsigned short xpoldetector::kClockFasterFreqCode = 0x0;
 const unsigned short xpoldetector::kClockFastFreqCode = 0x20;
 const unsigned short xpoldetector::kClockSlowFreqCode = 0x40;
 const unsigned short xpoldetector::kClockSlowerFreqCode = 0x60;
-const unsigned short xpoldetector::kNumPixelsX = 352;
-const unsigned short xpoldetector::kNumPixelsY = 300;
+const unsigned short xpoldetector::kNumPixelsX = 300;
+const unsigned short xpoldetector::kNumPixelsY = 352;
 const unsigned short xpoldetector::kSmallBufferMode = 0x1;
 const unsigned short xpoldetector::kLargeBufferMode = ~xpoldetector::kSmallBufferMode;
 
