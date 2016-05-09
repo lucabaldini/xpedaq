@@ -1,4 +1,7 @@
 
+-------------------------------------------------------------------------------
+xpedaq (0.8.1) - Mon, 09 May 2016 06:17:37 +0200
+-------------------------------------------------------------------------------
 * Refactoring of the timing code part in the main GUI (issue #79).
 * Some cleanup.
 * Put sensible default values in the detector configuration files (issue #79).
