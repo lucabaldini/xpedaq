@@ -140,13 +140,18 @@ class pXpeEventWindowed(pXpeEventBase):
         """
         _fmt = '%%%dd' % width
         _max = self.highest_adc_value()
-        text = '%4d+' % self.xmin
+        text = ''
+        text += ' '*(2*width + 2)
+        for col in xrange(self.num_columns()):
+            text += _fmt % (col + self.xmin)
+        text += '\n'
+        text += ' '*(2*width + 2)
         for col in xrange(self.num_columns()):
             text += _fmt % col
         text += '\n'
-        text += '%4d+' % self.ymin + '-'*(width*self.num_columns()) + '\n'
+        text += ' '*(2*width + 1) + '+' + '-'*(width*self.num_columns()) + '\n'
         for row in xrange(self.num_rows()):
-            text += (_fmt % row) + '|'
+            text += (_fmt % (row + self.ymin)) + ' ' + (_fmt % row) + '|'
             for col in xrange(self.num_columns()):
                 adc = self.adc_value(col, row)
                 pix = _fmt % adc
@@ -157,7 +162,7 @@ class pXpeEventWindowed(pXpeEventBase):
                 elif color and adc >= zero_suppression:
                     pix = '%s%s%s' % (pAnsiColors.GREEN, pix, pAnsiColors.ENDC)
                 text += pix
-            text += '\n    |\n'
+            text += '\n%s|\n' % (' '*(2*width + 1))
         return text
 
     def draw_ascii(self, threshold=10):
