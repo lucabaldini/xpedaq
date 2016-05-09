@@ -26,12 +26,15 @@ with this program; if not, write to the Free Software Foundation Inc.,
 
 struct FileHeader_v1
 {
+  // Preamble.
   uint16_t header;
   uint16_t version;
   uint16_t size;
+  // Run-specific stuff.
   uint16_t runId;
   uint32_t startSeconds;
-  uint8_t readoutMode;  
+  // Configuration bookkeping.
+  uint8_t readoutMode;
 };
 
 
