@@ -35,6 +35,14 @@ struct FileHeader_v1
   uint32_t startSeconds;
   // Configuration bookkeping.
   uint8_t readoutMode;
+  uint8_t bufferMode;
+  uint8_t clockFrequency;
+  uint8_t clockShift;
+  uint8_t numPedSamples;
+  uint8_t pedSampleDelay;
+  uint8_t trgEnableDelay;
+  uint8_t minWindowSize;
+  uint8_t maxWindowSize;
 };
 
 
