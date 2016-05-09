@@ -247,11 +247,11 @@ class pXpeBinaryFileWindowed(pXpeBinaryFileBase):
         if header != pXpeEventWindowed.HEADER_MARKER:
             logging.error('Event header mismatch (got %s).' % hex(header))
             raise StopIteration()
-        ymin, ymax, xmin, xmax, buffer_id, t1, t2, s1, s2 = self.read_words(9)
+        xmin, xmax, ymin, ymax, buffer_id, t1, t2, s1, s2 = self.read_words(9)
         num_columns = (xmax - xmin + 1)
         num_rows = (ymax - ymin + 1)
         data = self.read_words(num_rows*num_columns)
-        adc_counts = numpy.array(data).reshape((num_columns, num_rows))
+        adc_counts = numpy.array(data).reshape((num_rows, num_columns)).T
         return pXpeEventWindowed(xmin, xmax, ymin, ymax,
                                  buffer_id, t1, t2, s1, s2, adc_counts)
 

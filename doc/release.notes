@@ -1,5 +1,7 @@
 
 * Default for the usb timeout changed to 20 s (closing issue #88).
+* Default detector.cfg file tweaked (closing isse #89).
+* Coordinate system for the pyxpe.event module changed to the DAQ convention.
 * A few minor changes.
 
 
