@@ -33,7 +33,7 @@ with this program; if not, write to the Free Software Foundation Inc.,
 
 namespace xpedaqos{
   extern std::string kSeparator;
-  extern std::string environ(std::string name);
+  extern std::string environmentalVariable(std::string name);
   extern std::string join(std::string p1, std::string p2);
   extern std::string join(std::string p1, std::string p2, std::string p3);
   extern std::string join(std::string p1, std::string p2, std::string p3,

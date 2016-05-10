@@ -32,7 +32,7 @@ std::string xpedaqos::kSeparator = "/";
 
 /*!
  */
-std::string xpedaqos::environ(std::string name)
+std::string xpedaqos::environmentalVariable(std::string name)
 {
   char *path = std::getenv(name.c_str());
   if (path == NULL) {
@@ -83,7 +83,7 @@ std::string xpedaqos::join(std::string p1, std::string p2, std::string p3,
  */
 std::string xpedaqos::rjoin(std::string p1)
 {
-  return xpedaqos::join(xpedaqos::environ("XPEDAQ_ROOT"), p1);
+  return xpedaqos::join(xpedaqos::environmentalVariable("XPEDAQ_ROOT"), p1);
 }
 
 

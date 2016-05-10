@@ -17,6 +17,7 @@ equals(QT_MAJOR_VERSION, 5) {
   QT += network opengl
   }
 
+INCLUDEPATH += .
 INCLUDEPATH += ..
 INCLUDEPATH += ../gui
 INCLUDEPATH += ../daq
