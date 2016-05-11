@@ -1,7 +1,9 @@
 #include "pDisplayWindow.h"
 #include "pMapOptions.h"
+#include "pedestalsMap.h"
 #include <ctime>
 #include <cstdlib>
+#include <memory>
 
 pDisplayWindow::pDisplayWindow(QWidget *parent, int posx, int posy,
   int windowHeight, int windowWidth) : QMainWindow(parent), m_posx (posx),
@@ -38,21 +40,22 @@ pDisplayWindow::pDisplayWindow(QWidget *parent, int posx, int posy,
  */
 void pDisplayWindow::showPedestals()
 {
+  using namespace pedestals;
+  
   /* Generate some fake data. This is only for testing and should be removed
   as soon as we are able to generate sensible input values */
 
-  const int nPedestals = 105600;
   double baseline = 1000.;
   double fluctuation_range = 500.;
-  std::vector<double> pedestalValues (nPedestals);
-  std::vector<double> pedestalRMS (nPedestals);
+  arr_t pedestalValues;
+  arr_t pedestalRMS;
   
   //initialize random generator
   std::srand(static_cast<unsigned int>(time(0)));
   static const double fraction = 1.0 / (static_cast<double>(RAND_MAX) + 1.0); 
   std::rand();
   
-  for (int pedIndex=0; pedIndex < nPedestals; pedIndex++)
+  for (int pedIndex=0; pedIndex < kNPedestal; pedIndex++)
   {
     double random_fluctuation = static_cast<double>(std::rand() * fraction 
                       * (fluctuation_range + 1)  - (0.5 * fluctuation_range));
@@ -62,21 +65,13 @@ void pDisplayWindow::showPedestals()
   
   /*End of fake data generation*/
   
-  int nx = 352;
-  int ny = 300;
-  double x_min = 1.;
-  double x_max = static_cast<double>(nx);
-  double y_min = 1.;
-  double y_max = static_cast<double>(ny);
+  std::shared_ptr<pColorMapOptions> pedValOptions (new pColorMapOptions ("x",
+                                                    "y", "Pedestal values"));
+  std::shared_ptr<pColorMapOptions> pedRmsOptions (new pColorMapOptions ("x",
+                                                    "y", "RMS"));  
   
-  pMapOptions *pedValOptions = new pMapOptions (x_min, x_max, y_min, y_max,
-                                                nx, ny, "x", "y",
-                                                "Pedestal values");
-  pMapOptions *pedRmsOptions = new pMapOptions (x_min, x_max, y_min, y_max,
-                                                nx, ny, "x", "y", "RMS");
-  
-  m_pedestalMap = new PedestalsMap(m_pedestalPlot, pedestalValues,
-                                                     pedValOptions);
-  m_pedestalRmsMap = new PedestalsMap(m_pedestalRmsPlot, pedestalRMS,
-                                                        pedRmsOptions);
+  PedestalsMapData* val = new PedestalsMapData(pedestalValues);
+  PedestalsMapData* rms = new PedestalsMapData(pedestalRMS);
+  m_pedestalMap = new PedestalsMap(m_pedestalPlot, val, pedValOptions);
+  m_pedestalRmsMap = new PedestalsMap(m_pedestalRmsPlot, rms, pedRmsOptions);
 }
