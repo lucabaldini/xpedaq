@@ -19,7 +19,7 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 
-from pyxpe.event import *
+from pyxpedaq.event import *
 
 
 if __name__ == '__main__':
