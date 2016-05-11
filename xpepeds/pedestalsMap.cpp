@@ -1,8 +1,27 @@
 #include "pedestalsMap.h"
+#include <iostream>
+
+using namespace pedestals;
+
+PedestalsMapData::PedestalsMapData(arr_t const &data) : 
+      QCPColorMapData(kNx, kNy, QCPRange(1., static_cast<double>(kNx)),
+                                QCPRange(1., static_cast<double>(kNy)))
+{
+  for (int xIndex=0; xIndex<kNx; ++xIndex)
+  {
+    for (int yIndex=0; yIndex<kNy; ++yIndex)
+    {
+      int pedestalIndex = kNy * xIndex + yIndex;
+      this->setCell(xIndex, yIndex, data.at(pedestalIndex));
+    }
+  }
+}
+
 
 PedestalsMap::PedestalsMap(QCustomPlot* parentPlot, 
-                           std::vector<double> const &values,
-                           pMapOptions* options) : m_options(options)
+                           PedestalsMapData* data,
+                           std::shared_ptr<pColorMapOptions> options) :
+                             m_options(options)
 {
   // configure axis rect:
   parentPlot->setInteractions(QCP::iRangeDrag|QCP::iRangeZoom); // this will also allow rescaling the color scale by dragging/zooming
@@ -11,27 +30,13 @@ PedestalsMap::PedestalsMap(QCustomPlot* parentPlot,
   parentPlot->yAxis->setLabel(m_options->m_yTitle);
    
   // set up the QCPColorMap:
-  m_colorMap = new QCPColorMap(parentPlot->xAxis, parentPlot->yAxis);
+  m_colorMap  = new QCPColorMap(parentPlot->xAxis, parentPlot->yAxis);
   parentPlot->addPlottable(m_colorMap);
   
-  int nBinsX = m_options->m_nBinsX;
-  int nBinsY = m_options->m_nBinsY;
-  m_colorMap->data()->setSize(nBinsX, nBinsY);
-  m_colorMap->data()->setRange(QCPRange(m_options->m_xMin, m_options->m_xMax),
-                               QCPRange(m_options->m_yMin, m_options->m_yMax));
-  
-  // assign data:
-  for (int xIndex=0; xIndex<nBinsX; ++xIndex)
-  {
-    for (int yIndex=0; yIndex<nBinsY; ++yIndex)
-    {
-      int pedestalIndex = nBinsY * xIndex + yIndex;
-      m_colorMap->data()->setCell(xIndex, yIndex, values.at(pedestalIndex));
-    }
-  }
+  m_colorMap->setData(data, false); //No copy of the data involved, we are just taking ownership of it!
   
   // add a color scale:
-  m_colorScale = new QCPColorScale(parentPlot);
+  m_colorScale  = new QCPColorScale(parentPlot);
   parentPlot->plotLayout()->addElement(0, 1, m_colorScale); // add it to the right of the main axis rect
   m_colorScale->setType(QCPAxis::atRight); // scale shall be vertical bar with tick/axis labels right (actually atRight is already the default)
   m_colorMap->setColorScale(m_colorScale); // associate the color map with the color scale
@@ -50,4 +55,11 @@ PedestalsMap::PedestalsMap(QCustomPlot* parentPlot,
    
   // rescale the key (x) and value (y) axes so the whole color map is visible:
   parentPlot->rescaleAxes();
+}
+
+PedestalsMap::~PedestalsMap()
+{  
+  delete m_colorMap;
+  delete m_colorScale;
+  delete m_marginGroup;
 }
