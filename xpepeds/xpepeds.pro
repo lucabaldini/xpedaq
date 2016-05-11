@@ -10,6 +10,7 @@ equals(QT_MAJOR_VERSION, 4) {
   }
 
 equals(QT_MAJOR_VERSION, 5) {
+  CONFIG += c++11
   VPATH  += ..
   VPATH  += ../gui
   VPATH  += ../daq
