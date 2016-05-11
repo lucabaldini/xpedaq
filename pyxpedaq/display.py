@@ -59,19 +59,24 @@ class pHexagonalMatrix():
     def draw(self):
         """
         """
+        xmin, ymin = self.pixel2world(0, self.num_rows - 1)
+        xmax, ymax = self.pixel2world(self.num_columns - 1, 0)
+        print xmin, ymin, xmax, ymax
+        
         fig, axes = plt.subplots(1, 1)
         poly = collections.RegularPolyCollection(6, offsets=self.__grid,
-                                                 sizes=(100,),
+                                                 sizes=(1500,),
                                                  transOffset=axes.transData)
         axes.add_collection(poly, autolim=True)
         axes.autoscale_view()
-        print axes.transAxes
-        print fig.transFigure
+        #print axes.transData
+        #print axes.transAxes
+        #print fig.transFigure
         plt.show()
 
 
 
-matrix = pHexagonalMatrix(30, 36)
+matrix = pHexagonalMatrix(6, 8)
 matrix.draw()
 
 
