@@ -52,17 +52,28 @@ void pLoggerChannel::write(const QString &s)
     std::ofstream logFile(m_logFilePath.c_str(),
 			  std::ios_base::out | std::ios_base::app);
     logFile << s.toStdString();
+    // This is horrible. We should have a better way to figure out whether
+    // we need to write the timestamp.
+    if (m_lineTerminated) {
+      logFile << timestamp() << " - ";
+    }
     logFile.close();
   }
   m_lineTerminated = (s.right(1) == "\n");
 }
 
-std::string pLoggerChannel::getTimestamp()
+std::string pLoggerChannel::timestamp()
 {
-  time(&m_timestamp);
-  return std::string(ctime(&m_timestamp)).substr(11, 8);
+  long int seconds = static_cast<long int> (time(NULL));
+  std::string datetime(ctime(&seconds));
+  datetime.erase(datetime.size() - 1);
+  return datetime;
 }
 
+
+/*! Note that write() is called twice, here---once for the header and once
+for the message.
+ */
 void pLoggerChannel::flush()
 {
   if (m_lineTerminated) {

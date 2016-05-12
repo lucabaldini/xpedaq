@@ -1,5 +1,6 @@
 
 * pyxpe moved to pyxpedaq.
+* Added timestamps to the log files (closing issue #91).
 
 
 -------------------------------------------------------------------------------

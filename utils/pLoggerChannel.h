@@ -27,7 +27,7 @@ with this program; if not, write to the Free Software Foundation Inc.,
 #include <QString>
 #include <iostream>
 #include <fstream>
-#include <time.h>
+
 
 class pLoggerChannel : public QObject
 {
@@ -36,7 +36,7 @@ class pLoggerChannel : public QObject
  public:
   pLoggerChannel(std::string name);
   ~pLoggerChannel() {;}
-  inline std::string getName() const {return m_name;}
+  inline std::string name() const {return m_name;}
   inline bool lineTerminated() const {return m_lineTerminated;}
   inline void enableTerminal(bool enabled) {m_terminalEnabled = enabled;}
   inline void enableDisplay(bool enabled) {m_displayEnabled = enabled;}
@@ -69,10 +69,9 @@ class pLoggerChannel : public QObject
   bool m_terminalEnabled;
   bool m_displayEnabled;
   bool m_logFileEnabled;
-  time_t m_timestamp;
   void reset();
   void write(const QString &s);
-  std::string getTimestamp();
+  std::string timestamp();
 
  signals:
   void message(QString message);

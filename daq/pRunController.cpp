@@ -198,7 +198,7 @@ void pRunController::incrementRunId()
  */
 long int pRunController::currentSeconds() const
 {
-  return static_cast<int> (time(NULL));
+  return static_cast<long int> (time(NULL));
 }
 
 
