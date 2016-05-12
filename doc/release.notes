@@ -3,6 +3,7 @@
 * Added timestamps to the log files (closing issue #91).
 * Fix for compilation with c++11 (closing issue #95).
 * Fix for compilation under Windows 32 bit (issue #96).
+* Added diagnostic information for the malformed data blocks (issue #92).
 
 
 -------------------------------------------------------------------------------
