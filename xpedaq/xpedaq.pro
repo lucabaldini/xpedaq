@@ -1,6 +1,7 @@
 
 equals(QT_MAJOR_VERSION, 4) {
   #QMAKE_CXXFLAGS += -std=c++11
+  #QMAKE_CXXFLAGS_RELEASE -= -std=gnu++98
   DEPENDPATH  += ..
   DEPENDPATH  += ../gui
   DEPENDPATH  += ../daq

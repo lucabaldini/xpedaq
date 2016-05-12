@@ -1,6 +1,7 @@
 
 * pyxpe moved to pyxpedaq.
 * Added timestamps to the log files (closing issue #91).
+* Fix for compilation with c++11 (closing issue #95).
 
 
 -------------------------------------------------------------------------------
