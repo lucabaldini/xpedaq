@@ -26,7 +26,10 @@ with this program; if not, write to the Free Software Foundation Inc.,
 #include <iostream>
 #include <sstream>
 #include <iomanip>
+
 #include "pUsbController.h"
+#include "xpoldetector.h"
+
 
 #define _BYTESWAP_(x1, x2) (((x2 & 0xff) << 8) | (x1 & 0xff))
 
@@ -91,6 +94,14 @@ class pDataBlock
     Microseconds = 12,
     Seconds = 16,
     AdcStart = 20
+  };
+
+  enum DataBlockError {
+    IdMismatch = 0x1,
+    UnphysicalXMin = 0x10,
+    UnphysicalXMax = 0x20,
+    UnphysicalYMin = 0x40,
+    UnphysicalYMax = 0x80,
   };
 
   /*!\brief The raw data block as read from the FPGA.

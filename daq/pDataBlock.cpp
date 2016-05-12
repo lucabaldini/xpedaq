@@ -46,7 +46,19 @@ pDataBlock::pDataBlock(unsigned char *buffer, unsigned int bufferSize) :
   while (pos < bufferSize) {
     m_offsetVec.push_back(pos);
     if (header(evt) != 0xffff) {
-      m_errorSummary += 1;
+      m_errorSummary += IdMismatch;
+    }
+    if (xmin(evt) >= xpoldetector::kNumPixelsX) {
+      m_errorSummary |= UnphysicalXMin;
+    }
+    if (xmax(evt) >= xpoldetector::kNumPixelsX) {
+      m_errorSummary |= UnphysicalXMax;
+    }
+    if (ymin(evt) >= xpoldetector::kNumPixelsY) {
+      m_errorSummary |= UnphysicalYMin;
+    }
+    if (ymax(evt) >= xpoldetector::kNumPixelsY) {
+      m_errorSummary |= UnphysicalYMax;
     }
     pos += AdcStart + 2*numPixels(evt);
     evt += 1;
@@ -175,7 +187,8 @@ double pDataBlock::averageEventRate() const
 std::ostream& pDataBlock::fillStream(std::ostream& os) const
 {
   os << "pDataBlock object with " << numEvents() << " event(s) in " << size()
-     << " bytes (error summary " << errorSummary() << ")." << std::endl;
+     << " bytes (error summary 0x" << std::hex << errorSummary() << std::dec
+     << ")." << std::endl;
   for (unsigned int evt = 0; evt < numEvents(); evt ++) {
     os << "#" << evt << " @ buf " << std::setfill('0') << std::setw(6)
        << bufferId(evt) << "+" << std::setw(6) << offset(evt) << ", w("

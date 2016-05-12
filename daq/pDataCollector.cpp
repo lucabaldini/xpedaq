@@ -60,6 +60,8 @@ void pDataCollector::run()
   m_dataFIFO = new pDataFIFO(m_outputFilePath, m_userPreferences);
   unsigned long dataBufferDimension = SRAM_DIM*2;
   unsigned char dataBuffer[SRAM_DIM*2];
+  int maxSize = m_detectorConfiguration->maxBufferSize();
+  pDataBlock *curDataBlock;
   m_usbController->resetSequencer();
   m_usbController->startSequencer();
   m_running = true;
@@ -70,13 +72,23 @@ void pDataCollector::run()
       m_running = false;
     } else {
       if (m_fullFrame) {
-	m_dataFIFO->fill(new pDataBlock(dataBuffer));
+	curDataBlock = new pDataBlock(dataBuffer);
       } else {
-	m_dataFIFO->fill(new pDataBlock(dataBuffer,
-	    m_detectorConfiguration->maxBufferSize()));
+	curDataBlock = new pDataBlock(dataBuffer, maxSize);
       }
-      m_dataFIFO->setStartSeconds(m_startSeconds);
-      m_dataFIFO->flush();
+      if (curDataBlock->errorSummary()) {
+	*xpollog::kError << "Data block at index " 
+			 << m_dataFIFO->getNumAcquiredEvents()
+			 << "+ has error summary 0x" << hex 
+			 << curDataBlock->errorSummary() << dec << "."
+			 << endline;
+	std::cerr << *curDataBlock << std::endl;
+      } else {
+	m_dataFIFO->fill(curDataBlock);
+	m_dataFIFO->setStartSeconds(m_startSeconds);
+	m_dataFIFO->flush();
+      }
+      delete curDataBlock;
     }
   }
   m_usbController->stopSequencer();

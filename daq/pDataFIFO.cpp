@@ -77,18 +77,13 @@ pDataFIFO::pDataFIFO(std::string outputFilePath,
 
 void pDataFIFO::fill(pDataBlock *dataBlock)
 {
-  if (dataBlock->errorSummary()) {
-    *xpollog::kError << "Data block contains error(s)." << endline;
-    std::cerr << *dataBlock << std::endl;
-  } else {
-    m_buffer.push_back(dataBlock);
-    m_numEvents += dataBlock->numEvents();
-    m_size += dataBlock->size();
-    m_acquiredDataBlocks += 1;
-    m_acquiredEvents += dataBlock->numEvents();
-    if (m_multicastEnabled) {  
-      broadcastEventByEvent(dataBlock);
-    }
+  m_buffer.push_back(dataBlock);
+  m_numEvents += dataBlock->numEvents();
+  m_size += dataBlock->size();
+  m_acquiredDataBlocks += 1;
+  m_acquiredEvents += dataBlock->numEvents();
+  if (m_multicastEnabled) {  
+    broadcastEventByEvent(dataBlock);
   }
 }
 
