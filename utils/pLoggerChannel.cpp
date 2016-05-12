@@ -55,7 +55,7 @@ void pLoggerChannel::write(const QString &s)
     // This is horrible. We should have a better way to figure out whether
     // we need to write the timestamp.
     if (m_lineTerminated) {
-      logFile << timestamp() << " - ";
+      logFile << "(" << timestamp() << ") ";
     }
     logFile.close();
   }
