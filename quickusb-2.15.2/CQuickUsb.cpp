@@ -49,15 +49,15 @@ CQuickUsb::CQuickUsb(PCQCHAR devName) :
     m_lastError(QUICKUSB_ERROR_NO_ERROR),
     m_lastDriverError(QUICKUSB_ERROR_NO_ERROR) {
 
-#if defined(_WIN32)
-    size_t size = strlen(devName) + 1;
-    m_devName = new QCHAR[size];
-    strcpy_s(m_devName, size, devName);
-#else
+    //#if defined(_WIN32)
+    //size_t size = strlen(devName) + 1;
+    //m_devName = new QCHAR[size];
+    //strcpy_s(m_devName, size, devName);
+    //#else
     int size = strlen(devName) + 1;
     m_devName = new QCHAR[size];
     strcpy(m_devName, devName);
-#endif
+    //#endif
 }
 
 
@@ -96,15 +96,15 @@ void CQuickUsb::SetName(PCQCHAR name) {
         delete [] m_devName;
     }
 
-#if defined(_WIN32)
-    size_t size = strlen(name) + 1;
-    m_devName = new QCHAR[size];
-    strcpy_s(m_devName, size, name);
-#else
+    //#if defined(_WIN32)
+    //size_t size = strlen(name) + 1;
+    //m_devName = new QCHAR[size];
+    //strcpy_s(m_devName, size, name);
+    //#else
     int size = strlen(name) + 1;
     m_devName = new QCHAR[size];
     strcpy(m_devName, name);
-#endif
+    //#endif
 }
 
 
@@ -114,15 +114,15 @@ void CQuickUsb::SetDeviceName(PCQCHAR name) {
         delete [] m_devName;
     }
 
-#if defined(_WIN32)
-    size_t size = strlen(name) + 1;
-    m_devName = new QCHAR[size];
-    strcpy_s(m_devName, size, name);
-#else
+    //#if defined(_WIN32)
+    //size_t size = strlen(name) + 1;
+    //m_devName = new QCHAR[size];
+    //strcpy_s(m_devName, size, name);
+    //#else
     int size = strlen(name) + 1;
     m_devName = new QCHAR[size];
     strcpy(m_devName, name);
-#endif
+    //#endif
 }
 
 
