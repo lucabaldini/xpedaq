@@ -1,4 +1,7 @@
 
+-------------------------------------------------------------------------------
+xpedaq (0.9.0) - Thu, 12 May 2016 15:24:25 +0200
+-------------------------------------------------------------------------------
 * pyxpe moved to pyxpedaq.
 * Added timestamps to the log files (closing issue #91).
 * Fix for compilation with c++11 (closing issue #95).
