@@ -52,8 +52,9 @@ class pHexagonalMatrix():
     def pixel2world(self, col, row):
         """
         """
-        x = (col - 0.5*self.num_columns + 0.5*((row + 1) % 2))*self.COLUMN_PITCH
-        y = (-row + 0.5*self.num_rows)*self.ROW_PITCH
+        x = (col - 0.5*(self.num_columns - 0.5) +\
+             0.5*((row + 1) % 2))*self.COLUMN_PITCH
+        y = (-row + 0.5*(self.num_rows - 1))*self.ROW_PITCH
         return (x, y)
 
     def draw(self):
@@ -61,43 +62,29 @@ class pHexagonalMatrix():
         """
         xmin, ymin = self.pixel2world(0, self.num_rows - 1)
         xmax, ymax = self.pixel2world(self.num_columns - 1, 0)
-        print xmin, ymin, xmax, ymax
-        
-        fig, axes = plt.subplots(1, 1)
-        poly = collections.RegularPolyCollection(6, offsets=self.__grid,
-                                                 sizes=(1500,),
-                                                 transOffset=axes.transData)
-        axes.add_collection(poly, autolim=True)
-        axes.autoscale_view()
-        #print axes.transData
-        #print axes.transAxes
-        #print fig.transFigure
+        lim = 1.2*max(abs(xmin), abs(xmax), max(abs(ymin), abs(ymax)))
+        fig = plt.figure(figsize=(10, 10), dpi=80, facecolor='w')
+        ax = plt.subplot(111, aspect='equal', adjustable='box-forced')
+        ax.set_xlim([-lim, lim])
+        ax.set_ylim([-lim, lim])
+        # Overall average canvas dimensions in pixels.
+        dim = (ax.transData.transform((lim, lim)) -
+               ax.transData.transform((-lim, -lim))).mean()
+        # Calculate a something proportional to the hexagon area in px**2. 
+        dim = (dim/(2*lim)*0.85*self.COLUMN_PITCH)**2        
+        poly = collections.RegularPolyCollection(6,
+                                                 offsets=self.__grid,
+                                                 sizes=(dim,),
+                                                 transOffset=ax.transData,
+                                                 facecolors='white',
+                                                 edgecolors='gray')
+        ax.add_collection(poly, autolim=True)
+        plt.grid()
         plt.show()
 
 
 
-matrix = pHexagonalMatrix(6, 8)
-matrix.draw()
-
-
-"""
-pos = []
-for col in xrange(num_cols):
-    for row in xrange(num_rows):
-        x = (col - 0.5*(row % 2))*col_pitch
-        y = -row*row_pitch
-        pos.append((x, y))
-
-fig, axes = plt.subplots(1, 1)
-col = collections.RegularPolyCollection(6, rotation=0., sizes=(80,),
-                                        offsets=pos, transOffset=axes.transData)
-#trans = transforms.Affine2D().scale(fig.dpi / 72.0)
-#col.set_transform(trans)  # the points to pixels transform
-axes.add_collection(col, autolim=True)
-#col.set_color(colors)
-axes.autoscale_view()
-plt.show()
-"""
-
 if __name__ == '__main__':
-    pass
+    matrix = pHexagonalMatrix(30, 36)
+    matrix.draw()
+
