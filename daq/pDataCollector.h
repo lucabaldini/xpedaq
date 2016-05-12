@@ -76,7 +76,7 @@ class pDataCollector : public QThread
  protected:
 
   void run();
-
+  
   
  private:
 
@@ -89,6 +89,8 @@ class pDataCollector : public QThread
   // This is effectively part of the configuration and might go away.
   bool m_fullFrame;
   long int m_startSeconds;
+  int m_numMalformedBlocks;
+  void dumpRawBuffer(unsigned char *buffer);
 };
 
 #endif //PDATACOLLECTOR_H

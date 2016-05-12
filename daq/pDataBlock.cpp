@@ -181,6 +181,7 @@ double pDataBlock::averageEventRate() const
   return numEvents()/elapsedTime;
 }
 
+
 /*!
   Terminal formatting.
  */

@@ -24,7 +24,8 @@ with this program; if not, write to the Free Software Foundation Inc.,
 
 
 pDataCollector::pDataCollector(pUsbController *usbController):
-  m_usbController(usbController)  
+  m_usbController(usbController),
+  m_numMalformedBlocks(0)
 { 
 
 }
@@ -58,6 +59,7 @@ void pDataCollector::stop()
 void pDataCollector::run()
 {
   m_dataFIFO = new pDataFIFO(m_outputFilePath, m_userPreferences);
+  m_numMalformedBlocks = 0;
   unsigned long dataBufferDimension = SRAM_DIM*2;
   unsigned char dataBuffer[SRAM_DIM*2];
   int maxSize = m_detectorConfiguration->maxBufferSize();
@@ -83,6 +85,8 @@ void pDataCollector::run()
 			 << curDataBlock->errorSummary() << dec << "."
 			 << endline;
 	std::cerr << *curDataBlock << std::endl;
+	dumpRawBuffer(dataBuffer);
+	m_numMalformedBlocks ++;
       } else {
 	m_dataFIFO->fill(curDataBlock);
 	m_dataFIFO->setStartSeconds(m_startSeconds);
@@ -115,4 +119,15 @@ void pDataCollector::setupRun(std::string outputFilePath, long int startSeconds,
   m_detectorConfiguration = configuration;
   m_fullFrame = (m_detectorConfiguration->readoutMode() ==
 		 xpoldetector::kFullFrameReadoutCode);
+}
+
+
+void pDataCollector::dumpRawBuffer(unsigned char *buffer)
+{
+  std::stringstream filePath("");
+  filePath << m_outputFilePath << ".error" <<  m_numMalformedBlocks;
+  std::ofstream *outputFile = xpolio::kIOManager->
+    openOutputFile(filePath.str(), true, true);
+  outputFile->write(reinterpret_cast<char *>(buffer), SRAM_DIM*2);
+  xpolio::kIOManager->closeOutputFile(outputFile);
 }
