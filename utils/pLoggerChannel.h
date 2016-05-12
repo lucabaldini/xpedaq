@@ -27,6 +27,7 @@ with this program; if not, write to the Free Software Foundation Inc.,
 #include <QString>
 #include <iostream>
 #include <fstream>
+#include <ctime>
 
 
 class pLoggerChannel : public QObject
