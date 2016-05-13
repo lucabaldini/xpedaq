@@ -94,8 +94,10 @@ class pHexagonalMatrix():
         # Overall average canvas dimensions in pixels.
         dim = (ax.transData.transform((xmin, ymin)) -
                ax.transData.transform((xmax, ymax))).mean()
-        # Calculate a something proportional to the hexagon area in px**2. 
-        dim = (dim/(xmax-xmin)*0.85*self.COLUMN_PITCH)**2        
+        # Calculate a something proportional to the hexagon area in px**2.
+        scale = max((ymax - ymin), (xmax - xmin))
+        dim = (dim/scale*0.8*self.COLUMN_PITCH)**2
+        # Create the hexagin collection.
         poly = collections.RegularPolyCollection(6,
                                                  offsets=self.__grid,
                                                  sizes=(dim,),
