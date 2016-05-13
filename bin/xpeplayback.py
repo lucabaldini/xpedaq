@@ -30,11 +30,16 @@ if __name__ == '__main__':
                         help='the input binary file')
     parser.add_argument('-o', '--offset', type=int, default=0,
                         help='offset (in bytes) of the desired event header')
-    parser.add_argument('-n', '--numevents', type=int, default=10,
+    parser.add_argument('-n', '--num-events', type=int, default=10,
                         help='number of events to be read')
+    parser.add_argument('-z', '--zero-suppression', type=int, default=10,
+                        help='zero-suppression threshold')
     args = parser.parse_args()
 
     input_file = pXpeBinaryFileWindowed(args.binfile)
     input_file.seek(args.offset)
-    for evt in xrange(args.numevents):
-        print input_file.next()
+    for i in xrange(args.num_events):
+        event = input_file.next()
+        print event
+        event.draw_ascii()
+        event.draw()

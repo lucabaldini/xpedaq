@@ -296,10 +296,5 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(formatter_class=formatter)
     parser.add_argument('infile', type=str,
                         help='the input binary file')
-    parser.add_argument('-o', '--offset', type=int, default=0,
-                        help='offset (in bytes) of the desired event header')
-    parser.add_argument('-n', '--num-events', type=int, default=10,
-                        help='number of events to be read')
     args = parser.parse_args()
-    print args
     test_windowed(args.infile, args.num_events)
