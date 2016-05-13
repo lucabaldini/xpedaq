@@ -23,7 +23,6 @@ import numpy
 
 import matplotlib.pyplot as plt
 from matplotlib import collections, transforms
-from matplotlib.colors import colorConverter
 
 
 class pHexagonalMatrix():
@@ -34,20 +33,22 @@ class pHexagonalMatrix():
     COLUMN_PITCH = 0.0500
     ROW_PITCH = 0.0433
 
-    def __init__(self, num_columns, num_rows):
+    def __init__(self, num_columns, num_rows, start_column=0, start_row=0):
         """
         """
         self.num_columns = num_columns
         self.num_rows = num_rows
+        self.start_column = start_column
+        self.start_row = start_row
         self.__grid = []
-        for col in xrange(self.num_columns):
-            for row in xrange(self.num_rows):
+        for col in xrange(start_column, start_column + num_columns):
+            for row in xrange(start_row, start_row + num_rows):
                 self.__grid.append(self.pixel2world(col, row))
 
-    def num_pixels(self):
+    def grid(self):
         """
         """
-        return self.num_columns*self.num_pixels
+        return self.__grid
 
     def pixel2world(self, col, row):
         """Convert from pixel coordinates to world coordinates.
@@ -64,8 +65,10 @@ class pHexagonalMatrix():
     def frame(self, padding=0.1):
         """Return a (xmin, ymin, xmax, ymax) containing the entire matrix.
         """
-        xmin, ymin = self.pixel2world(0, self.num_rows - 1)
-        xmax, ymax = self.pixel2world(self.num_columns - 1, 0)
+        xmin, ymin = self.pixel2world(self.start_column,
+                                      self.start_row + self.num_rows - 1)
+        xmax, ymax = self.pixel2world(self.start_column + self.num_columns - 1,
+                                      self.start_row)
         # Make sure we include the pixel edges.
         xmin -= 0.5*self.COLUMN_PITCH
         xmax += 0.5*self.COLUMN_PITCH
@@ -80,7 +83,7 @@ class pHexagonalMatrix():
         ymax += dy
         return xmin, ymin, xmax, ymax
 
-    def draw(self):
+    def draw(self, colors='white', show=True):
         """
         """
         xmin, ymin, xmax, ymax = self.frame()
@@ -97,15 +100,40 @@ class pHexagonalMatrix():
                                                  offsets=self.__grid,
                                                  sizes=(dim,),
                                                  transOffset=ax.transData,
-                                                 facecolors='white',
+                                                 facecolors=colors,
                                                  edgecolors='gray')
         ax.add_collection(poly, autolim=True)
         plt.grid()
-        plt.show()
+
+        def _htxt(x, y, s, **kwargs):
+            """
+            """
+            plt.text(x, y + 0.05, '%s' % s,
+                     horizontalalignment='center',
+                     verticalalignment='center')
+
+        def _vtxt(x, y, s, **kwargs):
+            """
+            """
+            plt.text(x - 0.05, y, '%s' % s,
+                     horizontalalignment='right',
+                     verticalalignment='center')  
+
+        x1, y1 = self.__grid[0]
+        x2, y2 = self.__grid[-2]
+        x3, y3 = self.__grid[-1]
+        _htxt(x1, y1, self.start_column)
+        _htxt(x2, y1, self.start_column + self.num_columns - 1)
+        _vtxt(x1, y1, self.start_row)
+        _vtxt(x1, y3, self.start_row + self.num_rows - 1)
+        plt.xlabel('DAQ x [mm]')
+        plt.ylabel('DAQ y [mm]')
+        if show:
+            plt.show()
 
 
 
 if __name__ == '__main__':
-    matrix = pHexagonalMatrix(30, 36)
+    matrix = pHexagonalMatrix(30, 36, 10, 15)
     matrix.draw()
 

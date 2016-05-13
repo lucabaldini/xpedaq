@@ -22,9 +22,13 @@
 import logging
 logging.basicConfig(level=logging.DEBUG)
 
-
 import struct
 import numpy
+
+import matplotlib
+import matplotlib.pyplot as plt
+
+import pyxpedaq.display as display
 
 
 
@@ -170,6 +174,24 @@ class pXpeEventWindowed(pXpeEventBase):
         """
         print(self.ascii())
 
+    def draw(self, threshold=10):
+        """
+        """
+        matrix = display.pHexagonalMatrix(self.num_columns(), self.num_rows(),
+                                          self.xmin, self.ymin)
+        _vals = self.adc_counts.flatten()
+        _vals[_vals < threshold] = -1.
+        _vals = _vals/float(self.adc_counts.max())
+        cmap = matplotlib.cm.get_cmap('Reds')
+        cmap.set_under('white')
+        _colors = cmap(_vals)
+        matrix.draw(colors=_colors, show=False)
+        for (x, y), val in zip(matrix.grid(), self.adc_counts.flatten()):
+            if val >= 0:# threshold:
+                plt.text(x, y, '%s' % val, horizontalalignment='center',
+                         verticalalignment='center', size=8)
+        plt.show()
+
     def __str__(self):
         """
         """
@@ -265,7 +287,7 @@ def test_windowed(filePath, num_events):
         event = input_file.next()
         print event
         event.draw_ascii()
-    
+        event.draw()
 
         
 if __name__ == '__main__':
