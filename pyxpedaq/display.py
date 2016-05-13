@@ -110,26 +110,26 @@ class pHexagonalMatrix():
         def _htxt(x, y, s, **kwargs):
             """
             """
-            plt.text(x, y + 0.05, '%s' % s,
-                     horizontalalignment='center',
-                     verticalalignment='center')
+            plt.text(x, y + 0.05, '%s' % s, horizontalalignment='center',
+                     verticalalignment='center', **kwargs)
 
         def _vtxt(x, y, s, **kwargs):
             """
             """
-            plt.text(x - 0.05, y, '%s' % s,
-                     horizontalalignment='right',
-                     verticalalignment='center')  
+            plt.text(x - 0.03, y, '%s' % s, horizontalalignment='right',
+                     verticalalignment='center', **kwargs)  
 
         x1, y1 = self.__grid[0]
         x2, y2 = self.__grid[-2]
         x3, y3 = self.__grid[-1]
         _htxt(x1, y1, self.start_column)
         _htxt(x2, y1, self.start_column + self.num_columns - 1)
+        _htxt(0.5*(x1 + x2), y1, '--- Readout column ---')
         _vtxt(x1, y1, self.start_row)
         _vtxt(x1, y3, self.start_row + self.num_rows - 1)
-        plt.xlabel('ASIC x [mm]')
-        plt.ylabel('ASIC y [mm]')
+        _vtxt(x1, 0.5*(y1 + y3), '--- Readout row ---', rotation=90.)
+        plt.xlabel('ASIC reference frame x [mm]')
+        plt.ylabel('ASIC reference frame y [mm]')
         if show:
             plt.show()
 
