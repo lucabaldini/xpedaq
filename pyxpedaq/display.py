@@ -126,8 +126,8 @@ class pHexagonalMatrix():
         _htxt(x2, y1, self.start_column + self.num_columns - 1)
         _vtxt(x1, y1, self.start_row)
         _vtxt(x1, y3, self.start_row + self.num_rows - 1)
-        plt.xlabel('DAQ x [mm]')
-        plt.ylabel('DAQ y [mm]')
+        plt.xlabel('ASIC x [mm]')
+        plt.ylabel('ASIC y [mm]')
         if show:
             plt.show()
 
