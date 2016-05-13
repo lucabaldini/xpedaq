@@ -52,3 +52,5 @@ xpepeds/moc
 
 xpesrv/moc
 xpesrv/preferences.cfg
+
+pyxpedaq/*.pyc
