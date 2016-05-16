@@ -138,6 +138,17 @@ class pXpeEventWindowed(pXpeEventBase):
         """
         return self.adc_counts.max()
 
+    def pulse_height(self, zero_suppression=10):
+        """Return the total pulse height for the event, i.e., the raw sum of
+        all the ADC values above the zero-suppression threshold.
+        """
+        return self.adc_counts[self.adc_counts >= zero_suppression].sum()
+
+    def baricenter(self, zero_suppression=10):
+        """Return the baricenter of the event.
+        """
+        return None
+
     def ascii(self, zero_suppression=10, max_threshold=0.75, width=4,
               color=True):
         """Return a pretty-printed ASCII representation of the event.
@@ -180,16 +191,21 @@ class pXpeEventWindowed(pXpeEventBase):
         matrix = display.pHexagonalMatrix(self.num_columns(), self.num_rows(),
                                           self.xmin, self.ymin)
         _vals = self.adc_counts.flatten()
+        _maxval = float(self.adc_counts.max())
         _vals[_vals < zero_suppression] = -1.
-        _vals = _vals/float(self.adc_counts.max())
+        _vals = _vals/_maxval
         cmap = matplotlib.cm.get_cmap('Reds')
         cmap.set_under('white')
         _colors = cmap(_vals)
         matrix.draw(colors=_colors, show=False)
         for (x, y), val in zip(matrix.grid(), self.adc_counts.flatten()):
             if val >= zero_suppression:
+                if val < 0.5*_maxval:
+                    col = 'black'
+                else:
+                    col = 'white'
                 plt.text(x, y, '%s' % val, horizontalalignment='center',
-                         verticalalignment='center', size=8)
+                         verticalalignment='center', size=8, color=col)
         plt.show()
 
     def __str__(self):
