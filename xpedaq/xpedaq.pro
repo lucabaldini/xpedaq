@@ -74,6 +74,9 @@ HEADERS += pLoggerChannel.h
 HEADERS += pLogger.h
 HEADERS += pIOManager.h
 HEADERS += pUdpSender.h
+HEADERS += pVariant.h
+HEADERS += pOption.h
+HEADERS += pOptionParser.h
 
 
 SOURCES += xpolgui.cpp
@@ -121,6 +124,9 @@ SOURCES += pLoggerChannel.cpp
 SOURCES += pLogger.cpp
 SOURCES += pIOManager.cpp
 SOURCES += pUdpSender.cpp
+SOURCES += pVariant.cpp
+SOURCES += pOption.cpp
+SOURCES += pOptionParser.cpp
 
 SOURCES += xpedaq.cpp
 

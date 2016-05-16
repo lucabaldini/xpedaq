@@ -2,12 +2,33 @@
 #include <QString>
 #include <QObject>
 
+#include "pOptionParser.h"
 #include "xpedaqWindow.h"
 #include "xpedaqutils.h"
 
 int main(int argn, char *argv[])
 {
   xpedaqutils::startmsg();
+
+  // Setup command-line options.
+  /*
+  std::string intent = "Start the XPE DAQ";
+  std::string usage = "xpedaq [options]";
+  pOptionParser parser(intent, usage);
+  parser.addOption<int>("max-seconds", 's', -1,
+                        "Maximum data acquisition time (in s)");
+  parser.addOption<int>("max-events", 'n', -1,
+                        "Maximum number of events to be aquired");
+  parser.addOption<int>("max-blocks", 'N', -1,
+                        "Maximum number of data buffers to be aquired");
+  parser.addOption<bool>("batch", 'b',
+			 "Run in batch mode");
+  parser.parse(argn, argv);
+  */
+
+  //const int max_seconds = parser.option<int>("max-seconds");
+  //const int max_events = parser.option<int>("max-events");
+  //const int max_blocks = parser.option<int>("max-blocks");
   
   //bool autostart = false;
   //bool batchmode = false;
