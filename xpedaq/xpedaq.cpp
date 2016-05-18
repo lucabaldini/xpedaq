@@ -11,7 +11,6 @@ int main(int argn, char *argv[])
   xpedaqutils::startmsg();
 
   // Setup command-line options.
-  /*
   std::string intent = "Start the XPE DAQ";
   std::string usage = "xpedaq [options]";
   pOptionParser parser(intent, usage);
@@ -24,11 +23,13 @@ int main(int argn, char *argv[])
   parser.addOption<bool>("batch", 'b',
 			 "Run in batch mode");
   parser.parse(argn, argv);
-  */
 
-  //const int max_seconds = parser.option<int>("max-seconds");
-  //const int max_events = parser.option<int>("max-events");
-  //const int max_blocks = parser.option<int>("max-blocks");
+
+  const int max_seconds = parser.value<int>("max-seconds");
+  const int max_events = parser.value<int>("max-events");
+  const int max_blocks = parser.value<int>("max-blocks");
+
+  //std::cout << max_seconds << std::endl;
   
   //bool autostart = false;
   //bool batchmode = false;
