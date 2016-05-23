@@ -52,15 +52,39 @@ class pHexagonalMatrix():
 
     def pixel2world(self, col, row):
         """Convert from pixel coordinates to world coordinates.
+        """
+        return self.pixel2world_asic(col, row)
+
+    def pixel2world_asic(self, col, row):
+        """Convert from pixel coordinates to world coordinates.
 
         This is using the DAQ coordinate system, where the origin is in the
         top-left corner of the array, the x coordinate is spanning the columns
         from left to right and the y coordinate is spanning the rows from top
         to bottom.
         """
-        x = (col - 0.5*((row + 1) % 2) + 0.5)*self.COLUMN_PITCH
+        x = (col + 0.5*(row % 2))*self.COLUMN_PITCH
         y = -row*self.ROW_PITCH
         return (x, y)
+
+    def pixel2world_recon(self, col, row):
+        """Convert from pixel coordinates to world coordinates.
+
+        This is using the reconstruction coordinate system.
+        """
+        x = (row - self.num_rows/2)*self.ROW_PITCH
+        y = (col - self.num_columns/2 + 0.5*(row % 2))*self.COLUMN_PITCH
+        return (x, y)
+
+    def asic2recon(self, x, y):
+        """Convert from ASIC coordinates to recon coordinates.
+        """
+        return (y, x)
+
+    def recon2asic(self, x, y):
+        """Convert from recon coordiates to ASIC coordinates.
+        """
+        return (y, x)
 
     def frame(self, padding=0.1):
         """Return a (xmin, ymin, xmax, ymax) containing the entire matrix.
@@ -132,10 +156,11 @@ class pHexagonalMatrix():
         plt.ylabel('ASIC reference frame y [mm]')
         if show:
             plt.show()
+        return fig
 
 
 
 if __name__ == '__main__':
-    matrix = pHexagonalMatrix(30, 36, 10, 15)
+    matrix = pHexagonalMatrix(30, 36, 0, 0)
     matrix.draw()
 
