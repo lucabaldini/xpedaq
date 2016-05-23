@@ -27,7 +27,8 @@ pDataCollector::pDataCollector(pUsbController *usbController):
   m_usbController(usbController),
   m_numMalformedBlocks(0)
 { 
-
+  //Register pDataBlock as object that can be emitted as signals
+  qRegisterMetaType<pDataBlock>("pDataBlock");
 }
 
 /*! Called by the run controller in pRunController::init() and
@@ -88,6 +89,7 @@ void pDataCollector::run()
 	dumpRawBuffer(dataBuffer);
 	m_numMalformedBlocks ++;
       } else {
+  emit blockRead(*curDataBlock);
 	m_dataFIFO->fill(curDataBlock);
 	m_dataFIFO->setStartSeconds(m_startSeconds);
 	m_dataFIFO->flush();

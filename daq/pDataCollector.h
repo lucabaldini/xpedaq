@@ -66,11 +66,12 @@ class pDataCollector : public QThread
   int numEvents() const {return m_dataFIFO->getNumAcquiredEvents();}
 
  signals:
-  
+  void blockRead(const pDataBlock& passedDataBlock);  
 
  public slots:
 
   void stop();
+
 
   
  protected:
