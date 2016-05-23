@@ -1,5 +1,6 @@
 
-* First implemntation of a python event display.
+* First implementation of a python single-event display.
+* Some work on the option parser.
 
 
 -------------------------------------------------------------------------------
