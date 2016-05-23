@@ -44,28 +44,28 @@ class pOptionParser
   ~pOptionParser() {}
 
   /// \brief Add an option to the option map.
-  void addOption(std::string longopt, char shortopt, pOption option);
+  void addOption(std::string longName, char shortName, pOption option);
 
   /// \brief Add an option to the option map.
-  template <class T> void addOption(std::string longopt, char shortopt,
+  template <class T> void addOption(std::string longName, char shortName,
                                     T defaultValue, std::string help)
     {
-      pOption option(longopt, shortopt, pVariant(defaultValue), help);
-      addOption(longopt, shortopt, option);
+      pOption option(longName, shortName, pVariant(defaultValue), help);
+      addOption(longName, shortName, option);
     }
 
   /// \brief Add an option with no default value.
-  template <class T> void addOption(std::string longopt, char shortopt,
+  template <class T> void addOption(std::string longName, char shortName,
                                     std::string help, bool required);
 
   /// \brief Add a non-required option with no degault value
-  template <class T> void addOption(std::string longopt, char shortopt,
+  template <class T> void addOption(std::string longName, char shortName,
                                     std::string help);
 
   /// \brief Return the *value* of a given option.
-  template <class T> T value(std::string longopt)
+  template <class T> T value(std::string longName)
     { 
-      std::map<std::string, pOption>::iterator item = mapIter(longopt);
+      std::map<std::string, pOption>::iterator item = mapIter(longName);
       return (item->second).value<T>();
     }
 
@@ -96,10 +96,10 @@ class pOptionParser
   void checkOptions() const ;
 
   /// \brief Return the long option corresponding to a short option.
-  std::string longOption(char shortopt) const;
+  std::string longName(char shortName) const;
 
   /// \brief Access map elements by long name.
-  std::map<std::string, pOption>::iterator mapIter(std::string longopt);
+  std::map<std::string, pOption>::iterator mapIter(std::string longName);
 
   /// \brief The program intent.
   std::string m_intent;
@@ -120,42 +120,42 @@ class pOptionParser
 
 
 
-template <> inline void pOptionParser::addOption<bool>(std::string longopt,
-						       char shortopt,
+template <> inline void pOptionParser::addOption<bool>(std::string longName,
+						       char shortName,
 						       std::string help)
 {
-  pOptionParser::addOption<bool>(longopt, shortopt, false, help);
+  pOptionParser::addOption<bool>(longName, shortName, false, help);
 }
 
 
-template <> inline void pOptionParser::addOption<int>(std::string longopt,
-						      char shortopt,
+template <> inline void pOptionParser::addOption<int>(std::string longName,
+						      char shortName,
 						      std::string help,
 						      bool required)
 {
-  pOption option(longopt, shortopt, pVariant(0), help, required, false);
-  pOptionParser::addOption(longopt, shortopt, option);
+  pOption option(longName, shortName, pVariant(0), help, required, false);
+  pOptionParser::addOption(longName, shortName, option);
 }
 
 
-template <> inline void pOptionParser::addOption<double>(std::string longopt,
-							 char shortopt,
+template <> inline void pOptionParser::addOption<double>(std::string longName,
+							 char shortName,
 							 std::string help,
 							 bool required)
 {
-  pOption option(longopt, shortopt, pVariant(0.), help, required, false);
-  pOptionParser::addOption(longopt, shortopt, option);
+  pOption option(longName, shortName, pVariant(0.), help, required, false);
+  pOptionParser::addOption(longName, shortName, option);
 }
 
 
-template <> inline void pOptionParser::addOption<std::string>(std::string longopt,
-							      char shortopt,
+template <> inline void pOptionParser::addOption<std::string>(std::string longName,
+							      char shortName,
 							      std::string help,
 							      bool required)
 {
-  pOption option(longopt, shortopt, pVariant(std::string("")), help,
+  pOption option(longName, shortName, pVariant(std::string("")), help,
 		 required, false);
-  pOptionParser::addOption(longopt, shortopt, option);
+  pOptionParser::addOption(longName, shortName, option);
 }
 
 
