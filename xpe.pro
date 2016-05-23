@@ -1,3 +1,3 @@
 
 TEMPLATE = subdirs
-SUBDIRS = xpedaq xpepeds xpesrv
+SUBDIRS = xpedaq xpepeds xpesrv xpemon
