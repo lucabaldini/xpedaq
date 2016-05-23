@@ -23,11 +23,33 @@ with this program; if not, write to the Free Software Foundation Inc.,
 #include "pOptionParser.h"
 
 
+/*!
+ */
 pOptionParser::pOptionParser(std::string intent, std::string usage) :
   m_intent(intent),
   m_usage(usage)
 {
   addOption<bool>("help", 'h', "Print help and exit");
+}
+
+
+/*!
+ */
+pOption pOptionParser::option(std::string longName)
+{
+  std::map<std::string, pOption>::iterator item = m_optionMap.find(longName);
+  if (item == m_optionMap.end()) {
+    parseError("Unrecognized long option --" + longName + ".");
+  }
+  return item->second;
+}
+
+
+/*!
+ */
+bool pOptionParser::optionSet(std::string longName)
+{
+  return option(longName).set();
 }
 
 
@@ -67,14 +89,10 @@ void pOptionParser::help() const
 
 void pOptionParser::checkOptions() const 
 {
-  std::map<std::string, pOption>::const_iterator item;
-  for (item = m_optionMap.begin(); item != m_optionMap.end(); item++) {
-    pOption option = item->second;
-    if (option.required() && option.unset()) {
-      std::string msg = "Option '" + option.longName() + "' is required.";
-      parseError(msg);
-    }
-  }
+  //std::map<std::string, pOption>::const_iterator item;
+  //for (item = m_optionMap.begin(); item != m_optionMap.end(); item++) {
+  //  pOption option = item->second;
+  //}
 }
 
 

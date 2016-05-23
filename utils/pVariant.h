@@ -43,9 +43,6 @@ class pVariant
   /// \brief Constructor setting the variant value.
   template <class T> pVariant(T value);
 
-  /// \brief Destructor.
-  ~pVariant() {}
-
   /// \brief Return the type currently held in the variable.
   VariantType type() const {return m_type;}
 
@@ -90,9 +87,12 @@ template <> inline pVariant::pVariant<double>(double value)
 template <> inline pVariant::pVariant<std::string>(std::string value)
   {m_string = value; m_type = Literal;}
 
-template <> inline bool pVariant::value<bool>() const {return m_data.b;}  
+template <> inline bool pVariant::value<bool>() const {return m_data.b;}
+
 template <> inline int pVariant::value<int>() const {return m_data.i;}
+
 template <> inline double pVariant::value<double>() const {return m_data.d;}
+
 template <> inline std::string pVariant::value<std::string>() const
   {return m_string;}
 

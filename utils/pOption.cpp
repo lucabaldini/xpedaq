@@ -24,13 +24,12 @@ with this program; if not, write to the Free Software Foundation Inc.,
 
 
 pOption::pOption(std::string longName, char shortName, pVariant value,
-		 std::string help, bool required, bool initialized) :
+		 std::string help) :
   m_longName(longName),
   m_shortName(shortName),
   m_value(value),
   m_help(help),
-  m_required(required),
-  m_set(initialized)
+  m_set(false)
 {}
 
 
@@ -48,6 +47,5 @@ std::ostream& pOption::fillStream(std::ostream& os) const
     if (m_set) os << " [" << m_value << "]";
     else os << " [none]";
   }
-  if (m_required) os << " *";
   return os;
 }

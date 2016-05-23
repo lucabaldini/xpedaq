@@ -14,22 +14,31 @@ int main(int argn, char *argv[])
   std::string intent = "Start the XPE DAQ";
   std::string usage = "xpedaq [options]";
   pOptionParser parser(intent, usage);
-  parser.addOption<int>("max-seconds", 's', -1,
+  parser.addOption<int>("max-seconds", 's',
                         "Maximum data acquisition time (in s)");
-  parser.addOption<int>("max-events", 'n', -1,
+  parser.addOption<int>("max-events", 'n',
                         "Maximum number of events to be aquired");
-  parser.addOption<int>("max-blocks", 'N', -1,
+  parser.addOption<int>("max-blocks", 'N',
                         "Maximum number of data buffers to be aquired");
   parser.addOption<bool>("batch", 'b',
 			 "Run in batch mode");
   parser.parse(argn, argv);
 
 
-  const int max_seconds = parser.value<int>("max-seconds");
-  const int max_events = parser.value<int>("max-events");
-  const int max_blocks = parser.value<int>("max-blocks");
-
-  //std::cout << max_seconds << std::endl;
+  if (parser.optionSet("max-seconds")) {
+    const int max_seconds = parser.value<int>("max-seconds");
+    std::cout << "max_seconds: " << max_seconds << std::endl;
+  }
+  if (parser.optionSet("max-events")) {
+    const int max_events = parser.value<int>("max-events");
+    std::cout << "max_events: " << max_events << std::endl;
+  }
+  if (parser.optionSet("max-blocks")) {
+    const int max_blocks = parser.value<int>("max-blocks");
+    std::cout << "max_blocks: " << max_blocks << std::endl;
+  }
+  std::cout << parser.value<bool>("batch") << std::endl;
+  
   
   //bool autostart = false;
   //bool batchmode = false;

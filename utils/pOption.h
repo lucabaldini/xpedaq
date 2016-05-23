@@ -36,16 +36,13 @@ class pOption
  public:
   /// \brief Constructor.
   pOption(std::string longName, char shortName, pVariant value,
-	  std::string help, bool required = false, bool initialized = true);
+	  std::string help);
 
   /// \brief Return the long form of the option.
   std::string longName() const {return m_longName;}
 
   /// \brief Return the short form of the option.
   char shortName() const {return m_shortName;}
-
-  /// \brief Return true if the option is required.
-  bool required() const {return m_required;}
 
   /// \brief Return true if the option is initialized.
   bool set() const {return m_set;}
@@ -84,9 +81,6 @@ class pOption
 
   /// \brief The help string.
   std::string m_help;
-
-  /// \brief Flag telling whether the option is required.
-  bool m_required;
 
   /// \brief Flag telling whether the option value is set.
   bool m_set;

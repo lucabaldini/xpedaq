@@ -40,25 +40,16 @@ class pOptionParser
   /// \brief Constructor
   pOptionParser(std::string intent, std::string usage);
 
-  /// \brief Destructor.
-  ~pOptionParser() {}
+  /// \brief Return the option object for a given long name.
+  pOption option(std::string longName);
+
+  /// \brief Return whether the option for a given long name is set.
+  bool optionSet(std::string longName);
 
   /// \brief Add an option to the option map.
   void addOption(std::string longName, char shortName, pOption option);
 
-  /// \brief Add an option to the option map.
-  template <class T> void addOption(std::string longName, char shortName,
-                                    T defaultValue, std::string help)
-    {
-      pOption option(longName, shortName, pVariant(defaultValue), help);
-      addOption(longName, shortName, option);
-    }
-
   /// \brief Add an option with no default value.
-  template <class T> void addOption(std::string longName, char shortName,
-                                    std::string help, bool required);
-
-  /// \brief Add a non-required option with no degault value
   template <class T> void addOption(std::string longName, char shortName,
                                     std::string help);
 
@@ -92,7 +83,7 @@ class pOptionParser
   { return p.fillStream(os); }
 
  private:
-  /// \brief Check whether all the required options have been set.
+  /// \brief
   void checkOptions() const ;
 
   /// \brief Return the long option corresponding to a short option.
@@ -124,37 +115,34 @@ template <> inline void pOptionParser::addOption<bool>(std::string longName,
 						       char shortName,
 						       std::string help)
 {
-  pOptionParser::addOption<bool>(longName, shortName, false, help);
+  pOption option(longName, shortName, pVariant(false), help);
+  pOptionParser::addOption(longName, shortName, option);
 }
 
 
 template <> inline void pOptionParser::addOption<int>(std::string longName,
 						      char shortName,
-						      std::string help,
-						      bool required)
+						      std::string help)
 {
-  pOption option(longName, shortName, pVariant(0), help, required, false);
+  pOption option(longName, shortName, pVariant(0), help);
   pOptionParser::addOption(longName, shortName, option);
 }
 
 
 template <> inline void pOptionParser::addOption<double>(std::string longName,
 							 char shortName,
-							 std::string help,
-							 bool required)
+							 std::string help)
 {
-  pOption option(longName, shortName, pVariant(0.), help, required, false);
+  pOption option(longName, shortName, pVariant(0.), help);
   pOptionParser::addOption(longName, shortName, option);
 }
 
 
 template <> inline void pOptionParser::addOption<std::string>(std::string longName,
 							      char shortName,
-							      std::string help,
-							      bool required)
+							      std::string help)
 {
-  pOption option(longName, shortName, pVariant(std::string("")), help,
-		 required, false);
+  pOption option(longName, shortName, pVariant(std::string("")), help);
   pOptionParser::addOption(longName, shortName, option);
 }
 
