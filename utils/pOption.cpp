@@ -44,8 +44,9 @@ std::ostream& pOption::fillStream(std::ostream& os) const
   }
   os << std::right << m_help;
   if (type() != pVariant::Boolean) {
-    if (m_set) os << " [" << m_value << "]";
-    else os << " [none]";
+    if (m_set) {
+      os << " [" << m_value << "]";
+    }
   }
   return os;
 }

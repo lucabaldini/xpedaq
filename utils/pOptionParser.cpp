@@ -109,42 +109,50 @@ pOptionParser::mapIter(std::string longName)
 
 void pOptionParser::parse(int argc, char* argv[])
 {
-  std::string token, lopt;
+  std::string token;
+  std::string optName;
+  char* endptr;
   for (int i = 1; i < argc; i++) {
     token = argv[i];
     // Need help?
-    if (token == "-h" || token == "--help") help();
+    if (token == "-h" || token == "--help") {
+      help();
+    }
+    
     // Resolve the mapping between long and short options.
     if (token.substr(0,2) == "--") {
-      lopt = token.substr(2, token.length());
+      optName = token.substr(2, token.length());
     } else if (token.substr(0,1) == "-") {
-      lopt = longName(argv[i][1]);
+      optName = longName(argv[i][1]);
     }
+    
     if (token.substr(0,1) == "-") {
-      // Is the token an option...
-      std::map<std::string, pOption>::iterator item = mapIter(lopt);
+      // Is the token an option...      
+      std::map<std::string, pOption>::iterator item = mapIter(optName);
       if (item->second.type() == pVariant::Boolean) {
         item->second.setValue(pVariant(true));
       } else {
         i++;
         if (i >= argc) {
-          parseError("Missing argument for option " + lopt + ".");
+          parseError("Missing argument for option " + optName + ".");
         }
         token = argv[i];
         if (item->second.type() == pVariant::Literal) {
           item->second.setValue(pVariant(token));
         }
         if (item->second.type() == pVariant::Integer) {
-          try { item->second.setValue(pVariant(atoi(token.c_str()))); }
-          catch (std::exception& e) {
-            parseError("Invalid argument '" + token + "' to '" + lopt + "'" );
-          }
+	  int val = strtol(token.c_str(), &endptr, 10);
+	  if (*endptr) {
+	    parseError("Invalid argument '" + token + "' to " + optName + ".");
+	  }
+	  item->second.setValue(pVariant(val));
         }
         if (item->second.type() == pVariant::Floating) {
-          try { item->second.setValue(pVariant(atof(token.c_str()))); }
-          catch (std::exception& e) {
-            parseError("Invalid argument '" + token + "' to '" + lopt + "'" );
-          }
+	  double val = strtod(token.c_str(), &endptr);
+	  if (*endptr) {
+	    parseError("Invalid argument '" + token + "' to " + optName + "." );
+	  }
+	  item->second.setValue(pVariant(val));
         }
       }      
     } else {
