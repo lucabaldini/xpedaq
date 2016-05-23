@@ -35,7 +35,6 @@ class PedestalsMap
   public:
     PedestalsMap(QCustomPlot* parentPlot, PedestalsMapData* data,
                   std::shared_ptr<pColorMapOptions> options);
-    ~PedestalsMap();
     
   private:
 

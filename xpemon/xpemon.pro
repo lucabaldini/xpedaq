@@ -39,6 +39,7 @@ HEADERS += xpollog.h
 HEADERS += xpolio.h
 
 HEADERS += qcustomplot.h
+HEADERS += pMapOptions.h
 
 HEADERS += pQtGridLayoutWidget.h
 HEADERS += pQtGroupBoxWidget.h
@@ -47,21 +48,8 @@ HEADERS += pQtCustomTextLabel.h
 HEADERS += pQtTransportBarGui.h
 HEADERS += pTransportBar.h
 HEADERS += pQtDisplayGui.h
-HEADERS += pDaqDisplay.h
-HEADERS += pMessageDisplay.h
 HEADERS += pQtCustomTab.h
-HEADERS += pReadoutModeTab.h
-HEADERS += pThresholdSettingTab.h
-HEADERS += pAdvancedSettingsTab.h
-HEADERS += pTriggerSettingTab.h
-HEADERS += pProbeSettingTab.h
-HEADERS += pUsbControlTab.h
-HEADERS += pUserPreferencesTab.h
 HEADERS += pQtMainWindowGui.h
-HEADERS += pAcquisitionWindow.h
-HEADERS += xpepedsWindow.h
-HEADERS += pDisplayWindow.h
-HEADERS += pedestalsMap.h
 
 HEADERS += pFiniteStateMachine.h
 HEADERS += pDataCollector.h
@@ -74,13 +62,19 @@ HEADERS += pXpolFpga.h
 HEADERS += pDetectorConfiguration.h
 HEADERS += pUserPreferences.h
 HEADERS += pTriggerMask.h
-HEADERS += pEvent.h
 
 HEADERS += pLoggerChannel.h
 HEADERS += pLogger.h
 HEADERS += pIOManager.h
 HEADERS += pUdpSender.h
 
+HEADERS += xpemonWindow.h
+HEADERS += xpemonPlotGrid.h
+HEADERS += xpemonSocketPortWidget.h
+HEADERS += pEventReader.h
+HEADERS += pEvent.h
+HEADERS += pulseHeightPlot.h
+HEADERS += barycenterPlot.h
 
 SOURCES += xpolgui.cpp
 SOURCES += xpoldetector.cpp
@@ -99,21 +93,8 @@ SOURCES += pQtCustomTextLabel.cpp
 SOURCES += pQtTransportBarGui.cpp
 SOURCES += pTransportBar.cpp
 SOURCES += pQtDisplayGui.cpp
-SOURCES += pDaqDisplay.cpp
-SOURCES += pMessageDisplay.cpp
 SOURCES += pQtCustomTab.cpp
-SOURCES += pReadoutModeTab.cpp
-SOURCES += pThresholdSettingTab.cpp
-SOURCES += pAdvancedSettingsTab.cpp
-SOURCES += pTriggerSettingTab.cpp
-SOURCES += pProbeSettingTab.cpp
-SOURCES += pUsbControlTab.cpp
-SOURCES += pUserPreferencesTab.cpp
 SOURCES += pQtMainWindowGui.cpp
-SOURCES += pAcquisitionWindow.cpp
-SOURCES += xpepedsWindow.cpp
-SOURCES += pDisplayWindow.cpp
-SOURCES += pedestalsMap.cpp
 
 SOURCES += pFiniteStateMachine.cpp
 SOURCES += pDataCollector.cpp
@@ -126,19 +107,26 @@ SOURCES += pXpolFpga.cpp
 SOURCES += pDetectorConfiguration.cpp
 SOURCES += pUserPreferences.cpp
 SOURCES += pTriggerMask.cpp
-SOURCES += pEvent.cpp
 
 SOURCES += pLoggerChannel.cpp
 SOURCES += pLogger.cpp
 SOURCES += pIOManager.cpp
 SOURCES += pUdpSender.cpp
+SOURCES += pulseHeightPlot.cpp
+SOURCES += barycenterPlot.cpp
 
-SOURCES += xpepeds.cpp
+SOURCES += xpemonWindow.cpp
+SOURCES += xpemonPlotGrid.cpp
+SOURCES += xpemonSocketPortWidget.cpp
+SOURCES += pEventReader.cpp
+SOURCES += pEvent.cpp
+
+SOURCES += xpemon.cpp
 
 OBJECTS_DIR = build
 MOC_DIR = moc
 
-TARGET = xpepeds
+TARGET = xpemon
 DESTDIR = ../bin
 
 unix {

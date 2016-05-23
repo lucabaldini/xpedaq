@@ -56,10 +56,3 @@ PedestalsMap::PedestalsMap(QCustomPlot* parentPlot,
   // rescale the key (x) and value (y) axes so the whole color map is visible:
   parentPlot->rescaleAxes();
 }
-
-PedestalsMap::~PedestalsMap()
-{  
-  delete m_colorMap;
-  delete m_colorScale;
-  delete m_marginGroup;
-}

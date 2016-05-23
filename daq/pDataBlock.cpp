@@ -66,6 +66,23 @@ pDataBlock::pDataBlock(unsigned char *buffer, unsigned int bufferSize) :
   m_size = pos;
 }
 
+
+pDataBlock::pDataBlock(const pDataBlock &cSourceDataBlock)
+{
+  m_size = cSourceDataBlock.m_size;
+  if (cSourceDataBlock.m_rawBuffer)
+  {
+    /* Awful. We need a better way to make safe conversion between (unsigned
+       char*) and (char*).
+       By the way, is this actually the correct way to cast? */    
+    char* temp_buffer = new char [2*NWORDS];
+    memcpy(temp_buffer, cSourceDataBlock.getCharDataBlock(), m_size);
+    m_rawBuffer = reinterpret_cast<unsigned char*> (temp_buffer);
+  }
+  m_errorSummary = cSourceDataBlock.m_errorSummary;
+  m_offsetVec = cSourceDataBlock.m_offsetVec;
+}
+
 /*!
   Overwrite the 4 unused bytes in the event header to add the number of
   seconds since January 1, 1970 at the start time (poor man's attemp at an
@@ -181,6 +198,36 @@ double pDataBlock::averageEventRate() const
   return numEvents()/elapsedTime;
 }
 
+/*
+*/
+pEvent pDataBlock::event(unsigned int evtIndex)
+{
+  
+  unsigned int startIndex = offset(evtIndex);
+  unsigned int buffSize = 2*numPixels(evtIndex);
+  std::vector<unsigned int> adcCounts;
+  for (unsigned int index = startIndex + AdcStart;
+       index < startIndex + AdcStart + buffSize;
+       index+=2)
+  {
+    adcCounts.push_back(dataWord(index));
+  }
+  return pEvent(xmin(evtIndex), xmax(evtIndex),
+                ymin(evtIndex), ymax(evtIndex),
+                bufferId(evtIndex), adcCounts);
+}
+
+/*
+*/
+std::vector<pEvent> pDataBlock::events()
+{
+  std::vector<pEvent> evtVect;
+  for (unsigned int i =0; i < (this->numEvents()); i++)
+  {
+    evtVect.push_back(this->event(i));
+  }
+  return evtVect;
+}
 
 /*!
   Terminal formatting.

@@ -29,6 +29,7 @@ with this program; if not, write to the Free Software Foundation Inc.,
 
 #include "pUsbController.h"
 #include "xpoldetector.h"
+#include "pEvent.h"
 
 
 #define _BYTESWAP_(x1, x2) (((x2 & 0xff) << 8) | (x1 & 0xff))
@@ -52,10 +53,14 @@ class pDataBlock
 
   pDataBlock(unsigned char *rawDataBlock);
   pDataBlock(unsigned char *rawDataBlock, unsigned int bufferSize);
-  ~pDataBlock() {;}
+  /* In order to allow the emission of an object as a signal Qt requires it to
+     have public no-arg constructor and destructor and a copy constructor */
+  pDataBlock(){;}
+  pDataBlock(const pDataBlock &cSourceDataBlock);
+  ~pDataBlock() {delete [] m_rawBuffer;}
 
   // These are used for the UDP socket. I am not sure they belong here.
-  inline char *getCharDataBlock() {return (char*)m_rawBuffer;}
+  inline char *getCharDataBlock() const {return (char*)m_rawBuffer;}
   inline char *getCharDataBlock(int index)
     {return (char*)(m_rawBuffer + index);}
 
@@ -74,6 +79,8 @@ class pDataBlock
   unsigned int numPixels(unsigned int event) const;
   double timestamp(unsigned int event) const;
   double averageEventRate() const;
+  pEvent event(unsigned int index);
+  std::vector<pEvent> events();
 
   void setStartSeconds(unsigned int startSeconds);
 
@@ -129,4 +136,4 @@ class pDataBlock
   unsigned int dataWord(unsigned int event, unsigned int offset) const; 
 };
 
-#endif
+#endif //PDATABLOCK_H

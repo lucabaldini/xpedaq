@@ -1,6 +1,6 @@
 
 equals(QT_MAJOR_VERSION, 4) {
-  #QMAKE_CXXFLAGS += -std=c++11
+  QMAKE_CXXFLAGS += -std=c++11
   #QMAKE_CXXFLAGS_RELEASE -= -std=gnu++98
   DEPENDPATH  += ..
   DEPENDPATH  += ../gui
@@ -69,6 +69,7 @@ HEADERS += pXpolFpga.h
 HEADERS += pDetectorConfiguration.h
 HEADERS += pUserPreferences.h
 HEADERS += pTriggerMask.h
+HEADERS += pEvent.h
 
 HEADERS += pLoggerChannel.h
 HEADERS += pLogger.h
@@ -119,6 +120,7 @@ SOURCES += pXpolFpga.cpp
 SOURCES += pDetectorConfiguration.cpp
 SOURCES += pUserPreferences.cpp
 SOURCES += pTriggerMask.cpp
+SOURCES += pEvent.cpp
 
 SOURCES += pLoggerChannel.cpp
 SOURCES += pLogger.cpp
