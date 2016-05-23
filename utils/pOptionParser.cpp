@@ -31,21 +31,21 @@ pOptionParser::pOptionParser(std::string intent, std::string usage) :
 }
 
 
-void pOptionParser::addOption(std::string longopt, char shortopt,
+void pOptionParser::addOption(std::string longName, char shortName,
 			      pOption option)
 {
-  m_optionMap.insert(std::make_pair(longopt, option));
-  m_short2longMap.insert(std::make_pair(shortopt, longopt));
+  m_optionMap.insert(std::make_pair(longName, option));
+  m_short2longMap.insert(std::make_pair(shortName, longName));
 }
 
 
-std::string pOptionParser::longOption(char shortopt) const
+std::string pOptionParser::longName(char shortName) const
 {
   std::map<char, std::string>::const_iterator item =
-    m_short2longMap.find(shortopt);
+    m_short2longMap.find(shortName);
   if (item == m_short2longMap.end()) {
-    std::cout << shortopt << std::endl;
-    parseError("Unrecognized short option -" + std::string(1, shortopt) + ".");
+    std::cout << shortName << std::endl;
+    parseError("Unrecognized short option -" + std::string(1, shortName) + ".");
   }
   return item->second;
 }
@@ -70,8 +70,8 @@ void pOptionParser::checkOptions() const
   std::map<std::string, pOption>::const_iterator item;
   for (item = m_optionMap.begin(); item != m_optionMap.end(); item++) {
     pOption option = item->second;
-    if (option.required() && option.uninitialized()) {
-      std::string msg = "Option '" + option.longOpt() + "' is required.";
+    if (option.required() && option.unset()) {
+      std::string msg = "Option '" + option.longName() + "' is required.";
       parseError(msg);
     }
   }
@@ -79,11 +79,11 @@ void pOptionParser::checkOptions() const
 
 
 std::map<std::string, pOption>::iterator
-pOptionParser::mapIter(std::string longopt)
+pOptionParser::mapIter(std::string longName)
 {
-  std::map<std::string, pOption>::iterator item = m_optionMap.find(longopt);
+  std::map<std::string, pOption>::iterator item = m_optionMap.find(longName);
   if (item == m_optionMap.end()) {
-    parseError("Unrecognized long option --" + longopt + ".");
+    parseError("Unrecognized long option --" + longName + ".");
   }
   return item;
 }
@@ -100,7 +100,7 @@ void pOptionParser::parse(int argc, char* argv[])
     if (token.substr(0,2) == "--") {
       lopt = token.substr(2, token.length());
     } else if (token.substr(0,1) == "-") {
-      lopt = longOption(argv[i][1]);
+      lopt = longName(argv[i][1]);
     }
     if (token.substr(0,1) == "-") {
       // Is the token an option...

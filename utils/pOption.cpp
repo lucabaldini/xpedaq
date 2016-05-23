@@ -23,21 +23,21 @@ with this program; if not, write to the Free Software Foundation Inc.,
 #include "pOption.h"
 
 
-pOption::pOption(std::string longopt, char shortopt, pVariant value,
+pOption::pOption(std::string longName, char shortName, pVariant value,
 		 std::string help, bool required, bool initialized) :
-  m_longOpt(longopt),
-  m_shortOpt(shortopt),
+  m_longName(longName),
+  m_shortName(shortName),
   m_value(value),
   m_help(help),
   m_required(required),
-  m_initialized(initialized)
+  m_set(initialized)
 {}
 
 
 std::ostream& pOption::fillStream(std::ostream& os) const
 {
-  os << "-" << m_shortOpt << ", --" << std::setw(15) << std::left
-     << m_longOpt;
+  os << "-" << m_shortName << ", --" << std::setw(15) << std::left
+     << m_longName;
   if (type() != pVariant::Boolean) {
     os << std::setw(7) << typeString();
   } else {
@@ -45,7 +45,7 @@ std::ostream& pOption::fillStream(std::ostream& os) const
   }
   os << std::right << m_help;
   if (type() != pVariant::Boolean) {
-    if (m_initialized) os << " [" << m_value << "]";
+    if (m_set) os << " [" << m_value << "]";
     else os << " [none]";
   }
   if (m_required) os << " *";

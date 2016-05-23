@@ -35,32 +35,29 @@ class pOption
 {
  public:
   /// \brief Constructor.
-  pOption(std::string longopt, char shortopt, pVariant value,
+  pOption(std::string longName, char shortName, pVariant value,
 	  std::string help, bool required = false, bool initialized = true);
 
-  /// \brief Destructor.
-  ~pOption() {}
-
   /// \brief Return the long form of the option.
-  std::string longOpt() const {return m_longOpt;}
+  std::string longName() const {return m_longName;}
 
   /// \brief Return the short form of the option.
-  char shortOpt() const {return m_shortOpt;}
+  char shortName() const {return m_shortName;}
 
   /// \brief Return true if the option is required.
   bool required() const {return m_required;}
 
   /// \brief Return true if the option is initialized.
-  bool initialized() const {return m_initialized;}
+  bool set() const {return m_set;}
 
   /// \brief Return true if the option is not initialized.
-  bool uninitialized() const {return !m_initialized;}
+  bool unset() const {return !m_set;}
   
   /// \brief Return the option value.
   template <class T> T value() const {return m_value.value<T>();}
 
   /// \brief Set the option value.
-  void setValue(pVariant value) {m_value = value; m_initialized = true;}
+  void setValue(pVariant value) {m_value = value; m_set = true;}
 
   /// \brief Return the option type.
   pVariant::VariantType type() const {return m_value.type();}
@@ -77,10 +74,10 @@ class pOption
 
  private:
   /// \brief The long version of the option.
-  std::string m_longOpt;
+  std::string m_longName;
 
   /// \brief The short version of the option.
-  char m_shortOpt;
+  char m_shortName;
 
   /// \brief The option value.
   pVariant m_value;
@@ -91,8 +88,8 @@ class pOption
   /// \brief Flag telling whether the option is required.
   bool m_required;
 
-  /// \brief Flag telling whether the option value is initialized.
-  bool m_initialized;
+  /// \brief Flag telling whether the option value is set.
+  bool m_set;
 };
 
 #endif //POPTION_H
