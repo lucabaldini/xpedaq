@@ -20,6 +20,7 @@ class pEvent
            event::Adc_vec_ut adcCounts);
   public:
     std::vector<int> pulseHeightsOverThreshold (int threshold);
+    int totPulseHeightsOverThreshold(int threshold);
     void barycenter (double &x, double &y);
     unsigned int xmin() const {return m_xmin;}
     unsigned int xmax() const {return m_xmax;}

@@ -56,9 +56,21 @@ void PulseHeightPlot::addPoint(int pulseHeight)
      the pair key:value with the updated content.
   */ 
   unsigned int bin = findBin(static_cast<double>(pulseHeight));
-  double key = binCenter(bin); 
+  std::cout << "bin number is " << bin <<std::endl;
+  double key = binCenter(bin);
   m_values.at(bin) += 1.;  
   double tolerance = 1.e-5; // Make sure we remove the key
   m_pulseHeightHist -> removeData(key-tolerance, key+tolerance);
-  m_pulseHeightHist -> addData(key, log10(m_values.at(bin)));
+  m_pulseHeightHist -> addData(key, m_values.at(bin));
+}
+
+
+void PulseHeightPlot::reset()
+{
+  m_pulseHeightHist -> clearData();
+  for (unsigned int ibin = 0; ibin < m_nBins; ++ibin)
+  {
+    m_values.at(ibin) = 0.;
+  }
+  replot();  
 }
