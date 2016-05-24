@@ -126,6 +126,15 @@ class pHexagonalMatrix():
                 chan += 1
         f.close()
 
+    def world2pixel_asic(self, x, y):
+        """
+        """
+        row = int(-y/self.ROW_PITCH + 0.5)
+        dx = x % self.COLUMN_PITCH
+        row += int(abs(dx - 0.5*self.COLUMN_PITCH)/(0.5*self.COLUMN_PITCH))
+        col = int(x/self.COLUMN_PITCH + 0.5) - (row % 2)
+        return col, row
+
     def frame(self, padding=0.1):
         """Return a (xmin, ymin, xmax, ymax) containing the entire matrix.
         """
@@ -201,8 +210,14 @@ class pHexagonalMatrix():
 
 
 if __name__ == '__main__':
-    matrix = pHexagonalMatrix(30, 36, 0, 0)
-    matrix.write_pixmap('pixmap.dat')
-    matrix.draw()
+    matrix = pHexagonalMatrix(10, 12, 0, 0)
+    #matrix.write_pixmap('pixmap.dat')
+    import random
+    x, y = random.uniform(0, 0.45), random.uniform(-0.45, 0)
+    col, row = matrix.world2pixel_asic(x, y)
+    print col, row
+    matrix.draw(show=False)
+    plt.plot([x], [y], 'o')
+    plt.show()
 
     
