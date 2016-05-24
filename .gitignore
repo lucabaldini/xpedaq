@@ -29,6 +29,8 @@
 bin/xpedaq
 bin/xpepeds
 bin/xpesrv
+bin/xpemon
+
 build/*
 log/*
 moc/*
@@ -52,5 +54,7 @@ xpepeds/moc
 
 xpesrv/moc
 xpesrv/preferences.cfg
+
+xpemon/moc
 
 pyxpedaq/*.pyc

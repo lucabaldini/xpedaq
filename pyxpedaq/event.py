@@ -28,7 +28,7 @@ import numpy
 import matplotlib
 import matplotlib.pyplot as plt
 
-import pyxpedaq.display as display
+import pyxpedaq.xpol as xpol
 
 
 
@@ -188,8 +188,8 @@ class pXpeEventWindowed(pXpeEventBase):
     def draw(self, zero_suppression=10):
         """
         """
-        matrix = display.pHexagonalMatrix(self.num_columns(), self.num_rows(),
-                                          self.xmin, self.ymin)
+        matrix = xpol.pHexagonalMatrix(self.num_columns(), self.num_rows(),
+                                       self.xmin, self.ymin)
         _vals = self.adc_counts.flatten()
         _maxval = float(self.adc_counts.max())
         _vals[_vals < zero_suppression] = -1.

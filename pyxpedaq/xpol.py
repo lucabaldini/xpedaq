@@ -52,15 +52,79 @@ class pHexagonalMatrix():
 
     def pixel2world(self, col, row):
         """Convert from pixel coordinates to world coordinates.
+        """
+        return self.pixel2world_asic(col, row)
+
+    def pixel2world_asic(self, col, row):
+        """Convert from pixel coordinates to world coordinates.
 
         This is using the DAQ coordinate system, where the origin is in the
         top-left corner of the array, the x coordinate is spanning the columns
         from left to right and the y coordinate is spanning the rows from top
         to bottom.
         """
-        x = (col - 0.5*((row + 1) % 2) + 0.5)*self.COLUMN_PITCH
+        x = (col + 0.5*(row % 2))*self.COLUMN_PITCH
         y = -row*self.ROW_PITCH
         return (x, y)
+
+    def pixel2world_recon(self, col, row):
+        """Convert from pixel coordinates to world coordinates.
+
+        This is using the reconstruction coordinate system.
+        """
+        x = (row - 0.5*(self.num_rows - 1))*self.ROW_PITCH
+        y = (col - 0.5*(self.num_columns - 0.5 + row % 2))*self.COLUMN_PITCH
+        return (x, y)
+
+    def asic2recon(self, x, y):
+        """Convert from ASIC coordinates to recon coordinates.
+        """
+        _x = -(y + 0.5*(self.num_rows - 1)*self.ROW_PITCH)
+        _y = x - 0.5*(self.num_columns - 0.5)*self.COLUMN_PITCH
+        return (_x, _y)
+
+    def recon2asic(self, x, y):
+        """Convert from recon coordiates to ASIC coordinates.
+        """
+        _x = y + 0.5*(self.num_columns - 0.5)*self.COLUMN_PITCH
+        _y = -(x + 0.5*(self.num_rows - 1)*self.ROW_PITCH)
+        return (_x, _y)
+
+    def border(self, col, row):
+        """Return true if the pixel at the specified position is on the
+        border of the array.
+        """
+        return (col == 0) or (col == self.num_columns - 1) or\
+            (row == 0) or (row == self.num_rows - 1)
+
+    def write_pixmap(self, filePath):
+        """Write a pixmap.dat-like file containing the pixel hash table used
+        by the reconstruction.
+
+        352
+        300
+        x y u v ch mask border
+        -7.59915 -7.4875 0 0 0 1 1
+        -7.59915 -7.4375 0 1 1 1 1
+        ...
+        7.59915 7.3875 351 298 105598 1 1
+        7.59915 7.4375 351 299 105599 1 1
+        """
+        chan = 0
+        mask = 1
+        f = open(filePath, 'w')
+        f.write('%d\n%d\n' % (self.num_rows, self.num_columns))
+        f.write('x y u v ch mask border\n')
+        for row in xrange(self.start_row, self.start_row + self.num_rows):
+            for col in xrange(self.start_column, self.start_column +
+                              self.num_columns):
+                x, y = self.pixel2world_recon(col, row)
+                bord = self.border(col, row)
+                line = '%.5f %.4f %d %d %d %d %d\n' %\
+                       (x, y, row, col, chan, mask, bord)
+                f.write(line)
+                chan += 1
+        f.close()
 
     def frame(self, padding=0.1):
         """Return a (xmin, ymin, xmax, ymax) containing the entire matrix.
@@ -132,10 +196,13 @@ class pHexagonalMatrix():
         plt.ylabel('ASIC reference frame y [mm]')
         if show:
             plt.show()
+        return fig
 
 
 
 if __name__ == '__main__':
-    matrix = pHexagonalMatrix(30, 36, 10, 15)
+    matrix = pHexagonalMatrix(30, 36, 0, 0)
+    matrix.write_pixmap('pixmap.dat')
     matrix.draw()
 
+    
