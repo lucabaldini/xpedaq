@@ -23,6 +23,7 @@ class xpemonPlotGrid: public QWidget
   public slots:
     
     void refreshPlot();
+    void resetPlot();
 
   private slots:
     

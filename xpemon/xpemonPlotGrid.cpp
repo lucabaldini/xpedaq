@@ -33,3 +33,9 @@ void xpemonPlotGrid::refreshPlot()
   m_barycenterPlot->replot(); 
 }
 
+void xpemonPlotGrid::resetPlot()
+{
+  m_pulseHeightPlot->reset();
+  m_barycenterPlot->reset(); 
+}
+
