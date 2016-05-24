@@ -79,12 +79,16 @@ class pHexagonalMatrix():
     def asic2recon(self, x, y):
         """Convert from ASIC coordinates to recon coordinates.
         """
-        return (y, x)
+        _x = -(y + 0.5*(self.num_rows - 1)*self.ROW_PITCH)
+        _y = x - 0.5*(self.num_columns - 0.5)*self.COLUMN_PITCH
+        return (_x, _y)
 
     def recon2asic(self, x, y):
         """Convert from recon coordiates to ASIC coordinates.
         """
-        return (y, x)
+        _x = y + 0.5*(self.num_columns - 0.5)*self.COLUMN_PITCH
+        _y = -(x + 0.5*(self.num_rows - 1)*self.ROW_PITCH)
+        return (_x, _y)
 
     def border(self, col, row):
         """Return true if the pixel at the specified position is on the
@@ -198,8 +202,7 @@ class pHexagonalMatrix():
 
 if __name__ == '__main__':
     matrix = pHexagonalMatrix(30, 36, 0, 0)
-    #matrix = pHexagonalMatrix(300, 352, 0, 0)
-    #matrix.write_pixmap('pixmap.dat')
+    matrix.write_pixmap('pixmap.dat')
     matrix.draw()
 
     
