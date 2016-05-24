@@ -16,11 +16,11 @@ BarycenterPlot::BarycenterPlot(pColorMapOptions* options) : m_options(options)
   m_barycenterMap = new QCPColorMap(this->xAxis,
                                     this->yAxis);
   addPlottable(m_barycenterMap);
-  const unsigned int & kNx = xpoldetector::kNumPixelsX;
-  const unsigned int & kNy = xpoldetector::kNumPixelsY;
-  m_barycenterData = new QCPColorMapData(kNx, kNy,
-                                       QCPRange(1., static_cast<double>(kNx)),
-                                       QCPRange(1., static_cast<double>(kNy)));
+  int defaultSize = 1;
+  QCPRange defaultRange = QCPRange(-1., 1.);
+  m_barycenterData = new QCPColorMapData(defaultSize, defaultSize,
+                                         defaultRange, defaultRange);
+  setupDataMap();
   m_barycenterMap->setData(m_barycenterData);
   m_colorScale = new QCPColorScale(this);
   plotLayout()->addElement(0, 1, m_colorScale);
@@ -44,6 +44,23 @@ void BarycenterPlot::addPoint(double xBar, double yBar)
                               m_barycenterData -> data(xBar, yBar) + 1.);
 }
 
+
+void BarycenterPlot::setupDataMap()
+{
+  static const unsigned int & kNx = xpoldetector::kNumPixelsX;
+  static const unsigned int & kNy = xpoldetector::kNumPixelsY;
+  m_barycenterData -> setSize(kNx, kNy);
+  m_barycenterData -> setRange(QCPRange(1., static_cast<double>(kNx)),
+                               QCPRange(1., static_cast<double>(kNy)));
+}
+
+
+void BarycenterPlot::reset()
+{
+  m_barycenterMap -> clearData();
+  setupDataMap();
+  replot();
+}
 
 
 BarycenterPlot::~BarycenterPlot()

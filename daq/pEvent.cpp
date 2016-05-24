@@ -16,11 +16,26 @@ std::vector<int> pEvent::pulseHeightsOverThreshold(int threshold)
   for(Adc_vec_ut::iterator it = m_adcCounts.begin();
       it != m_adcCounts.end();
       ++it)
-   {
-     int height = static_cast<int>(*it);
-     if (height > threshold){heightsOT.push_back(height);}
-   }
+  {
+    int height = static_cast<int>(*it);
+    if (height > threshold){heightsOT.push_back(height);}
+  }
   return heightsOT;
+}
+
+
+int pEvent::totPulseHeightsOverThreshold(int threshold)
+{
+  using namespace event;
+  int sum = 0;
+  for(Adc_vec_ut::iterator it = m_adcCounts.begin();
+      it != m_adcCounts.end();
+      ++it)
+  {
+    int height = static_cast<int>(*it);
+    if (height > threshold){sum += height;}
+  }
+  return sum;
 }
 
 

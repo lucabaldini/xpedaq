@@ -70,7 +70,7 @@ HEADERS += pUdpSender.h
 
 HEADERS += xpemonWindow.h
 HEADERS += xpemonPlotGrid.h
-HEADERS += xpemonSocketPortWidget.h
+HEADERS += pOptionBoxWidget.h
 HEADERS += pEventReader.h
 HEADERS += pEvent.h
 HEADERS += pulseHeightPlot.h
@@ -117,7 +117,7 @@ SOURCES += barycenterPlot.cpp
 
 SOURCES += xpemonWindow.cpp
 SOURCES += xpemonPlotGrid.cpp
-SOURCES += xpemonSocketPortWidget.cpp
+SOURCES += pOptionBoxWidget.cpp
 SOURCES += pEventReader.cpp
 SOURCES += pEvent.cpp
 

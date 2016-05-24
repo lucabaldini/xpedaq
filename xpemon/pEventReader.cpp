@@ -22,13 +22,15 @@ void pEventReader::readPendingDatagram()
       ++evt)
   {
     std::cout << "reading event: " << (*evt);
-    std::vector<int> pulseHeights = (*evt).pulseHeightsOverThreshold(10);
+    /*std::vector<int> pulseHeights = (*evt).pulseHeightsOverThreshold(10); 
     for(std::vector<int>::iterator it = pulseHeights.begin();
       it != pulseHeights.end();
       ++it)
     {
       emit pulseHeightRead(*it);
-    }
+    } */
+    int pulseHeight = (*evt).totPulseHeightsOverThreshold(10);
+    emit pulseHeightRead(pulseHeight);
     double xBar;
     double yBar;
     (*evt).barycenter(xBar, yBar);
@@ -48,7 +50,7 @@ void pEventReader::readPendingDatagrams()
   QMutexLocker locker(&m_mutex);
   while ((!m_stopped) && (m_udpSocket.hasPendingDatagrams()))
   {
-    this->readPendingDatagram();
+    readPendingDatagram();
   }
 }
 
@@ -58,14 +60,15 @@ void pEventReader::startReading()
   std::cout << "Reading data" << std::endl;
   m_stopped = false;
   m_udpSocket.bind(m_socketPortNumber);
-  connect(&m_udpSocket, SIGNAL(readyRead()),
+  connect(&m_udpSocket, SIGNAL(readyRead()), 
           this, SLOT(readPendingDatagrams()));
-  m_udpSocket.moveToThread(&thread);
-  thread.start();
 }
+
 
 void pEventReader::setStopped()
 {
   QMutexLocker locker(&m_mutex);
+  m_udpSocket.disconnectFromHost();
   m_stopped = true;
+  emit stopped();
 }

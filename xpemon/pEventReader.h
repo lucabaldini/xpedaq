@@ -1,7 +1,6 @@
 #ifndef PEVENTREADER_H
 #define PEVENTREADER_H
 
-#include <QThread>
 #include <QMutex>
 #include <QUdpSocket>
 #include <QByteArray>
@@ -24,16 +23,16 @@ class pEventReader: public QObject
     void setStopped();
   
   signals:
+    void stopped();
     void pulseHeightRead(int pulseHeight);
     void barycenterRead(double xBar, double yBar);
   
   private:
     int m_socketPortNumber;
     bool m_stopped;
-    QThread thread;
     QMutex m_mutex;
     QUdpSocket m_udpSocket;
-    
+
     void readPendingDatagram();
     pDataBlock readDataBlock(QByteArray const &datagram);
     

@@ -9,9 +9,10 @@ class PulseHeightPlot: public QCustomPlot
 {
   public:
     
-    PulseHeightPlot(unsigned int nBins = 20,
-                    double xmin = 0., double xmax = 200.);
+    PulseHeightPlot(unsigned int nBins = 50,
+                    double xmin = 0., double xmax = 5000.);
     void addPoint(int pHeight);
+    void reset();
   
   private:
     

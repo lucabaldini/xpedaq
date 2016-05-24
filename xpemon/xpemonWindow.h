@@ -3,13 +3,14 @@
 
 #include <iostream>
 
+#include <QThread>
 #include <QMainWindow>
 #include <QGridLayout>
 #include <QWidget>
 #include <QTimer>
 #include <QUdpSocket>
 
-#include "xpemonSocketPortWidget.h"
+#include "pOptionBoxWidget.h"
 #include "xpemonPlotGrid.h"
 #include "pTransportBar.h"
 #include "qcustomplot.h"
@@ -29,6 +30,8 @@ class xpemonWindow : public QMainWindow
     void startRun();
     void stopRun();
     void sendDatagram();
+    void setupConnections();
+    void reset();
   
   protected:
   
@@ -36,9 +39,10 @@ class xpemonWindow : public QMainWindow
     QGridLayout* m_mainGridLayout;
     xpemonPlotGrid* m_plotGrid;
     pTransportBar* m_transportBar;
-    xpemonSocketPortWidget* m_socketPortWidget;
+    pOptionBoxWidget* m_optionBoxWidget;
     pEventReader* m_eventReader;
     QTimer m_refreshTimer;
+    QThread m_thread;
     
     //debug
     QUdpSocket testSenderSocket;
