@@ -5,14 +5,19 @@
 #include "pMapOptions.h"
 #include "xpoldetector.h"
 
+
 class BarycenterPlot: public QCustomPlot
 {
   public:
     BarycenterPlot(pColorMapOptions* options);
-    void addPoint(double xBar, double yBar);
     ~BarycenterPlot();
+    void addPoint(double xBar, double yBar);
+    void reset();
   
   private:
+    
+    void setupDataMap();
+  
     QCPColorMap *m_barycenterMap;
     QCPColorScale *m_colorScale;
     QCPMarginGroup *m_marginGroup;
