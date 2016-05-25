@@ -135,26 +135,34 @@ if __name__ == '__main__':
     import matplotlib.pyplot as plt
     myX_00 = []; myY_00 = [];
     myX_01 = []; myY_01 = [];
+    myX_10 = []; myY_10 = [];
     myX_11 = []; myY_11 = [];
 
-    for iX in range(500):
-        X = iX*0.001 -0.06
-        for iY in range(500):
-            Y = iY*0.001 -0.06
+    for iX in range(400):
+        X = iX*0.0004 -0.06
+        for iY in range(400):
+            Y = iY*0.0004 -0.06
             h = location_to_hex(X, Y)
             o = hex_to_offset(h)
             if o.col == 0 and o.row == 0:
                 myX_00.append(X)
-                myY_00.append(Y)
+                myY_00.append(-Y)
+            if o.col == 1 and o.row == 0:
+                myX_10.append(X)
+                myY_10.append(-Y)
             if o.col == 0 and o.row == 1:
                 myX_01.append(X)
-                myY_01.append(Y)
+                myY_01.append(-Y)
             if o.col == 1 and o.row == 1:
                 myX_11.append(X)
-                myY_11.append(Y)
+                myY_11.append(-Y)
                 #print X,Y
 
+    plt.ion()
     plt.plot(numpy.array(myX_00),numpy.array(myY_00),'.')
+    plt.plot(numpy.array(myX_10),numpy.array(myY_10),'.')
     plt.plot(numpy.array(myX_01),numpy.array(myY_01),'.')
     plt.plot(numpy.array(myX_11),numpy.array(myY_11),'.')
-    plt.show()
+    plt.grid(color = 'gray')
+    plt.xlabel('X [mm]')
+    plt.ylabel('-Y [mm]')
