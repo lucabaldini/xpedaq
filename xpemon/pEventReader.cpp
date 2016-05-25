@@ -1,7 +1,9 @@
 #include "pEventReader.h"
 
-pEventReader::pEventReader(int socketPortNumber) : 
-                                        m_socketPortNumber(socketPortNumber)
+pEventReader::pEventReader(unsigned int socketPortNumber,
+                           double zeroSupThreshold) : 
+                           m_socketPortNumber(socketPortNumber),
+                           m_zeroSupThreshold(zeroSupThreshold)
 {
 }
 
@@ -29,7 +31,7 @@ void pEventReader::readPendingDatagram()
     {
       emit pulseHeightRead(*it);
     } */
-    int pulseHeight = (*evt).totPulseHeightsOverThreshold(10);
+    int pulseHeight = (*evt).totPulseHeightsOverThreshold(m_zeroSupThreshold);
     emit pulseHeightRead(pulseHeight);
     double xBar;
     double yBar;
@@ -71,4 +73,17 @@ void pEventReader::setStopped()
   m_udpSocket.disconnectFromHost();
   m_stopped = true;
   emit stopped();
+}
+
+
+void pEventReader::setSocketPortNumber(unsigned int socketPortNumber)
+{
+  QMutexLocker locker(&m_mutex);
+  m_socketPortNumber = socketPortNumber;
+}
+
+void pEventReader::setZeroSupThreshold(double zeroSupThreshold)
+{
+  QMutexLocker locker(&m_mutex);
+  m_zeroSupThreshold = zeroSupThreshold;
 }

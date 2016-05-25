@@ -11,6 +11,8 @@ xpemonWindow::xpemonWindow(QWidget *parent) : QMainWindow(parent)
   m_optionBoxWidget = new pOptionBoxWidget();
   m_mainGridLayout->addWidget(m_optionBoxWidget, 0,0);  
 
+  readOptions();
+  
   m_plotGrid = new xpemonPlotGrid();
   m_mainGridLayout->addWidget(m_plotGrid, 0,1,2,1);
   m_mainGridLayout->setColumnStretch(1, 10);
@@ -18,7 +20,8 @@ xpemonWindow::xpemonWindow(QWidget *parent) : QMainWindow(parent)
   m_transportBar = new pTransportBar(this, false);
   m_mainGridLayout->addWidget(m_transportBar, 1,0);
   
-  m_eventReader = new pEventReader(50001);
+  m_eventReader = new pEventReader(m_options.m_socketPortNumber,
+                                   m_options.m_zeroSupThreshold);
   
   setupConnections();
   
@@ -27,7 +30,19 @@ xpemonWindow::xpemonWindow(QWidget *parent) : QMainWindow(parent)
 }
 
 
-//Debug only function
+void xpemonWindow::readOptions()
+{
+  unsigned int socketPortNumber;
+  double refreshTime;
+  unsigned int zeroSupThreshold;
+  m_optionBoxWidget -> options(socketPortNumber, refreshTime,
+                               zeroSupThreshold);
+  m_options = pMonitorOptions(refreshTime, socketPortNumber,
+                              zeroSupThreshold);
+}
+
+
+/*Debug only function
 void xpemonWindow::sendDatagram()
 {
   static int counter = 0;
@@ -38,30 +53,41 @@ void xpemonWindow::sendDatagram()
   testSenderSocket.writeDatagram(datagram, QHostAddress::LocalHost, 50001);
   counter++;
 }
+*/
 
 
 void xpemonWindow::setupConnections()
 {
   connect(m_transportBar, SIGNAL(start()), this, SLOT(startRun()));
+  connect(m_transportBar, SIGNAL(start()),
+          m_optionBoxWidget, SLOT(disableWidgets()));
+  
   connect(m_transportBar, SIGNAL(reset()), this, SLOT(reset()));
-  //connect(m_transportBar, SIGNAL(pause()), this, SLOT());
   
   connect(m_transportBar, SIGNAL(stop()), &m_refreshTimer, SLOT(stop())); 
   connect(m_transportBar, SIGNAL(stop()), m_eventReader, SLOT(setStopped()));
+  connect(m_transportBar, SIGNAL(stop()),
+          m_optionBoxWidget, SLOT(activateWidgets()));
+
+  connect(m_transportBar, SIGNAL(pause()), &m_refreshTimer, SLOT(stop()));
+  
   connect(&m_refreshTimer, SIGNAL(timeout()), m_plotGrid, SLOT(refreshPlot()));
   connect(m_eventReader, SIGNAL(stopped()), this, SLOT(stopRun()));
   
   connect(m_eventReader, SIGNAL(pulseHeightRead(int)), 
           m_plotGrid, SLOT(addPulseHeightPoint(int)));
   connect(m_eventReader, SIGNAL(barycenterRead(double, double)), 
-          m_plotGrid, SLOT(addBarycenterPoint(double, double)));          
+          m_plotGrid, SLOT(addBarycenterPoint(double, double)));       
 }
 
 
 void xpemonWindow::startRun()
 {
   //TO DO: the refresh interval should be adjustable by the GUI
-  m_refreshTimer.start(1000);
+  readOptions();
+  m_eventReader -> setSocketPortNumber(m_options.m_socketPortNumber);
+  m_eventReader -> setZeroSupThreshold(m_options.m_zeroSupThreshold);
+  m_refreshTimer.start(m_options.m_refreshInterval);
   m_eventReader -> startReading();
   m_eventReader -> moveToThread(&m_thread);
   m_thread.start();
@@ -81,3 +107,14 @@ void xpemonWindow::reset()
 {
   m_plotGrid -> resetPlot();
 }
+
+
+/*~xpemonWindow::xpemonWindow()
+{
+  if (m_thread.isRunning())
+  {
+    stopRun()
+  }
+  
+}
+*/

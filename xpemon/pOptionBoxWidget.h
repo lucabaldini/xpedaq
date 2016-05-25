@@ -12,16 +12,30 @@
 
 class pOptionBoxWidget: public pQtGroupBoxWidget
 {
+
+  Q_OBJECT
+
   public:
+
     explicit pOptionBoxWidget(QWidget *parent=0);
+    void options(unsigned int &socketPort, double &refreshInterval, 
+                 unsigned int  &zeroSupThreshold);
+  
+  public slots:
+
+    void activateWidgets();
+    void disableWidgets();
   
   private:
-   pQtCustomTextLabel *m_socketPortLabel;
-   QLineEdit *m_socketPortEdit;
-   pQtCustomTextLabel *m_refreshTimeLabel;
-   QLineEdit *m_refreshTimeEdit;
-   pQtCustomTextLabel *m_zeroSupThrLabel;
-   QLineEdit *m_zeroSupThrEdit;
+  
+    void initalizeText();
+  
+    pQtCustomTextLabel *m_socketPortLabel;
+    QLineEdit *m_socketPortEdit;
+    pQtCustomTextLabel *m_refreshIntervalLabel;
+    QLineEdit *m_refreshIntervalEdit;
+    pQtCustomTextLabel *m_zeroSupThrLabel;
+    QLineEdit *m_zeroSupThrEdit;
 };
 
 #endif // OPTIONBOXWIDGET_H

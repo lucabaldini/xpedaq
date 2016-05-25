@@ -15,12 +15,14 @@ class pEventReader: public QObject
   Q_OBJECT
   
   public:
-    pEventReader(int socketPortNumber);
+    pEventReader(unsigned int socketPortNumber, double zeroSupThreshold);
   
   public slots:
     void startReading();
     void readPendingDatagrams();
     void setStopped();
+    void setSocketPortNumber(unsigned int socketPortNumber);
+    void setZeroSupThreshold(double zeroSupThreshold);
   
   signals:
     void stopped();
@@ -28,7 +30,8 @@ class pEventReader: public QObject
     void barycenterRead(double xBar, double yBar);
   
   private:
-    int m_socketPortNumber;
+    unsigned int m_socketPortNumber;
+    double m_zeroSupThreshold;
     bool m_stopped;
     QMutex m_mutex;
     QUdpSocket m_udpSocket;

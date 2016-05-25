@@ -15,6 +15,7 @@
 #include "pTransportBar.h"
 #include "qcustomplot.h"
 #include "pEventReader.h"
+#include "pMonitorOptions.h"
 
 class xpemonWindow : public QMainWindow
 {
@@ -24,14 +25,16 @@ class xpemonWindow : public QMainWindow
   public:   
 
     explicit xpemonWindow(QWidget *parent = 0);
+    //~xpemonWindow();
     
   private slots:
   
     void startRun();
     void stopRun();
-    void sendDatagram();
+    //void sendDatagram();
     void setupConnections();
     void reset();
+    void readOptions();
   
   protected:
   
@@ -43,9 +46,8 @@ class xpemonWindow : public QMainWindow
     pEventReader* m_eventReader;
     QTimer m_refreshTimer;
     QThread m_thread;
+    pMonitorOptions m_options;
     
-    //debug
-    QUdpSocket testSenderSocket;
 };
 
 #endif // XPEMONWINDOW_H
