@@ -21,14 +21,14 @@ with this program; if not, write to the Free Software Foundation Inc.,
 
 #include "pQtTransportBarGui.h"
 
-pQtTransportBarGui::pQtTransportBarGui(QWidget *parent) :
+pQtTransportBarGui::pQtTransportBarGui(QWidget *parent, bool minimal) :
   pQtGroupBoxWidget(parent),
   m_resetButton(NULL),
   m_stopButton(NULL),
   m_pauseButton(NULL),
   m_startButton(NULL)
 {
-  setupButtons();
+  setupButtons(minimal);
   setTitle("Transport bar");
   freezeSize();
 }

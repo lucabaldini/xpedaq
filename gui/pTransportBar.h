@@ -35,7 +35,7 @@ class pTransportBar : public pQtTransportBarGui
 
  public:
   
-  pTransportBar(QWidget *parent);
+  pTransportBar(QWidget *parent, bool minimal = true);
   ~pTransportBar() {;}
   void pressStartButton();
   void pressStopButton();

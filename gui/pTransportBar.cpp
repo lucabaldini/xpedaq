@@ -22,8 +22,8 @@ with this program; if not, write to the Free Software Foundation Inc.,
 #include "pTransportBar.h"
 
 
-pTransportBar::pTransportBar(QWidget *parent) :
-  pQtTransportBarGui(parent)
+pTransportBar::pTransportBar(QWidget *parent, bool minimal) :
+  pQtTransportBarGui(parent, minimal)
 {
   setupConnections();
   setupToolTips();

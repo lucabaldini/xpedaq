@@ -35,7 +35,7 @@ class pQtTransportBarGui : public pQtGroupBoxWidget
 
  public:
   
-  pQtTransportBarGui(QWidget *parent);
+  pQtTransportBarGui(QWidget *parent, bool minimal = true);
   ~pQtTransportBarGui() {;}
   void enable();
   void disable();
