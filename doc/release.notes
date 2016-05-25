@@ -4,6 +4,8 @@
 * Start creating a monitor.
 * First implementation of a python single-event display.
 * Some work on the option parser.
+* pyxpedaq folder and bin/xpedisplay.py moved to a separate package
+  (issue #101).
 
 
 -------------------------------------------------------------------------------
