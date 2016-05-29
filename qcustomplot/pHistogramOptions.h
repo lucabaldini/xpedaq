@@ -1,5 +1,5 @@
-#ifndef PMAPOPTIONS_H
-#define PMAPOPTIONS_H
+#ifndef PHISTOGRAMOPTIONS_H
+#define PHISTOGRAMOPTIONS_H
 
 #include <QString>
 #include "qcustomplot.h"
@@ -11,11 +11,11 @@ class pBasicPlotOptions
 
 public: 
   
-  QString m_xTitle;
-  QString m_yTitle;
-  
   pBasicPlotOptions (QString xtitle = "x", QString ytitle = "y") :
                      m_xTitle(xtitle), m_yTitle(ytitle) {};
+
+  QString m_xTitle;
+  QString m_yTitle;
                
 };
 
@@ -28,16 +28,15 @@ class pColorMapOptions : public pBasicPlotOptions
 
 public:
 
-  QString m_zTitle;
-  QCPColorGradient m_gradientType;
-
-
   pColorMapOptions (QString xtitle = "x", QString ytitle = "y",
                     QString ztitle = "z", 
                     QCPColorGradient colGradient = QCPColorGradient::gpHot) :
                     pBasicPlotOptions(xtitle, ytitle), m_zTitle(ztitle),
                     m_gradientType(colGradient) {};
 
+  QString m_zTitle;
+  QCPColorGradient m_gradientType;
+  
 };
 
-#endif // PMAPOPTIONS_H
+#endif // PHISTOGRAMOPTIONS_H

@@ -23,7 +23,7 @@ void pEventReader::readPendingDatagram()
       evt != evtVec.end();
       ++evt)
   {
-    std::cout << "reading event: " << (*evt);
+    std::cout << "reading event: " << (*evt) << std::endl;
     /*std::vector<int> pulseHeights = (*evt).pulseHeightsOverThreshold(10); 
     for(std::vector<int>::iterator it = pulseHeights.begin();
       it != pulseHeights.end();
@@ -32,6 +32,7 @@ void pEventReader::readPendingDatagram()
       emit pulseHeightRead(*it);
     } */
     int pulseHeight = (*evt).totPulseHeightsOverThreshold(m_zeroSupThreshold);
+    std::cout << "total evt pulse hight: " << pulseHeight << std::endl;
     emit pulseHeightRead(pulseHeight);
     double xBar;
     double yBar;

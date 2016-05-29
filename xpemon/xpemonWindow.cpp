@@ -75,7 +75,7 @@ void xpemonWindow::setupConnections()
   connect(m_eventReader, SIGNAL(stopped()), this, SLOT(stopRun()));
   
   connect(m_eventReader, SIGNAL(pulseHeightRead(int)), 
-          m_plotGrid, SLOT(addPulseHeightPoint(int)));
+          m_plotGrid, SLOT(fillPulseHeight(int)));
   connect(m_eventReader, SIGNAL(barycenterRead(double, double)), 
           m_plotGrid, SLOT(addBarycenterPoint(double, double)));       
 }

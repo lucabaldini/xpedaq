@@ -1,6 +1,4 @@
 #include "pDisplayWindow.h"
-#include "pMapOptions.h"
-#include "pedestalsMap.h"
 #include <ctime>
 #include <cstdlib>
 #include <memory>
@@ -9,9 +7,9 @@ pDisplayWindow::pDisplayWindow(QWidget *parent, int posx, int posy,
   int windowHeight, int windowWidth) : QMainWindow(parent), m_posx (posx),
   m_posy(posy), m_windowHeight (windowHeight), m_windowWidth (windowWidth)
 {
-  if (this->objectName().isEmpty())
-    this->setObjectName(QString::fromUtf8("DisplayWindow"));
-    this->resize(m_windowHeight, m_windowWidth);
+  if (objectName().isEmpty())
+    setObjectName(QString::fromUtf8("DisplayWindow"));
+    resize(m_windowHeight, m_windowWidth);
     m_centralWidget = new QWidget(this);
     m_centralWidget->setObjectName(QString::fromUtf8("centralWidget"));
     m_verticalLayout = new QVBoxLayout(m_centralWidget);
@@ -27,10 +25,10 @@ pDisplayWindow::pDisplayWindow(QWidget *parent, int posx, int posy,
     m_verticalLayout->addWidget(m_pedestalPlot);
     m_verticalLayout->addWidget(m_pedestalRmsPlot);
 
-    this->setCentralWidget(m_centralWidget);
+    setCentralWidget(m_centralWidget);
     m_statusBar = new QStatusBar(this);
     m_statusBar->setObjectName(QString::fromUtf8("statusBar"));
-    this->setStatusBar(m_statusBar);
+    setStatusBar(m_statusBar);
   
   setGeometry(m_posx, m_posy, m_windowHeight, m_windowWidth);
   showPedestals();

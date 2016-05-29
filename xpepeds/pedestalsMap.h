@@ -5,7 +5,7 @@
 #include <memory>
 #include "xpoldetector.h"
 #include "qcustomplot.h"
-#include "pMapOptions.h"
+#include "pHistogramOptions.h"
 
 namespace pedestals{
   const int kNx = static_cast<int>(xpoldetector::kNumPixelsX);

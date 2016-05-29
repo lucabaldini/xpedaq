@@ -67,25 +67,25 @@ unsigned int pEvent::totalAdcCounts() const
 
 void pEvent::barycenter (double &x, double &y)
 {
-  
+  //TODO: check the algorithm!
   x = 0.;
   y = 0.;
-  for (unsigned int i = 0; i < nColumns(); i ++)
+  for (unsigned int iy = 0; iy < nRows(); iy ++)
   {
-    for (unsigned int j = 0; j < nRows(); j ++)
+    for (unsigned int ix = 0; ix < nColumns(); ix ++)
     {
-      x += ((m_xmin + i) * m_adcCounts [i + nColumns() * j]);
-      y += ((m_ymin + j) * m_adcCounts [i + nColumns() * j]);
+      x += ((m_xmin + ix) * m_adcCounts [ix + nColumns() * iy]);
+      y += ((m_ymin + iy) * m_adcCounts [ix + nColumns() * iy]);
     }
   }
   x /= totalAdcCounts();
   y /= totalAdcCounts();
-  
-  /* The algorithm above is wrong. For now returning simply the center of
-     the window. */
-  x = 0.5*(m_xmin + m_xmax);
-  y = 0.5*(m_ymin + m_ymax);
 }
+
+
+//pEvent::hitMap()
+//{
+//}
 
 
 std::ostream& pEvent::fillStream(std::ostream& os) const

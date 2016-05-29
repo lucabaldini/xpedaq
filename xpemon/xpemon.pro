@@ -39,8 +39,13 @@ HEADERS += xpollog.h
 HEADERS += xpolio.h
 
 HEADERS += qcustomplot.h
-HEADERS += pMapOptions.h
-
+HEADERS += histogramUtils.h
+HEADERS += pHistogramOptions.h
+HEADERS += pHistogram.h
+HEADERS += pHistogramPlot.h
+HEADERS += pMap.h
+HEADERS += pMapPlot.h
+ 
 HEADERS += pQtGridLayoutWidget.h
 HEADERS += pQtGroupBoxWidget.h
 HEADERS += pQtCustomPushButton.h
@@ -73,8 +78,6 @@ HEADERS += xpemonPlotGrid.h
 HEADERS += pOptionBoxWidget.h
 HEADERS += pEventReader.h
 HEADERS += pEvent.h
-HEADERS += pulseHeightPlot.h
-HEADERS += barycenterPlot.h
 
 SOURCES += xpolgui.cpp
 SOURCES += xpoldetector.cpp
@@ -85,6 +88,11 @@ SOURCES += xpollog.cpp
 SOURCES += xpolio.cpp
 
 SOURCES += qcustomplot.cpp
+SOURCES += histogramUtils.cpp
+SOURCES += pHistogram.cpp
+SOURCES += pHistogramPlot.cpp
+SOURCES += pMap.cpp
+SOURCES += pMapPlot.cpp
 
 SOURCES += pQtGridLayoutWidget.cpp
 SOURCES += pQtGroupBoxWidget.cpp
@@ -112,8 +120,6 @@ SOURCES += pLoggerChannel.cpp
 SOURCES += pLogger.cpp
 SOURCES += pIOManager.cpp
 SOURCES += pUdpSender.cpp
-SOURCES += pulseHeightPlot.cpp
-SOURCES += barycenterPlot.cpp
 
 SOURCES += xpemonWindow.cpp
 SOURCES += xpemonPlotGrid.cpp

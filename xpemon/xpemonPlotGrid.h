@@ -6,9 +6,13 @@
 #include <QGridLayout>
 #include <QSize>
 
+#include "xpoldetector.h"
 #include "pulseHeightPlot.h"
-#include "barycenterPlot.h"
-#include "pMapOptions.h"
+//#include "barycenterPlot.h"
+//#include "hitMap.h"
+#include "pHistogramOptions.h"
+#include "pHistogramPlot.h"
+#include "pMapPlot.h"
 
 class xpemonPlotGrid: public QWidget
 {
@@ -27,16 +31,18 @@ class xpemonPlotGrid: public QWidget
 
   private slots:
     
-    void addPulseHeightPoint(int pHeight);
+    void fillPulseHeight(int pHeight);
     void addBarycenterPoint(double xBar, double yBar);
+    void addHitMapPoint(double x, double y, unsigned int counts);
      
   private:
     
-    //void setupPulseHeightPlot();
-    //void setupBarycenterPlot();   
     QGridLayout *m_PlotLayout;
-    PulseHeightPlot *m_pulseHeightPlot;
-    BarycenterPlot *m_barycenterPlot;
+    pHistogramPlot *m_pulseHeightPlot;
+    pMapPlot *m_barycenterPlot;
+    pMapPlot *m_hitMap;
+    //BarycenterPlot *m_barycenterPlot;
+    //HitMap *m_hitMap;
         
 };
 
