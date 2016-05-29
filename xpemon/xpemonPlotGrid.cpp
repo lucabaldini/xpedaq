@@ -12,16 +12,14 @@ xpemonPlotGrid::xpemonPlotGrid(QWidget *parent) : QWidget(parent)
                                          pulseHeightXmax, pulseHeightOptions);
   m_PlotLayout->addWidget(m_pulseHeightPlot, 0, 0);
   
-  //pColorMapOptions* barycenterOpt = new pColorMapOptions();
-  //m_barycenterPlot = new BarycenterPlot(barycenterOpt);
+  //this should be done elsewhere
   double xmax = static_cast<double> (xpoldetector::kNumPixelsX);
   double ymax = static_cast<double> (xpoldetector::kNumPixelsY);
+  
   m_barycenterPlot = new pMapPlot(xpoldetector::kNumPixelsX, 0., xmax,
                                   xpoldetector::kNumPixelsY, 0., ymax);
   m_PlotLayout->addWidget(m_barycenterPlot, 0, 1, 1, 1);
   
-  //pColorMapOptions* hitMapOpt = new pColorMapOptions();
-  //m_hitMap = new HitMap(hitMapOpt);
   m_hitMap = new pMapPlot(xpoldetector::kNumPixelsX, 0., xmax,
                           xpoldetector::kNumPixelsY, 0., ymax);
   m_PlotLayout->addWidget(m_hitMap, 1, 0, 1, 1);

@@ -163,8 +163,9 @@ unsigned int pMap::binEntries(unsigned int xIndex, unsigned int yIndex) const
 void pMap::binCenter(unsigned int xIndex, unsigned int yIndex,
                      double &xCenter, double &yCenter) const
 {
-  //checkBinNumber(binNumber);
-  //return 0.5*(m_binEdges.at(binNumber+1) + m_binEdges.at(binNumber));
+  checkBinCoord(xIndex, yIndex);
+  xCenter = 0.5 * (m_xbinning.at(xIndex) + m_xbinning.at(xIndex + 1));
+  yCenter = 0.5 * (m_ybinning.at(yIndex) + m_ybinning.at(yIndex + 1));
 }
 
 

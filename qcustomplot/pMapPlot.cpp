@@ -12,10 +12,11 @@ pMapPlot::pMapPlot(unsigned int nXbins, double xmin, double xmax,
   m_colorMap = new QCPColorMap(xAxis, yAxis);
   addPlottable(m_colorMap);
   
-  /* In a QCPColorMap the first cell is centered on the lower range boundary
-     and the last cell on the upper range boundary. Thus, we need to play
-     a bit with the initialization here, in order to recover a matching with
-     the underlying pMap (cell centered at the center of the bins).
+  /* TODO: In a QCPColorMap the first cell is centered on the lower range
+     boundary and the last cell on the upper range boundary. Thus, we need to
+     play around a bit with the initialization here, in order to recover a
+     matching with the underlying pMap (cells centered at the center of the
+     corresponding bins).
   */
   QCPRange xrange = QCPRange(m_map -> xMin(), m_map -> xMax());
   QCPRange yrange = QCPRange(m_map -> yMin(), m_map -> yMax());
@@ -120,11 +121,11 @@ double pMapPlot::sum() const
 
 void pMapPlot::fill(double x, double y, double value)
 {
-  /* QCPColorMap does not provide a method for incrementing the content of a
-     bin. The default beahviour, when the function addData() is called on
-     a key which already exists, is to create another entry for the same key.
-     So we need to remove the old value and recreate the pair key:value with
-     the updated content.
+  /* NOTE: here we assume a matching between colorMap cell numbering and
+     pMap bin numbering. 
+     Since the cells are equispaced by default, the assumption will be
+     false in the case of non equispaced bins.
+     TODO: fix.
   */ 
   unsigned int xbin, ybin;
   m_map -> findBin(x, y, xbin, ybin);

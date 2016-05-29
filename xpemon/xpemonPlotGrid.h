@@ -7,9 +7,6 @@
 #include <QSize>
 
 #include "xpoldetector.h"
-#include "pulseHeightPlot.h"
-//#include "barycenterPlot.h"
-//#include "hitMap.h"
 #include "pHistogramOptions.h"
 #include "pHistogramPlot.h"
 #include "pMapPlot.h"
@@ -41,8 +38,6 @@ class xpemonPlotGrid: public QWidget
     pHistogramPlot *m_pulseHeightPlot;
     pMapPlot *m_barycenterPlot;
     pMapPlot *m_hitMap;
-    //BarycenterPlot *m_barycenterPlot;
-    //HitMap *m_hitMap;
         
 };
 
