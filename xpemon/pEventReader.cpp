@@ -85,6 +85,7 @@ void pEventReader::readPendingDatagrams()
 void pEventReader::startReading()
 {
   std::cout << "Reading data" << std::endl;
+  QMutexLocker locker(&m_mutex);
   m_stopped = false;
   m_udpSocket.bind(m_socketPortNumber);
   connect(&m_udpSocket, SIGNAL(readyRead()), 

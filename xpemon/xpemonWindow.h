@@ -27,6 +27,10 @@ class xpemonWindow : public QMainWindow
     explicit xpemonWindow(QWidget *parent = 0);
     //~xpemonWindow();
     
+  signals:
+      
+    void startAcquisition();
+  
   private slots:
   
     void startRun();

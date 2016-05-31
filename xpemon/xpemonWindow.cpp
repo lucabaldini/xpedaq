@@ -73,6 +73,8 @@ void xpemonWindow::setupConnections()
 {
   setupTransportBarConnections();
   connect(&m_refreshTimer, SIGNAL(timeout()), m_plotGrid, SLOT(refreshPlot()));
+  connect(this, SIGNAL(startAcquisition()),
+          m_eventReader, SLOT(startReading()));
   setupEvtReaderConnections();            
 }
 
@@ -140,14 +142,13 @@ void xpemonWindow::setupEvtReaderConnections()
 
 void xpemonWindow::startRun()
 {
-  //TO DO: the refresh interval should be adjustable by the GUI
   readOptions();
   m_eventReader -> setSocketPortNumber(m_options.m_socketPortNumber);
   m_eventReader -> setZeroSupThreshold(m_options.m_zeroSupThreshold);
   m_refreshTimer.start(m_options.m_refreshInterval);
-  m_eventReader -> startReading();
   m_eventReader -> moveToThread(&m_thread);
   m_thread.start();
+  emit (startAcquisition());
   std::cout << "started" << std::endl;
 }
 
