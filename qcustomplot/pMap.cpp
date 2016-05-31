@@ -133,9 +133,15 @@ double pMap::maxValue() const
 void pMap::checkBinCoord(unsigned int xIndex, unsigned int yIndex) const
 {  
   if (xIndex > m_nXbins)
-    {throw HistogramError::INVALID_BIN_NUMBER;}
+    {
+      std::cout << "Ivalid bin number: " << xIndex << std::endl;
+      throw HistogramError::INVALID_BIN_NUMBER;
+    }
   if (yIndex > m_nYbins)
-    {throw HistogramError::INVALID_BIN_NUMBER;}
+    {
+      std::cout << "Invalid bin number: " << yIndex << std::endl;
+      throw HistogramError::INVALID_BIN_NUMBER;
+    }
 }
 
 
@@ -166,6 +172,20 @@ void pMap::binCenter(unsigned int xIndex, unsigned int yIndex,
   checkBinCoord(xIndex, yIndex);
   xCenter = 0.5 * (m_xbinning.at(xIndex) + m_xbinning.at(xIndex + 1));
   yCenter = 0.5 * (m_ybinning.at(yIndex) + m_ybinning.at(yIndex + 1));
+}
+
+
+double pMap::binWidthX (unsigned int xIndex, unsigned int yIndex) const
+{
+  checkBinCoord(xIndex, yIndex);
+  return m_xbinning.at(xIndex + 1) - m_xbinning.at(xIndex);
+}
+
+
+double pMap::binWidthY (unsigned int xIndex, unsigned int yIndex) const
+{
+  checkBinCoord(xIndex, yIndex);
+  return m_ybinning.at(yIndex + 1) - m_ybinning.at(yIndex);
 }
 
 
@@ -208,7 +228,10 @@ void pMap::fillBin(unsigned int xIndex, unsigned int yIndex)
 void pMap::fill(double x, double y, double value)
 {
   if ((x > m_xmax) || (x < m_xmin) || (y > m_ymax) || (y < m_ymin))
-    {throw HistogramError::VALUE_OUT_OF_RANGE;}
+    {
+      std::cout << "Out of range!" << std::endl;
+      throw HistogramError::VALUE_OUT_OF_RANGE;
+    }
   unsigned int xIndex, yIndex;
   findBin(x, y, xIndex, yIndex);
   fillBin(xIndex, yIndex, value);

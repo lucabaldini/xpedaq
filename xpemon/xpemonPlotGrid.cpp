@@ -3,64 +3,127 @@
 xpemonPlotGrid::xpemonPlotGrid(QWidget *parent) : QWidget(parent)
 {
   m_PlotLayout = new QGridLayout(this);
-  pBasicPlotOptions pulseHeightOptions = pBasicPlotOptions(
-                                          "Evt total adc counts");
-  unsigned int pulseHeightBins = 50;
-  double pulseHeightXmin = 0.;
-  double pulseHeightXmax = 5000.;
-  m_pulseHeightPlot = new pHistogramPlot(pulseHeightBins, pulseHeightXmin,
-                                         pulseHeightXmax, pulseHeightOptions);
-  m_PlotLayout->addWidget(m_pulseHeightPlot, 0, 0);
+
+  // Get as much space as possible, starting from the preferred initial size
+  setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
   
-  //this should be done elsewhere
-  double xmax = static_cast<double> (xpoldetector::kNumPixelsX);
-  double ymax = static_cast<double> (xpoldetector::kNumPixelsY);
-  
-  m_barycenterPlot = new pMapPlot(xpoldetector::kNumPixelsX, 0., xmax,
-                                  xpoldetector::kNumPixelsY, 0., ymax);
-  m_PlotLayout->addWidget(m_barycenterPlot, 0, 1, 1, 1);
-  
-  m_hitMap = new pMapPlot(xpoldetector::kNumPixelsX, 0., xmax,
-                          xpoldetector::kNumPixelsY, 0., ymax);
-  m_PlotLayout->addWidget(m_hitMap, 1, 0, 1, 1);
-  
-  m_pulseHeightPlot->resize(400, 200);
-  m_barycenterPlot->resize(400, 300);
-  m_hitMap->resize(400, 300);
+  setupPulseHeightPlot(); 
+  setupWindowSizePlot();
+  setupHitMap();
+  setupEventDisplay();
 }
 
 
-void xpemonPlotGrid::fillPulseHeight(int pHeight)
+void xpemonPlotGrid::setupPulseHeightPlot()
+{
+  unsigned int pulseHeightBins = 100;
+  double pulseHeightXmin = 0.;
+  double pulseHeightXmax = 10000.;
+  pBasicPlotOptions pulseHeightOptions = pBasicPlotOptions(
+                                        "Evt total over threshold adc counts");
+  m_pulseHeightPlot = new pHistogramPlot(pulseHeightBins, pulseHeightXmin,
+                                         pulseHeightXmax, pulseHeightOptions);
+  m_PlotLayout->addWidget(m_pulseHeightPlot, 0, 0);
+}
+
+
+void xpemonPlotGrid::setupWindowSizePlot()
+{
+  unsigned int windowSizeBins = 100;
+  double windowSizeXmin = 0.;
+  double windowSizeXmax = 2000.;
+  pBasicPlotOptions windowSizeOptions = pBasicPlotOptions(
+                                                        "Window size (pixel)");
+  m_windowSizePlot = new pHistogramPlot(windowSizeBins, windowSizeXmin,
+                                        windowSizeXmax, windowSizeOptions);
+  m_PlotLayout->addWidget(m_windowSizePlot, 0, 1);
+}
+
+
+void xpemonPlotGrid::setupHitMap()
+{
+  //this cast should definitely be done elsewhere
+  double xmax = static_cast<double> (xpoldetector::kNumPixelsX);
+  double ymax = static_cast<double> (xpoldetector::kNumPixelsY);
+ 
+  m_hitMap = new pMapPlot(xpoldetector::kNumPixelsX, 0., xmax,
+                          xpoldetector::kNumPixelsY, 0., ymax);
+  m_PlotLayout->addWidget(m_hitMap, 1, 0);
+}
+
+
+void xpemonPlotGrid::setupEventDisplay()
+{
+  //this cast should definitely be done elsewhere
+  double xmax = static_cast<double> (xpoldetector::kNumPixelsX);
+  double ymax = static_cast<double> (xpoldetector::kNumPixelsY);
+ 
+  m_eventDisplay = new pMapPlot(xpoldetector::kNumPixelsX, 0., xmax,
+                                xpoldetector::kNumPixelsY, 0., ymax);
+  m_PlotLayout->addWidget(m_eventDisplay, 1, 1);
+}
+
+
+void xpemonPlotGrid::fillPulseHeight(unsigned int pHeight)
 {
   m_pulseHeightPlot -> fill(static_cast<double> (pHeight));
 }
 
 
-void xpemonPlotGrid::addBarycenterPoint(double xBar, double yBar)
+void xpemonPlotGrid::fillWindowSize(unsigned int xmin, unsigned int xmax,
+                                    unsigned int ymin, unsigned int ymax)
+{
+  unsigned int windowSize = (xmax -xmin + 1) * (ymax - ymin + 1);
+  m_windowSizePlot -> fill(static_cast<double> (windowSize));
+}
+
+
+void xpemonPlotGrid::fillBarycenter(double xBar, double yBar)
 {
   m_barycenterPlot -> fill(xBar,yBar);
 }
 
 
-void xpemonPlotGrid::addHitMapPoint(double x, double y, unsigned int counts)
+void xpemonPlotGrid::fillHitMap(double x, double y, unsigned int counts)
 {
-  m_hitMap -> fill(x, y, counts);
+  m_hitMap -> fill(x, y, static_cast<double> (counts));
+}
+
+
+void xpemonPlotGrid::resetEventDisplayRange(unsigned int xmin,
+                                            unsigned int xmax,
+                                            unsigned int ymin,
+                                            unsigned int ymax)
+{ 
+  // This check should be made elsewhere!
+  if ((xmax > xmin) && (ymax > ymin))
+  {  
+    m_eventDisplay -> resetData();
+    m_eventDisplay -> setRange (xmin, xmax, ymin, ymax);
+  }
+}
+
+
+void xpemonPlotGrid::fillEventDisplay(double x, double y, unsigned int counts)
+{
+  m_eventDisplay -> fill(x, y, static_cast<double> (counts));
 }
 
 
 void xpemonPlotGrid::refreshPlot()
 {
-  std::cout<<"Updating plots" << std::endl;
+  //std::cout<<"Updating plots" << std::endl;
   m_pulseHeightPlot -> replot();
-  std::cout << m_pulseHeightPlot -> entries()  << std::endl;
-  m_barycenterPlot->replot(); 
-  m_hitMap->replot(); 
+  m_windowSizePlot -> replot();
+  m_hitMap->replot();
+  m_eventDisplay -> replot();
 }
 
 void xpemonPlotGrid::resetPlot()
 {
-  m_pulseHeightPlot->reset();
-  m_barycenterPlot->reset(); 
-  m_hitMap->reset(); 
+  m_pulseHeightPlot -> reset();
+  m_windowSizePlot -> reset();
+  m_hitMap -> reset();
+  m_eventDisplay -> reset();
 }
 

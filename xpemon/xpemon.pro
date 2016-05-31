@@ -61,6 +61,7 @@ HEADERS += pDataCollector.h
 HEADERS += pRunController.h
 HEADERS += pDataFIFO.h
 HEADERS += pDataBlock.h
+HEADERS += pEvent.h
 HEADERS += CQuickUsb.h
 HEADERS += pUsbController.h
 HEADERS += pXpolFpga.h
@@ -77,7 +78,7 @@ HEADERS += xpemonWindow.h
 HEADERS += xpemonPlotGrid.h
 HEADERS += pOptionBoxWidget.h
 HEADERS += pEventReader.h
-HEADERS += pEvent.h
+HEADERS += pInfoBoxWidget.h
 
 SOURCES += xpolgui.cpp
 SOURCES += xpoldetector.cpp
@@ -109,6 +110,7 @@ SOURCES += pDataCollector.cpp
 SOURCES += pRunController.cpp
 SOURCES += pDataFIFO.cpp
 SOURCES += pDataBlock.cpp
+SOURCES += pEvent.cpp
 SOURCES += CQuickUsb.cpp
 SOURCES += pUsbController.cpp
 SOURCES += pXpolFpga.cpp
@@ -125,7 +127,7 @@ SOURCES += xpemonWindow.cpp
 SOURCES += xpemonPlotGrid.cpp
 SOURCES += pOptionBoxWidget.cpp
 SOURCES += pEventReader.cpp
-SOURCES += pEvent.cpp
+SOURCES += pInfoBoxWidget.cpp
 
 SOURCES += xpemon.cpp
 

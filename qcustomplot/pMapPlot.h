@@ -20,7 +20,18 @@ class pMapPlot : public QCustomPlot
     double sum() const;
     void fill(double x, double y);
     void fill(double x, double y, double value);
+    
+    // changes the visualized range (does not change the underlying histogram)
+    void setRange (unsigned int xmin, unsigned int xmax,
+                   unsigned int ymin, unsigned int ymax);
+    
+    // clears data both from the color map and from the histogram.
+    // resizes the color map to match the underlying histogram.
+    // replot the histogram
     void reset();
+    
+    // resets the underlying histogram (leaving the colorMap untouched)
+    void resetData();
 
   private slots:
   
@@ -31,7 +42,7 @@ class pMapPlot : public QCustomPlot
   private:
     
     void setupInteractions();
-    void resetDataMap();
+    void setupDataMap();
     
     pMap *m_map;
     QCPColorMap *m_colorMap;

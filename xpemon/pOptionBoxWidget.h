@@ -1,8 +1,6 @@
 #ifndef OPTIONBOXWIDGET_H
 #define OPTIONBOXWIDGET_H
 
-#include <iostream>
-
 #include <QLineEdit>
 #include <QGridLayout>
 #include <QWidget>

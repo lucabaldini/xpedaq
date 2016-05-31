@@ -28,16 +28,28 @@ class xpemonPlotGrid: public QWidget
 
   private slots:
     
-    void fillPulseHeight(int pHeight);
-    void addBarycenterPoint(double xBar, double yBar);
-    void addHitMapPoint(double x, double y, unsigned int counts);
+    void fillPulseHeight(unsigned int pHeight);
+    void fillWindowSize(unsigned int xmin, unsigned int xmax,
+                        unsigned int ymin, unsigned int ymax);
+    void fillBarycenter(double xBar, double yBar);
+    void fillHitMap(double x, double y, unsigned int counts);
+    void resetEventDisplayRange(unsigned xmin, unsigned xmax,
+                                unsigned ymin, unsigned ymax);
+    void fillEventDisplay(double x, double y, unsigned int counts);
      
   private:
     
+    void setupPulseHeightPlot();
+    void setupWindowSizePlot();
+    void setupHitMap();
+    void setupEventDisplay();
+    
     QGridLayout *m_PlotLayout;
     pHistogramPlot *m_pulseHeightPlot;
-    pMapPlot *m_barycenterPlot;
+    pHistogramPlot *m_windowSizePlot;
+    pMapPlot *m_barycenterPlot; // not displayed at the moment
     pMapPlot *m_hitMap;
+    pMapPlot *m_eventDisplay;
         
 };
 

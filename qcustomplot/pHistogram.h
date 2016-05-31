@@ -41,7 +41,7 @@ class pHistogram
     
     pHistogram(); // declaring default constr. private, so it cannot be called
     void initialize();
-    void checkBinNumber(unsigned int binNumber) const;
+    bool isBinInRange(unsigned int binNumber) const;
     
     unsigned int m_nBins;   // number of bins
     double m_xmin;    // minimum of xAxis
@@ -51,6 +51,8 @@ class pHistogram
     double m_maxVal;    // maximum value stored
     std::vector<unsigned int> m_entries;    // entries in each bin
     std::vector<double> m_values;    // values in each bin
+    unsigned int m_underflow;
+    unsigned int m_overflow;
 };
 
 

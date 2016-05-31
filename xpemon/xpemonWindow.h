@@ -13,8 +13,8 @@
 #include "pOptionBoxWidget.h"
 #include "xpemonPlotGrid.h"
 #include "pTransportBar.h"
-#include "qcustomplot.h"
 #include "pEventReader.h"
+#include "pInfoBoxWidget.h"
 #include "pMonitorOptions.h"
 
 class xpemonWindow : public QMainWindow
@@ -36,7 +36,10 @@ class xpemonWindow : public QMainWindow
     void reset();
     void readOptions();
   
-  protected:
+  private:
+  
+    void setupEvtReaderConnections();
+    void setupTransportBarConnections();
   
     QWidget* m_centralWidget;
     QGridLayout* m_mainGridLayout;
@@ -44,6 +47,7 @@ class xpemonWindow : public QMainWindow
     pTransportBar* m_transportBar;
     pOptionBoxWidget* m_optionBoxWidget;
     pEventReader* m_eventReader;
+    pInfoBoxWidget *m_infoBoxWidget;
     QTimer m_refreshTimer;
     QThread m_thread;
     pMonitorOptions m_options;

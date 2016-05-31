@@ -10,42 +10,66 @@ pEventReader::pEventReader(unsigned int socketPortNumber,
 
 void pEventReader::readPendingDatagram()
 {
-  std::cout << "data received" << std::endl;
+  //std::cout << "data received" << std::endl;
   char* data = new char[m_udpSocket.pendingDatagramSize()];
   QHostAddress sender;
   quint16 senderPort;
   m_udpSocket.readDatagram(data, m_udpSocket.pendingDatagramSize(),
                              &sender, &senderPort);
   pDataBlock p (reinterpret_cast<unsigned char*> (data));
-  std::cout << "created datablock: " << p << std::endl;
+  //std::cout << "created datablock: " << p << std::endl;
   std::vector<pEvent> evtVec = p.events();
   for(std::vector<pEvent>::iterator evt = evtVec.begin();
       evt != evtVec.end();
       ++evt)
   {
-    std::cout << "reading event: " << (*evt) << std::endl;
-    /*std::vector<int> pulseHeights = (*evt).pulseHeightsOverThreshold(10); 
-    for(std::vector<int>::iterator it = pulseHeights.begin();
-      it != pulseHeights.end();
-      ++it)
+    //std::cout << "reading event: " << (*evt) << std::endl;
+    using namespace event;
+    Adc_vec_t counts  = (*evt).adcCounts();
+    unsigned int xmin = (*evt).xmin();
+    unsigned int xmax = (*evt).xmax();
+    unsigned int ymin = (*evt).ymin();    
+    unsigned int ymax = (*evt).ymax();
+    unsigned int nCol = xmax - xmin + 1;  
+    
+    //std::cout << xmin << " " << ymin << " " << nCol << std::endl;
+    emit evtEventRead (xmin, xmax, ymin, ymax);
+    unsigned int adcSum = 0;
+    unsigned int highestX = 0;
+    unsigned int highestY = 0;
+    unsigned int maxVal = 0;
+    //double xBarycenter = 0.;
+    //double yBaricenter = 0.;    
+    
+    for(unsigned int index = 0; index != counts.size(); ++index)
     {
-      emit pulseHeightRead(*it);
-    } */
-    int pulseHeight = (*evt).totPulseHeightsOverThreshold(m_zeroSupThreshold);
-    std::cout << "total evt pulse hight: " << pulseHeight << std::endl;
-    emit pulseHeightRead(pulseHeight);
-    double xBar;
-    double yBar;
-    (*evt).barycenter(xBar, yBar);
-    emit barycenterRead(xBar, yBar);
+      unsigned int height = counts.at(index);
+      unsigned int x = xmin + index % nCol;
+      unsigned int y = ymin + index / nCol;
+      if (height > maxVal)
+      {
+        highestX = x;
+        highestY = y;
+        maxVal = height;
+      }
+      //std::cout << "( " << x << " , " << y << " ) = " << height << std::endl;  
+      emit pulseHeightRead((double) x, (double) y, height);
+      if (height > m_zeroSupThreshold)
+      {
+        adcSum += height;
+        //xBarycenter += height * x;
+        //yBaricenter += height * y;
+      }
+    }
+    if (adcSum > 0)
+    {
+      emit totPulseHeightRead(adcSum);
+      emit highestPixelFound(highestX, highestY);
+      //xBarycenter /= adcSum;
+      //yBaricenter /= adcSum;
+      //emit barycenterRead(xBarycenter, yBaricenter);      
+    }
   }
-
-  //debug
-  //int counter;
-  //QDataStream in(&datagram, QIODevice::ReadOnly);
-  //in.setVersion(QDataStream::Qt_4_3);
-  //in >> counter;
-  //emit pulseHeightRead(counter);
 }
 
 void pEventReader::readPendingDatagrams()

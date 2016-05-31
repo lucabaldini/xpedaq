@@ -12,17 +12,27 @@ pMapPlot::pMapPlot(unsigned int nXbins, double xmin, double xmax,
   m_colorMap = new QCPColorMap(xAxis, yAxis);
   addPlottable(m_colorMap);
   
-  /* TODO: In a QCPColorMap the first cell is centered on the lower range
-     boundary and the last cell on the upper range boundary. Thus, we need to
-     play around a bit with the initialization here, in order to recover a
-     matching with the underlying pMap (cells centered at the center of the
-     corresponding bins).
+  /* In a QCPColorMap the first cell is centered on the lower range boundary
+     and the last cell on the upper range boundary. Thus, we need to play
+     around a bit with the initialization here, in order to recover a
+     matching with the underlying pMap (i.e. center the cells at the center of
+     the corresponding bins).
+     TODO: this doesn't seem to be work! Commenting....
   */
-  QCPRange xrange = QCPRange(m_map -> xMin(), m_map -> xMax());
-  QCPRange yrange = QCPRange(m_map -> yMin(), m_map -> yMax());
+  double xPad = 0.;
+  double yPad = 0;
+  //if (m_map -> nBins() > 1)
+  //{
+  //  xPad = (m_map -> binWidthX (0,0))/2.;
+  //  yPad = (m_map -> binWidthY (0,0))/2.;
+  //}  
+  QCPRange xrange = QCPRange(m_map -> xMin() + xPad, m_map -> xMax() - xPad);
+  QCPRange yrange = QCPRange(m_map -> yMin() + yPad, m_map -> yMax() - yPad);
   m_data = new QCPColorMapData(m_map -> nXbins(), m_map -> nYbins(),
                                xrange, yrange);
   m_colorMap -> setData(m_data);
+  m_colorMap -> setTightBoundary(false); // display full cell at the boundaries
+  m_colorMap -> setInterpolate(false); //disable graphical smoothing
 
   m_colorScale = new QCPColorScale(this);
   plotLayout() -> addElement(0, 1, m_colorScale);
@@ -37,7 +47,7 @@ pMapPlot::pMapPlot(unsigned int nXbins, double xmin, double xmax,
   axisRect() -> setMarginGroup(QCP::msBottom|QCP::msTop, m_marginGroup);
   m_colorScale -> setMarginGroup(QCP::msBottom|QCP::msTop, m_marginGroup);
 
-  rescaleAxes();  
+  rescaleAxes();
   setupInteractions(); 
 }
 
@@ -47,7 +57,7 @@ void pMapPlot::setupInteractions()
   setInteractions(QCP::iRangeDrag | QCP::iRangeZoom | QCP::iSelectAxes);
   xAxis -> setSelectableParts(QCPAxis::spAxis | QCPAxis::spTickLabels);
   yAxis -> setSelectableParts(QCPAxis::spAxis | QCPAxis::spTickLabels);
-  axisRect() -> setRangeZoomFactor(0.8, 0.8);
+  axisRect() -> setRangeZoomFactor(0.9, 0.9);
   connect(this, SIGNAL(mousePress(QMouseEvent*)), this, SLOT(mousePress()));
   connect(this, SIGNAL(mouseWheel(QWheelEvent*)), this, SLOT(mouseWheel()));
   connect(this, SIGNAL(selectionChangedByUser()),
@@ -120,17 +130,11 @@ double pMapPlot::sum() const
 
 
 void pMapPlot::fill(double x, double y, double value)
-{
-  /* NOTE: here we assume a matching between colorMap cell numbering and
-     pMap bin numbering. 
-     Since the cells are equispaced by default, the assumption will be
-     false in the case of non equispaced bins.
-     TODO: fix.
-  */ 
+{ 
   unsigned int xbin, ybin;
   m_map -> findBin(x, y, xbin, ybin);
-  m_map -> fillBin(xbin, ybin, value); 
-  m_data -> setCell (xbin, ybin, m_map -> binContent(xbin, ybin));
+  m_map -> fill(xbin, ybin, value); 
+  m_data -> setData (x, y, m_map -> binContent(xbin, ybin));
   m_colorMap -> rescaleDataRange();
 }
 
@@ -141,19 +145,39 @@ void pMapPlot::fill(double x, double y)
 }
 
 
-void pMapPlot::resetDataMap()
+void pMapPlot::setRange (unsigned int xmin, unsigned int xmax,
+                         unsigned int ymin, unsigned int ymax)
+{
+  m_colorMap -> clearData();
+  QCPRange xrange = QCPRange(xmin, xmax);
+  QCPRange yrange = QCPRange(ymin, ymax);
+  m_data -> setRange (xrange, yrange);
+  m_data -> setSize(xmax - xmin, ymax - ymin);
+  rescaleAxes();
+}
+
+
+void pMapPlot::setupDataMap()
 {
   QCPRange xrange = QCPRange(m_map -> xMin(), m_map -> xMax());
   QCPRange yrange = QCPRange(m_map -> yMin(), m_map -> yMax());
   m_data -> setSize(m_map -> nXbins(), m_map -> nYbins());
   m_data -> setRange(xrange, yrange);
+  rescaleAxes();
+}
+
+
+void pMapPlot::resetData()
+{
+  m_map -> reset();
 }
 
 
 void pMapPlot::reset()
 {
+  resetData();
   m_colorMap -> clearData();
-  resetDataMap();
+  setupDataMap();
   replot();
 }
 

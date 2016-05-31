@@ -30,7 +30,8 @@ public:
 
   pColorMapOptions (QString xtitle = "x", QString ytitle = "y",
                     QString ztitle = "z", 
-                    QCPColorGradient colGradient = QCPColorGradient::gpHot) :
+                    QCPColorGradient colGradient =
+                                                QCPColorGradient::gpThermal) :
                     pBasicPlotOptions(xtitle, ytitle), m_zTitle(ztitle),
                     m_gradientType(colGradient) {};
 

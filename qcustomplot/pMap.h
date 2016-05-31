@@ -30,13 +30,15 @@ class pMap
     double yMin() const;
     double yMax() const;
     double minValue() const;
-    double maxValue() const;
+    double maxValue() const;   
     void findBin (double x, double y,
                   unsigned int & xIndex, unsigned int & yIndex) const;
     double binContent(unsigned int xIndex, unsigned int yIndex) const;
     unsigned int binEntries(unsigned int xIndex, unsigned int yIndex) const;
     void binCenter (unsigned int xIndex, unsigned int yIndex,
                     double &xCenter, double &yCenter) const;
+    double binWidthX (unsigned int xIndex, unsigned int yIndex) const;
+    double binWidthY (unsigned int xIndex, unsigned int yIndex) const;                     
     void fill(double x, double y);
     void fill(double x, double y, double value);
     void fillBin(unsigned int xIndex, unsigned int yIndex);

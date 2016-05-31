@@ -26,7 +26,7 @@ void pHistogramPlot::setupInteractions()
   setInteractions(QCP::iRangeDrag | QCP::iRangeZoom | QCP::iSelectAxes);
   xAxis -> setSelectableParts(QCPAxis::spAxis | QCPAxis::spTickLabels);
   yAxis -> setSelectableParts(QCPAxis::spAxis | QCPAxis::spTickLabels);
-  axisRect() -> setRangeZoomFactor(0.8, 0.8);
+  axisRect() -> setRangeZoomFactor(0.9, 0.9);
   connect(this, SIGNAL(mousePress(QMouseEvent*)), this, SLOT(mousePress()));
   connect(this, SIGNAL(mouseWheel(QWheelEvent*)), this, SLOT(mouseWheel()));
   connect(this, SIGNAL(selectionChangedByUser()),
@@ -106,15 +106,19 @@ void pHistogramPlot::fill(double x, double value)
      So we need to remove the old value and recreate the pair key:value with
      the updated content.
   */ 
-  unsigned int bin = m_hist -> findBin(x);
-  double key = m_hist -> binCenter(bin);
-  m_hist -> fillBin(bin, value); 
-  /* We use removeData() on a small interval centered around the key value
-     to make sure we actually remove it */
-  double tolerance = 1.e-3 * (m_hist -> binWidth(bin));
-  m_bars -> removeData(key - tolerance, key + tolerance);
-  m_bars -> addData(key, m_hist -> binContent(bin));
-  m_bars -> rescaleValueAxis();
+  m_hist -> fill(x, value);
+  try
+  {
+    unsigned int bin = m_hist -> findBin(x);
+    double key = m_hist -> binCenter(bin);
+    /* We use removeData() on a small interval centered around the key value
+       to make sure we actually remove it */
+    double tolerance = 1.e-3 * (m_hist -> binWidth(bin));
+    m_bars -> removeData(key - tolerance, key + tolerance);
+    m_bars -> addData(key, m_hist -> binContent(bin));
+    m_bars -> rescaleValueAxis();
+  }
+  catch (HistogramError histErr) {return;}
 }
 
 
