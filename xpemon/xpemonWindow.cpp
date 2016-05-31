@@ -87,6 +87,7 @@ void xpemonWindow::setupTransportBarConnections()
   connect(m_transportBar, SIGNAL(reset()), m_infoBoxWidget, SLOT(reset()));
   
   connect(m_transportBar, SIGNAL(stop()), &m_refreshTimer, SLOT(stop())); 
+  connect(m_transportBar, SIGNAL(stop()), m_plotGrid, SLOT(refreshPlot()));
   connect(m_transportBar, SIGNAL(stop()), m_eventReader, SLOT(setStopped()));
   connect(m_transportBar, SIGNAL(stop()),
           m_optionBoxWidget, SLOT(activateWidgets()));

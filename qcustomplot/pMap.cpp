@@ -8,7 +8,7 @@ pMap::pMap (unsigned int nXbins, double xmin, double xmax,
 {
   if ((m_nXbins < 1) || (m_nYbins < 1))
     {throw HistogramError::INVALID_BIN_NUMBER;}
-  if ((m_xmin >= xmax) || (m_ymin >= ymax))
+  if ((m_xmin >= m_xmax) || (m_ymin >= m_ymax))
     {throw HistogramError::INVALID_BOUNDARIES;}
   
   double xWidth = (m_xmax - m_xmin) / m_nXbins;
@@ -51,24 +51,6 @@ void pMap::initialize()
 }
 
 
-unsigned int pMap::nXbins() const
-{
-  return m_nXbins;
-}
-
-
-unsigned int pMap::nYbins() const
-{
-  return m_nYbins;
-}
-
-
-unsigned int pMap::nBins() const
-{
-  return nXbins() * nYbins();
-}
-
-
 unsigned int pMap::entries() const
 {
   unsigned int nEntries =  0.;
@@ -92,41 +74,6 @@ double pMap::sum() const
     sum+=(*it);
   }
   return sum;
-}
-
-
-double pMap::xMin() const
-{
-  return m_xmin;
-}
-
-
-double pMap::xMax() const
-{
-  return m_xmax;
-}
-
-
-double pMap::yMin() const
-{
-  return m_ymin;
-}
-
-
-double pMap::yMax() const
-{
-  return m_ymax;
-}
-
-
-double pMap::minValue() const
-{
-  return m_minVal;
-}
-
-double pMap::maxValue() const
-{
-  return m_maxVal;
 }
 
 
@@ -253,4 +200,13 @@ void pMap::reset()
   }
   m_minVal = 0.;
   m_maxVal = 0.;
+}
+
+
+std::ostream& pMap::fillStream(std::ostream& os) const
+{
+  os << "pMap object with (" << m_nXbins << " x " << m_nYbins
+     << " ) bins, range [ " << m_xmin << " , " << m_xmax << " ] - [ " 
+     << m_ymin << " , " << m_ymax << " ] " << std::endl;
+  return os; 
 }

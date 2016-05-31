@@ -1,5 +1,6 @@
 #include "xpemonPlotGrid.h"
 
+
 xpemonPlotGrid::xpemonPlotGrid(QWidget *parent) : QWidget(parent)
 {
   m_PlotLayout = new QGridLayout(this);
@@ -16,12 +17,12 @@ xpemonPlotGrid::xpemonPlotGrid(QWidget *parent) : QWidget(parent)
 
 void xpemonPlotGrid::setupPulseHeightPlot()
 {
-  unsigned int pulseHeightBins = 100;
+  unsigned int pulseHeightNbins = 100;
   double pulseHeightXmin = 0.;
   double pulseHeightXmax = 10000.;
   pBasicPlotOptions pulseHeightOptions = pBasicPlotOptions(
                                         "Evt total over threshold adc counts");
-  m_pulseHeightPlot = new pHistogramPlot(pulseHeightBins, pulseHeightXmin,
+  m_pulseHeightPlot = new pHistogramPlot(pulseHeightNbins, pulseHeightXmin,
                                          pulseHeightXmax, pulseHeightOptions);
   m_PlotLayout->addWidget(m_pulseHeightPlot, 0, 0);
 }
@@ -29,12 +30,12 @@ void xpemonPlotGrid::setupPulseHeightPlot()
 
 void xpemonPlotGrid::setupWindowSizePlot()
 {
-  unsigned int windowSizeBins = 100;
+  unsigned int windowSizeNbins = 100;
   double windowSizeXmin = 0.;
   double windowSizeXmax = 2000.;
   pBasicPlotOptions windowSizeOptions = pBasicPlotOptions(
                                                         "Window size (pixel)");
-  m_windowSizePlot = new pHistogramPlot(windowSizeBins, windowSizeXmin,
+  m_windowSizePlot = new pHistogramPlot(windowSizeNbins, windowSizeXmin,
                                         windowSizeXmax, windowSizeOptions);
   m_PlotLayout->addWidget(m_windowSizePlot, 0, 1);
 }

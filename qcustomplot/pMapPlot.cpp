@@ -5,34 +5,24 @@ pMapPlot::pMapPlot(unsigned int nXbins, double xmin, double xmax,
                    pColorMapOptions options) : m_options (options)
 {
   m_map = new pMap(nXbins, xmin, xmax, nYbins, ymin, ymax);
-  
   axisRect() -> setupFullAxesBox(true);
   xAxis -> setLabel(m_options.m_xTitle);
   yAxis -> setLabel(m_options.m_yTitle);
   m_colorMap = new QCPColorMap(xAxis, yAxis);
   addPlottable(m_colorMap);
   
-  /* In a QCPColorMap the first cell is centered on the lower range boundary
-     and the last cell on the upper range boundary. Thus, we need to play
-     around a bit with the initialization here, in order to recover a
-     matching with the underlying pMap (i.e. center the cells at the center of
-     the corresponding bins).
-     TODO: this doesn't seem to be work! Commenting....
-  */
-  double xPad = 0.;
-  double yPad = 0;
-  //if (m_map -> nBins() > 1)
-  //{
-  //  xPad = (m_map -> binWidthX (0,0))/2.;
-  //  yPad = (m_map -> binWidthY (0,0))/2.;
-  //}  
-  QCPRange xrange = QCPRange(m_map -> xMin() + xPad, m_map -> xMax() - xPad);
-  QCPRange yrange = QCPRange(m_map -> yMin() + yPad, m_map -> yMax() - yPad);
-  m_data = new QCPColorMapData(m_map -> nXbins(), m_map -> nYbins(),
-                               xrange, yrange);
+  // Initializing the QCPColorMapData with default values
+  m_data = new QCPColorMapData(1, 1, QCPRange(0., 1.), QCPRange(0., 1.));
+  // Update m_data to match the histogram binning
+  setupDataMap();
+  
   m_colorMap -> setData(m_data);
   m_colorMap -> setTightBoundary(false); // display full cell at the boundaries
   m_colorMap -> setInterpolate(false); //disable graphical smoothing
+  
+  // Do not show the grid
+  xAxis -> grid() -> setSubGridVisible(false);
+  yAxis -> grid() -> setSubGridVisible(false);
 
   m_colorScale = new QCPColorScale(this);
   plotLayout() -> addElement(0, 1, m_colorScale);
@@ -51,6 +41,32 @@ pMapPlot::pMapPlot(unsigned int nXbins, double xmin, double xmax,
   setupInteractions(); 
 }
 
+
+void pMapPlot::setupDataMap()
+{
+  setMacthingRange(m_map -> xMin(), m_map -> xMax(),
+                   m_map -> yMin(), m_map -> yMax());
+  m_data -> setSize(m_map -> nXbins(), m_map -> nYbins());
+  rescaleAxes();
+}
+
+
+void pMapPlot::setMacthingRange(unsigned int xmin, unsigned int xmax,
+                                unsigned int ymin, unsigned int ymax)
+{
+  /* In a QCPColorMap the first cell is centered on the lower range boundary
+     and the last cell on the upper range boundary. Thus, we need to shift the
+     first edge of half a bin forward and the last edge of half a bin backward,
+     in order to recover a matching with the underlying histogram (i.e. to 
+     have cells centered at the center of the corresponding bins).
+  */
+  double xPad = (m_map -> binWidthX (0,0))/2.;
+  double yPad = (m_map -> binWidthY (0,0))/2.;
+  QCPRange xrange = QCPRange(xmin + xPad, xmax - xPad);
+  QCPRange yrange = QCPRange(ymin + yPad, ymax - yPad);
+  m_data -> setRange(xrange, yrange); 
+}
+                              
 
 void pMapPlot::setupInteractions()
 {
@@ -133,7 +149,7 @@ void pMapPlot::fill(double x, double y, double value)
 { 
   unsigned int xbin, ybin;
   m_map -> findBin(x, y, xbin, ybin);
-  m_map -> fill(xbin, ybin, value); 
+  m_map -> fill(x, y, value);
   m_data -> setData (x, y, m_map -> binContent(xbin, ybin));
   m_colorMap -> rescaleDataRange();
 }
@@ -148,21 +164,8 @@ void pMapPlot::fill(double x, double y)
 void pMapPlot::setRange (unsigned int xmin, unsigned int xmax,
                          unsigned int ymin, unsigned int ymax)
 {
-  m_colorMap -> clearData();
-  QCPRange xrange = QCPRange(xmin, xmax);
-  QCPRange yrange = QCPRange(ymin, ymax);
-  m_data -> setRange (xrange, yrange);
+  setMacthingRange(xmin, xmax, ymin, ymax);
   m_data -> setSize(xmax - xmin, ymax - ymin);
-  rescaleAxes();
-}
-
-
-void pMapPlot::setupDataMap()
-{
-  QCPRange xrange = QCPRange(m_map -> xMin(), m_map -> xMax());
-  QCPRange yrange = QCPRange(m_map -> yMin(), m_map -> yMax());
-  m_data -> setSize(m_map -> nXbins(), m_map -> nYbins());
-  m_data -> setRange(xrange, yrange);
   rescaleAxes();
 }
 
@@ -170,13 +173,13 @@ void pMapPlot::setupDataMap()
 void pMapPlot::resetData()
 {
   m_map -> reset();
+  m_colorMap -> clearData();  
 }
 
 
 void pMapPlot::reset()
 {
   resetData();
-  m_colorMap -> clearData();
   setupDataMap();
   replot();
 }

@@ -19,6 +19,7 @@ class xpemonPlotGrid: public QWidget
   public:
   
     explicit xpemonPlotGrid(QWidget *parent = 0);
+    // Sets the preferred initial size
     QSize sizeHint() const {return QSize(800, 800);}
     
   public slots:
@@ -47,7 +48,7 @@ class xpemonPlotGrid: public QWidget
     QGridLayout *m_PlotLayout;
     pHistogramPlot *m_pulseHeightPlot;
     pHistogramPlot *m_windowSizePlot;
-    pMapPlot *m_barycenterPlot; // not displayed at the moment
+    pMapPlot *m_barycenterPlot; // not used at the moment
     pMapPlot *m_hitMap;
     pMapPlot *m_eventDisplay;
         

@@ -30,8 +30,12 @@ class pMapPlot : public QCustomPlot
     // replot the histogram
     void reset();
     
-    // resets the underlying histogram (leaving the colorMap untouched)
+    // resets the data in the underlying histogram and in the color map
     void resetData();
+    
+    // Terminal formatting.
+    friend std::ostream& operator<<(std::ostream& os, const pMapPlot& mapPlot)
+      {return mapPlot.m_map-> fillStream(os);}
 
   private slots:
   
@@ -43,6 +47,10 @@ class pMapPlot : public QCustomPlot
     
     void setupInteractions();
     void setupDataMap();
+    
+    //Align histogram bins and color map cells in a given range 
+    void setMacthingRange(unsigned int xmin, unsigned int xmax,
+                          unsigned int ymin, unsigned int ymax);
     
     pMap *m_map;
     QCPColorMap *m_colorMap;

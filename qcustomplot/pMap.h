@@ -20,17 +20,19 @@ class pMap
     pMap(std::vector<double> xbinning, std::vector<double> ybinning);
     pMap(unsigned int nXbins, double xmin, double xmax,
          unsigned int nYbins, double ymin, double ymax);
-    unsigned int nXbins() const;
-    unsigned int nYbins() const;
-    unsigned int nBins() const;
+    
+    unsigned int nXbins() const {return m_nXbins;}
+    unsigned int nYbins() const {return m_nYbins;}
+    unsigned int nBins() const {return nXbins() * nYbins();}
     unsigned int entries() const;
     double sum() const; //sum of the values in all bins
-    double xMin() const;
-    double xMax() const;
-    double yMin() const;
-    double yMax() const;
-    double minValue() const;
-    double maxValue() const;   
+    double xMin() const {return m_xmin;}
+    double xMax() const {return m_xmax;}
+    double yMin() const {return m_ymin;}
+    double yMax() const {return m_ymax;}
+    double minValue() const {return m_minVal;}
+    double maxValue() const {return m_maxVal;};
+    
     void findBin (double x, double y,
                   unsigned int & xIndex, unsigned int & yIndex) const;
     double binContent(unsigned int xIndex, unsigned int yIndex) const;
@@ -44,6 +46,11 @@ class pMap
     void fillBin(unsigned int xIndex, unsigned int yIndex);
     void fillBin(unsigned int xIndex, unsigned int yIndex, double value);
     void reset();
+    
+    // Terminal formatting.
+    std::ostream& fillStream(std::ostream& os) const;
+    friend std::ostream& operator<<(std::ostream& os, const pMap& map)
+      {return map.fillStream(os);}
    
   private:
     
