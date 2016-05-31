@@ -38,7 +38,7 @@ class pEventReader: public QObject
     double m_zeroSupThreshold;
     bool m_stopped;
     QMutex m_mutex;
-    QUdpSocket m_udpSocket;
+    QUdpSocket* m_udpSocket;
 
     void readPendingDatagram();
     pDataBlock readDataBlock(QByteArray const &datagram);

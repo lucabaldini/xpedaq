@@ -5,16 +5,17 @@ pEventReader::pEventReader(unsigned int socketPortNumber,
                            m_socketPortNumber(socketPortNumber),
                            m_zeroSupThreshold(zeroSupThreshold)
 {
+  m_udpSocket = new QUdpSocket (this);
 }
 
 
 void pEventReader::readPendingDatagram()
 {
   //std::cout << "data received" << std::endl;
-  char* data = new char[m_udpSocket.pendingDatagramSize()];
+  char* data = new char[m_udpSocket -> pendingDatagramSize()];
   QHostAddress sender;
   quint16 senderPort;
-  m_udpSocket.readDatagram(data, m_udpSocket.pendingDatagramSize(),
+  m_udpSocket -> readDatagram(data, m_udpSocket -> pendingDatagramSize(),
                              &sender, &senderPort);
   pDataBlock p (reinterpret_cast<unsigned char*> (data));
   //std::cout << "created datablock: " << p << std::endl;
@@ -75,7 +76,7 @@ void pEventReader::readPendingDatagram()
 void pEventReader::readPendingDatagrams()
 {  
   QMutexLocker locker(&m_mutex);
-  while ((!m_stopped) && (m_udpSocket.hasPendingDatagrams()))
+  while ((!m_stopped) && (m_udpSocket -> hasPendingDatagrams()))
   {
     readPendingDatagram();
   }
@@ -87,8 +88,8 @@ void pEventReader::startReading()
   std::cout << "Reading data" << std::endl;
   QMutexLocker locker(&m_mutex);
   m_stopped = false;
-  m_udpSocket.bind(m_socketPortNumber);
-  connect(&m_udpSocket, SIGNAL(readyRead()), 
+  m_udpSocket -> bind(m_socketPortNumber);
+  connect(m_udpSocket, SIGNAL(readyRead()), 
           this, SLOT(readPendingDatagrams()));
 }
 
@@ -96,7 +97,7 @@ void pEventReader::startReading()
 void pEventReader::setStopped()
 {
   QMutexLocker locker(&m_mutex);
-  m_udpSocket.disconnectFromHost();
+  m_udpSocket -> disconnectFromHost();
   m_stopped = true;
   emit stopped();
 }
