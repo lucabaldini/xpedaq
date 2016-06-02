@@ -103,10 +103,7 @@ double pHistogram::maxValue() const
 unsigned int pHistogram::findBin (double x) const
 {
   if ((x > m_xmax) || (x < m_xmin))
-    {
-      //std::cout << "Out of range: " << x << std::endl;
-      throw HistogramError::VALUE_OUT_OF_RANGE;
-    }
+    {throw HistogramError::VALUE_OUT_OF_RANGE;}
   unsigned int ibin = 0;
   for (ibin = 0; ibin < m_nBins; ++ibin)
   {
@@ -160,10 +157,7 @@ double pHistogram::binCenter(unsigned int binNumber) const
 void pHistogram::fillBin(unsigned int binNumber, double value)
 {
   if (! isBinInRange(binNumber))
-  {
-    m_overflow += 1;
-    return;
-  }
+    {throw HistogramError::INVALID_BIN_NUMBER;}
   m_values.at(binNumber) += value;
   m_entries.at(binNumber) += 1;
   if (m_values.at(binNumber) > maxValue()) {m_maxVal = m_values.at(binNumber);}

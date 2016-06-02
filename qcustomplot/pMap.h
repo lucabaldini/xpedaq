@@ -4,6 +4,8 @@
 #include <vector>
 #include <math.h>
 #include <iostream>
+#include <sstream>
+#include <iomanip>
 
 #include "histogramUtils.h"
 

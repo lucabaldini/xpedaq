@@ -30,13 +30,10 @@ class xpemonPlotGrid: public QWidget
   private slots:
     
     void fillPulseHeight(unsigned int pHeight);
-    void fillWindowSize(unsigned int xmin, unsigned int xmax,
-                        unsigned int ymin, unsigned int ymax);
+    void writeWindow(unsigned int xmin, unsigned int xmax,
+                     unsigned int ymin, unsigned int ymax);
     void fillBarycenter(double xBar, double yBar);
-    void fillHitMap(double x, double y, unsigned int counts);
-    void resetEventDisplayRange(unsigned xmin, unsigned xmax,
-                                unsigned ymin, unsigned ymax);
-    void fillEventDisplay(double x, double y, unsigned int counts);
+    void writePoint(unsigned int x, unsigned int y, unsigned int counts);
      
   private:
     

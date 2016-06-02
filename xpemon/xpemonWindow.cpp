@@ -102,22 +102,16 @@ void xpemonWindow::setupEvtReaderConnections()
 {
   connect(m_eventReader, SIGNAL(stopped()), this, SLOT(stopRun()));
     
-  connect(m_eventReader, SIGNAL(evtEventRead(unsigned int, unsigned int,
-                                             unsigned int, unsigned int)),
-          m_plotGrid, SLOT(resetEventDisplayRange(unsigned int, unsigned int,
-                                                 unsigned int, unsigned int)));
-                                                 
-  connect(m_eventReader, SIGNAL(evtEventRead(unsigned int, unsigned int,
-                                             unsigned int, unsigned int)),
-          m_plotGrid, SLOT(fillWindowSize(unsigned int, unsigned int,
-                                          unsigned int, unsigned int)));
-                                          
-  connect(m_eventReader, SIGNAL(evtEventRead(unsigned int, unsigned int,
-                                             unsigned int, unsigned int)),
+  connect(m_eventReader, SIGNAL(eventRead(unsigned int, unsigned int,
+                                          unsigned int, unsigned int)),
+          m_plotGrid, SLOT(writeWindow(unsigned int, unsigned int,
+                                       unsigned int, unsigned int)));                                          
+  connect(m_eventReader, SIGNAL(eventRead(unsigned int, unsigned int,
+                                          unsigned int, unsigned int)),
           m_infoBoxWidget, SLOT(updateCounter()));
           
-  connect(m_eventReader, SIGNAL(evtEventRead(unsigned int, unsigned int,
-                                             unsigned int, unsigned int)),
+  connect(m_eventReader, SIGNAL(eventRead(unsigned int, unsigned int,
+                                          unsigned int, unsigned int)),
           m_infoBoxWidget, SLOT(updateWindowSize(unsigned int, unsigned int,
                                                  unsigned int, unsigned int)));
                                                  
@@ -129,14 +123,13 @@ void xpemonWindow::setupEvtReaderConnections()
   connect(m_eventReader, SIGNAL(totPulseHeightRead(unsigned int)), 
           m_plotGrid, SLOT(fillPulseHeight(unsigned int)));
           
-  connect(m_eventReader, SIGNAL(barycenterRead(double, double)), 
-          m_plotGrid, SLOT(fillBarycenter(double, double)));
+  //connect(m_eventReader, SIGNAL(barycenterRead(double, double)), 
+  //        m_plotGrid, SLOT(fillBarycenter(double, double)));
           
-  connect(m_eventReader, SIGNAL(pulseHeightRead(double, double, unsigned int)), 
-          m_plotGrid, SLOT(fillHitMap(double, double, unsigned int)));
-          
-  connect(m_eventReader, SIGNAL(pulseHeightRead(double, double, unsigned int)), 
-          m_plotGrid, SLOT(fillEventDisplay(double, double, unsigned int)));
+  connect(m_eventReader, SIGNAL(pulseHeightRead(unsigned int, unsigned int,
+                                                              unsigned int)), 
+          m_plotGrid, SLOT(writePoint(unsigned int, unsigned int,
+                                                    unsigned int)));
 }
 
 

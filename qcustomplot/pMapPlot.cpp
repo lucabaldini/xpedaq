@@ -145,6 +145,20 @@ double pMapPlot::sum() const
 }
 
 
+void pMapPlot::fillBin(unsigned int xbin, unsigned int ybin, double value)
+{ 
+  m_map -> fillBin(xbin, ybin, value);
+  m_data -> setData (xbin, ybin, m_map -> binContent(xbin, ybin));
+  m_colorMap -> rescaleDataRange();
+}
+
+
+void pMapPlot::fillBin(unsigned int xbin, unsigned int ybin)
+{
+  fillBin(xbin, ybin, 1.);
+}
+
+
 void pMapPlot::fill(double x, double y, double value)
 { 
   unsigned int xbin, ybin;
