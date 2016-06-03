@@ -45,6 +45,7 @@ HEADERS += pHistogram.h
 HEADERS += pHistogramPlot.h
 HEADERS += pMap.h
 HEADERS += pMapPlot.h
+HEADERS += pCustomColorMapPlot.h
  
 HEADERS += pQtGridLayoutWidget.h
 HEADERS += pQtGroupBoxWidget.h
@@ -94,6 +95,7 @@ SOURCES += pHistogram.cpp
 SOURCES += pHistogramPlot.cpp
 SOURCES += pMap.cpp
 SOURCES += pMapPlot.cpp
+SOURCES += pCustomColorMapPlot.cpp
 
 SOURCES += pQtGridLayoutWidget.cpp
 SOURCES += pQtGroupBoxWidget.cpp

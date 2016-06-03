@@ -21,7 +21,7 @@ void xpemonPlotGrid::setupPulseHeightPlot()
   double pulseHeightXmin = 0.;
   double pulseHeightXmax = 10000.;
   pBasicPlotOptions pulseHeightOptions = pBasicPlotOptions(
-                                        "Evt total over threshold adc counts");
+                               "Evt total over threshold adc counts", "n. evt");
   m_pulseHeightPlot = new pHistogramPlot(pulseHeightNbins, pulseHeightXmin,
                                          pulseHeightXmax, pulseHeightOptions);
   m_PlotLayout->addWidget(m_pulseHeightPlot, 0, 0);
@@ -34,7 +34,7 @@ void xpemonPlotGrid::setupWindowSizePlot()
   double windowSizeXmin = 0.;
   double windowSizeXmax = 2000.;
   pBasicPlotOptions windowSizeOptions = pBasicPlotOptions(
-                                                        "Window size (pixel)");
+                                              "Window size (pixel)", "n. evt");
   m_windowSizePlot = new pHistogramPlot(windowSizeNbins, windowSizeXmin,
                                         windowSizeXmax, windowSizeOptions);
   m_PlotLayout->addWidget(m_windowSizePlot, 0, 1);
@@ -56,14 +56,9 @@ void xpemonPlotGrid::setupHitMap()
 
 void xpemonPlotGrid::setupEventDisplay()
 {
-  //this cast should definitely be done elsewhere
-  double xmax = static_cast<double> (xpoldetector::kNumPixelsX);
-  double ymax = static_cast<double> (xpoldetector::kNumPixelsY);
   pColorMapOptions eventDisplayOptions ("x", "y", "counts",
                                         QCPColorGradient::gpThermal);
-  m_eventDisplay = new pMapPlot(xpoldetector::kNumPixelsX, 0., xmax,
-                                xpoldetector::kNumPixelsY, 0., ymax,
-                                eventDisplayOptions);
+  m_eventDisplay = new pCustomColorMapPlot(eventDisplayOptions);
   m_PlotLayout->addWidget(m_eventDisplay, 1, 1);
 }
 
@@ -79,8 +74,9 @@ void xpemonPlotGrid::writeWindow(unsigned int xmin, unsigned int xmax,
 {
   unsigned int windowSize = (xmax -xmin + 1) * (ymax - ymin + 1);
   m_windowSizePlot -> fill(static_cast<double> (windowSize));
-  m_eventDisplay -> resetData();
+  m_eventDisplay -> clearMap();
   m_eventDisplay -> setRange (xmin, xmax, ymin, ymax);
+  m_eventDisplay -> setSize (xmax-xmin, ymax-ymin);
 }
 
 
@@ -92,12 +88,12 @@ void xpemonPlotGrid::fillBarycenter(double xBar, double yBar)
 
 void xpemonPlotGrid::writePoint(unsigned int x, unsigned int y,
                                 unsigned int counts)
-{
-  // I am making the casting explicitly here ('fill()' requires double)
-  m_hitMap -> fill(static_cast<double>(x), static_cast<double>(y),
-                   static_cast<double> (counts));
-  m_eventDisplay -> fill(static_cast<double>(x), static_cast<double>(y),
-                         static_cast<double> (counts));
+{  
+  double dx = static_cast<double>(x);
+  double dy = static_cast<double>(y);
+  double dcounts = static_cast<double> (counts);
+  m_hitMap -> fill(dx, dy, dcounts);
+  m_eventDisplay -> setDataContent(dx, dy, dcounts);
 }
 
 
@@ -115,6 +111,6 @@ void xpemonPlotGrid::resetPlot()
   m_pulseHeightPlot -> reset();
   m_windowSizePlot -> reset();
   m_hitMap -> reset();
-  m_eventDisplay -> reset();
+  m_eventDisplay -> clearMap();
 }
 
