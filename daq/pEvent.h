@@ -21,15 +21,20 @@ class pEvent
            event::Adc_vec_t adcCounts);
   public:
     
-    const event::Adc_vec_t & adcCounts () const { return m_adcCounts;}     // vector of all the pulse heights
-    unsigned int xmin() const {return m_xmin;}
-    unsigned int xmax() const {return m_xmax;}
-    unsigned int ymin() const {return m_ymin;}
-    unsigned int ymax() const {return m_ymax;}
-    unsigned int bufferId() const {return m_bufferId;}
-    unsigned int nColumns() const;
-    unsigned int nRows() const;
+    // vector of all the pulse heights
+    inline const event::Adc_vec_t & adcCounts () const { return m_adcCounts;}
+    inline unsigned int buffSize() const {return m_adcCounts.size();}
+    inline unsigned int xmin() const {return m_xmin;}
+    inline unsigned int xmax() const {return m_xmax;}
+    inline unsigned int ymin() const {return m_ymin;}
+    inline unsigned int ymax() const {return m_ymax;}
+    inline unsigned int bufferId() const {return m_bufferId;}
+    inline unsigned int nColumns() const;
+    inline unsigned int nRows() const;
     unsigned int totalAdcCounts() const; // sum of all pulse heights
+    
+    const unsigned int& operator()(unsigned int index) const
+    {return m_adcCounts.at(index);}
     
     // Terminal formatting.
     std::ostream& fillStream(std::ostream& os) const;

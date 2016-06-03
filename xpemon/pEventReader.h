@@ -26,11 +26,12 @@ class pEventReader: public QObject
   
   signals:
     void stopped();
-    void evtEventRead(unsigned int xmin, unsigned int xmax,
-                      unsigned int ymin, unsigned int ymax);    
-    void pulseHeightRead(double x, double y, unsigned int pulseHeight);
+    void eventRead(unsigned int xmin, unsigned int xmax,
+                   unsigned int ymin, unsigned int ymax);    
+    void pulseHeightRead(unsigned int x, unsigned int y,
+                         unsigned int pulseHeight);
     void totPulseHeightRead(unsigned int totPulseHeight);
-    void barycenterRead(double xBar, double yBar);
+    //void barycenterRead(double xBar, double yBar);
     void highestPixelFound(unsigned int highestX, unsigned int highestY);
   
   private:

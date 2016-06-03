@@ -17,8 +17,10 @@ class pHistogramPlot: public QCustomPlot
     
     unsigned int entries() const;
     double sum() const;
-    void fill(double x);
+    void fillBin(unsigned int binNumber, double value);
+    void fillBin(unsigned int binNumber);
     void fill(double x, double value);
+    void fill(double x);
     void reset();
 
   private slots:
@@ -34,6 +36,9 @@ class pHistogramPlot: public QCustomPlot
     pHistogram *m_hist;
     QCPBars *m_bars;
     pBasicPlotOptions m_options;
+    
+    // Needed to properly remove key in QCPBars data
+    double m_centerPosTolerance;
     
 };
 

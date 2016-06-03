@@ -200,6 +200,18 @@ double pDataBlock::averageEventRate() const
 
 /*
 */
+unsigned int pDataBlock::pixelCounts(unsigned int event,
+                                     unsigned int index) const
+{
+  /* TODO: we probably need to check that index < numPixels() and throw an
+     exception in case it is not.
+  */
+  return dataWord(event, AdcStart + 2*index);
+}                                    
+
+
+/*
+*/
 pEvent pDataBlock::event(unsigned int evtIndex)
 {
   
@@ -221,13 +233,13 @@ pEvent pDataBlock::event(unsigned int evtIndex)
 */
 std::vector<pEvent> pDataBlock::events()
 {
+  unsigned int nEvt = numEvents();
   std::vector<pEvent> evtVect;
-  for (unsigned int i =0; i < (this->numEvents()); i++)
-  {
-    evtVect.push_back(this->event(i));
-  }
+  for (unsigned int i =0; i < nEvt; i++)
+    {evtVect.push_back(event(i));}
   return evtVect;
 }
+
 
 /*!
   Terminal formatting.

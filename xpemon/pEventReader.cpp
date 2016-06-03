@@ -12,55 +12,59 @@ pEventReader::pEventReader(unsigned int socketPortNumber,
 void pEventReader::readPendingDatagram()
 {
   //std::cout << "data received" << std::endl;
-  char* data = new char[m_udpSocket -> pendingDatagramSize()];
-  QHostAddress sender;
-  quint16 senderPort;
-  m_udpSocket -> readDatagram(data, m_udpSocket -> pendingDatagramSize(),
-                             &sender, &senderPort);
-  pDataBlock p (reinterpret_cast<unsigned char*> (data));
-  //std::cout << "created datablock: " << p << std::endl;
-  std::vector<pEvent> evtVec = p.events();
-  for(std::vector<pEvent>::iterator evt = evtVec.begin();
-      evt != evtVec.end();
-      ++evt)
+  qint64 size = m_udpSocket -> pendingDatagramSize();
+  //we need a char* because QUdpSocket->readDatagram works that way  
+  char* data = new (std::nothrow) char[size];
+  if (data == nullptr)
   {
-    //std::cout << "reading event: " << (*evt) << std::endl;
-    using namespace event;
-    Adc_vec_t counts  = (*evt).adcCounts();
-    unsigned int xmin = (*evt).xmin();
-    unsigned int xmax = (*evt).xmax();
-    unsigned int ymin = (*evt).ymin();    
-    unsigned int ymax = (*evt).ymax();
-    unsigned int nCol = xmax - xmin + 1;  
-    
-    //std::cout << xmin << " " << ymin << " " << nCol << std::endl;
-    emit evtEventRead (xmin, xmax, ymin, ymax);
+    std::cout << "allocation failed" << std::endl;
+    return;
+  }
+  m_udpSocket -> readDatagram(data, size);
+  /* When instantiating a pDataBlock we are really just passing to it a pointer
+     to the buffer - no actual copy of the data involved.
+     Here we do not create the pDataBlock dinamycally, so that it goes out
+     of scope at the end of the function and the buffer gets deleted from memory
+     (see the destructor of pDataBlock).
+     Note: the cast on the pointer passed as argument does not modify the
+     content of the buffer.
+  */
+
+  pDataBlock p (reinterpret_cast<unsigned char*> (data));
+  for (unsigned int evt = 0; evt < p.numEvents(); ++evt)
+  {
+    unsigned int xmin = p.xmin(evt);
+    unsigned int xmax = p.xmax(evt);
+    unsigned int ymin = p.ymin(evt);    
+    unsigned int ymax = p.ymax(evt);
+    if ((xmax <= xmin) || (ymax <= ymin))
+    {
+      std::cout << "Invalid event of index " <<  evt  << " in " << p;
+      continue;
+    }    
+    emit eventRead (xmin, xmax, ymin, ymax);
+    unsigned int nPixel = p.numPixels(evt);
+    unsigned int nCol = xmax - xmin +1;
     unsigned int adcSum = 0;
     unsigned int highestX = 0;
     unsigned int highestY = 0;
     unsigned int maxVal = 0;
-    //double xBarycenter = 0.;
-    //double yBaricenter = 0.;    
-    
-    for(unsigned int index = 0; index != counts.size(); ++index)
+    for (unsigned int index = 0; index < nPixel; index += 1)
     {
-      unsigned int height = counts.at(index);
+      unsigned int height = p.pixelCounts(evt, index);
+      if (height < m_zeroSupThreshold) continue;
       unsigned int x = xmin + index % nCol;
       unsigned int y = ymin + index / nCol;
+      emit pulseHeightRead(x, y, height);
+      adcSum += height;
       if (height > maxVal)
       {
         highestX = x;
         highestY = y;
         maxVal = height;
       }
-      //std::cout << "( " << x << " , " << y << " ) = " << height << std::endl;  
-      emit pulseHeightRead((double) x, (double) y, height);
-      if (height > m_zeroSupThreshold)
-      {
-        adcSum += height;
-        //xBarycenter += height * x;
-        //yBaricenter += height * y;
-      }
+      //xBarycenter += height * x;
+      //yBaricenter += height * y;
     }
     if (adcSum > 0)
     {
@@ -71,7 +75,9 @@ void pEventReader::readPendingDatagram()
       //emit barycenterRead(xBarycenter, yBaricenter);      
     }
   }
-}
+  data = NULL; //will point to garbage when the pDataBlock goes out of scope
+}  
+
 
 void pEventReader::readPendingDatagrams()
 {  

@@ -14,7 +14,8 @@ pHistogramPlot::pHistogramPlot(unsigned int nBins, double xmin, double xmax,
   m_bars = new QCPBars(xAxis, yAxis);
   addPlottable(m_bars);
   m_bars -> keyAxis() -> setRange(m_hist -> xMin(), m_hist -> xMax());
-  m_bars -> setWidth(m_hist -> binWidth(0)); // temporary solution!
+  m_bars -> setWidth(m_hist -> binWidth(0)); // fix this!
+  m_centerPosTolerance = 1.e-4 * (m_hist -> binWidth(0));  // fix this!
   xAxis -> setLabel(m_options.m_xTitle);
   yAxis -> setLabel(m_options.m_yTitle);
   setupInteractions();
@@ -98,7 +99,7 @@ double pHistogramPlot::sum() const
 }
 
 
-void pHistogramPlot::fill(double x, double value)
+void pHistogramPlot::fillBin(unsigned int binIndex, double value)
 {
   /* QCPBars does not provide a method for incrementing the content of a bin.
      The default beahviour, when the function addData() is called on
@@ -106,19 +107,54 @@ void pHistogramPlot::fill(double x, double value)
      So we need to remove the old value and recreate the pair key:value with
      the updated content.
   */ 
-  m_hist -> fill(x, value);
+  
+  // The fillBin function thorws an error if the bin doesn't exist
+  try
+    {m_hist -> fillBin(binIndex, value);}
+  catch (HistogramError histErr)
+  { 
+    std::cout << "Invalid bin number: " << binIndex << ". No entry filled."
+              <<  std::endl;
+    return;
+  }
+  double key = m_hist -> binCenter(binIndex);
+  /* We use removeData() on a small interval centered around the key value
+     to make sure we actually remove it */
+  m_bars -> removeData(key - m_centerPosTolerance, key + m_centerPosTolerance);
+  m_bars -> addData(key, m_hist -> binContent(binIndex));
+  m_bars -> rescaleValueAxis();
+}
+
+void pHistogramPlot::fillBin(unsigned int binIndex)
+{
+  fillBin(binIndex, 1.);
+}
+
+
+void pHistogramPlot::fill(double x, double value)
+{
+  /* QCPBars does not provide a method for incrementing the content of a bin.
+     The default beahviour, when the function addData() is called on
+     a key which already exists, is to create another entry for the same key.
+     So we need to remove the old value and recreate the pair key:value with
+     the updated content.
+  */
+  
+  //This is outside the try block so that it fills the overflow/underflow
+  m_hist -> fill(x, value); 
+  
   try
   {
-    unsigned int bin = m_hist -> findBin(x);
-    double key = m_hist -> binCenter(bin);
+    unsigned int binIndex = m_hist -> findBin(x);
+    double key = m_hist -> binCenter(binIndex);
     /* We use removeData() on a small interval centered around the key value
-       to make sure we actually remove it */
-    double tolerance = 1.e-3 * (m_hist -> binWidth(bin));
-    m_bars -> removeData(key - tolerance, key + tolerance);
-    m_bars -> addData(key, m_hist -> binContent(bin));
-    m_bars -> rescaleValueAxis();
+     to make sure we actually remove it */
+    m_bars -> removeData(key - m_centerPosTolerance,
+                         key + m_centerPosTolerance);
+    m_bars -> addData(key, m_hist -> binContent(binIndex));
   }
   catch (HistogramError histErr) {return;}
+  m_bars -> rescaleValueAxis();
 }
 
 
