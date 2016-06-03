@@ -1,7 +1,7 @@
 //Input file path//
-/data37/users/xpol/data/xpol.mdat
+D:\\xpe\xpedaq\data\test_fe_500evts.mdat
 //Multicast address//
-212.189.159.216
+127.0.0.1
 //Multicast port//
 50001
 //Sleep time (ms)//
