@@ -19,8 +19,8 @@ void pMapPlot::setupDataMap()
 }
 
 
-void pMapPlot::setMacthingRange(unsigned int xmin, unsigned int xmax,
-                                unsigned int ymin, unsigned int ymax)
+void pMapPlot::setMacthingRange(double xmin, double xmax,
+                                double ymin, double ymax)
 {
   /* In a QCPColorMap the first cell is centered on the lower range boundary
      and the last cell on the upper range boundary. Thus, we need to shift the
@@ -28,8 +28,8 @@ void pMapPlot::setMacthingRange(unsigned int xmin, unsigned int xmax,
      in order to recover a matching with the underlying histogram (i.e. to 
      have cells centered at the center of the corresponding bins).
   */
-  double xPad = (m_map -> binWidthX (0,0))/2.;
-  double yPad = (m_map -> binWidthY (0,0))/2.;
+  double xPad = (m_map -> binWidthX())/2.;
+  double yPad = (m_map -> binWidthY())/2.;
   setRange(xmin + xPad, xmax - xPad, ymin + yPad, ymax - yPad); 
 }
                               
@@ -50,9 +50,15 @@ void pMapPlot::fillBin(unsigned int xbin, unsigned int ybin)
 
 void pMapPlot::fill(double x, double y, double value)
 { 
+  m_map -> fill(x, y, value);
+  /* To fill the ColorDataMap we could use setDataContent(), but since we need
+     to call findBin() anyway (to retrive the content of the corresponding
+     histogram bin) it is worth using setCellContent() instead, which is faster.
+     Note that this assumes matching between cell numbering and bin numbering,
+     which should always be true by construction.
+  */
   unsigned int xbin, ybin;
   m_map -> findBin(x, y, xbin, ybin);
-  m_map -> fill(x, y, value);
   setCellContent (xbin, ybin, m_map -> binContent(xbin, ybin));
   rescaleDataRange();
 }

@@ -2,17 +2,15 @@
 
 pHistogram::pHistogram (unsigned int nBins, double xmin, double xmax):
                         m_nBins(nBins), m_xmin(xmin), m_xmax(xmax),
-                        m_minVal(0.), m_maxVal(0.),
+                        m_isLinear (true), m_minVal(0.), m_maxVal(0.),
                         m_underflow (0), m_overflow(0)
 {
-  if (m_nBins < 1)
-    {throw HistogramError::INVALID_BIN_NUMBER;}
-  if (m_xmin > xmax)
-    {throw HistogramError::INVALID_BOUNDARIES;}
+  if (m_nBins < 1) throw HistogramError::INVALID_NUMBER_OF_BINS;
+  if (m_xmin > xmax) throw HistogramError::INVALID_BOUNDARIES;
   
-  double width = (m_xmax - m_xmin) / nBins;
+  m_binWidth = (m_xmax - m_xmin) / nBins;
   for (unsigned int ibin = 0; ibin <= m_nBins; ++ibin)
-    {m_binEdges.push_back(m_xmin + ibin * width);}
+    {m_binEdges.push_back(m_xmin + ibin * m_binWidth);}
   initialize();
 }
 
@@ -28,6 +26,8 @@ pHistogram::pHistogram(std::vector<double> binning):
   if (!isOrdered(m_binEdges))
     {throw HistogramError::INVALID_BINNING;}
   
+  m_isLinear = false;
+  m_binWidth = -1.;
   m_nBins = m_binEdges.size() - 1;
   m_xmin = m_binEdges.at(0);
   m_xmax = m_binEdges.at(m_nBins);
@@ -42,12 +42,6 @@ void pHistogram::initialize()
     m_values.push_back(0.);
     m_entries.push_back(0);
   }
-}
-
-
-unsigned int pHistogram::nbins() const
-{
-  return m_binEdges.size() - 1;
 }
 
 
@@ -77,87 +71,55 @@ double pHistogram::sum() const
 }
 
 
-double pHistogram::xMin() const
-{
-  return m_xmin;
-}
-
-
-double pHistogram::xMax() const
-{
-  return m_xmax;
-}
-
-
-double pHistogram::minValue() const
-{
-  return m_minVal;
-}
-
-double pHistogram::maxValue() const
-{
-  return m_maxVal;
+bool pHistogram::isBinInRange(unsigned int binNumber) const
+{  
+  if (binNumber > m_nBins) return false;
+  return true;
 }
 
 
 unsigned int pHistogram::findBin (double x) const
 {
-  if ((x > m_xmax) || (x < m_xmin))
-    {throw HistogramError::VALUE_OUT_OF_RANGE;}
-  unsigned int ibin = 0;
-  for (ibin = 0; ibin < m_nBins; ++ibin)
-  {
-    if ((x >= m_binEdges.at(ibin)) && (x <= m_binEdges.at(ibin + 1)))
-    {return ibin;}
-  }
-  return ibin; // never occurs
-}
-
-
-bool pHistogram::isBinInRange(unsigned int binNumber) const
-{  
-  if (binNumber > m_nBins)
-    {return false;}
-  return true;
+  if (x < m_xmin) throw HistogramError::VALUE_LOWER_THAN_AXIS_RANGE;
+  if (x >= m_xmax) throw HistogramError::VALUE_GREATER_THAN_AXIS_RANGE;
+  
+  if (m_isLinear) return static_cast<unsigned int> ((x - m_xmin) / m_binWidth);
+  return findPosition(m_binEdges, x);
 }
 
 
 double pHistogram::binContent(unsigned int binNumber) const
 {
-  if (! isBinInRange(binNumber))
-    {throw HistogramError::BIN_OUT_OF_RANGE;}
+  if (! isBinInRange(binNumber)) throw HistogramError::BIN_OUT_OF_RANGE;
   return m_values.at(binNumber);
 }
 
 
 unsigned int pHistogram::binEntries(unsigned int binNumber) const
 {
-  if (! isBinInRange(binNumber))
-    {throw HistogramError::BIN_OUT_OF_RANGE;}
+  if (! isBinInRange(binNumber)) throw HistogramError::BIN_OUT_OF_RANGE;
   return m_entries.at(binNumber);
 }
 
 
 double pHistogram::binWidth(unsigned int binNumber) const
 {
-  if (! isBinInRange(binNumber))
-    {throw HistogramError::BIN_OUT_OF_RANGE;}
-  return m_binEdges.at(binNumber+1) - m_binEdges.at(binNumber);
+  if (! isBinInRange(binNumber)) throw HistogramError::BIN_OUT_OF_RANGE;
+  if (m_isLinear) return m_binWidth;
+  return (m_binEdges.at(binNumber+1) - m_binEdges.at(binNumber));
 }
 
 
 double pHistogram::binCenter(unsigned int binNumber) const
 {
-  if (! isBinInRange(binNumber))
-    {throw HistogramError::BIN_OUT_OF_RANGE;}
+  if (! isBinInRange(binNumber)) throw HistogramError::BIN_OUT_OF_RANGE;
   return 0.5*(m_binEdges.at(binNumber+1) + m_binEdges.at(binNumber));
 }
 
 
 void pHistogram::fillBin(unsigned int binNumber, double value)
 {
-  if (! isBinInRange(binNumber))
-    {throw HistogramError::INVALID_BIN_NUMBER;}
+  if (! isBinInRange(binNumber)) throw HistogramError::BIN_OUT_OF_RANGE;
   m_values.at(binNumber) += value;
   m_entries.at(binNumber) += 1;
   if (m_values.at(binNumber) > maxValue()) {m_maxVal = m_values.at(binNumber);}
@@ -173,18 +135,26 @@ void pHistogram::fillBin(unsigned int binNumber)
 
 void pHistogram::fill(double x, double value)
 {
-  if (x > m_xmax)
+  try
   {
-    m_overflow += 1;
-    return;
+    unsigned int binIndex  = findBin(x);
+    fillBin(binIndex, value);
   }
-  else if (x < m_xmin)
+  catch (HistogramError histErr)
   {
-    m_underflow += 1;
-    return;
+   switch (histErr)
+   {
+     case HistogramError::VALUE_LOWER_THAN_AXIS_RANGE:
+       m_underflow += 1;
+       break;  
+     case HistogramError::VALUE_GREATER_THAN_AXIS_RANGE:
+       m_overflow += 1;
+       break;
+     default:
+       std::cout << "Could not fill value " << x << std::endl;
+       break;
+   }    
   }
-  else
-    {fillBin(findBin(x), value);}
 }
 
 

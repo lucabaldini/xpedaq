@@ -140,7 +140,7 @@ void pHistogramPlot::fill(double x, double value)
      the updated content.
   */
   
-  //This is outside the try block so that it fills the overflow/underflow
+  //This is outside the try block so that it can fill the overflow/underflow
   m_hist -> fill(x, value); 
   
   try

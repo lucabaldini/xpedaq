@@ -48,8 +48,9 @@ void xpemonPlotGrid::setupHitMap()
   double ymax = static_cast<double> (xpoldetector::kNumPixelsY);
   pColorMapOptions hitMapOptions ("x", "y", "counts",
                                   QCPColorGradient::gpThermal);
-  m_hitMap = new pMapPlot(xpoldetector::kNumPixelsX, 0., xmax,
-                          xpoldetector::kNumPixelsY, 0., ymax, hitMapOptions);
+  m_hitMap = new pMapPlot(xpoldetector::kNumPixelsX, -0.5, xmax - 0.5,
+                          xpoldetector::kNumPixelsY, -0.5, ymax -0.5,
+                          hitMapOptions);
   m_PlotLayout->addWidget(m_hitMap, 1, 0);
 }
 

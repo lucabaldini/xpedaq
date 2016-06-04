@@ -39,8 +39,8 @@ class pMapPlot : public pCustomColorMapPlot
     
     void setupDataMap();    
     //Align histogram bins and color map cells in a given range 
-    void setMacthingRange(unsigned int xmin, unsigned int xmax,
-                          unsigned int ymin, unsigned int ymax);
+    void setMacthingRange(double xmin, double xmax,
+                          double ymin, double ymax);
     
     pMap *m_map;
 

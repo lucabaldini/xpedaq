@@ -41,8 +41,8 @@ class pMap
     unsigned int binEntries(unsigned int xIndex, unsigned int yIndex) const;
     void binCenter (unsigned int xIndex, unsigned int yIndex,
                     double &xCenter, double &yCenter) const;
-    double binWidthX (unsigned int xIndex, unsigned int yIndex) const;
-    double binWidthY (unsigned int xIndex, unsigned int yIndex) const;                     
+    double binWidthX (unsigned int xIndex = 0, unsigned int yIndex = 0) const;
+    double binWidthY (unsigned int xIndex = 0, unsigned int yIndex = 0) const;                     
     void fill(double x, double y);
     void fill(double x, double y, double value);
     void fillBin(unsigned int xIndex, unsigned int yIndex);
@@ -58,15 +58,19 @@ class pMap
     
     pMap(); // declaring default constr. private, so it cannot be used
     void initialize();
-    void checkBinCoord (unsigned int xIndex, unsigned int yIndex) const;
+    bool areCoordsInRange (unsigned int xIndex, unsigned int yIndex) const;
     unsigned int index (unsigned int xIndex, unsigned int yIndex) const;
     
     unsigned int m_nXbins;   // number of x bins
     double m_xmin;    // minimum of xAxis
     double m_xmax;    // maximum of xAxis
+    double m_xWidth; //bin width along xAxis (-1 for non linear binning)
+    bool m_xIsLinear; // true if the binning is linear
     unsigned int m_nYbins;   // number of y bins
     double m_ymin;    // minimum of yAxis
     double m_ymax;    // maximum of yAxis
+    double m_yWidth; //bin width along yAxis (-1 for non linear binning)
+    bool m_yIsLinear; // true if the binning is linear
     std::vector<double> m_xbinning;   // xAxis binning
     std::vector<double> m_ybinning;   // xAxis binning
     double m_minVal;    // minimum value stored
