@@ -38,7 +38,6 @@ class pInfoBoxWidget: public pQtGroupBoxWidget
     pQtCustomTextLabel *m_highestPixelLabel;
     QLineEdit *m_highestXEdit;
     QLineEdit *m_highestYEdit;
-    
     unsigned int m_evtCounter;
 };
 

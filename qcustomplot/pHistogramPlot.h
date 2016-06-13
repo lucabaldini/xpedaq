@@ -1,11 +1,11 @@
 #ifndef HISTOGRAMPLOT_H
 #define HISTOGRAMPLOT_H
 
-#include "qcustomplot.h"
+#include "pCustomHistogramPlot.h"
 #include "pHistogram.h"
 #include "pHistogramOptions.h"
 
-class pHistogramPlot: public QCustomPlot
+class pHistogramPlot: public pCustomHistogramPlot
 {
   
   Q_OBJECT
@@ -13,7 +13,7 @@ class pHistogramPlot: public QCustomPlot
   public:
     
     pHistogramPlot(unsigned int nBins, double xmin, double xmax, 
-                pBasicPlotOptions options = pBasicPlotOptions());
+                   pBasicPlotOptions options = pBasicPlotOptions());
     
     unsigned int entries() const;
     double sum() const;
@@ -22,24 +22,11 @@ class pHistogramPlot: public QCustomPlot
     void fill(double x, double value);
     void fill(double x);
     void reset();
-
-  private slots:
-  
-    void mousePress();
-    void mouseWheel();
-    void selectionChanged();    
       
   private:
     
-    void setupInteractions();
-    
     pHistogram *m_hist;
-    QCPBars *m_bars;
-    pBasicPlotOptions m_options;
-    
-    // Needed to properly remove key in QCPBars data
-    double m_centerPosTolerance;
     
 };
 
-#endif  //PULSEHEIGHTPLOT_H
+#endif  //HISTOGRAMPLOT_H

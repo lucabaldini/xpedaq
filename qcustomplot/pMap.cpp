@@ -11,9 +11,6 @@ pMap::pMap (unsigned int nXbins, double xmin, double xmax,
   if ((m_xmin >= m_xmax) || (m_ymin >= m_ymax))
     {throw HistogramError::INVALID_BOUNDARIES;}
   
-  
-  std::cout << nXbins << " " << xmin << " " << xmax << " " << nYbins << " " 
-            << ymin << " " << ymax << std::endl;
   m_xWidth = (m_xmax - m_xmin) / m_nXbins;
   m_yWidth = (m_ymax - m_ymin) / m_nYbins;
   for (unsigned int xbin = 0; xbin <= m_nXbins; ++xbin)

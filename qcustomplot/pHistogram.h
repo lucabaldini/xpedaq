@@ -55,8 +55,8 @@ class pHistogram
     double m_maxVal;    // maximum value stored
     std::vector<unsigned int> m_entries;    // entries in each bin
     std::vector<double> m_values;    // values in each bin
-    unsigned int m_underflow;
-    unsigned int m_overflow;
+    unsigned int m_underflow;  // underflow counter
+    unsigned int m_overflow;  // overflow counter
 };
 
 

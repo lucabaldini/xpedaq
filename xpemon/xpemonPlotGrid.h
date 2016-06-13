@@ -5,7 +5,6 @@
 
 #include <QGridLayout>
 #include <QSize>
-#include <QMutex>
 
 #include "xpoldetector.h"
 #include "pHistogramOptions.h"
@@ -46,9 +45,9 @@ class xpemonPlotGrid: public QWidget
     QGridLayout *m_PlotLayout;
     pHistogramPlot *m_pulseHeightPlot;
     pHistogramPlot *m_windowSizePlot;
-    pMapPlot *m_barycenterPlot; // not used at the moment
     pMapPlot *m_hitMap;
     pCustomColorMapPlot *m_eventDisplay;
+    pMapPlot *m_barycenterPlot; // not used at the moment
         
 };
 
