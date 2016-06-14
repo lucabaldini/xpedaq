@@ -42,6 +42,7 @@ HEADERS += qcustomplot.h
 HEADERS += histogramUtils.h
 HEADERS += pHistogramOptions.h
 HEADERS += pHistogram.h
+HEADERS += pCustomHistogramPlot.h
 HEADERS += pHistogramPlot.h
 HEADERS += pMap.h
 HEADERS += pMapPlot.h
@@ -80,6 +81,7 @@ HEADERS += xpemonPlotGrid.h
 HEADERS += pOptionBoxWidget.h
 HEADERS += pEventReader.h
 HEADERS += pInfoBoxWidget.h
+HEADERS += xpemonPlotOptions.h
 
 SOURCES += xpolgui.cpp
 SOURCES += xpoldetector.cpp
@@ -91,7 +93,9 @@ SOURCES += xpolio.cpp
 
 SOURCES += qcustomplot.cpp
 SOURCES += histogramUtils.cpp
+SOURCES += pHistogramOptions.cpp
 SOURCES += pHistogram.cpp
+SOURCES += pCustomHistogramPlot.cpp
 SOURCES += pHistogramPlot.cpp
 SOURCES += pMap.cpp
 SOURCES += pMapPlot.cpp
@@ -130,6 +134,7 @@ SOURCES += xpemonPlotGrid.cpp
 SOURCES += pOptionBoxWidget.cpp
 SOURCES += pEventReader.cpp
 SOURCES += pInfoBoxWidget.cpp
+SOURCES += xpemonPlotOptions.cpp
 
 SOURCES += xpemon.cpp
 

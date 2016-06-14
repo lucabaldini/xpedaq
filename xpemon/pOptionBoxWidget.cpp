@@ -23,7 +23,7 @@ void pOptionBoxWidget::initalizeText()
   //TODO: the default value should be written somewhere else
   m_socketPortEdit -> setText("50001");
   m_refreshIntervalEdit -> setText("500");
-  m_zeroSupThrEdit -> setText("9");
+  m_zeroSupThrEdit -> setText("1");
 }
 
 

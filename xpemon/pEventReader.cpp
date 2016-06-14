@@ -1,19 +1,29 @@
 #include "pEventReader.h"
 
+using namespace xpemonPlotOptions;
+
 pEventReader::pEventReader(unsigned int socketPortNumber,
                            double zeroSupThreshold) : 
+                           m_curXmin(0), m_curXmax(0),
+                           m_curYmin(0), m_curYmax(0),
                            m_socketPortNumber(socketPortNumber),
                            m_zeroSupThreshold(zeroSupThreshold)
 {
   m_udpSocket = new QUdpSocket (this);
+  m_pulseHeightHist = new pHistogram(pulseHeightNbins, pulseHeightXmin,
+                                     pulseHeightXmax);
+  m_windowSizeHist = new pHistogram(windowSizeNbins, windowSizeXmin,
+                                    windowSizeXmax);
+  //We shift the edges so that bins are centered on pixel indices
+  m_hitMap = new pMap(xpoldetector::kNumPixelsX, -0.5, xPixelMax - 0.5,
+                      xpoldetector::kNumPixelsY, -0.5, yPixelMax -0.5);
 }
 
 
 void pEventReader::readPendingDatagram()
 {
-  //std::cout << "data received" << std::endl;
   qint64 size = m_udpSocket -> pendingDatagramSize();
-  //we need a char* because QUdpSocket->readDatagram works that way  
+  //we need a char* because of QUdpSocket->readDatagram() signature  
   char* data = new (std::nothrow) char[size];
   if (data == nullptr)
   {
@@ -21,41 +31,45 @@ void pEventReader::readPendingDatagram()
     return;
   }
   m_udpSocket -> readDatagram(data, size);
-  /* When instantiating a pDataBlock we are really just passing to it a pointer
+  /* When instantiating a pDataBlock we pass to its constructor a pointer
      to the buffer - no actual copy of the data involved.
      Here we do not create the pDataBlock dinamycally, so that it goes out
-     of scope at the end of the function and the buffer gets deleted from memory
-     (see the destructor of pDataBlock).
+     of scope at the end of the function and the memory allocated for the buffer
+     is automatically released (see the destructor of pDataBlock).
      Note: the cast on the pointer passed as argument does not modify the
      content of the buffer.
   */
-
   pDataBlock p (reinterpret_cast<unsigned char*> (data));
+  data = nullptr; // does not own the buffer anymore - because p does it
   for (unsigned int evt = 0; evt < p.numEvents(); ++evt)
   {
-    unsigned int xmin = p.xmin(evt);
-    unsigned int xmax = p.xmax(evt);
-    unsigned int ymin = p.ymin(evt);    
-    unsigned int ymax = p.ymax(evt);
-    if ((xmax <= xmin) || (ymax <= ymin))
+    if ((p.xmax(evt) <= p.xmin(evt)) || (p.ymax(evt) <= p.ymin(evt)))
     {
-      std::cout << "Invalid event of index " <<  evt  << " in " << p;
-      continue;
-    }    
-    emit eventRead (xmin, xmax, ymin, ymax);
+      std::cout << "Invalid event n. " <<  evt  << " of " << p;
+      return;
+    }
+    m_isContentChanged = true;    
+    m_curXmin = p.xmin(evt);
+    m_curXmax = p.xmax(evt);
+    m_curYmin = p.ymin(evt);    
+    m_curYmax = p.ymax(evt);
+    emit eventRead(m_curXmin, m_curXmax, m_curYmin, m_curYmax);
     unsigned int nPixel = p.numPixels(evt);
-    unsigned int nCol = xmax - xmin +1;
-    unsigned int adcSum = 0;
+    m_windowSizeHist -> fill(static_cast<double> (nPixel));
+    m_curHitMap.resize(nPixel);
+    unsigned int nCol = m_curXmax - m_curXmin +1;
+    double adcSum = 0;
     unsigned int highestX = 0;
     unsigned int highestY = 0;
-    unsigned int maxVal = 0;
-    for (unsigned int index = 0; index < nPixel; index += 1)
+    double maxVal = 0;
+    for (unsigned int index = 0; index < nPixel; ++index)
     {
-      unsigned int height = p.pixelCounts(evt, index);
+      double height = p.pixelCounts(evt, index);
       if (height < m_zeroSupThreshold) continue;
-      unsigned int x = xmin + index % nCol;
-      unsigned int y = ymin + index / nCol;
-      emit pulseHeightRead(x, y, height);
+      m_curHitMap.at(index) = height;
+      unsigned int x = m_curXmin + index % nCol;
+      unsigned int y = m_curYmin + index / nCol;
+      m_hitMap -> fill(x, y, height);
       adcSum += height;
       if (height > maxVal)
       {
@@ -68,14 +82,12 @@ void pEventReader::readPendingDatagram()
     }
     if (adcSum > 0)
     {
-      emit totPulseHeightRead(adcSum);
+      m_pulseHeightHist -> fill(adcSum);
       emit highestPixelFound(highestX, highestY);
       //xBarycenter /= adcSum;
-      //yBaricenter /= adcSum;
-      //emit barycenterRead(xBarycenter, yBaricenter);      
+      //yBaricenter /= adcSum;  
     }
   }
-  data = NULL; //will point to garbage when the pDataBlock goes out of scope
 }  
 
 
@@ -89,11 +101,28 @@ void pEventReader::readPendingDatagrams()
 }
 
 
+void pEventReader::updateRequested()
+{
+  QMutexLocker locker(&m_mutex);
+  if (!m_isContentChanged) return;
+  std::vector<double> pulseHeightValues = m_pulseHeightHist -> values();
+  std::vector<double> windowSizeValues = m_windowSizeHist -> values();
+  std::vector<double> hitMapValues = m_hitMap -> values();
+  emit pulseHeightUpdated(pulseHeightValues);
+  emit windowSizeUpdated(windowSizeValues);
+  emit hitMapUpdated(hitMapValues);
+  emit evtDisplayUpdated(m_curXmin, m_curXmax, m_curYmin, m_curYmax,
+                         m_curHitMap);
+  m_isContentChanged = false;                         
+}
+
+
 void pEventReader::startReading()
 {
   std::cout << "Reading data" << std::endl;
   QMutexLocker locker(&m_mutex);
   m_stopped = false;
+  m_isContentChanged = false;
   m_udpSocket -> bind(m_socketPortNumber);
   connect(m_udpSocket, SIGNAL(readyRead()), 
           this, SLOT(readPendingDatagrams()));
@@ -115,8 +144,18 @@ void pEventReader::setSocketPortNumber(unsigned int socketPortNumber)
   m_socketPortNumber = socketPortNumber;
 }
 
+
 void pEventReader::setZeroSupThreshold(double zeroSupThreshold)
 {
   QMutexLocker locker(&m_mutex);
   m_zeroSupThreshold = zeroSupThreshold;
+}
+
+
+void pEventReader::resetHistograms()
+{
+  QMutexLocker locker(&m_mutex);
+  m_pulseHeightHist -> reset();
+  m_windowSizeHist -> reset();
+  m_hitMap -> reset();
 }

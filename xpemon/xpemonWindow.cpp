@@ -1,7 +1,8 @@
 #include "xpemonWindow.h"
 #include <iostream>
 
-xpemonWindow::xpemonWindow(QWidget *parent) : QMainWindow(parent)
+xpemonWindow::xpemonWindow(QWidget *parent) : QMainWindow(parent),
+                                              m_isResetRequested (false)
 {
   const int pixelFromScreenLeft = 20;
   const int pixelFromScreenTop = 20;
@@ -9,7 +10,7 @@ xpemonWindow::xpemonWindow(QWidget *parent) : QMainWindow(parent)
   const int pixelHeight = 768;
   this->setGeometry(pixelFromScreenLeft, pixelFromScreenTop,
                     pixelWidth, pixelHeight);
-  m_centralWidget   = new QWidget;
+  m_centralWidget   = new QWidget();
   setCentralWidget(m_centralWidget);
   m_mainGridLayout  = new QGridLayout(m_centralWidget);
 
@@ -36,18 +37,15 @@ xpemonWindow::xpemonWindow(QWidget *parent) : QMainWindow(parent)
   m_mainGridLayout->setColumnStretch(1, 12);
 
   setupConnections();
-  
-  //Debug
-  //connect(&m_refreshTimer, SIGNAL(timeout()), this, SLOT(sendDatagram()));
 }
 
 
 void xpemonWindow::readOptions()
 {
+  //Get the options from the option boxes
   unsigned int socketPortNumber;
   double refreshTime;
   unsigned int zeroSupThreshold;
-  //Get the options form the option boxes
   m_optionBoxWidget -> options(socketPortNumber, refreshTime,
                                zeroSupThreshold);
   m_options = pMonitorOptions(refreshTime, socketPortNumber,
@@ -55,24 +53,11 @@ void xpemonWindow::readOptions()
 }
 
 
-/*Debug only function
-void xpemonWindow::sendDatagram()
-{
-  static int counter = 0;
-  QByteArray datagram;
-  QDataStream out(&datagram, QIODevice::WriteOnly);
-  out.setVersion(QDataStream::Qt_4_3);
-  out << counter;
-  testSenderSocket.writeDatagram(datagram, QHostAddress::LocalHost, 50001);
-  counter++;
-}
-*/
-
-
 void xpemonWindow::setupConnections()
 {
   setupTransportBarConnections();
-  connect(&m_refreshTimer, SIGNAL(timeout()), m_plotGrid, SLOT(refreshPlot()));
+  connect(&m_refreshTimer, SIGNAL(timeout()),
+          m_eventReader, SLOT(updateRequested()));
   connect(this, SIGNAL(startAcquisition()),
           m_eventReader, SLOT(startReading()));
   setupEvtReaderConnections();            
@@ -89,7 +74,8 @@ void xpemonWindow::setupTransportBarConnections()
   connect(m_transportBar, SIGNAL(reset()), m_infoBoxWidget, SLOT(reset()));
   
   connect(m_transportBar, SIGNAL(stop()), &m_refreshTimer, SLOT(stop())); 
-  connect(m_transportBar, SIGNAL(stop()), m_plotGrid, SLOT(refreshPlot()));
+  connect(m_transportBar, SIGNAL(stop()),
+          m_eventReader, SLOT(updateRequested()));
   connect(m_transportBar, SIGNAL(stop()), m_eventReader, SLOT(setStopped()));
   connect(m_transportBar, SIGNAL(stop()),
           m_optionBoxWidget, SLOT(activateWidgets()));
@@ -101,15 +87,10 @@ void xpemonWindow::setupTransportBarConnections()
 void xpemonWindow::setupEvtReaderConnections()
 {
   connect(m_eventReader, SIGNAL(stopped()), this, SLOT(stopRun()));
-    
+                                           
   connect(m_eventReader, SIGNAL(eventRead(unsigned int, unsigned int,
                                           unsigned int, unsigned int)),
-          m_plotGrid, SLOT(writeWindow(unsigned int, unsigned int,
-                                       unsigned int, unsigned int)));                                          
-  connect(m_eventReader, SIGNAL(eventRead(unsigned int, unsigned int,
-                                          unsigned int, unsigned int)),
-          m_infoBoxWidget, SLOT(updateCounter()));
-          
+          m_infoBoxWidget, SLOT(updateCounter()));          
   connect(m_eventReader, SIGNAL(eventRead(unsigned int, unsigned int,
                                           unsigned int, unsigned int)),
           m_infoBoxWidget, SLOT(updateWindowSize(unsigned int, unsigned int,
@@ -117,19 +98,25 @@ void xpemonWindow::setupEvtReaderConnections()
                                                  
   connect(m_eventReader, SIGNAL(highestPixelFound(unsigned int, unsigned int)),
           m_infoBoxWidget, SLOT(updateMaxCoordinates(unsigned int,
-                                                     unsigned int )));                                               
-                                                 
-                                                 
-  connect(m_eventReader, SIGNAL(totPulseHeightRead(unsigned int)), 
-          m_plotGrid, SLOT(fillPulseHeight(unsigned int)));
-          
-  //connect(m_eventReader, SIGNAL(barycenterRead(double, double)), 
-  //        m_plotGrid, SLOT(fillBarycenter(double, double)));
-          
-  connect(m_eventReader, SIGNAL(pulseHeightRead(unsigned int, unsigned int,
-                                                              unsigned int)), 
-          m_plotGrid, SLOT(writePoint(unsigned int, unsigned int,
-                                                    unsigned int)));
+                                                     unsigned int )));
+  
+  qRegisterMetaType< std::vector<double> >("std::vector<double>");
+  
+  connect (m_eventReader, SIGNAL(pulseHeightUpdated(const std::vector<double>&)),
+           m_plotGrid, SLOT(updatePulseHeightPlot(const std::vector<double>&)));
+
+  connect (m_eventReader, SIGNAL(windowSizeUpdated(const std::vector<double>&)),
+           m_plotGrid, SLOT(updateWindowSizePlot(const std::vector<double>&)));
+           
+  connect (m_eventReader, SIGNAL(hitMapUpdated(const std::vector<double>&)),
+           m_plotGrid, SLOT(updateHitMap(const std::vector<double>&)));
+  
+  connect (m_eventReader, SIGNAL(evtDisplayUpdated(double, double,
+                                                   double, double,
+                                                   const std::vector<double>&)),
+           m_plotGrid, SLOT(updateEventDisplay(double, double,
+                                               double, double,
+                                               const std::vector<double>&)));                                                             
 }
 
 
@@ -138,6 +125,8 @@ void xpemonWindow::startRun()
   readOptions();
   m_eventReader -> setSocketPortNumber(m_options.m_socketPortNumber);
   m_eventReader -> setZeroSupThreshold(m_options.m_zeroSupThreshold);
+  if (m_isResetRequested) m_eventReader -> resetHistograms();
+  m_isResetRequested = false;
   m_refreshTimer.start(m_options.m_refreshInterval);
   m_eventReader -> moveToThread(&m_thread);
   m_thread.start();
@@ -157,6 +146,7 @@ void xpemonWindow::stopRun()
 void xpemonWindow::reset()
 {
   m_plotGrid -> resetPlot();
+  m_isResetRequested = true;
 }
 
 

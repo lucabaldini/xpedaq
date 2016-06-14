@@ -13,3 +13,10 @@ bool isOrdered (const std::vector<double> & binning)
   }
   return true;
 }
+
+unsigned int findPosition(const std::vector<double> & v, double x)
+{
+  std::vector<double>::const_iterator it = 
+                                       std::upper_bound (v.begin(), v.end(), x); 
+  return static_cast<unsigned int> (std::distance(v.begin(), it) -1);
+}

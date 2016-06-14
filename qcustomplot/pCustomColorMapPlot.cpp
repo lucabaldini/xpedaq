@@ -52,6 +52,21 @@ void pCustomColorMapPlot::setDataContent(double x, double y, double value)
 }
 
 
+void pCustomColorMapPlot::updateData (const std::vector<double> &values)
+{
+  /* This is a fast (and unsafe) method for filling the color map.
+     It assumes that the input vector has the correct size and follows the same
+     ordering logic as a pMap::m_values.
+  */
+  for (unsigned int iy = 0; iy < m_data -> valueSize(); ++iy)
+  {
+    for (unsigned int ix = 0; ix < m_data -> keySize(); ++ix)
+      {setCellContent(ix, iy, values.at(ix + iy * m_data -> keySize()));}
+  }
+  rescaleAxes();
+}
+
+
 void pCustomColorMapPlot::setRange (double xmin, double xmax,
                                     double ymin, double ymax)
 {

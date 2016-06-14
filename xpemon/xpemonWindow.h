@@ -2,19 +2,20 @@
 #define XPEMONWINDOW_H
 
 #include <iostream>
+#include <vector>
 
 #include <QThread>
 #include <QMainWindow>
 #include <QGridLayout>
 #include <QWidget>
 #include <QTimer>
-#include <QUdpSocket>
+#include <QMetaType>
 
 #include "pOptionBoxWidget.h"
 #include "xpemonPlotGrid.h"
+#include "pInfoBoxWidget.h"
 #include "pTransportBar.h"
 #include "pEventReader.h"
-#include "pInfoBoxWidget.h"
 #include "pMonitorOptions.h"
 
 class xpemonWindow : public QMainWindow
@@ -25,7 +26,6 @@ class xpemonWindow : public QMainWindow
   public:   
 
     explicit xpemonWindow(QWidget *parent = 0);
-    //~xpemonWindow();
     
   signals:
       
@@ -35,7 +35,6 @@ class xpemonWindow : public QMainWindow
   
     void startRun();
     void stopRun();
-    //void sendDatagram();
     void setupConnections();
     void reset();
     void readOptions();
@@ -45,16 +44,31 @@ class xpemonWindow : public QMainWindow
     void setupEvtReaderConnections();
     void setupTransportBarConnections();
   
+    /* Widget that contains all the other widgets */
     QWidget* m_centralWidget;
+    /* Main layout object */
     QGridLayout* m_mainGridLayout;
+    /* Widget containings the plots */
     xpemonPlotGrid* m_plotGrid;
-    pTransportBar* m_transportBar;
+    /* Transport bar */
+    pTransportBar* m_transportBar;  
+    /* Widget showing the options that can be setted by the user */ 
     pOptionBoxWidget* m_optionBoxWidget;
-    pEventReader* m_eventReader;
+    /* Widget showing some event info */  
     pInfoBoxWidget *m_infoBoxWidget;
-    QTimer m_refreshTimer;
-    QThread m_thread;
+
+    /* Data structure hoding the user-controlled options */
     pMonitorOptions m_options;
+
+    /* Read the the data and fill histograms */ 
+    pEventReader* m_eventReader;
+    /* Thread where the event reader operates */
+    QThread m_thread;
+    /* Flag for signaling the event reader to reset the histograms*/
+    bool m_isResetRequested;
+
+    /* Timer controlling the refresh of the plot */
+    QTimer m_refreshTimer;
     
 };
 
