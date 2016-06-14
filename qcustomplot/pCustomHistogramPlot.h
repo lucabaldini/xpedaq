@@ -15,24 +15,17 @@ class pCustomHistogramPlot : public QCustomPlot
   public:
   
     pCustomHistogramPlot(pBasicPlotOptions options = pBasicPlotOptions());      
-    void setKeyContent(double key, double value);    
-    void setRange (double xmin, double xmax);
+    void setKeyContent(double key, double value);
     void setTolerance (double tolerance);
-    void setBinWidth (double binWidth);
-    void resetBars();
+    void clearBars();
 
-  public slots:
-
-    void updateData (const std::vector<double> &keys,
-                     const std::vector<double> &values);    
-
-  private slots:
+  protected slots:
   
     void mousePress();
     void mouseWheel();
     void selectionChanged();
       
-  private:
+  protected:
     
     void setupInteractions();
    

@@ -5,41 +5,52 @@ pCustomHistogramPlot::pCustomHistogramPlot(pBasicPlotOptions options) :
 {  
   m_bars = new QCPBars(xAxis, yAxis);
   addPlottable(m_bars);
+  m_bars -> setName(m_options.m_plotName);
+  xAxis -> setLabel(m_options.m_xTitle);
+  yAxis -> setLabel(m_options.m_yTitle);  
+
   // Initializing the range, binWidth and tolerance with default values
+  m_centerPosTolerance = 1.e-5;
   m_bars -> keyAxis() -> setRange(0., 1.);
   m_bars -> setWidth(0.1);
-  m_centerPosTolerance = 1.e-5;
-  xAxis -> setLabel(m_options.m_xTitle);
-  yAxis -> setLabel(m_options.m_yTitle);
+   
+  // Some graphical stuff
+  legend -> setVisible(true);
+  QFont legendFont = font();
+  legendFont.setPointSize(10);
+  legend -> setFont(legendFont);
+  legend -> setSelectedFont(legendFont);
   setupInteractions();
 }
 
 
-void pCustomHistogramPlot::setRange (double xmin, double xmax)
-{
-  m_bars -> keyAxis() -> setRange(xmin, xmax);
-  rescaleAxes();
-}
-
-
-void pCustomHistogramPlot::setTolerance (double tolerance)
+void pCustomHistogramPlot::setTolerance(double tolerance)
 {
   m_centerPosTolerance = tolerance;
 }
-    
 
-void pCustomHistogramPlot::setBinWidth (double binWidth)
+
+void pCustomHistogramPlot::setKeyContent(double key, double value)
 {
-  m_bars -> setWidth(binWidth);
-}
+  /* QCPBars does not provide a method for incrementing the content of a bin.
+     The default beahviour, when the function addData() is called on
+     a key which already exists, is to create another entry for the same key.
+     So we need to remove the old value and recreate the pair key:value with
+     the updated content.
+     We use removeData() on a small interval centered around the key value
+     to make sure we actually remove it.
+  */
+  m_bars -> removeData(key - m_centerPosTolerance,
+                       key + m_centerPosTolerance);
+  m_bars -> addData(key, value);
+  m_bars -> rescaleValueAxis();
+} 
 
 
-void pCustomHistogramPlot::updateData (const std::vector<double> &keys,
-                                       const std::vector<double> &values)
+void pCustomHistogramPlot::clearBars()
 {
-  resetBars();
-  for (unsigned int i = 0; i < keys.size(); ++i)
-    {m_bars -> addData (keys.at(i), values.at(i));}
+  m_bars -> clearData();
+  replot();  
 }
 
 
@@ -105,28 +116,4 @@ void pCustomHistogramPlot::mouseWheel()
     {axisRect()->setRangeZoom(yAxis->orientation());}
   else
     {axisRect()->setRangeZoom(Qt::Horizontal|Qt::Vertical);}
-}
-
-
-void pCustomHistogramPlot::setKeyContent(double key, double value)
-{
-  /* QCPBars does not provide a method for incrementing the content of a bin.
-     The default beahviour, when the function addData() is called on
-     a key which already exists, is to create another entry for the same key.
-     So we need to remove the old value and recreate the pair key:value with
-     the updated content.
-     We use removeData() on a small interval centered around the key value
-     to make sure we actually remove it.
-  */
-  m_bars -> removeData(key - m_centerPosTolerance,
-                       key + m_centerPosTolerance);
-  m_bars -> addData(key, value);
-  m_bars -> rescaleValueAxis();
-} 
-
-
-void pCustomHistogramPlot::resetBars()
-{
-  m_bars -> clearData();
-  replot();  
 }

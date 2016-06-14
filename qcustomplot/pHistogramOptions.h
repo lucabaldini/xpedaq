@@ -11,9 +11,12 @@ class pBasicPlotOptions
 
 public: 
   
-  pBasicPlotOptions (QString xtitle = "x", QString ytitle = "y") :
-                     m_xTitle(xtitle), m_yTitle(ytitle) {};
+  pBasicPlotOptions (QString plotName = "", QString xtitle = "x",
+                     QString ytitle = "y") :
+                     m_plotName (plotName), m_xTitle(xtitle), m_yTitle(ytitle)
+                     {};
 
+  QString m_plotName;
   QString m_xTitle;
   QString m_yTitle;
                
@@ -28,12 +31,12 @@ class pColorMapOptions : public pBasicPlotOptions
 
 public:
 
-  pColorMapOptions (QString xtitle = "x", QString ytitle = "y",
-                    QString ztitle = "z", 
+  pColorMapOptions (QString plotName = "", QString xtitle = "x",
+                    QString ytitle = "y", QString ztitle = "z", 
                     QCPColorGradient colGradient =
                                                 QCPColorGradient::gpThermal) :
-                    pBasicPlotOptions(xtitle, ytitle), m_zTitle(ztitle),
-                    m_gradientType(colGradient) {};
+                    pBasicPlotOptions(plotName, xtitle, ytitle),
+                    m_zTitle(ztitle), m_gradientType(colGradient) {};
 
   QString m_zTitle;
   QCPColorGradient m_gradientType;

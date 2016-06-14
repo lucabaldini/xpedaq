@@ -21,13 +21,17 @@ class pCustomColorMapPlot : public QCustomPlot
       {m_data -> setSize(nXbins, nYbins);}
     void clearMap(); 
   
-  private slots:
+  public slots:
+  
+    virtual void updateData (const std::vector<double> &values);
+  
+  protected slots:
   
     void mousePress();
     void mouseWheel();
     void selectionChanged();
       
-  private:
+  protected:
     
     void setupInteractions();
    

@@ -6,10 +6,11 @@
 #include <QGridLayout>
 #include <QSize>
 
-#include "xpoldetector.h"
 #include "pHistogramOptions.h"
 #include "pHistogramPlot.h"
+#include "pCustomColorMapPlot.h"
 #include "pMapPlot.h"
+#include "xpemonPlotOptions.h"
 
 class xpemonPlotGrid: public QWidget
 {
@@ -24,16 +25,12 @@ class xpemonPlotGrid: public QWidget
     
   public slots:
     
-    void refreshPlot();
+    void updatePulseHeightPlot(const std::vector<double>& pulseHeightValues);
+    void updateWindowSizePlot(const std::vector<double>& windowSizeValues);
+    void updateHitMap(const std::vector<double>& hitMapValues);
+    void updateEventDisplay(double xmin, double xmax, double ymin, double ymax,
+                            const std::vector<double>& displayValues);
     void resetPlot();
-
-  private slots:
-    
-    void fillPulseHeight(unsigned int pHeight);
-    void writeWindow(unsigned int xmin, unsigned int xmax,
-                     unsigned int ymin, unsigned int ymax);
-    void fillBarycenter(double xBar, double yBar);
-    void writePoint(unsigned int x, unsigned int y, unsigned int counts);
      
   private:
     
@@ -47,7 +44,6 @@ class xpemonPlotGrid: public QWidget
     pHistogramPlot *m_windowSizePlot;
     pMapPlot *m_hitMap;
     pCustomColorMapPlot *m_eventDisplay;
-    pMapPlot *m_barycenterPlot; // not used at the moment
         
 };
 

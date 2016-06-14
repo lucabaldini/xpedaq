@@ -158,18 +158,6 @@ void pMap::findBin (double x, double y,
   
   if (m_yIsLinear) yIndex = static_cast<unsigned int> ((y - m_ymin) / m_yWidth);
   else yIndex = findPosition(m_ybinning, y);
-
-   
-  //for (unsigned int xbin = 0; xbin < m_nXbins; ++xbin)
-  //{
-  //  if ((x >= m_xbinning.at(xbin)) && (x <= m_xbinning.at(xbin + 1)))
-  //    {xIndex = xbin;}
-  //}
-  //for (unsigned int ybin = 0; ybin < m_nYbins; ++ybin)
-  //{
-  //  if ((y >= m_ybinning.at(ybin)) && (y <= m_ybinning.at(ybin + 1)))
-  //    {yIndex = ybin;}
-  //}
 }
 
 

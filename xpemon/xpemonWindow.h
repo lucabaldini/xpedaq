@@ -2,12 +2,14 @@
 #define XPEMONWINDOW_H
 
 #include <iostream>
+#include <vector>
 
 #include <QThread>
 #include <QMainWindow>
 #include <QGridLayout>
 #include <QWidget>
 #include <QTimer>
+#include <QMetaType>
 
 #include "pOptionBoxWidget.h"
 #include "xpemonPlotGrid.h"
@@ -61,7 +63,9 @@ class xpemonWindow : public QMainWindow
     /* Read the the data and fill histograms */ 
     pEventReader* m_eventReader;
     /* Thread where the event reader operates */
-    QThread m_thread;    
+    QThread m_thread;
+    /* Flag for signaling the event reader to reset the histograms*/
+    bool m_isResetRequested;
 
     /* Timer controlling the refresh of the plot */
     QTimer m_refreshTimer;

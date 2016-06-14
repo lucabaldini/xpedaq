@@ -33,7 +33,8 @@ class pMap
     double yMin() const {return m_ymin;}
     double yMax() const {return m_ymax;}
     double minValue() const {return m_minVal;}
-    double maxValue() const {return m_maxVal;};
+    double maxValue() const {return m_maxVal;}
+    std::vector<double> values() const {return m_values;}
     
     void findBin (double x, double y,
                   unsigned int & xIndex, unsigned int & yIndex) const;
@@ -64,15 +65,15 @@ class pMap
     unsigned int m_nXbins;   // number of x bins
     double m_xmin;    // minimum of xAxis
     double m_xmax;    // maximum of xAxis
-    double m_xWidth; //bin width along xAxis (-1 for non linear binning)
+    double m_xWidth; // bin width along xAxis (-1 for non linear binning)
     bool m_xIsLinear; // true if the binning is linear
     unsigned int m_nYbins;   // number of y bins
     double m_ymin;    // minimum of yAxis
     double m_ymax;    // maximum of yAxis
-    double m_yWidth; //bin width along yAxis (-1 for non linear binning)
+    double m_yWidth; // bin width along yAxis (-1 for non linear binning)
     bool m_yIsLinear; // true if the binning is linear
     std::vector<double> m_xbinning;   // xAxis binning
-    std::vector<double> m_ybinning;   // xAxis binning
+    std::vector<double> m_ybinning;   // yAxis binning
     double m_minVal;    // minimum value stored
     double m_maxVal;    // maximum value stored
     std::vector<unsigned int> m_entries;  // entries in each bin

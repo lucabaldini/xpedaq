@@ -4,15 +4,14 @@ pHistogramPlot::pHistogramPlot(unsigned int nBins, double xmin, double xmax,
                                pBasicPlotOptions options) :
                                pCustomHistogramPlot(options)
 {
-  /* TODO: as now we are using the width of the first bin as the width for
-     drawing all the bars and to set the tolerance for removing keys.
-     It works only under the assumption that the bins are equally spaced and
-     we may need to be smarter i.e. for the case of logarithmic binning.
+  /* TODO: as now we are assuming equally spaced bins for setting the width
+     of the graphical bars and the tolerance for removing keys. We may need to
+     be smarter, i.e. to handle the case of logarithmic binning.
   */
   m_hist = new pHistogram(nBins, xmin, xmax);
-  setRange(m_hist -> xMin(), m_hist -> xMax());
-  setBinWidth(m_hist -> binWidth(0)); // fix this!
-  setTolerance (1.e-4 * (m_hist -> binWidth(0)));  // fix this!
+  m_bars -> keyAxis() -> setRange(m_hist -> xMin(), m_hist -> xMax());
+  m_bars -> setWidth(m_hist -> binWidth());
+  setTolerance (1.e-4 * (m_hist -> binWidth()));
 }
 
 
@@ -71,8 +70,17 @@ void pHistogramPlot::fill(double x)
 }
 
 
+void pHistogramPlot::updateData (const std::vector<double> &values)
+{
+  // Warning: no check on the input size performed
+  reset();
+  for (unsigned int i = 0; i < values.size(); ++i)
+    {fillBin(i, values.at(i));}  
+}
+
+
 void pHistogramPlot::reset()
 {
   m_hist -> reset();
-  resetBars();  
+  clearBars();  
 }

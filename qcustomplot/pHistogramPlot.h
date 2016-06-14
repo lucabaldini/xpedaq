@@ -22,6 +22,10 @@ class pHistogramPlot: public pCustomHistogramPlot
     void fill(double x, double value);
     void fill(double x);
     void reset();
+
+  public slots:
+
+    void updateData (const std::vector<double> &values);
       
   private:
     

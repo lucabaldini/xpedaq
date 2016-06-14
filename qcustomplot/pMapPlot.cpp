@@ -70,6 +70,21 @@ void pMapPlot::fill(double x, double y)
 }
 
 
+void pMapPlot::updateData (const std::vector<double> &values)
+{
+  /* This is a fast (and unsafe) method for filling the color map.
+     It assumes that the input vector has the correct size and follows the same
+     ordering logic as a pMap::m_values.
+  */
+  reset();
+  for (unsigned int iy = 0; iy < m_map -> nYbins(); ++iy)
+  {
+    for (unsigned int ix = 0; ix < m_map -> nXbins(); ++ix)
+      {fill(ix, iy, values.at(ix + iy * m_map -> nXbins()));}
+  }
+}
+
+
 void pMapPlot::resetData()
 {
   m_map -> reset();

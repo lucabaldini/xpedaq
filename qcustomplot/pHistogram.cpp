@@ -71,6 +71,15 @@ double pHistogram::sum() const
 }
 
 
+std::vector<double> pHistogram::centers() const
+{
+  std::vector<double> centerVec(m_nBins);
+  for (unsigned int i =0; i < m_nBins; ++i)
+    {centerVec[i] = binCenter(i);}
+  return centerVec;
+}
+
+
 bool pHistogram::isBinInRange(unsigned int binNumber) const
 {  
   if (binNumber > m_nBins) return false;
@@ -120,6 +129,7 @@ double pHistogram::binCenter(unsigned int binNumber) const
 void pHistogram::fillBin(unsigned int binNumber, double value)
 {
   if (! isBinInRange(binNumber)) throw HistogramError::BIN_OUT_OF_RANGE;
+
   m_values.at(binNumber) += value;
   m_entries.at(binNumber) += 1;
   if (m_values.at(binNumber) > maxValue()) {m_maxVal = m_values.at(binNumber);}
@@ -151,7 +161,7 @@ void pHistogram::fill(double x, double value)
        m_overflow += 1;
        break;
      default:
-       std::cout << "Could not fill value " << x << std::endl;
+       std::cout << "Unknown error while filling value " << x << std::endl;
        break;
    }    
   }

@@ -21,8 +21,9 @@ class pMapPlot : public pCustomColorMapPlot
     void fill(double x, double y);
     void fill(double x, double y, double value);
     void fillBin(unsigned int xIndex, unsigned int yIndex);
-    void fillBin(unsigned int xIndex, unsigned int yIndex, double value);
-  
+    void fillBin(unsigned int xIndex, unsigned int yIndex, double value);  
+    virtual void updateData (const std::vector<double> &values);
+
     // clears data both from the color map and from the histogram.
     // resizes the color map to match the underlying histogram.
     // replot the histogram
