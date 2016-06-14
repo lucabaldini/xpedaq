@@ -72,7 +72,10 @@ void pHistogramPlot::fill(double x)
 
 void pHistogramPlot::updateData (const std::vector<double> &values)
 {
-  // Warning: no check on the input size performed
+  /* This is a fast (and unsafe) method for filling the histogram.
+     It assumes that the input vector has the correct size.
+     WARNING: no check is performed.
+  */
   reset();
   for (unsigned int i = 0; i < values.size(); ++i)
     {fillBin(i, values.at(i));}  
