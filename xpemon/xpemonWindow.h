@@ -57,7 +57,7 @@ class xpemonWindow : public QMainWindow
     /* Widget showing some event info */  
     pInfoBoxWidget *m_infoBoxWidget;
 
-    /* Data structure hoding the user-controlled options */
+    /* Data structure holding the user-controlled options */
     pMonitorOptions m_options;
 
     /* Read the the data and fill histograms */ 
@@ -66,6 +66,8 @@ class xpemonWindow : public QMainWindow
     QThread m_thread;
     /* Flag for signaling the event reader to reset the histograms*/
     bool m_isResetRequested;
+    /* Flag to distinguish a restart from a stop and a restart from a pause */
+    bool m_isStopped;
 
     /* Timer controlling the refresh of the plot */
     QTimer m_refreshTimer;

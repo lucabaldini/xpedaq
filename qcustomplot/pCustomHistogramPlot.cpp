@@ -9,13 +9,13 @@ pCustomHistogramPlot::pCustomHistogramPlot(pBasicPlotOptions options) :
   xAxis -> setLabel(m_options.m_xTitle);
   yAxis -> setLabel(m_options.m_yTitle);  
 
-  // Initializing the range, binWidth and tolerance with default values
+  // Initializing range, binWidth and tolerance with default values
   m_centerPosTolerance = 1.e-5;
   m_bars -> keyAxis() -> setRange(0., 1.);
   m_bars -> setWidth(0.1);
    
   // Some graphical stuff
-  legend -> setVisible(true);
+  legend -> setVisible(false);
   QFont legendFont = font();
   legendFont.setPointSize(10);
   legend -> setFont(legendFont);
@@ -56,10 +56,24 @@ void pCustomHistogramPlot::clearBars()
 
 void pCustomHistogramPlot::setupInteractions()
 {
+  /* Activate interactions for axis:
+     - Dragging
+     - Zooming
+     - Selecting
+  */
   setInteractions(QCP::iRangeDrag | QCP::iRangeZoom | QCP::iSelectAxes);
+  
+  /* Set the selectable parts of the axis object:
+     - axis base line
+     - axis tick labels 
+  */
   xAxis -> setSelectableParts(QCPAxis::spAxis | QCPAxis::spTickLabels);
   yAxis -> setSelectableParts(QCPAxis::spAxis | QCPAxis::spTickLabels);
+
+  // Set the quickness of the zooming
   axisRect() -> setRangeZoomFactor(0.9, 0.9);
+  
+  // Activate connections for mouse actions
   connect(this, SIGNAL(mousePress(QMouseEvent*)), this, SLOT(mousePress()));
   connect(this, SIGNAL(mouseWheel(QWheelEvent*)), this, SLOT(mouseWheel()));
   connect(this, SIGNAL(selectionChangedByUser()),

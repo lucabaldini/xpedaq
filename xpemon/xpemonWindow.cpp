@@ -2,7 +2,8 @@
 #include <iostream>
 
 xpemonWindow::xpemonWindow(QWidget *parent) : QMainWindow(parent),
-                                              m_isResetRequested (false)
+                                              m_isResetRequested (false),
+                                              m_isStopped(true)
 {
   const int pixelFromScreenLeft = 20;
   const int pixelFromScreenTop = 20;
@@ -73,6 +74,9 @@ void xpemonWindow::setupTransportBarConnections()
   connect(m_transportBar, SIGNAL(reset()), this, SLOT(reset()));
   connect(m_transportBar, SIGNAL(reset()), m_infoBoxWidget, SLOT(reset()));
   
+  /* The stop button sends to the socket thread a stop request and stops the
+     timer. A last refresh is executed, to make sure all the plots are 
+     synchronized with the data on the socket thread. */
   connect(m_transportBar, SIGNAL(stop()), &m_refreshTimer, SLOT(stop())); 
   connect(m_transportBar, SIGNAL(stop()),
           m_eventReader, SLOT(updateRequested()));
@@ -80,6 +84,8 @@ void xpemonWindow::setupTransportBarConnections()
   connect(m_transportBar, SIGNAL(stop()),
           m_optionBoxWidget, SLOT(activateWidgets()));
 
+  /* The pause button suspends the refresh of the plot, but continue the
+     acquisition of data */
   connect(m_transportBar, SIGNAL(pause()), &m_refreshTimer, SLOT(stop()));
 }
 
@@ -122,15 +128,24 @@ void xpemonWindow::setupEvtReaderConnections()
 
 void xpemonWindow::startRun()
 {
-  readOptions();
-  m_eventReader -> setSocketPortNumber(m_options.m_socketPortNumber);
-  m_eventReader -> setZeroSupThreshold(m_options.m_zeroSupThreshold);
-  if (m_isResetRequested) m_eventReader -> resetHistograms();
-  m_isResetRequested = false;
+  if (m_isStopped)
+  {
+    readOptions();
+    m_eventReader -> setSocketPortNumber(m_options.m_socketPortNumber);
+    m_eventReader -> setZeroSupThreshold(m_options.m_zeroSupThreshold);
+    /* If the reset has been scheduled, execute it now */
+    if (m_isResetRequested) m_eventReader -> resetHistograms();
+    m_isResetRequested = false;
+  
+    m_eventReader -> moveToThread(&m_thread);
+    m_thread.start();
+    emit (startAcquisition());
+    m_isStopped = false;
+  }
+  
+  /* If the monitor was paused and not stopped, we just need to reactivate the
+     refresh of the plot */
   m_refreshTimer.start(m_options.m_refreshInterval);
-  m_eventReader -> moveToThread(&m_thread);
-  m_thread.start();
-  emit (startAcquisition());
   std::cout << "started" << std::endl;
 }
 
@@ -139,6 +154,7 @@ void xpemonWindow::stopRun()
 {
   m_thread.quit();
   m_thread.wait();
+  m_isStopped = true;
   std::cout << "stopped" << std::endl;
 }
 
@@ -146,6 +162,10 @@ void xpemonWindow::stopRun()
 void xpemonWindow::reset()
 {
   m_plotGrid -> resetPlot();
+  /* Since the reset can happen only when the socket thread is stopped, we
+     delay the actual reset of the histogram in that thread to the next
+     'start' pressure, using this flag.
+  */
   m_isResetRequested = true;
 }
 

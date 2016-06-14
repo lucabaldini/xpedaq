@@ -84,10 +84,24 @@ void pCustomColorMapPlot::clearMap()
 
 void pCustomColorMapPlot::setupInteractions()
 {
+  /* Activate interactions for axis:
+     - Dragging
+     - Zooming
+     - Selecting
+  */
   setInteractions(QCP::iRangeDrag | QCP::iRangeZoom | QCP::iSelectAxes);
+  
+  /* Set the selectable parts of the axis object:
+     - axis base line
+     - axis tick labels 
+  */
   xAxis -> setSelectableParts(QCPAxis::spAxis | QCPAxis::spTickLabels);
   yAxis -> setSelectableParts(QCPAxis::spAxis | QCPAxis::spTickLabels);
+
+  // Set the quickness of the zooming
   axisRect() -> setRangeZoomFactor(0.9, 0.9);
+  
+  // Activate connections for mouse actions
   connect(this, SIGNAL(mousePress(QMouseEvent*)), this, SLOT(mousePress()));
   connect(this, SIGNAL(mouseWheel(QWheelEvent*)), this, SLOT(mouseWheel()));
   connect(this, SIGNAL(selectionChangedByUser()),

@@ -17,6 +17,7 @@ class pHistogramPlot: public pCustomHistogramPlot
     
     unsigned int entries() const;
     double sum() const;
+    
     void fillBin(unsigned int binNumber, double value);
     void fillBin(unsigned int binNumber);
     void fill(double x, double value);
@@ -26,6 +27,7 @@ class pHistogramPlot: public pCustomHistogramPlot
   public slots:
 
     void updateData (const std::vector<double> &values);
+    void drawStatisticalBox();
       
   private:
     
