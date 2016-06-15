@@ -1,7 +1,9 @@
+* First version of a real time monitor application (xpemon), reading data
+  from a Udp socket. It uses a third party library, 'qcustomplot'
+  (www.qcustomplot.com) for drawing plots in a Qt environement. 
 * Preparing for the pedestal application: now the pDataController istance can
   emit dataBlock for other applications as they are read from the USB.
 * Created a pEvent class for handling single events.
-* Start creating a monitor.
 * First implementation of a python single-event display.
 * Some work on the option parser.
 * pyxpedaq folder and bin/xpedisplay.py moved to a separate package
