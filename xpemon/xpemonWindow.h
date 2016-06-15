@@ -64,8 +64,6 @@ class xpemonWindow : public QMainWindow
     pEventReader* m_eventReader;
     /* Thread where the event reader operates */
     QThread m_thread;
-    /* Flag for signaling the event reader to reset the histograms*/
-    bool m_isResetRequested;
     /* Flag to distinguish a restart from a stop and a restart from a pause */
     bool m_isStopped;
 

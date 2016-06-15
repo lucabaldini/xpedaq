@@ -6,9 +6,9 @@ class pMonitorOptions
 
   public:
   
-    pMonitorOptions(double refreshInterval = 1000.,
+    pMonitorOptions(double refreshInterval = 500.,
                     unsigned int socketPortNumber = 50001,
-                    unsigned int zeroSupThreshold = 9):
+                    unsigned int zeroSupThreshold = 1):
                     m_refreshInterval (refreshInterval),
                     m_socketPortNumber(socketPortNumber),
                     m_zeroSupThreshold(zeroSupThreshold) {;}

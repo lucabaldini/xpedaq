@@ -118,7 +118,6 @@ void pEventReader::updateRequested()
 
 void pEventReader::startReading()
 {
-  std::cout << "Reading data" << std::endl;
   QMutexLocker locker(&m_mutex);
   m_stopped = false;
   m_isContentChanged = false;
@@ -153,7 +152,8 @@ void pEventReader::setZeroSupThreshold(double zeroSupThreshold)
 
 void pEventReader::resetHistograms()
 {
-  QMutexLocker locker(&m_mutex);
+  /* We don't need a mutex here, since this can only happen when the acquisition
+     is stopped */
   m_pulseHeightHist -> reset();
   m_windowSizeHist -> reset();
   m_hitMap -> reset();

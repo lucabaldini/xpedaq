@@ -2,7 +2,6 @@
 #include <iostream>
 
 xpemonWindow::xpemonWindow(QWidget *parent) : QMainWindow(parent),
-                                              m_isResetRequested (false),
                                               m_isStopped(true)
 {
   const int pixelFromScreenLeft = 20;
@@ -43,7 +42,7 @@ xpemonWindow::xpemonWindow(QWidget *parent) : QMainWindow(parent),
 
 void xpemonWindow::readOptions()
 {
-  //Get the options from the option boxes
+  // Read options from the option boxes
   unsigned int socketPortNumber;
   double refreshTime;
   unsigned int zeroSupThreshold;
@@ -132,19 +131,14 @@ void xpemonWindow::startRun()
   {
     readOptions();
     m_eventReader -> setSocketPortNumber(m_options.m_socketPortNumber);
-    m_eventReader -> setZeroSupThreshold(m_options.m_zeroSupThreshold);
-    /* If the reset has been scheduled, execute it now */
-    if (m_isResetRequested) m_eventReader -> resetHistograms();
-    m_isResetRequested = false;
-  
+    m_eventReader -> setZeroSupThreshold(m_options.m_zeroSupThreshold);  
     m_eventReader -> moveToThread(&m_thread);
     m_thread.start();
     emit (startAcquisition());
     m_isStopped = false;
-  }
-  
+  }  
   /* If the monitor was paused and not stopped, we just need to reactivate the
-     refresh of the plot */
+     timer controlling the refresh of the plots */
   m_refreshTimer.start(m_options.m_refreshInterval);
   std::cout << "started" << std::endl;
 }
@@ -162,20 +156,5 @@ void xpemonWindow::stopRun()
 void xpemonWindow::reset()
 {
   m_plotGrid -> resetPlot();
-  /* Since the reset can happen only when the socket thread is stopped, we
-     delay the actual reset of the histogram in that thread to the next
-     'start' pressure, using this flag.
-  */
-  m_isResetRequested = true;
+  m_eventReader -> resetHistograms();
 }
-
-
-/*~xpemonWindow::xpemonWindow()
-{
-  if (m_thread.isRunning())
-  {
-    stopRun()
-  }
-  
-}
-*/
