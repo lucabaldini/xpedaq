@@ -26,7 +26,6 @@ class pMapPlot : public pCustomColorMapPlot
 
     // clears data both from the color map and from the histogram.
     // resizes the color map to match the underlying histogram.
-    // replot the histogram
     void reset();
     
     // resets the data in the underlying histogram and in the color map
