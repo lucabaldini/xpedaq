@@ -43,12 +43,6 @@ const pRunningStat& PedestalsMap::operator()(unsigned int pixelX,
 }
 
 
-void PedestalsMap::fill(unsigned int pixelX, unsigned int pixelY, double value)
-{
-  pedestal(pixelX, pixelY).fill(value);
-}
-
-
 int PedestalsMap::numValues (unsigned int pixelX, unsigned int pixelY) const
 {
   return pedestal(pixelX, pixelY).numValues();
@@ -70,4 +64,11 @@ double PedestalsMap::variance(unsigned int pixelX, unsigned int pixelY) const
 double PedestalsMap::rms(unsigned int pixelX, unsigned int pixelY) const
 {
   return pedestal(pixelX, pixelY).rms();
-}                                   
+}
+
+
+
+void PedestalsMap::fill(unsigned int pixelX, unsigned int pixelY, double value)
+{
+  pedestal(pixelX, pixelY).fill(value);
+}                                

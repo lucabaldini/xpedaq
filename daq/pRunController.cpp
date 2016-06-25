@@ -26,8 +26,9 @@ with this program; if not, write to the Free Software Foundation Inc.,
 /*! Basic constructor.
  */
 pRunController::pRunController(std::string configFilePath,
-			       std::string preferencesFilePath,
-			       std::string trgMaskFilePath)
+			                   std::string preferencesFilePath,
+                               std::string trgMaskFilePath,
+                               bool emitBlocks)
   : m_maxSeconds(2592000),
     m_maxEvents(259200000),
     m_maxDataBlocks(2592000),
@@ -35,7 +36,8 @@ pRunController::pRunController(std::string configFilePath,
     m_stopSeconds(0),
     m_configFilePath(configFilePath),
     m_preferencesFilePath(preferencesFilePath),
-    m_trgMaskFilePath(trgMaskFilePath)
+    m_trgMaskFilePath(trgMaskFilePath),
+    m_emitBlocks(emitBlocks)
 {
   m_stationIdFilePath = xpedaqos::rjoin("config", "stationId.cfg");
   if (!xpedaqos::fileExists(m_stationIdFilePath)) {
@@ -62,7 +64,7 @@ pRunController::pRunController(std::string configFilePath,
   connect(m_timer, SIGNAL(timeout()), this, SLOT(updateRunInfo()));
   m_usbController = new pUsbController();
   m_xpolFpga = new pXpolFpga(m_usbController);
-  m_dataCollector = new pDataCollector(m_usbController);
+  m_dataCollector = new pDataCollector(m_usbController, m_emitBlocks);
   // This ensures that when the data collection thread is finished, the
   // run control is stopped.
   connect(m_dataCollector, SIGNAL(finished()), this, SLOT(setStopped()));

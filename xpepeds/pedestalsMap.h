@@ -16,9 +16,9 @@ namespace pedestals{
 
 /* This is the core object of the pedestal application. It's a 2D map of
    pRunningStat object (one for each pixel of the detector), holding the
-   means and the variances of the respective pixels.
+   mean and the variance of the respective pixels.
    Internally the map is implemented as a one dimensional vector, with a method
-   for passing from (x,y) coordinates to a single index */
+   for transforming (x,y) coordinates into a single array index */
 
 class PedestalsMap
 { 
@@ -27,11 +27,13 @@ class PedestalsMap
   
     PedestalsMap();
     
-    void fill(unsigned int pixelX, unsigned int pixelY, double value);
+    //Getters
     int numValues (unsigned int pixelX, unsigned int pixelY) const;
     double average(unsigned int pixelX, unsigned int pixelY) const;
     double variance(unsigned int pixelX, unsigned int pixelY) const;
     double rms(unsigned int pixelX, unsigned int pixelY) const;  
+
+    void fill(unsigned int pixelX, unsigned int pixelY, double value);
 
     pRunningStat& operator()(unsigned int pixelX, unsigned int pixelY);
     const pRunningStat& operator()(unsigned int pixelX,

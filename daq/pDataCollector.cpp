@@ -23,9 +23,10 @@ with this program; if not, write to the Free Software Foundation Inc.,
 #include "pDataCollector.h"
 
 
-pDataCollector::pDataCollector(pUsbController *usbController):
+pDataCollector::pDataCollector(pUsbController *usbController, bool emitBlocks):
   m_usbController(usbController),
-  m_numMalformedBlocks(0)
+  m_numMalformedBlocks(0),
+  m_emitBlocks(emitBlocks)
 { 
   //Register pDataBlock as object that can be emitted as signals
   qRegisterMetaType<pDataBlock>("pDataBlock");
@@ -89,7 +90,7 @@ void pDataCollector::run()
 	dumpRawBuffer(dataBuffer);
 	m_numMalformedBlocks ++;
       } else {
-  emit blockRead(*curDataBlock);
+  if (m_emitBlocks) emit blockRead(*curDataBlock);
 	m_dataFIFO->fill(curDataBlock);
 	m_dataFIFO->setStartSeconds(m_startSeconds);
 	m_dataFIFO->flush();

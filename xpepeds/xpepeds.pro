@@ -71,6 +71,7 @@ HEADERS += pAcquisitionWindow.h
 HEADERS += pDisplayWindow.h
 HEADERS += xpepedsWindow.h
 HEADERS += pedestalsMap.h
+HEADERS += pedRunController.h
 
 HEADERS += pFiniteStateMachine.h
 HEADERS += pDataCollector.h
@@ -133,6 +134,7 @@ SOURCES += pAcquisitionWindow.cpp
 SOURCES += xpepedsWindow.cpp
 SOURCES += pDisplayWindow.cpp
 SOURCES += pedestalsMap.cpp
+SOURCES += pedRunController.cpp
 
 SOURCES += pFiniteStateMachine.cpp
 SOURCES += pDataCollector.cpp
