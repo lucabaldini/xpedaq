@@ -44,7 +44,7 @@ class pRunController : public pFiniteStateMachine
 
   ///\brief Constructor.
   pRunController(std::string configFilePath, std::string preferencesFilePath,
-		 std::string trgMaskFilePath);
+		         std::string trgMaskFilePath, bool emitBlocks=false);
 
   ///\brief Destructor.
   ~pRunController() {;}
@@ -156,7 +156,7 @@ class pRunController : public pFiniteStateMachine
   void fsmStop();
 
   
- private:
+ protected:
 
   /// \brief Maximum duration (in s) for the data acquisition.
   int m_maxSeconds;
@@ -272,7 +272,9 @@ class pRunController : public pFiniteStateMachine
   /// \brief Pointer to the trigger mask member object.
   pTriggerMask *m_triggerMask;
  
-
+  /// \brief Flag for requiring the dataCollector to emit data blocks on reading
+  bool m_emitBlocks;
+  
  private slots:
    
   void updateRunInfo();

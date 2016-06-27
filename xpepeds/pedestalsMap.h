@@ -1,50 +1,53 @@
 #ifndef PEDESTALSMAP_H
 #define PEDESTALSMAP_H
 
-#include <array>
-#include <memory>
+#include <vector>
+#include <iostream>
+
 #include "xpoldetector.h"
-#include "qcustomplot.h"
-#include "pHistogramOptions.h"
+#include "pRunningStat.h"
+
 
 namespace pedestals{
-  const int kNx = static_cast<int>(xpoldetector::kNumPixelsX);
-  const int kNy = static_cast<int>(xpoldetector::kNumPixelsY);
-  const int kNPedestal = 105600; //kNx*kNy;
-  typedef std::array<double, kNPedestal> arr_t;
+  const unsigned int kNx = static_cast<unsigned int>(xpoldetector::kNumPixelsX);
+  const unsigned int kNy = static_cast<unsigned int>(xpoldetector::kNumPixelsY);
+  const unsigned int kNPedestal = kNx * kNy;
 }
 
+/* This is the core object of the pedestal application. It's a 2D map of
+   pRunningStat object (one for each pixel of the detector), holding the
+   mean and the variance of the respective pixels.
+   Internally the map is implemented as a one dimensional vector, with a method
+   for transforming (x,y) coordinates into a single array index */
 
-class PedestalsMapData : public QCPColorMapData
+class PedestalsMap
 { 
-/* Small wrapper around QCPColorMapData class specific for pedestals data (i.e
-   fix size to 352x300 and axis range accordingly).
-*/
 
   public:
   
-    PedestalsMapData(pedestals::arr_t const &data);
+    PedestalsMap();
+    
+    //Getters
+    int numValues (unsigned int pixelX, unsigned int pixelY) const;
+    double average(unsigned int pixelX, unsigned int pixelY) const;
+    double variance(unsigned int pixelX, unsigned int pixelY) const;
+    double rms(unsigned int pixelX, unsigned int pixelY) const;  
 
-};
+    void fill(unsigned int pixelX, unsigned int pixelY, double value);
 
-
-class PedestalsMap
-{
-/* Class implementing color map plots for pedestals (mean or rms) */
-
-  public:
-    PedestalsMap(QCustomPlot* parentPlot, PedestalsMapData* data,
-                  std::shared_ptr<pColorMapOptions> options);
+    pRunningStat& operator()(unsigned int pixelX, unsigned int pixelY);
+    const pRunningStat& operator()(unsigned int pixelX,
+                                   unsigned int pixelY) const;
     
   private:
-
-    QCPColorMap *m_colorMap;
-    QCPColorScale *m_colorScale;
-    QCPMarginGroup *m_marginGroup;
+  
+    pRunningStat& pedestal(unsigned int pixelX, unsigned int pixelY);
+    const pRunningStat& pedestal(unsigned int pixelX,
+                                 unsigned int pixelY) const;
+    unsigned int binIndex (unsigned int pixelX, unsigned int pixelY) const;
     
-    // Not owned by the object. May live after the object is destroyed
-    std::shared_ptr<pColorMapOptions> m_options;
-         
+    std::vector<pRunningStat> m_pedMap;
+
 };
 
 #endif // PEDESTALSMAP_H

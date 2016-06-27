@@ -39,6 +39,14 @@ HEADERS += xpollog.h
 HEADERS += xpolio.h
 
 HEADERS += qcustomplot.h
+HEADERS += histogramUtils.h
+HEADERS += pHistogramOptions.h
+HEADERS += pHistogram.h
+HEADERS += pCustomHistogramPlot.h
+HEADERS += pHistogramPlot.h
+HEADERS += pMap.h
+HEADERS += pMapPlot.h
+HEADERS += pCustomColorMapPlot.h
 
 HEADERS += pQtGridLayoutWidget.h
 HEADERS += pQtGroupBoxWidget.h
@@ -59,9 +67,11 @@ HEADERS += pUsbControlTab.h
 HEADERS += pUserPreferencesTab.h
 HEADERS += pQtMainWindowGui.h
 HEADERS += pAcquisitionWindow.h
-HEADERS += xpepedsWindow.h
+
 HEADERS += pDisplayWindow.h
+HEADERS += xpepedsWindow.h
 HEADERS += pedestalsMap.h
+HEADERS += pedRunController.h
 
 HEADERS += pFiniteStateMachine.h
 HEADERS += pDataCollector.h
@@ -80,6 +90,7 @@ HEADERS += pLoggerChannel.h
 HEADERS += pLogger.h
 HEADERS += pIOManager.h
 HEADERS += pUdpSender.h
+HEADERS += pRunningStat.h
 
 
 SOURCES += xpolgui.cpp
@@ -91,6 +102,14 @@ SOURCES += xpollog.cpp
 SOURCES += xpolio.cpp
 
 SOURCES += qcustomplot.cpp
+SOURCES += histogramUtils.cpp
+SOURCES += pHistogramOptions.cpp
+SOURCES += pHistogram.cpp
+SOURCES += pCustomHistogramPlot.cpp
+SOURCES += pHistogramPlot.cpp
+SOURCES += pMap.cpp
+SOURCES += pMapPlot.cpp
+SOURCES += pCustomColorMapPlot.cpp
 
 SOURCES += pQtGridLayoutWidget.cpp
 SOURCES += pQtGroupBoxWidget.cpp
@@ -111,9 +130,11 @@ SOURCES += pUsbControlTab.cpp
 SOURCES += pUserPreferencesTab.cpp
 SOURCES += pQtMainWindowGui.cpp
 SOURCES += pAcquisitionWindow.cpp
+
 SOURCES += xpepedsWindow.cpp
 SOURCES += pDisplayWindow.cpp
 SOURCES += pedestalsMap.cpp
+SOURCES += pedRunController.cpp
 
 SOURCES += pFiniteStateMachine.cpp
 SOURCES += pDataCollector.cpp
@@ -132,6 +153,7 @@ SOURCES += pLoggerChannel.cpp
 SOURCES += pLogger.cpp
 SOURCES += pIOManager.cpp
 SOURCES += pUdpSender.cpp
+SOURCES += pRunningStat.cpp
 
 SOURCES += xpepeds.cpp
 

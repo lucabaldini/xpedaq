@@ -18,9 +18,8 @@ int main(int argn, char *argv[])
   std::string preferencesFilePath = xpedaqos::join(cfgFolderPath,
 						   "preferences.cfg");
   std::string trgMaskFilePath = xpedaqos::join(cfgFolderPath, "trgmask.cfg");
-  pRunController *runController = new pRunController(configFilePath,
-						     preferencesFilePath,
-						     trgMaskFilePath);
+  pedRunController *runController = new pedRunController(configFilePath,
+                                         preferencesFilePath, trgMaskFilePath);
   xpepedsWindow window(*runController);
 
   for (int i = 1; i < argn; i++)

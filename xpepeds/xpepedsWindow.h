@@ -25,6 +25,7 @@ with this program; if not, write to the Free Software Foundation Inc.,
 
 #include "pAcquisitionWindow.h"
 #include "pDisplayWindow.h"
+#include "pedRunController.h"
 
 class xpepedsWindow : public pAcquisitionWindow
 {
@@ -33,7 +34,7 @@ class xpepedsWindow : public pAcquisitionWindow
 
  public:
   
-  xpepedsWindow(pRunController &runController);
+  xpepedsWindow(pedRunController &runController);
   ~xpepedsWindow() {;}
  
  public slots: 
@@ -44,6 +45,8 @@ class xpepedsWindow : public pAcquisitionWindow
   
   pDisplayWindow *m_displayWindow;
   void setupConnections();
+  
+  pedRunController *m_pedRunController;
 
 };
 

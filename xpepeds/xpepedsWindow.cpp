@@ -24,21 +24,23 @@ with this program; if not, write to the Free Software Foundation Inc.,
 #include <iostream>
 
 
-xpepedsWindow::xpepedsWindow(pRunController &runController) :
-  pAcquisitionWindow(runController)
+xpepedsWindow::xpepedsWindow(pedRunController &runController) :
+  pAcquisitionWindow(runController), m_pedRunController(&runController)
 {
   setupConnections();
   QString title = "xpepeds version " + QString(__XPEDAQ_VERSION__);
   setWindowTitle(title);
-  connect (m_transportBar, SIGNAL(start()), this, SLOT(showDisplayWindow()));
+  connect (m_transportBar, SIGNAL(stop()), this, SLOT(showDisplayWindow()));
 }
 
 /*!
  */
 void xpepedsWindow::showDisplayWindow()
 {
+  m_pedRunController -> randomFilling(10);
   m_displayWindow = new pDisplayWindow();
   m_displayWindow -> show();
+  m_displayWindow -> showPedestals(m_pedRunController -> pedMap());
 }
 
 /*!
@@ -46,5 +48,5 @@ void xpepedsWindow::showDisplayWindow()
 void xpepedsWindow::setupConnections()
 {
   pAcquisitionWindow::setupConnections();
-  //connect(m_transportBar, SIGNAL(start()), this, SLOT(startRun()));
+  connect(m_transportBar, SIGNAL(start()), this, SLOT(startRun()));
 }

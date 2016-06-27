@@ -95,8 +95,11 @@ void xpemonPlotGrid::updateEventDisplay(double xmin, double xmax,
 void xpemonPlotGrid::resetPlot()
 {
   m_pulseHeightPlot -> reset();
+  m_pulseHeightPlot -> replot();
   m_windowSizePlot -> reset();
+  m_windowSizePlot -> replot();
   m_hitMap -> reset();
+  m_hitMap -> replot();
   m_eventDisplay -> clearMap();
 }
 

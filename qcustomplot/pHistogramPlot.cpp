@@ -12,6 +12,7 @@ pHistogramPlot::pHistogramPlot(unsigned int nBins, double xmin, double xmax,
   m_bars -> keyAxis() -> setRange(m_hist -> xMin(), m_hist -> xMax());
   m_bars -> setWidth(m_hist -> binWidth());
   setTolerance (1.e-4 * (m_hist -> binWidth()));
+  drawStatisticalBox();
 }
 
 
@@ -72,13 +73,27 @@ void pHistogramPlot::fill(double x)
 
 void pHistogramPlot::updateData (const std::vector<double> &values)
 {
-  /* This is a fast (and unsafe) method for filling the histogram.
+  /* This is a fast (and unsafe) method for refilling the histogram.
      It assumes that the input vector has the correct size.
      WARNING: no check is performed.
   */
   reset();
   for (unsigned int i = 0; i < values.size(); ++i)
     {fillBin(i, values.at(i));}  
+}
+
+
+void pHistogramPlot::drawStatisticalBox()
+{
+  // add the text label at the top:
+  QCPItemText *textLabel = new QCPItemText(this);
+  addItem(textLabel);
+  textLabel -> setPositionAlignment(Qt::AlignTop|Qt::AlignHCenter);
+  textLabel -> position -> setType(QCPItemPosition::ptAxisRectRatio);
+  textLabel -> position -> setCoords(0.5, 0); // place position at center/top of axis rect
+  textLabel -> setText("");
+  textLabel -> setFont(QFont(font().family(), 10)); // make font a bit larger
+  //textLabel -> setPen(QPen(Qt::black)); // show black border around text
 }
 
 

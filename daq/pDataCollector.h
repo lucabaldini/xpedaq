@@ -56,7 +56,7 @@ class pDataCollector : public QThread
   
  public:
 
-  pDataCollector(pUsbController *usbController);
+  pDataCollector(pUsbController *usbController, bool emitBlocks=false);
   ~pDataCollector() {;}
   void reset();
   void setupRun(std::string outputFilePath, long int startSeconds,
@@ -66,6 +66,7 @@ class pDataCollector : public QThread
   int numEvents() const {return m_dataFIFO->getNumAcquiredEvents();}
 
  signals:
+ 
   void blockRead(const pDataBlock& passedDataBlock);  
 
  public slots:
@@ -91,6 +92,7 @@ class pDataCollector : public QThread
   bool m_fullFrame;
   long int m_startSeconds;
   int m_numMalformedBlocks;
+  bool m_emitBlocks;
   void dumpRawBuffer(unsigned char *buffer);
 };
 

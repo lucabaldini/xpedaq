@@ -15,6 +15,7 @@ class pCustomHistogramPlot : public QCustomPlot
   public:
   
     pCustomHistogramPlot(pBasicPlotOptions options = pBasicPlotOptions());      
+    
     void setKeyContent(double key, double value);
     void setTolerance (double tolerance);
     void clearBars();

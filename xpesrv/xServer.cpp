@@ -187,5 +187,5 @@ void xServer::broadcastEvent()
       buffer[bindex+1]= tmp2; //data[1];
       bindex+=2;
     }
-  m_udpSender->broadcastDatagram((char*)buffer, maxEvsize);
+  m_udpSender->broadcastDatagram((char*)buffer, bindex);//maxEvsize);
 }

@@ -96,6 +96,5 @@ void pMapPlot::reset()
 {
   resetData();
   setupDataMap();
-  replot();
 }
 

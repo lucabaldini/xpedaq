@@ -31,16 +31,15 @@ void pEventReader::readPendingDatagram()
     return;
   }
   m_udpSocket -> readDatagram(data, size);
+  
   /* When instantiating a pDataBlock we pass to its constructor a pointer
      to the buffer - no actual copy of the data involved.
-     Here we do not create the pDataBlock dinamycally, so that it goes out
+     Here we create the pDataBlock on the stack, so that it goes out
      of scope at the end of the function and the memory allocated for the buffer
-     is automatically released (see the destructor of pDataBlock).
-     Note: the cast on the pointer passed as argument does not modify the
-     content of the buffer.
+     is released (see the destructor of pDataBlock).
   */
-  pDataBlock p (reinterpret_cast<unsigned char*> (data));
-  data = nullptr; // does not own the buffer anymore - because p does it
+  pDataBlock p (reinterpret_cast<unsigned char*> (data), size);
+  data = nullptr; // does not own the buffer anymore - p does it
   for (unsigned int evt = 0; evt < p.numEvents(); ++evt)
   {
     if ((p.xmax(evt) <= p.xmin(evt)) || (p.ymax(evt) <= p.ymin(evt)))
@@ -119,7 +118,6 @@ void pEventReader::updateRequested()
 
 void pEventReader::startReading()
 {
-  std::cout << "Reading data" << std::endl;
   QMutexLocker locker(&m_mutex);
   m_stopped = false;
   m_isContentChanged = false;
@@ -154,7 +152,8 @@ void pEventReader::setZeroSupThreshold(double zeroSupThreshold)
 
 void pEventReader::resetHistograms()
 {
-  QMutexLocker locker(&m_mutex);
+  /* We don't need a mutex here, since this can only happen when the acquisition
+     is stopped */
   m_pulseHeightHist -> reset();
   m_windowSizeHist -> reset();
   m_hitMap -> reset();

@@ -32,8 +32,8 @@ pAcquisitionWindow::pAcquisitionWindow(pRunController &runController)
   m_runController = &runController;
   // This connection needs to be here in order to intercept error signals.
   connect(m_runController->usbController(),
-	  SIGNAL(quickusbError(unsigned long)),
-	  this, SLOT(disableHardwareWidgets()));
+    SIGNAL(quickusbError(unsigned long)),
+    this, SLOT(disableHardwareWidgets()));
   connect(m_runController->usbController(),
 	  SIGNAL(connected(QString, QString, QString, QString)),
 	  m_usbControlTab,
