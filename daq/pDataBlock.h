@@ -55,7 +55,7 @@ class pDataBlock
   pDataBlock(unsigned char *rawDataBlock, unsigned int bufferSize);
   /* In order to allow the emission of an object as a signal Qt requires it to
      have public no-arg constructor and destructor and a copy constructor */
-  pDataBlock(){;}
+  pDataBlock():m_isWindowed(false){;}
   pDataBlock(const pDataBlock &cSourceDataBlock);
   ~pDataBlock() {delete [] m_rawBuffer;}
 
@@ -129,7 +129,11 @@ class pDataBlock
   /*! \brief Data block error summary (0 if the buffer is good).
    */
   unsigned int m_errorSummary;
-
+  
+  /*! \brief Flag for window mode events.
+   */
+  const bool m_isWindowed;
+   
   /*
    */
   unsigned int dataWord(unsigned int offset) const;

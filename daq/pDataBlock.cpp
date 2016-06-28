@@ -28,7 +28,8 @@ with this program; if not, write to the Free Software Foundation Inc.,
 pDataBlock::pDataBlock(unsigned char *buffer) :
   m_rawBuffer(buffer),
   m_size(2*NWORDS),
-  m_errorSummary(0)
+  m_errorSummary(0),
+  m_isWindowed(false)
 { 
   m_offsetVec.push_back(0);
 }
@@ -39,7 +40,8 @@ pDataBlock::pDataBlock(unsigned char *buffer) :
 
 pDataBlock::pDataBlock(unsigned char *buffer, unsigned int bufferSize) :
   m_rawBuffer(buffer),
-  m_errorSummary(0)
+  m_errorSummary(0),
+  m_isWindowed(true)
 {
   unsigned int pos = 0;
   unsigned int evt = 0;
@@ -67,14 +69,13 @@ pDataBlock::pDataBlock(unsigned char *buffer, unsigned int bufferSize) :
 }
 
 
-pDataBlock::pDataBlock(const pDataBlock &cSourceDataBlock)
+pDataBlock::pDataBlock(const pDataBlock &cSourceDataBlock) :
+		          m_isWindowed (cSourceDataBlock.m_isWindowed)
 {
   m_size = cSourceDataBlock.m_size;
   if (cSourceDataBlock.m_rawBuffer)
   {
-    /* Awful. We need a better way to make safe conversion between (unsigned
-       char*) and (char*).
-       By the way, is this actually the correct way to cast? */    
+    /* Awful. Isn't there a better way to copy the buffer? */    
     char* temp_buffer = new char [2*NWORDS];
     memcpy(temp_buffer, cSourceDataBlock.getCharDataBlock(), m_size);
     m_rawBuffer = reinterpret_cast<unsigned char*> (temp_buffer);
@@ -122,6 +123,7 @@ unsigned int pDataBlock::dataWord(unsigned int event, unsigned int offset) const
  */
 unsigned int pDataBlock::header(unsigned int event) const
 {
+  if (!m_isWindowed) return 0;
   return dataWord(event, Header);
 }
 
@@ -130,6 +132,7 @@ unsigned int pDataBlock::header(unsigned int event) const
  */
 unsigned int pDataBlock::xmin(unsigned int event) const
 {
+  if (!m_isWindowed) return 0;
   return dataWord(event, WindowXMin);
 }
 
@@ -138,6 +141,7 @@ unsigned int pDataBlock::xmin(unsigned int event) const
  */
 unsigned int pDataBlock::xmax(unsigned int event) const
 {
+  if (!m_isWindowed) return xpoldetector::kNumPixelsX;
   return dataWord(event, WindowXMax);
 }
 
@@ -146,6 +150,7 @@ unsigned int pDataBlock::xmax(unsigned int event) const
  */
 unsigned int pDataBlock::ymin(unsigned int event) const
 {
+  if (!m_isWindowed) return 0;
   return dataWord(event, WindowYMin);
 }
 
@@ -154,6 +159,7 @@ unsigned int pDataBlock::ymin(unsigned int event) const
  */
 unsigned int pDataBlock::ymax(unsigned int event) const
 {
+  if (!m_isWindowed) return xpoldetector::kNumPixelsY;
   return dataWord(event, WindowYMax);
 }
 
@@ -162,6 +168,7 @@ unsigned int pDataBlock::ymax(unsigned int event) const
  */
 unsigned int pDataBlock::bufferId(unsigned int event) const
 {
+  if (!m_isWindowed) return 0;
   return dataWord(event, BufferId);
 }
 
@@ -170,6 +177,7 @@ unsigned int pDataBlock::bufferId(unsigned int event) const
  */
 unsigned int pDataBlock::numPixels(unsigned int event) const
 {
+  if (!m_isWindowed) return xpoldetector::kNumPixelsX * xpoldetector::kNumPixelsY;
   return (xmax(event) - xmin(event) + 1)*(ymax(event) - ymin(event) + 1);
 }
 
@@ -206,8 +214,8 @@ unsigned int pDataBlock::pixelCounts(unsigned int event,
   /* TODO: we probably need to check that index < numPixels() and throw an
      exception in case it is not.
   */
-  return dataWord(event, AdcStart + 2*index);
-}                                    
+  return dataWord(event, AdcStart*m_isWindowed + 2*index);
+}
 
 
 /*
