@@ -34,6 +34,7 @@ class PedestalsMap
     double rms(unsigned int pixelX, unsigned int pixelY) const;  
 
     void fill(unsigned int pixelX, unsigned int pixelY, double value);
+	void reset();
 
     pRunningStat& operator()(unsigned int pixelX, unsigned int pixelY);
     const pRunningStat& operator()(unsigned int pixelX,

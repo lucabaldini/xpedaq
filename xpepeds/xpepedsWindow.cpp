@@ -30,19 +30,42 @@ xpepedsWindow::xpepedsWindow(pedRunController &runController) :
   setupConnections();
   QString title = "xpepeds version " + QString(__XPEDAQ_VERSION__);
   setWindowTitle(title);
-  connect (m_transportBar, SIGNAL(stop()), this, SLOT(showDisplayWindow()));
   m_readoutModeTab -> disableAll();
+  m_isWindowOpen = false;
 }
 
 /*!
  */
 void xpepedsWindow::showDisplayWindow()
 {
-  m_pedRunController -> randomFilling(10);
+  //m_pedRunController -> randomFilling(10);
+  if (m_isWindowOpen) return;
   m_displayWindow = new pDisplayWindow();
   m_displayWindow -> show();
+  connect(m_displayWindow, SIGNAL(windowClosed()), this, SLOT(displayClosed()));
   m_displayWindow -> showPedestals(m_pedRunController -> pedMap());
+  m_isWindowOpen = true;
 }
+
+
+/*!
+ */
+void xpepedsWindow::closeDisplayWindow()
+{
+  if (!m_isWindowOpen) return;
+  m_displayWindow -> close();
+  displayClosed();
+}
+
+
+/*! Each time the window is closed, we reset the data.
+ */
+void xpepedsWindow::displayClosed()
+{
+  m_pedRunController -> resetPedMap();
+  m_isWindowOpen = false;
+}
+
 
 /*!
  */
@@ -50,4 +73,6 @@ void xpepedsWindow::setupConnections()
 {
   pAcquisitionWindow::setupConnections();
   connect(m_transportBar, SIGNAL(start()), this, SLOT(startRun()));
+  connect (m_transportBar, SIGNAL(start()), this, SLOT(closeDisplayWindow()));
+  connect (m_transportBar, SIGNAL(stop()), this, SLOT(showDisplayWindow()));
 }

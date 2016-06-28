@@ -37,16 +37,24 @@ class xpepedsWindow : public pAcquisitionWindow
   xpepedsWindow(pedRunController &runController);
   ~xpepedsWindow() {;}
  
- public slots: 
-   
+ 
+ public slots:  
+ 
+ 
+ private slots:
+
    void showDisplayWindow();
+   void closeDisplayWindow(); 
+   void displayClosed();
+ 
  
  private:
   
   pDisplayWindow *m_displayWindow;
-  void setupConnections();
-  
+  bool m_isWindowOpen;
   pedRunController *m_pedRunController;
+  
+  void setupConnections();
 
 };
 

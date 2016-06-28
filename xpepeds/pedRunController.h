@@ -30,7 +30,8 @@ class pedRunController: public pRunController
   public slots:
   
     void readDataBlock(const pDataBlock &p);
-    void randomFilling(int nEvents);
+    void resetPedMap();
+	void randomFilling(int nEvents);
 
   private:
   

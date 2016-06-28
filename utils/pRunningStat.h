@@ -18,6 +18,7 @@ class pRunningStat
     double rms() const;  
     friend std::ostream& operator<< (std::ostream &out,
                                      const pRunningStat &stat);
+	void reset();
 
 
   private:

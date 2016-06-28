@@ -45,6 +45,16 @@ double pRunningStat::rms() const
 }  
 
 
+void pRunningStat::reset()
+{
+  m_numEntries = 0;
+  m_currentMean = 0;
+  m_currentVariance = 0;
+  m_prevMean = 0;
+  m_prevVariance = 0;
+}
+
+
 std::ostream& operator<< (std::ostream &out, const pRunningStat &stat)
 {
   try

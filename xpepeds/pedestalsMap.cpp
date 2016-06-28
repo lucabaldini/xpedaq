@@ -71,4 +71,11 @@ double PedestalsMap::rms(unsigned int pixelX, unsigned int pixelY) const
 void PedestalsMap::fill(unsigned int pixelX, unsigned int pixelY, double value)
 {
   pedestal(pixelX, pixelY).fill(value);
-}                                
+}
+
+
+void PedestalsMap::reset()
+{
+  for (unsigned int index=0; index < kNPedestal; index++)
+    {m_pedMap.at(index).reset();}
+}                      

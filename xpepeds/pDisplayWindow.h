@@ -28,12 +28,21 @@ class pDisplayWindow : public QMainWindow
                             int posy = 250, int windowWidth = 800,
                             int windowWeight = 600);
     
+  
+  signals:
+  
+    void windowClosed();
+  
+  
   public slots:
 
-    void showPedestals(const PedestalsMap& pedMap);  
+    void showPedestals(const PedestalsMap& pedMap);
+  
   
   private slots:
  
+   void closeEvent(QCloseEvent *event);
+  
   
   private:
   

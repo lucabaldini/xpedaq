@@ -38,6 +38,12 @@ void pedRunController::readDataBlock(const pDataBlock &p)
 }
 
 
+void pedRunController::resetPedMap()
+{
+  m_pedestalMap -> reset();
+}
+
+
 void pedRunController::randomFilling(int nEvents)
 {
   /* Generate some fake data. This is only for testing and should be removed

@@ -56,11 +56,18 @@ void pDisplayWindow::showPedestals(const PedestalsMap& pedMap)
       }
       catch (int err)
       {
-        std::cout << "WARNING: empty pixel" << std::endl;
+        //std::cout << "WARNING: empty pixel" << std::endl;
         continue;
       }    
     }
   }
   m_meanPlot -> replot();
   m_rmsPlot -> replot();
+}
+
+
+void pDisplayWindow::closeEvent(QCloseEvent *event)
+{
+  emit windowClosed();
+  event->accept();
 }
