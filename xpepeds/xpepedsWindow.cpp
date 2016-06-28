@@ -31,6 +31,7 @@ xpepedsWindow::xpepedsWindow(pedRunController &runController) :
   QString title = "xpepeds version " + QString(__XPEDAQ_VERSION__);
   setWindowTitle(title);
   connect (m_transportBar, SIGNAL(stop()), this, SLOT(showDisplayWindow()));
+  m_readoutModeTab -> disableAll();
 }
 
 /*!
