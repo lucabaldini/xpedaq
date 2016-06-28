@@ -264,3 +264,13 @@ void pReadoutModeTab::displayConfiguration(pDetectorConfiguration
   displayPixelAddressX(configuration->pixelAddressX());
   displayPixelAddressY(configuration->pixelAddressY());
 }
+
+
+void pReadoutModeTab::disableAll(bool disable)
+{
+  m_fullFrameRadioButton -> setDisabled(disable);
+  m_windowRadioButton -> setDisabled(disable);
+  m_chargeInjectionRadioButton -> setDisabled(disable);  
+  disableCalibrationWidgets(disable);
+  disableBufferModeWidgets(disable);
+}

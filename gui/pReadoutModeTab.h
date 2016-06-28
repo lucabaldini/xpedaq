@@ -62,6 +62,7 @@ class pReadoutModeTab : public pQtCustomTab
   void disableCalibrationWidgets(bool disable = true);
   void enableBufferModeWidgets(bool enable = true);
   void disableBufferModeWidgets(bool disable = true);
+  void disableAll(bool disable = true);
 
  protected:
 
