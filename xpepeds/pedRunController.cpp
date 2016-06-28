@@ -17,20 +17,23 @@ pedRunController::pedRunController(std::string configFilePath,
 
 void pedRunController::readDataBlock(const pDataBlock &p)
 {
+  /*
   for (unsigned int evt = 0; evt < p.numEvents(); ++evt)
   {
     unsigned int xMin = p.xmin(evt);
     unsigned int xMax = p.xmax(evt);
     unsigned int yMin = p.ymin(evt);    
     unsigned int nPixel = p.numPixels(evt);
+	//std::cout << xMin << " " << xMax << " " << yMin << std::endl;
     unsigned int nCol = xMax - xMin + 1;
-    for (unsigned int index = 0; index < nPixel; ++index)
-    {
-      double height = p.pixelCounts(evt, index);
-      unsigned int x = xMin + index % nCol;
-      unsigned int y = yMin + index / nCol;
-      m_pedestalMap -> fill(x, y, height);
-    }
+	if (nCol < 1) continue;
+  */	
+  for (unsigned int index = 0; index < pedestals::kNPedestal; ++index)
+  {
+	double height = p.pixelCounts(0, index);
+    unsigned int x = index % pedestals::kNx;
+    unsigned int y = index / pedestals::kNx;
+    m_pedestalMap -> fill(x, y, height);
   }
 }
 
