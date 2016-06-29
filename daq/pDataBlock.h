@@ -78,9 +78,12 @@ class pDataBlock
   unsigned int bufferId(unsigned int event) const;
   unsigned int numPixels(unsigned int event) const;
   double timestamp(unsigned int event) const;
+
   // Random access to the content of single pixels in an event
   unsigned int pixelCounts(unsigned int event, unsigned int index) const;
-
+  void readPixel(unsigned int event, unsigned int index,
+                 unsigned int &x, unsigned int &y, unsigned int &height) const;
+  
   double averageEventRate() const;
   pEvent event(unsigned int index);
   std::vector<pEvent> events();
