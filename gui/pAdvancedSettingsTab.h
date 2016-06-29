@@ -62,6 +62,10 @@ class pAdvancedSettingsTab : public pQtCustomTab
   void displayMaxWindowSize(unsigned short size);
   void displayConfiguration(pDetectorConfiguration *configuration);
 
+ public slots: 
+  void disableNumPedSamplesComboBox(bool disable = true);
+  void disableMinWindowSizeSpinBox(bool disable = true);
+  void disableMaxWindowSizeSpinBox(bool disable = true);
   
  private:
   

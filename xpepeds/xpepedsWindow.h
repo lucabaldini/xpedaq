@@ -43,6 +43,7 @@ class xpepedsWindow : public pAcquisitionWindow
  
  private slots:
 
+   void disableUnusedWidgets();
    void showDisplayWindow();
    void closeDisplayWindow(); 
    void displayClosed();

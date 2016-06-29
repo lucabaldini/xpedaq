@@ -314,3 +314,27 @@ void pAdvancedSettingsTab::displayConfiguration(pDetectorConfiguration
   displayMinWindowSize(configuration->minWindowSize());
   displayMaxWindowSize(configuration->maxWindowSize());
 }
+
+
+/*!
+ */
+void pAdvancedSettingsTab::disableNumPedSamplesComboBox(bool disable)
+{
+  m_numPedSamplesComboBox -> setDisabled(disable);
+}
+
+
+/*!
+ */
+void pAdvancedSettingsTab::disableMinWindowSizeSpinBox(bool disable)
+{
+  m_minWindowSizeSpinBox -> setDisabled(disable);
+}
+
+
+/*!
+ */
+void pAdvancedSettingsTab::disableMaxWindowSizeSpinBox(bool disable)
+{
+  m_maxWindowSizeSpinBox -> setDisabled(disable);
+}

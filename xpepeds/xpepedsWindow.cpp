@@ -30,9 +30,20 @@ xpepedsWindow::xpepedsWindow(pedRunController &runController) :
   setupConnections();
   QString title = "xpepeds version " + QString(__XPEDAQ_VERSION__);
   setWindowTitle(title);
-  m_readoutModeTab -> disableAll();
+  disableUnusedWidgets();
   m_isWindowOpen = false;
 }
+
+/*
+*/
+void xpepedsWindow::disableUnusedWidgets()
+{
+  //m_readoutModeTab -> disableAll();
+  m_advancedSettingsTab -> disableNumPedSamplesComboBox();
+  m_advancedSettingsTab -> disableMaxWindowSizeSpinBox();
+  m_advancedSettingsTab -> disableMinWindowSizeSpinBox();
+}
+
 
 /*!
  */
