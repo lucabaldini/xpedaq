@@ -154,6 +154,7 @@ const unsigned short xpoldetector::kNumPixelsX = 300;
 const unsigned short xpoldetector::kNumPixelsY = 352;
 const unsigned short xpoldetector::kSmallBufferMode = 0x1;
 const unsigned short xpoldetector::kLargeBufferMode = ~xpoldetector::kSmallBufferMode;
+const unsigned short xpoldetector::kNumReadOutBuffers = 8;
 
 const int xpoldetector::kSmallBufferSize = 2*5000;
 const int xpoldetector::kLargeBufferSize = 2*262144;

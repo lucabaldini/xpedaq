@@ -15,27 +15,47 @@ pedRunController::pedRunController(std::string configFilePath,
 }                                   
 
 
+/*
 void pedRunController::readDataBlock(const pDataBlock &p)
-{
-  /*
-  for (unsigned int evt = 0; evt < p.numEvents(); ++evt)
-  {
-    unsigned int xMin = p.xmin(evt);
-    unsigned int xMax = p.xmax(evt);
-    unsigned int yMin = p.ymin(evt);    
-    unsigned int nPixel = p.numPixels(evt);
-	//std::cout << xMin << " " << xMax << " " << yMin << std::endl;
-    unsigned int nCol = xMax - xMin + 1;
-	if (nCol < 1) continue;
-  */	
+{	
+  //static int counter = 0;
   for (unsigned int index = 0; index < pedestals::kNPedestal; ++index)
   {
-	double height = p.pixelCounts(0, index);
-    unsigned int x = index % pedestals::kNx;
+	unsigned int height = p.pixelCounts(0, index);
+  	if (height == 0) continue;
+	unsigned int x = index % pedestals::kNx;
     unsigned int y = index / pedestals::kNx;
-    m_pedestalMap -> fill(x, y, height);
+	//if (height > 3000)
+	//	continue;
+	m_pedestalMap -> fill(x, y, static_cast<double>(height));	
+    //counter++;	
   }
 }
+*/
+
+
+void pedRunController::readDataBlock(const pDataBlock &p)
+{
+  for (unsigned int evt = 0; evt < p.numEvents(); ++evt)
+  {   
+	//int countMM = 0;
+    unsigned int x = 1000; //unphysical initialization
+	unsigned int y = 1000; //unphysical initialization
+	unsigned int height = 0;
+	for (unsigned int index = 0; index < p.numPixels(evt); ++index)
+    {
+      p.readPixel(evt, index, x, y, height);
+      //if (height < 850)
+	  //{
+	  //  countMM++;
+	  //  std::cout << index << std::endl;
+	  //}
+      m_pedestalMap -> fill(x, y, height);
+    }
+	//std::cout << evt << " " << countMM << std::endl;
+  }	
+}
+
 
 
 void pedRunController::resetPedMap()

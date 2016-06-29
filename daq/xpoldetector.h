@@ -92,6 +92,7 @@ namespace xpoldetector{
   extern const unsigned short kNumPixelsY;
   extern const unsigned short kLargeBufferMode;
   extern const unsigned short kSmallBufferMode;
+  extern const unsigned short kNumReadOutBuffers;
   extern const int kSmallBufferSize;
   extern const int kLargeBufferSize;
 }

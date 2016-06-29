@@ -141,7 +141,7 @@ unsigned int pDataBlock::xmin(unsigned int event) const
  */
 unsigned int pDataBlock::xmax(unsigned int event) const
 {
-  if (!m_isWindowed) return xpoldetector::kNumPixelsX;
+  if (!m_isWindowed) return xpoldetector::kNumPixelsX - 1;
   return dataWord(event, WindowXMax);
 }
 
@@ -159,7 +159,7 @@ unsigned int pDataBlock::ymin(unsigned int event) const
  */
 unsigned int pDataBlock::ymax(unsigned int event) const
 {
-  if (!m_isWindowed) return xpoldetector::kNumPixelsY;
+  if (!m_isWindowed) return xpoldetector::kNumPixelsY - 1;
   return dataWord(event, WindowYMax);
 }
 
@@ -215,6 +215,40 @@ unsigned int pDataBlock::pixelCounts(unsigned int event,
      exception in case it is not.
   */
   return dataWord(event, AdcStart*m_isWindowed + 2*index);
+}
+
+
+void pDataBlock::readPixel(unsigned int event, unsigned int index,
+					       unsigned int &x, unsigned int &y,
+					       unsigned int &height) const
+{
+  static const unsigned int bufferHeight = xpoldetector::kNumPixelsY
+											/ xpoldetector::kNumReadOutBuffers;
+  static unsigned int lastEvtIndex = 0;
+  static unsigned int xMin = xmin(lastEvtIndex);
+  static unsigned int xMax = xmax(lastEvtIndex);
+  static unsigned int yMin = ymin(lastEvtIndex);    
+  static unsigned int nCol = xMax - xMin + 1;
+  if (lastEvtIndex != event)
+  {
+    lastEvtIndex = event;
+	xMin = xmin(event);
+	xMax = xmax(event);
+	yMin = ymin(event);
+	nCol = xMax - xMin + 1;
+  }   
+  //std::cout << xMin << " " << xMax << " " << yMin << " " << nPixel << std::endl;
+  height = pixelCounts(event, index);
+  if (m_isWindowed)
+  {
+    x = xMin + index % nCol;
+    y = yMin + index / nCol;
+	return;
+  }	
+  unsigned int currBuffId =  index % xpoldetector::kNumReadOutBuffers;
+  index = index / xpoldetector::kNumReadOutBuffers;
+  x = index % nCol;
+  y = index / nCol + bufferHeight * currBuffId;
 }
 
 
