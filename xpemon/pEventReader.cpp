@@ -64,7 +64,7 @@ void pEventReader::readPendingDatagram()
     for (unsigned int index = 0; index < nPixel; ++index)
     {
       double height = p.pixelCounts(evt, index);
-      if (height < m_zeroSupThreshold) continue;
+	  if (height < m_zeroSupThreshold) { height = 0.;}
       m_curHitMap.at(index) = height;
       unsigned int x = m_curXmin + index % nCol;
       unsigned int y = m_curYmin + index / nCol;
