@@ -43,7 +43,7 @@ class pHistogram
     void fillBin(unsigned int binNumber, double value);
     void reset();
   
-  private:
+  protected:
     
     pHistogram(); // declaring default constr. private, so it cannot be called
     void initialize();

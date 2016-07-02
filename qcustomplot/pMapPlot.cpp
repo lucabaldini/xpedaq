@@ -76,11 +76,14 @@ void pMapPlot::updateData (const std::vector<double> &values)
      It assumes that the input vector has the correct size and follows the same
      ordering logic as a pMap::m_values.
   */
-  reset();
+  m_map -> reset();
   for (unsigned int iy = 0; iy < m_map -> nYbins(); ++iy)
   {
     for (unsigned int ix = 0; ix < m_map -> nXbins(); ++ix)
-      {fill(ix, iy, values.at(ix + iy * m_map -> nXbins()));}
+    {
+      
+      fill(ix, iy, values.at(ix + iy * m_map -> nXbins()));
+    }
   }
 }
 
