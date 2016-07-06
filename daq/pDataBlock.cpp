@@ -219,32 +219,29 @@ unsigned int pDataBlock::pixelCounts(unsigned int event,
 
 
 void pDataBlock::readPixel(unsigned int event, unsigned int index,
-					       unsigned int &x, unsigned int &y,
-					       unsigned int &height) const
+			   unsigned int &x, unsigned int &y,
+			   unsigned int &height) const
 {
   static const unsigned int bufferHeight = xpoldetector::kNumPixelsY
-											/ xpoldetector::kNumReadOutBuffers;
+    / xpoldetector::kNumReadOutBuffers;
   static unsigned int lastEvtIndex = 0;
   static unsigned int xMin = xmin(lastEvtIndex);
   static unsigned int xMax = xmax(lastEvtIndex);
   static unsigned int yMin = ymin(lastEvtIndex);    
   static unsigned int nCol = xMax - xMin + 1;
-  if (lastEvtIndex != event)
-  {
+  if (lastEvtIndex != event) {
     lastEvtIndex = event;
-	xMin = xmin(event);
-	xMax = xmax(event);
-	yMin = ymin(event);
-	nCol = xMax - xMin + 1;
-  }   
-  //std::cout << xMin << " " << xMax << " " << yMin << " " << nPixel << std::endl;
+    xMin = xmin(event);
+    xMax = xmax(event);
+    yMin = ymin(event);
+    nCol = xMax - xMin + 1;
+  }
   height = pixelCounts(event, index);
-  if (m_isWindowed)
-  {
+  if (m_isWindowed) {
     x = xMin + index % nCol;
     y = yMin + index / nCol;
-	return;
-  }	
+    return;
+  }
   unsigned int currBuffId =  index % xpoldetector::kNumReadOutBuffers;
   index = index / xpoldetector::kNumReadOutBuffers;
   x = index % nCol;

@@ -90,7 +90,7 @@ void pDataCollector::run()
 	dumpRawBuffer(dataBuffer);
 	m_numMalformedBlocks ++;
       } else {
-  if (m_emitBlocks) emit blockRead(*curDataBlock);
+	if (m_emitBlocks) emit blockRead(*curDataBlock);
 	m_dataFIFO->fill(curDataBlock);
 	m_dataFIFO->setStartSeconds(m_startSeconds);
 	m_dataFIFO->flush();

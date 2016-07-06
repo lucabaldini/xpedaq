@@ -36,23 +36,24 @@ void pedRunController::readDataBlock(const pDataBlock &p)
 
 void pedRunController::readDataBlock(const pDataBlock &p)
 {
-  for (unsigned int evt = 0; evt < p.numEvents(); ++evt)
-  {   
-	//int countMM = 0;
+  for (unsigned int evt = 0; evt < p.numEvents(); ++evt) {   
+    //int countMM = 0;
     unsigned int x = 1000; //unphysical initialization
-	unsigned int y = 1000; //unphysical initialization
-	unsigned int height = 0;
-	for (unsigned int index = 0; index < p.numPixels(evt); ++index)
-    {
+    unsigned int y = 1000; //unphysical initialization
+    unsigned int height = 0;
+    for (unsigned int index = 0; index < p.numPixels(evt); ++index) {
       p.readPixel(evt, index, x, y, height);
       //if (height < 850)
-	  //{
-	  //  countMM++;
-	  //  std::cout << index << std::endl;
-	  //}
+      //{
+      //  countMM++;
+      //  std::cout << index << std::endl;
+      //}
       m_pedestalMap -> fill(x, y, height);
+      //if (height > 2000) {
+      //std::cout << x << " " << y << " " << height << std::endl;
+      //}
     }
-	//std::cout << evt << " " << countMM << std::endl;
+    //std::cout << evt << " " << countMM << std::endl;
   }	
 }
 

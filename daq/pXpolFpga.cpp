@@ -133,17 +133,27 @@ void pXpolFpga::writeAddress(unsigned short X, unsigned short Y){
 
 
 // this function configs fpga to read XPOL in full frame mode AUTOTRIGGERING
-void pXpolFpga::configFullFrame(unsigned short conf)
+void pXpolFpga::configFullFrame()
 {
   *xpollog::kInfo << "Configuring FPGA in Full Frame mode..." << endline;
+  unsigned short conf = (unsigned short)FULLFRAME_MH;
   serialWrite(STATUS_REG,0x1);//reset ADC
   serialWrite(STATUS_REG,0x0);//reset ADC
+
+  //unsigned short disTriggerWidth = 5;//configuration->trgEnableDelay();
+  //unsigned short win_dlim = 5;//configuration->maxWindowSize();
+  //serialWrite((unsigned short)XPOL_DANGEROUS_REG,
+  //	      (disTriggerWidth&0xf) | ((win_dlim<<4) & 0xf0));
+
   serialWrite((unsigned short)X2NPIXEL_LSB_REG,(char)(PIXELS_TO_READ)&0xff);
   serialWrite((unsigned short)X2NPIXEL_MSB_REG,(char)((PIXELS_TO_READ)>>8)&0xff);
   serialWrite((unsigned short)XPOL_SIGNAL_REG,0);//Disable EnabletriggWindow
-  serialWrite((unsigned short)XPOL_DISPIX_REG,0X2);//aaresetn
-  serialWrite((unsigned short)XPOL_DISPIX_REG,0X0);//aaresetn
-  mainSerialWrite(0xa,1);
+  serialWrite((unsigned short)XPOL_DISPIX_REG,0x2);//aaresetn
+  serialWrite((unsigned short)XPOL_DISPIX_REG,0x0);//aaresetn
+  mainSerialWrite((unsigned short) XPM_TRG_CNT_STATUS_REG,
+		  (unsigned short)(XPM_TRG_CNT_STATUS_DATA|0x1));
+
+  //serialWrite((unsigned short)XPOL_WWIDTH_REG,8); What is this?
 
   serialWrite((unsigned short)XPOL_WPULSE_REG,(conf>>6)&0x7);//modesel,usemh,runb
   serialWrite((unsigned short)XPOL_SIGNAL_REG,(conf>>9)&0x1);//EnabletriggWindow
@@ -157,7 +167,9 @@ void pXpolFpga::configFullFrame(unsigned short conf)
   serialWrite((unsigned short)XPOL_SI_CNT_REG,WSEL);//WSEL=1 CONFIGURATION mode
   serialWrite((unsigned short)XPOL_SI_CNT_REG,SEND|WSEL);//WSEL=1 CONFIGURATION mode
   serialWrite((unsigned short)XPOL_SI_CNT_REG,0);
-  serialWrite((unsigned short)12,0X37);//SET TIMING CODE 37 FOR 5MHz
+  unsigned int clockShift = 23;
+  unsigned int clockFrequency = 0x40; // 2.5 MHz
+  serialWrite((unsigned short)12, clockFrequency | clockShift);
   
   //SET number of readings stored in SRAM
   // Number of events you want to take within a loop
@@ -436,7 +448,7 @@ void pXpolFpga::setup(pDetectorConfiguration *configuration)
   } else if(configuration->readoutMode()==xpoldetector::kFullFrameReadoutCode){
     *xpollog::kInfo << "Starting Full Frame Configuration" << endline;
     // Configuring FPGA in full frame mode
-    configFullFrame((unsigned short)FULLFRAME_MH);
+    configFullFrame();
     configXPM();
   } else {
     *xpollog::kError << "Unknown Configuration" << endline;
