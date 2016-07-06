@@ -77,7 +77,7 @@ void pHistogramPlot::updateData (const std::vector<double> &values)
      It assumes that the input vector has the correct size.
      WARNING: no check is performed.
   */
-  reset();
+  m_hist -> reset();
   for (unsigned int i = 0; i < values.size(); ++i)
     {fillBin(i, values.at(i));}  
 }
