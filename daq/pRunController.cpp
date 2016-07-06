@@ -490,6 +490,34 @@ std::string pRunController::xpedaqVersionFilePath() const
 
 /*!
  */
+void pRunController::writeDataFileHeader() const
+{
+  *xpollog::kInfo << "Writing header to " << dataFilePath() << endline;
+  pFileHeader_v1 header;
+  header.startWord = FILE_HEADER_START_WORD;
+  header.version = FILE_HEADER_VERSION;
+  header.size = sizeof(pFileHeader_v1);
+  header.runId = m_runId;
+  header.stationId = m_stationId;
+  header.startSeconds = m_startSeconds;
+  header.readoutMode = m_detectorConfiguration->readoutMode();
+  for (int i = 0; i < NUM_READOUT_CLUSTERS; i++) {
+    header.thresholdDac[i] = m_detectorConfiguration->thresholdDac(i);
+  }
+  header.bufferMode = m_detectorConfiguration->bufferMode();
+  header.clockFrequency = m_detectorConfiguration->clockFrequency();
+  header.clockShift = m_detectorConfiguration->clockShift();
+  header.numPedSamples = m_detectorConfiguration->numPedSamples();
+  header.pedSampleDelay = m_detectorConfiguration->pedSampleDelay();
+  header.trgEnableDelay = m_detectorConfiguration->trgEnableDelay();
+  header.minWindowSize = m_detectorConfiguration->minWindowSize();
+  header.maxWindowSize = m_detectorConfiguration->maxWindowSize();
+  //std::cout << header.startWord << std::endl;
+}
+
+
+/*!
+ */
 void pRunController::writeRunStat(std::string filePath) const
 {
   *xpollog::kInfo << "Writing run statistics to " << filePath <<

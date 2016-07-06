@@ -19,30 +19,39 @@ with this program; if not, write to the Free Software Foundation Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 ***********************************************************************/
 
+#define FILE_HEADER_START_WORD 0xefff
+#define FILE_HEADER_VERSION 1
+
 
 #ifndef XPEDAQHEADER_H
 #define XPEDAQHEADER_H
 
 
-struct FileHeader_v1
+#include "xpoldetector.h"
+#include <stdint.h>
+
+
+struct pFileHeader_v1
 {
   // Preamble.
-  uint16_t header;
+  uint16_t startWord;
   uint16_t version;
-  uint16_t size;
+  uint32_t size;
   // Run-specific stuff.
-  uint16_t runId;
-  uint32_t startSeconds;
-  // Configuration bookkeping.
-  uint8_t readoutMode;
-  uint8_t bufferMode;
-  uint8_t clockFrequency;
-  uint8_t clockShift;
-  uint8_t numPedSamples;
-  uint8_t pedSampleDelay;
-  uint8_t trgEnableDelay;
-  uint8_t minWindowSize;
-  uint8_t maxWindowSize;
+  int32_t runId;
+  int32_t stationId;
+  int64_t startSeconds;
+  // Configuration book-keeping.
+  uint16_t readoutMode;
+  uint16_t thresholdDac[NUM_READOUT_CLUSTERS];
+  uint16_t bufferMode;
+  uint16_t clockFrequency;
+  uint16_t clockShift;
+  uint16_t numPedSamples;
+  uint16_t pedSampleDelay;
+  uint16_t trgEnableDelay;
+  uint16_t minWindowSize;
+  uint16_t maxWindowSize;
 };
 
 
