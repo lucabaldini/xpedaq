@@ -34,6 +34,7 @@ pDataBlock::pDataBlock(unsigned char *buffer) :
   m_offsetVec.push_back(0);
 }
 
+
 /*!
   Window-mode (events with variable length).
 */
@@ -69,6 +70,8 @@ pDataBlock::pDataBlock(unsigned char *buffer, unsigned int bufferSize) :
 }
 
 
+/*!
+*/
 pDataBlock::pDataBlock(const pDataBlock &cSourceDataBlock) :
 		          m_isWindowed (cSourceDataBlock.m_isWindowed)
 {
@@ -76,13 +79,14 @@ pDataBlock::pDataBlock(const pDataBlock &cSourceDataBlock) :
   if (cSourceDataBlock.m_rawBuffer)
   {
     /* Awful. Isn't there a better way to copy the buffer? */    
-    char* temp_buffer = new char [2*NWORDS];
+    char temp_buffer [2*NWORDS];
     memcpy(temp_buffer, cSourceDataBlock.getCharDataBlock(), m_size);
     m_rawBuffer = reinterpret_cast<unsigned char*> (temp_buffer);
   }
   m_errorSummary = cSourceDataBlock.m_errorSummary;
   m_offsetVec = cSourceDataBlock.m_offsetVec;
 }
+
 
 /*!
   Overwrite the 4 unused bytes in the event header to add the number of
@@ -102,6 +106,7 @@ void pDataBlock::setStartSeconds(unsigned int startSeconds)
   }
 }
 
+
 /*!
   
 */
@@ -110,6 +115,7 @@ unsigned int pDataBlock::dataWord(unsigned int offset) const
   return _BYTESWAP_(m_rawBuffer[offset], m_rawBuffer[offset + 1]); 
 }
 
+
 /*!
   
 */
@@ -117,6 +123,7 @@ unsigned int pDataBlock::dataWord(unsigned int event, unsigned int offset) const
 {
   return dataWord(m_offsetVec[event] + offset);
 }
+
 
 /*!
 
@@ -127,6 +134,7 @@ unsigned int pDataBlock::header(unsigned int event) const
   return dataWord(event, Header);
 }
 
+
 /*!
 
  */
@@ -135,6 +143,7 @@ unsigned int pDataBlock::xmin(unsigned int event) const
   if (!m_isWindowed) return 0;
   return dataWord(event, WindowXMin);
 }
+
 
 /*!
 
@@ -145,6 +154,7 @@ unsigned int pDataBlock::xmax(unsigned int event) const
   return dataWord(event, WindowXMax);
 }
 
+
 /*!
 
  */
@@ -153,6 +163,7 @@ unsigned int pDataBlock::ymin(unsigned int event) const
   if (!m_isWindowed) return 0;
   return dataWord(event, WindowYMin);
 }
+
 
 /*!
 
@@ -163,6 +174,7 @@ unsigned int pDataBlock::ymax(unsigned int event) const
   return dataWord(event, WindowYMax);
 }
 
+
 /*!
 
  */
@@ -171,6 +183,7 @@ unsigned int pDataBlock::bufferId(unsigned int event) const
   if (!m_isWindowed) return 0;
   return dataWord(event, BufferId);
 }
+
 
 /*!
 
@@ -191,6 +204,7 @@ double pDataBlock::timestamp(unsigned int event) const
 	    65534*dataWord(event, Microseconds + 2));
 }
 
+
 /*!
   The average event rate is defined by the total number of events in the data
   block divided by the time spanned between the timestamp of the first event
@@ -206,15 +220,17 @@ double pDataBlock::averageEventRate() const
   return numEvents()/elapsedTime;
 }
 
+
 /*
 */
 unsigned int pDataBlock::pixelCounts(unsigned int event,
                                      unsigned int index) const
 {
-  /* TODO: we probably need to check that index < numPixels() and throw an
+  /* TODO: we should check that index < numPixels() and throw an
      exception in case it is not.
   */
-  return dataWord(event, AdcStart*m_isWindowed + 2*index);
+  if (m_isWindowed) return dataWord(event, AdcStart + 2*index);
+  return dataWord(event, 2*index);
 }
 
 
@@ -224,20 +240,10 @@ void pDataBlock::readPixel(unsigned int event, unsigned int index,
 {
   static const unsigned int bufferHeight = xpoldetector::kNumPixelsY
 											/ xpoldetector::kNumReadOutBuffers;
-  static unsigned int lastEvtIndex = 0;
-  static unsigned int xMin = xmin(lastEvtIndex);
-  static unsigned int xMax = xmax(lastEvtIndex);
-  static unsigned int yMin = ymin(lastEvtIndex);    
-  static unsigned int nCol = xMax - xMin + 1;
-  if (lastEvtIndex != event)
-  {
-    lastEvtIndex = event;
-	xMin = xmin(event);
-	xMax = xmax(event);
-	yMin = ymin(event);
-	nCol = xMax - xMin + 1;
-  }   
-  //std::cout << xMin << " " << xMax << " " << yMin << " " << nPixel << std::endl;
+  unsigned int xMin = xmin(event);
+  unsigned int xMax = xmax(event);
+  unsigned int yMin = ymin(event);    
+  unsigned int nCol = xMax - xMin + 1;
   height = pixelCounts(event, index);
   if (m_isWindowed)
   {
@@ -249,37 +255,6 @@ void pDataBlock::readPixel(unsigned int event, unsigned int index,
   index = index / xpoldetector::kNumReadOutBuffers;
   x = index % nCol;
   y = index / nCol + bufferHeight * currBuffId;
-}
-
-
-/*
-*/
-pEvent pDataBlock::event(unsigned int evtIndex)
-{
-  
-  unsigned int startIndex = offset(evtIndex);
-  unsigned int buffSize = 2*numPixels(evtIndex);
-  std::vector<unsigned int> adcCounts;
-  for (unsigned int index = startIndex + AdcStart;
-       index < startIndex + AdcStart + buffSize;
-       index+=2)
-  {
-    adcCounts.push_back(dataWord(index));
-  }
-  return pEvent(xmin(evtIndex), xmax(evtIndex),
-                ymin(evtIndex), ymax(evtIndex),
-                bufferId(evtIndex), adcCounts);
-}
-
-/*
-*/
-std::vector<pEvent> pDataBlock::events()
-{
-  unsigned int nEvt = numEvents();
-  std::vector<pEvent> evtVect;
-  for (unsigned int i =0; i < nEvt; i++)
-    {evtVect.push_back(event(i));}
-  return evtVect;
 }
 
 

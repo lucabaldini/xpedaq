@@ -29,7 +29,6 @@ with this program; if not, write to the Free Software Foundation Inc.,
 
 #include "pUsbController.h"
 #include "xpoldetector.h"
-#include "pEvent.h"
 
 
 #define _BYTESWAP_(x1, x2) (((x2 & 0xff) << 8) | (x1 & 0xff))
@@ -57,7 +56,7 @@ class pDataBlock
      have public no-arg constructor and destructor and a copy constructor */
   pDataBlock():m_isWindowed(false){;}
   pDataBlock(const pDataBlock &cSourceDataBlock);
-  ~pDataBlock() {delete [] m_rawBuffer;}
+  ~pDataBlock() {;}
 
   // These are used for the UDP socket. I am not sure they belong here.
   inline char *getCharDataBlock() const {return (char*)m_rawBuffer;}
@@ -85,8 +84,6 @@ class pDataBlock
                  unsigned int &x, unsigned int &y, unsigned int &height) const;
   
   double averageEventRate() const;
-  pEvent event(unsigned int index);
-  std::vector<pEvent> events();
 
   void setStartSeconds(unsigned int startSeconds);
  
