@@ -1,4 +1,4 @@
-#include "pRunningStat.h"
+#include "pRunningStat.h" 
 #include <math.h>
 
 void pRunningStat::fill(double value)
@@ -22,9 +22,6 @@ void pRunningStat::fill(double value)
 
 double pRunningStat::average() const
 {
-
-  if (m_numEntries  < 1)
-    throw -1;
   return m_currentMean;
 }
 
@@ -57,15 +54,16 @@ void pRunningStat::reset()
 
 std::ostream& operator<< (std::ostream &out, const pRunningStat &stat)
 {
+  out << "Sample mean = " << stat.average()
+      << " ( " << stat.numValues() << " entries)";
   try
   {
-    out << "Sample mean = " << stat.average() <<
-      ", sample standard deviation = " << stat.rms() << " ( " <<
-        stat.numValues() << " entries)"; 
+    out << ", sample standard deviation = " << stat.rms();
   }
   catch (int error)
   {
-    out << "Empty 'pRunningStat' object";
+    out << ", sample standard deviation = 0.";
   }
   return out;
 }
+

@@ -16,7 +16,7 @@ pOptionBoxWidget::pOptionBoxWidget(QWidget *parent): pQtGroupBoxWidget(parent)
   addWidget(m_zeroSupThrLabel, 2,0);
   addWidget(m_zeroSupThrEdit, 2,1);
   
-  // TODO: the default value should not be written elsewhere
+  // TODO: the default value should be written elsewhere
   m_socketPortText.setNum(50001);
   m_refreshIntervalText.setNum(500.);
   m_zeroSupThresholdText.setNum(1);
