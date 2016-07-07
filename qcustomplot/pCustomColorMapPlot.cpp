@@ -66,6 +66,13 @@ void pCustomColorMapPlot::updateData (const std::vector<double> &values)
   rescaleAxes();
 }
 
+void pCustomColorMapPlot::resetView()
+{
+  m_colorMap -> rescaleAxes();
+  m_colorMap -> rescaleDataRange();
+  replot();
+}
+
 
 void pCustomColorMapPlot::setRange (double xmin, double xmax,
                                     double ymin, double ymax)

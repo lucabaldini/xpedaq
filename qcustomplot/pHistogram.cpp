@@ -3,7 +3,7 @@
 pHistogram::pHistogram (unsigned int nBins, double xmin, double xmax):
                         m_nBins(nBins), m_xmin(xmin), m_xmax(xmax),
                         m_isLinear (true), m_minVal(0.), m_maxVal(0.),
-                        m_underflow (0), m_overflow(0)
+                        m_sum (0), m_underflow (0), m_overflow(0)
 {
   if (m_nBins < 1) throw HistogramError::INVALID_NUMBER_OF_BINS;
   if (m_xmin > xmax) throw HistogramError::INVALID_BOUNDARIES;
@@ -60,14 +60,7 @@ unsigned int pHistogram::entries() const
 
 double pHistogram::sum() const
 {
-  double sum =  0.;
-  for(std::vector<double>::const_iterator it = m_values.begin();
-      it != m_values.end();
-      ++it)
-  {
-    sum+=(*it);
-  }
-  return sum;
+  return m_sum;
 }
 
 
@@ -132,6 +125,7 @@ void pHistogram::fillBin(unsigned int binNumber, double value)
 
   m_values.at(binNumber) += value;
   m_entries.at(binNumber) += 1;
+  m_sum += value;
   if (m_values.at(binNumber) > maxValue()) {m_maxVal = m_values.at(binNumber);}
   if (m_values.at(binNumber) < minValue()) {m_minVal = m_values.at(binNumber);} 
 }
@@ -183,6 +177,7 @@ void pHistogram::reset()
   }
   m_minVal = 0.;
   m_maxVal = 0.;
+  m_sum = 0.;
   m_overflow = 0;
   m_underflow = 0;
 }

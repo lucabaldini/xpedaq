@@ -24,7 +24,7 @@ class pHistogram
     
     unsigned int nbins() const {return m_nBins;}
     unsigned int entries() const;
-    double sum() const;   // sum of all the values stored
+    double sum() const;   // returns the sum of all the values stored
     double xMin () const {return m_xmin;}
     double xMax() const {return m_xmax;}
     double minValue() const {return m_minVal;}
@@ -53,10 +53,11 @@ class pHistogram
     double m_xmin;    // minimum of xAxis
     double m_xmax;    // maximum of xAxis
     bool m_isLinear; // true if the binning is linear
-    double m_binWidth; // -1 if the binning is not linear
+    double m_binWidth;    // -1 if the binning is not linear
     std::vector<double> m_binEdges;   // xAxis binning
     double m_minVal;    // minimum value stored
     double m_maxVal;    // maximum value stored
+    double m_sum;    // sum of all the values stored;
     std::vector<unsigned int> m_entries;    // entries in each bin
     std::vector<double> m_values;    // values in each bin
     unsigned int m_underflow;  // underflow counter

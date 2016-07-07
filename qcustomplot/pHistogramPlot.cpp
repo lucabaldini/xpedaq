@@ -12,7 +12,6 @@ pHistogramPlot::pHistogramPlot(unsigned int nBins, double xmin, double xmax,
   m_bars -> keyAxis() -> setRange(m_hist -> xMin(), m_hist -> xMax());
   m_bars -> setWidth(m_hist -> binWidth());
   setTolerance (1.e-4 * (m_hist -> binWidth()));
-  drawStatisticalBox();
 }
 
 
@@ -35,8 +34,8 @@ void pHistogramPlot::fillBin(unsigned int binIndex, double value)
     {m_hist -> fillBin(binIndex, value);}
   catch (HistogramError histErr)
   { 
-    std::cout << "Invalid bin number: " << binIndex << ". No entry filled."
-              <<  std::endl;
+    std::cout << "Invalid bin number: " << binIndex
+              << ". No entry filled." <<  std::endl;
     return;
   }
   double key = m_hist -> binCenter(binIndex);
@@ -79,26 +78,30 @@ void pHistogramPlot::updateData (const std::vector<double> &values)
   */
   m_hist -> reset();
   for (unsigned int i = 0; i < values.size(); ++i)
-    {fillBin(i, values.at(i));}  
+    {if (values.at(i) > 0) fillBin(i, values.at(i));}
 }
 
 
-void pHistogramPlot::drawStatisticalBox()
+/*
+void pHistogramPlot::setupStatBox()
 {
+  m_statLabel = new QCPItemText(this);
+  addItem(m_statLabel);
   // add the text label at the top:
-  QCPItemText *textLabel = new QCPItemText(this);
-  addItem(textLabel);
-  textLabel -> setPositionAlignment(Qt::AlignTop|Qt::AlignHCenter);
-  textLabel -> position -> setType(QCPItemPosition::ptAxisRectRatio);
-  textLabel -> position -> setCoords(0.5, 0); // place position at center/top of axis rect
-  textLabel -> setText("");
-  textLabel -> setFont(QFont(font().family(), 10)); // make font a bit larger
-  //textLabel -> setPen(QPen(Qt::black)); // show black border around text
+  m_statLabel -> setPositionAlignment(Qt::AlignTop|Qt::AlignHCenter);
+  // place position at center/top of axis rect
+  m_statLabel -> position -> setType(QCPItemPosition::ptAxisRectRatio);   
+  m_statLabel -> position -> setCoords(0.5, 0);
+  // make font a bit larger  
+  m_statLabel -> setFont(QFont(font().family(), 10));
+  // show black border around text
+  m_statLabel -> setPen(QPen(Qt::black)); 
 }
+*/
 
 
 void pHistogramPlot::reset()
 {
   m_hist -> reset();
-  clearBars();  
+  clearBars();
 }

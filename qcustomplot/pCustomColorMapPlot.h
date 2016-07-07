@@ -24,6 +24,10 @@ class pCustomColorMapPlot : public QCustomPlot
   public slots:
   
     virtual void updateData (const std::vector<double> &values);
+    
+    // Restore the optimal visualization (change axis range so that all data
+    // are visible and set the optimal color scale )
+    void resetView();
   
   protected slots:
   

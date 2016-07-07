@@ -27,7 +27,6 @@ class pHistogramPlot: public pCustomHistogramPlot
   public slots:
 
     void updateData (const std::vector<double> &values);
-    void drawStatisticalBox();
       
   private:
     
