@@ -70,18 +70,22 @@ pDataBlock::pDataBlock(unsigned char *buffer, unsigned int bufferSize) :
 }
 
 
-/*!
+/*!The amount of usable data in the buffer read from the USB port depends on
+  the readout mode and is effectively:
+  - 2 * NWORDS = 2 * 13200 * 8 = 211200 bytes in full frame mode (exactly one
+  event).
+  - < 10000 bytes in windowed mode with the small buffer (with the last event
+  being truncated).
+  - < 2 * 2**18 = 2* 262144 = 2 * SRAM_DIM = 524288 bytes (with the last event
+  being truncated).
 */
 pDataBlock::pDataBlock(const pDataBlock &cSourceDataBlock) :
-		          m_isWindowed (cSourceDataBlock.m_isWindowed)
+  m_isWindowed (cSourceDataBlock.m_isWindowed)
 {
   m_size = cSourceDataBlock.m_size;
-  if (cSourceDataBlock.m_rawBuffer)
-  {
-    /* Awful. Isn't there a better way to copy the buffer? */    
-    char temp_buffer [2*NWORDS];
-    memcpy(temp_buffer, cSourceDataBlock.getCharDataBlock(), m_size);
-    m_rawBuffer = reinterpret_cast<unsigned char*> (temp_buffer);
+  if (cSourceDataBlock.m_rawBuffer) {
+    m_rawBuffer = new unsigned char[m_size];
+    memcpy(m_rawBuffer, cSourceDataBlock.m_rawBuffer, m_size);
   }
   m_errorSummary = cSourceDataBlock.m_errorSummary;
   m_offsetVec = cSourceDataBlock.m_offsetVec;
