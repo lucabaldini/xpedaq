@@ -6,16 +6,13 @@
 #include <QtGui/QVBoxLayout>
 #include <QtGui/QWidget>
 
-#include "pMapPlot.h"
+#include "pQtCustomPushButton.h"
 #include "pedestalsMap.h"
-#include "pDataBlock.h"
+#include "xpepedsPlotGrid.h"
 
 
 /* Class implementing a pop-up window to display a bunch of result plots
-   at the end of an acquisition.
-   
-   TODO: Display these plots directly into the gui and get rid of this
-   additional window. */
+   at the end of an acquisition. */
 
 
 class pDisplayWindow : public QMainWindow
@@ -25,8 +22,8 @@ class pDisplayWindow : public QMainWindow
   public:
   
     explicit pDisplayWindow(QWidget *parent = 0, int posx = 400,
-                            int posy = 250, int windowWidth = 800,
-                            int windowWeight = 600);
+                            int posy = 250, int windowWidth = 1200,
+                            int windowWeight = 800);
     
   
   signals:
@@ -52,9 +49,9 @@ class pDisplayWindow : public QMainWindow
     int m_windowWidth;
     QWidget *m_centralWidget;
     QVBoxLayout *m_verticalLayout;
-    QStatusBar *m_statusBar; 
-    pMapPlot *m_meanPlot;
-    pMapPlot *m_rmsPlot;
+    xpepedsPlotGrid *m_plotGrid;
+    QStatusBar *m_statusBar;
+    pQtCustomPushButton *m_resetButton;
 };
 
 #endif // DISPLAYWINDOW_H

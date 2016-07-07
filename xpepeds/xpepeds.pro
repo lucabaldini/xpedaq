@@ -69,6 +69,7 @@ HEADERS += pQtMainWindowGui.h
 HEADERS += pAcquisitionWindow.h
 
 HEADERS += pDisplayWindow.h
+HEADERS += xpepedsPlotGrid.h
 HEADERS += xpepedsWindow.h
 HEADERS += pedestalsMap.h
 HEADERS += pedRunController.h
@@ -84,7 +85,6 @@ HEADERS += pXpolFpga.h
 HEADERS += pDetectorConfiguration.h
 HEADERS += pUserPreferences.h
 HEADERS += pTriggerMask.h
-HEADERS += pEvent.h
 
 HEADERS += pLoggerChannel.h
 HEADERS += pLogger.h
@@ -133,6 +133,7 @@ SOURCES += pAcquisitionWindow.cpp
 
 SOURCES += xpepedsWindow.cpp
 SOURCES += pDisplayWindow.cpp
+SOURCES += xpepedsPlotGrid.cpp
 SOURCES += pedestalsMap.cpp
 SOURCES += pedRunController.cpp
 
@@ -147,7 +148,6 @@ SOURCES += pXpolFpga.cpp
 SOURCES += pDetectorConfiguration.cpp
 SOURCES += pUserPreferences.cpp
 SOURCES += pTriggerMask.cpp
-SOURCES += pEvent.cpp
 
 SOURCES += pLoggerChannel.cpp
 SOURCES += pLogger.cpp
