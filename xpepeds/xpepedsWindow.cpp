@@ -83,7 +83,7 @@ void xpepedsWindow::displayClosed()
 void xpepedsWindow::setupConnections()
 {
   pAcquisitionWindow::setupConnections();
-  //connect(m_transportBar, SIGNAL(start()), this, SLOT(startRun()));
+  connect(m_transportBar, SIGNAL(start()), this, SLOT(startRun()));
   connect (m_transportBar, SIGNAL(start()), this, SLOT(closeDisplayWindow()));
   connect (m_transportBar, SIGNAL(stop()), this, SLOT(showDisplayWindow()));
 }

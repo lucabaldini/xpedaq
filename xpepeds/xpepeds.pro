@@ -157,11 +157,11 @@ SOURCES += pRunningStat.cpp
 
 SOURCES += xpepeds.cpp
 
-OBJECTS_DIR = build
-MOC_DIR = moc
+OBJECTS_DIR = ../build
+MOC_DIR = ../moc
+DESTDIR = ../bin
 
 TARGET = xpepeds
-DESTDIR = ../bin
 
 unix {
   QMAKE_CLEAN += ./gui/*~

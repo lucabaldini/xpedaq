@@ -47,14 +47,7 @@ quickusb-*/linux/driver/modules.order
 config/*.cfg
 
 xpedaq/config/*.cfg
-xpedaq/moc
 
 xpepeds/config/*.cfg
-xpepeds/moc
 
-xpesrv/moc
 xpesrv/preferences.cfg
-
-xpemon/moc
-
-pyxpedaq/*.pyc

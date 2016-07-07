@@ -56,8 +56,9 @@ SOURCES += xpesrv.cpp
 SOURCES += xpoldetector.cpp
 SOURCES += pEvent.cpp
 
-OBJECTS_DIR = build
-MOC_DIR = moc
+OBJECTS_DIR = ../build
+MOC_DIR = ../moc
+DESTDIR = ../bin
 
 TARGET = xpesrv
-DESTDIR = ../bin
+

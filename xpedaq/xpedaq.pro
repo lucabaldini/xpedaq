@@ -130,11 +130,12 @@ SOURCES += pOptionParser.cpp
 
 SOURCES += xpedaq.cpp
 
-OBJECTS_DIR = build
-MOC_DIR = moc
+OBJECTS_DIR = ../build
+MOC_DIR = ../moc
+DESTDIR = ../bin
 
 TARGET = xpedaq
-DESTDIR = ../bin
+
 
 unix {
   QMAKE_CLEAN += ./gui/*~
