@@ -235,22 +235,21 @@ unsigned int pDataBlock::pixelCounts(unsigned int event,
 
 
 void pDataBlock::readPixel(unsigned int event, unsigned int index,
-					       unsigned int &x, unsigned int &y,
-					       unsigned int &height) const
+			   unsigned int &x, unsigned int &y,
+			   unsigned int &height) const
 {
   static const unsigned int bufferHeight = xpoldetector::kNumPixelsY
-											/ xpoldetector::kNumReadOutBuffers;
+                                   / xpoldetector::kNumReadOutBuffers;
   unsigned int xMin = xmin(event);
   unsigned int xMax = xmax(event);
   unsigned int yMin = ymin(event);    
   unsigned int nCol = xMax - xMin + 1;
   height = pixelCounts(event, index);
-  if (m_isWindowed)
-  {
+  if (m_isWindowed) {
     x = xMin + index % nCol;
     y = yMin + index / nCol;
-	return;
-  }	
+    return;
+  }
   unsigned int currBuffId =  index % xpoldetector::kNumReadOutBuffers;
   index = index / xpoldetector::kNumReadOutBuffers;
   x = index % nCol;

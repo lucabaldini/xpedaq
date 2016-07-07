@@ -23,6 +23,7 @@ with this program; if not, write to the Free Software Foundation Inc.,
 #define PRUNCONTROLLER_H
 
 #include <iostream>
+#include <stdint.h>
 #include <QTimer>
 
 #include "pFiniteStateMachine.h"
@@ -32,6 +33,7 @@ with this program; if not, write to the Free Software Foundation Inc.,
 #include "xpedaqos.h"
 #include "xpollog.h"
 #include "xpolio.h"
+#include "xpedaqheader.h"
 #include "pTriggerMask.h"
 
 
@@ -247,6 +249,9 @@ class pRunController : public pFiniteStateMachine
 
   /// \brief Return the path to the (output copy) of the version header file.
   std::string xpedaqVersionFilePath() const;
+
+  ///\brief Write the file header to the output .mdat file.
+  void writeDataFileHeader() const;
 
   ///\brief Write the relevant run statistics to a file.
   void writeRunStat(std::string filePath) const;

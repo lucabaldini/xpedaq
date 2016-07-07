@@ -38,7 +38,7 @@ class pXpolFpga : public QObject
   ~pXpolFpga();
 
   void setup(pDetectorConfiguration *configuration); 
-  void configFullFrame(unsigned short conf);
+  void configFullFrame();
   void configWindowedMode(pDetectorConfiguration *configuration);
   void configXPM();
   void configXPMWindowed(pDetectorConfiguration *configuration);
