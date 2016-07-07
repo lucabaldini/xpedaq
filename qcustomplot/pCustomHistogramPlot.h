@@ -20,11 +20,15 @@ class pCustomHistogramPlot : public QCustomPlot
     void setTolerance (double tolerance);
     void clearBars();
 
+
   protected slots:
   
     void mousePress();
     void mouseWheel();
     void selectionChanged();
+    void mouseMoveEvent(QMouseEvent *event);
+    void paintEvent(QPaintEvent *event);
+    void paintCoordinate();
       
   protected:
     
@@ -34,6 +38,7 @@ class pCustomHistogramPlot : public QCustomPlot
     pBasicPlotOptions m_options;    
     // Needed to properly remove key in QCPBars data
     double m_centerPosTolerance;
+    QPoint m_cursorPos;
 
 };
 

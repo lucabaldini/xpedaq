@@ -54,6 +54,36 @@ void pCustomHistogramPlot::clearBars()
 }
 
 
+void pCustomHistogramPlot::mouseMoveEvent(QMouseEvent * event)
+{
+  m_cursorPos = event -> pos();
+  replot();
+  QCustomPlot::mouseMoveEvent(event);
+}
+
+
+void pCustomHistogramPlot::paintEvent(QPaintEvent *event)
+{
+  QCustomPlot::paintEvent(event);
+  if (m_bars -> selectTest(m_cursorPos, false) > 0.){
+    paintCoordinate();
+  }
+}
+
+
+void pCustomHistogramPlot::paintCoordinate()
+{  
+  double x = xAxis -> pixelToCoord(m_cursorPos.x());
+  double y = yAxis -> pixelToCoord(m_cursorPos.y());
+  QPainter painter(this);
+  painter.drawText(m_cursorPos, QString::number(x));
+  painter.drawText(QPoint(m_cursorPos.x() + 60, m_cursorPos.y()),
+                   ", ");
+  painter.drawText(QPoint(m_cursorPos.x() + 70, m_cursorPos.y()),
+                   QString::number(y));
+}
+
+
 void pCustomHistogramPlot::setupInteractions()
 {
   /* Activate interactions for axis:
@@ -77,7 +107,7 @@ void pCustomHistogramPlot::setupInteractions()
   connect(this, SIGNAL(mousePress(QMouseEvent*)), this, SLOT(mousePress()));
   connect(this, SIGNAL(mouseWheel(QWheelEvent*)), this, SLOT(mouseWheel()));
   connect(this, SIGNAL(selectionChangedByUser()),
-          this, SLOT(selectionChanged()));
+          this, SLOT(selectionChanged()));        
 }
 
 
