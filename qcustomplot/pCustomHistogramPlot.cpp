@@ -76,7 +76,10 @@ void pCustomHistogramPlot::paintCoordinate()
   double x = xAxis -> pixelToCoord(m_cursorPos.x());
   double y = yAxis -> pixelToCoord(m_cursorPos.y());
   QPainter painter(this);
+  painter.setPen(QPen(Qt::black));
   painter.drawText(m_cursorPos, QString::number(x));
+  // TODO: the distance between x and y should depend on the actual
+  // text size, rather than being fixed
   painter.drawText(QPoint(m_cursorPos.x() + 60, m_cursorPos.y()),
                    ", ");
   painter.drawText(QPoint(m_cursorPos.x() + 70, m_cursorPos.y()),
