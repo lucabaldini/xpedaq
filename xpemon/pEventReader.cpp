@@ -34,15 +34,13 @@ void pEventReader::readPendingDatagram()
   
   /* When instantiating a pDataBlock we pass to its constructor a pointer
      to the buffer - no actual copy of the data involved.
-     Here we create the pDataBlock on the stack, so that it goes out
-     of scope at the end of the function and the memory allocated for the buffer
-     is released (see the destructor of pDataBlock).
+     Since the destroyer of the pDataBlock does not delete the buffer we
+     need to do this manually at the end of the functon (se issue #120).
   */
   pDataBlock p (reinterpret_cast<unsigned char*> (data), size);
-  data = nullptr; // does not own the buffer anymore - p does it
   for (unsigned int evt = 0; evt < p.numEvents(); ++evt)
   {
-    if ((p.xmax(evt) <= p.xmin(evt)) || (p.ymax(evt) <= p.ymin(evt)))
+    if (p.errorSummary() > 0)
     {
       std::cout << "Invalid event n. " <<  evt  << " of " << p;
       return;
@@ -56,25 +54,25 @@ void pEventReader::readPendingDatagram()
     unsigned int nPixel = p.numPixels(evt);
     m_windowSizeHist -> fill(static_cast<double> (nPixel));
     m_curHitMap.resize(nPixel);
-    unsigned int nCol = m_curXmax - m_curXmin +1;
     double adcSum = 0;
     unsigned int highestX = 0;
     unsigned int highestY = 0;
     double maxVal = 0;
+    unsigned int x = 1000; //initialize to non-physical value
+    unsigned int y = 1000; //initialize to non-physical value
+    unsigned int height = 0;
     for (unsigned int index = 0; index < nPixel; ++index)
     {
-      double height = p.pixelCounts(evt, index);
-	  if (height < m_zeroSupThreshold) { height = 0.;}
+      p.readPixel(evt, index, x, y, height);
+      if (height < m_zeroSupThreshold) { height = 0.;}
       m_curHitMap.at(index) = height;
-      unsigned int x = m_curXmin + index % nCol;
-      unsigned int y = m_curYmin + index / nCol;
-      m_hitMap -> fill(x, y, height);
+      m_hitMap -> fill(x, y, static_cast<double> (height));
       adcSum += height;
       if (height > maxVal)
       {
         highestX = x;
         highestY = y;
-        maxVal = height;
+        maxVal = static_cast<double> (height);
       }
       //xBarycenter += height * x;
       //yBaricenter += height * y;
@@ -87,6 +85,9 @@ void pEventReader::readPendingDatagram()
       //yBaricenter /= adcSum;  
     }
   }
+  // Here we release the memory. Using the data block
+  // after this point will lead to incorect behaviour.
+  delete [] data; 
 }  
 
 
