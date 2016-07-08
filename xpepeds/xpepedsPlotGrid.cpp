@@ -55,7 +55,7 @@ void xpepedsPlotGrid::setupRmsHist()
 {
   pBasicPlotOptions rmsHistOptions = pBasicPlotOptions("Rms",
                                         "Rms [counts]", "n. pixel");
-  m_rmsHist = new pHistogramPlot(100, 0., 50., rmsHistOptions);
+  m_rmsHist = new pHistogramPlot(100, 0., 150., rmsHistOptions);
   m_rmsHist -> setObjectName(QString::fromUtf8("rms hist"));
   m_PlotLayout -> addWidget(m_rmsHist, 1, 1);
 }
@@ -66,12 +66,14 @@ void xpepedsPlotGrid::fillPlots(const PedestalsMap& pedMap)
   for (unsigned int xIndex=0; xIndex < pedestals::kNx; xIndex++){
     for (unsigned int yIndex=0; yIndex < pedestals::kNy; yIndex++){
       try {
-        m_averageMap -> fillBin (xIndex, yIndex,
-                                 pedMap.average (xIndex,yIndex));
-        m_rmsMap -> fillBin (xIndex, yIndex,
-                             pedMap.rms (xIndex,yIndex));                            
-        m_averageHist -> fill (pedMap.average (xIndex,yIndex));
-        m_rmsHist -> fill (pedMap.rms (xIndex,yIndex));
+        double average = pedMap.average (xIndex,yIndex);
+        double rms = pedMap.rms (xIndex,yIndex);
+        //std::cout <<  "x = " << xIndex << ", y = " << yIndex << ", average = " << average << std::endl;
+        m_averageMap -> fillBin (xIndex, yIndex, average);
+        m_rmsMap -> fillBin (xIndex, yIndex, rms);                            
+        m_averageHist -> fill (average);
+        m_rmsHist -> fill (rms);
+        
       }
       catch (int err){
         continue;

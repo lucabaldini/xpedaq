@@ -34,12 +34,10 @@ void pEventReader::readPendingDatagram()
   
   /* When instantiating a pDataBlock we pass to its constructor a pointer
      to the buffer - no actual copy of the data involved.
-     Here we create the pDataBlock on the stack, so that it goes out
-     of scope at the end of the function and the memory allocated for the buffer
-     is released (see the destructor of pDataBlock).
+     Since the destroyer of the pDataBlock does not delete the buffer we
+     need to do this manually at the end of the functon (se issue #120).
   */
   pDataBlock p (reinterpret_cast<unsigned char*> (data), size);
-  data = nullptr; // does not own the buffer anymore - p does it
   for (unsigned int evt = 0; evt < p.numEvents(); ++evt)
   {
     if ((p.xmax(evt) <= p.xmin(evt)) || (p.ymax(evt) <= p.ymin(evt)))
@@ -87,6 +85,9 @@ void pEventReader::readPendingDatagram()
       //yBaricenter /= adcSum;  
     }
   }
+  // Here we release the memory. Using the data block
+  // after this point will lead to incorect behaviour.
+  delete [] data; 
 }  
 
 
