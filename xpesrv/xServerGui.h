@@ -32,6 +32,7 @@ with this program; if not, write to the Free Software Foundation Inc.,
 #include "pQtCustomTextLabel.h"
 #include "xServer.h"
 #include "xpolio.h"
+#include "xpedaqos.h"
 
 class xServerGui : public QDialog
 {

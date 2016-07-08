@@ -128,9 +128,12 @@ void xServerGui::setSleepTime(int msec)
 
 void xServerGui::readPreferences()
 {
+  std::string cfgFolderPath = xpedaqos::rjoin("xpesrv");
+  std::string preferencesFilePath = xpedaqos::join(cfgFolderPath,
+						                          "preferences.cfg");
   *xpollog::kInfo << "Reading preferences from preferences.cfg... " << endline;
   std::ifstream *inputFile =
-    xpolio::kIOManager->openInputFile("preferences.cfg");
+    xpolio::kIOManager->openInputFile(preferencesFilePath);
   xpolio::kIOManager->skipLine(inputFile);
   setInputFilePath(xpolio::kIOManager->readLine(inputFile));
   xpolio::kIOManager->skipLine(inputFile);
