@@ -65,7 +65,7 @@ class pAcquisitionWindow : public pQtMainWindowGui
   ~pAcquisitionWindow();
   virtual pDetectorConfiguration *detectorConfiguration(int mode = -1) = 0;
   pUserPreferences *userPreferences();
-  pTriggerMask *triggerMask();
+  virtual pTriggerMask *triggerMask();
   int visualizationMode();
   virtual void displayConfiguration(pDetectorConfiguration *configuration, int mode);
   void displayUserPreferences(pUserPreferences *preferences);

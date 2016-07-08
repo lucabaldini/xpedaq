@@ -25,9 +25,9 @@ with this program; if not, write to the Free Software Foundation Inc.,
 pReadoutModeTab::pReadoutModeTab()
   : pQtCustomTab("Readout mode")
 {
-  setupReadoutModeWidgets();
-  addVerticalSpacer();
   setupBufferModeWidgets();
+  addVerticalSpacer();  
+  setupReadoutModeWidgets();
   addVerticalSpacer();
   setupCalibrationWidgets();
   setupConnections();
@@ -36,12 +36,9 @@ pReadoutModeTab::pReadoutModeTab()
 
 void pReadoutModeTab::setupReadoutModeWidgets()
 {
-  m_fullFrameRadioButton = new QRadioButton("Full frame");
-  m_windowRadioButton = new QRadioButton("Window mode");
-  m_chargeInjectionRadioButton = new QRadioButton("Charge injection");
-  m_groupBoxGridLayout->addWidget(m_fullFrameRadioButton, 0, 0);
-  m_groupBoxGridLayout->addWidget(m_windowRadioButton, 1, 0);
-  m_groupBoxGridLayout->addWidget(m_chargeInjectionRadioButton, 2, 0);
+  int row = m_groupBoxGridLayout->rowCount();
+  m_chargeInjectionCheckBox = new QCheckBox("Charge injection");
+  m_groupBoxGridLayout->addWidget(m_chargeInjectionCheckBox, row, 0);
 }
 
 void pReadoutModeTab::setupBufferModeWidgets()
@@ -90,18 +87,8 @@ void pReadoutModeTab::setupCalibrationWidgets()
 
 void pReadoutModeTab::setupConnections()
 {
-  connect(m_fullFrameRadioButton, SIGNAL(clicked(bool)),
-	  this, SLOT(disableCalibrationWidgets(bool)));
-  connect(m_windowRadioButton, SIGNAL(clicked(bool)),
-	  this, SLOT(disableCalibrationWidgets(bool)));
-  connect(m_chargeInjectionRadioButton, SIGNAL(clicked(bool)),
+  connect(m_chargeInjectionCheckBox, SIGNAL(clicked(bool)),
 	  this, SLOT(enableCalibrationWidgets(bool)));
-  connect(m_fullFrameRadioButton, SIGNAL(clicked(bool)),
-	  this, SLOT(disableBufferModeWidgets(bool)));
-  connect(m_windowRadioButton, SIGNAL(clicked(bool)),
-	  this, SLOT(enableBufferModeWidgets(bool)));
-  connect(m_chargeInjectionRadioButton, SIGNAL(clicked(bool)),
-	  this, SLOT(enableBufferModeWidgets(bool)));
 }
 
 void pReadoutModeTab::enableCalibrationWidgets(bool enable)
@@ -140,29 +127,24 @@ void pReadoutModeTab::disableBufferModeWidgets(bool disable)
 
 unsigned short int pReadoutModeTab::getReadoutMode()
 {
-  if (m_fullFrameRadioButton->isChecked()) {
-    return xpoldetector::kFullFrameReadoutCode;
-  } else if (m_windowRadioButton->isChecked()) {
-    return xpoldetector::kWindowedReadoutCode;
-  } else if (m_chargeInjectionRadioButton->isChecked()) {
+  if (m_chargeInjectionCheckBox->isChecked()) {
     return xpoldetector::kChargeInjectionReadoutCode;
   } else {
-    return xpoldetector::kUndefinedReadoutCode;
+    return xpoldetector::kWindowedReadoutCode;
   }
-}
+}       
+ 
 
 void pReadoutModeTab::displayReadoutMode(unsigned short int mode)
 {
   if (mode == xpoldetector::kFullFrameReadoutCode){
-    m_fullFrameRadioButton->setChecked(true);
     disableCalibrationWidgets();
     disableBufferModeWidgets();
   } else if (mode == xpoldetector::kWindowedReadoutCode){
-    m_windowRadioButton->setChecked(true);
     disableCalibrationWidgets();
     enableBufferModeWidgets();
   } else if (mode == xpoldetector::kChargeInjectionReadoutCode){
-    m_chargeInjectionRadioButton->setChecked(true);
+    m_chargeInjectionCheckBox->setChecked(true);
     enableCalibrationWidgets();
     enableBufferModeWidgets();
   }
@@ -263,14 +245,4 @@ void pReadoutModeTab::displayConfiguration(pDetectorConfiguration
 			   visualizationMode);
   displayPixelAddressX(configuration->pixelAddressX());
   displayPixelAddressY(configuration->pixelAddressY());
-}
-
-
-void pReadoutModeTab::disableAll(bool disable)
-{
-  m_fullFrameRadioButton -> setDisabled(disable);
-  m_windowRadioButton -> setDisabled(disable);
-  m_chargeInjectionRadioButton -> setDisabled(disable);  
-  disableCalibrationWidgets(disable);
-  disableBufferModeWidgets(disable);
 }

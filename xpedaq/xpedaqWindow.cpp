@@ -29,11 +29,9 @@ xpedaqWindow::xpedaqWindow(pRunController &runController) :
   QString title = "xpedaq version " + QString(__XPEDAQ_VERSION__);
   setWindowTitle(title);
   
-  m_readoutModeTab = new pReadoutModeTab();
-  m_mainTabWidget->insertTab(0, m_readoutModeTab, "Readout");
-  m_mainTabWidget->setCurrentWidget(m_readoutModeTab);
-  
+  setupTabWidget();  
   setupConnections();
+  
   pUserPreferences *preferences = m_runController->userPreferences();
   displayUserPreferences(preferences);
   m_lastVisualizationMode = preferences->visualizationMode();
@@ -46,9 +44,21 @@ xpedaqWindow::xpedaqWindow(pRunController &runController) :
   showMessage("Data acquisition system ready", 2000);
 }
 
+/*!
+ */
 void xpedaqWindow::setupConnections()
 {
   pAcquisitionWindow::setupConnections();
+}
+
+
+void xpedaqWindow::setupTabWidget()
+{
+  m_readoutModeTab = new pReadoutModeTab();
+  m_mainTabWidget->insertTab(0, m_readoutModeTab, "Readout");
+  m_triggerSettingTab = new pTriggerSettingTab();
+  m_mainTabWidget->addTab(m_triggerSettingTab, "Trigger");
+  m_mainTabWidget->setCurrentWidget(m_readoutModeTab);
 }
 
 
@@ -60,6 +70,14 @@ void xpedaqWindow::displayConfiguration(pDetectorConfiguration *configuration,
   m_readoutModeTab->displayConfiguration(configuration, mode);
   m_thresholdSettingTab->displayConfiguration(configuration, mode);
   m_advancedSettingsTab->displayConfiguration(configuration);
+}
+
+
+/*!
+ */
+pTriggerMask* xpedaqWindow::triggerMask()
+{
+  return m_triggerSettingTab->triggerMask();
 }
 
 

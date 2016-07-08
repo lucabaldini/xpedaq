@@ -38,9 +38,11 @@ class xpedaqWindow : public pAcquisitionWindow
   
   virtual void displayConfiguration(pDetectorConfiguration *configuration, int mode);
   virtual pDetectorConfiguration *detectorConfiguration(int mode = -1);
+  virtual pTriggerMask *triggerMask();
   
  private: 
   
+  void setupTabWidget();
   void setupConnections();
   
 };

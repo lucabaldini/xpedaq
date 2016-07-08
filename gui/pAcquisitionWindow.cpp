@@ -28,7 +28,7 @@ pAcquisitionWindow::pAcquisitionWindow(pRunController &runController)
   setupMessageDisplay();
   setupLoggerConnections();
   setupTransportBar();
-  setupTabWidget();
+  setupTabWidget();  
   m_runController = &runController;
   // This connection needs to be here in order to intercept error signals.
   connect(m_runController->usbController(),
@@ -106,10 +106,8 @@ void pAcquisitionWindow::setupTabWidget()
   m_mainTabWidget->addTab(m_thresholdSettingTab, "Thresholds");
   m_advancedSettingsTab = new pAdvancedSettingsTab();
   m_mainTabWidget->addTab(m_advancedSettingsTab, "Advanced");
-  m_triggerSettingTab = new pTriggerSettingTab();
-  m_mainTabWidget->addTab(m_triggerSettingTab, "Trigger");
-  m_probesSettingTab = new pProbeSettingTab();
-  m_mainTabWidget->addTab(m_probesSettingTab, "Probes");
+  //m_probesSettingTab = new pProbeSettingTab();
+  //m_mainTabWidget->addTab(m_probesSettingTab, "Probes");
   m_usbControlTab = new pUsbControlTab();
   m_mainTabWidget->addTab(m_usbControlTab, "USB");
   m_userPreferencesTab = new pUserPreferencesTab();
@@ -156,7 +154,8 @@ pUserPreferences *pAcquisitionWindow::userPreferences()
  */
 pTriggerMask *pAcquisitionWindow::triggerMask()
 {
-  return m_triggerSettingTab->triggerMask();
+  pTriggerMask* mask = new pTriggerMask();
+  return mask;
 }
 
 

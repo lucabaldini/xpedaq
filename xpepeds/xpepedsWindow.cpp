@@ -31,7 +31,6 @@ xpepedsWindow::xpepedsWindow(pedRunController &runController) :
   setWindowTitle(title);
   disableUnusedWidgets();
   m_isWindowOpen = false;
-  
   setupConnections();
   pUserPreferences *preferences = m_runController->userPreferences();
   displayUserPreferences(preferences);
@@ -39,17 +38,15 @@ xpepedsWindow::xpepedsWindow(pedRunController &runController) :
   pDetectorConfiguration *configuration =
     m_runController->detectorConfiguration();  
   displayConfiguration(configuration, preferences->visualizationMode());
-  pTriggerMask *triggerMask = m_runController->triggerMask();
-  displayTriggerMask(triggerMask);
   m_runController->init();
   showMessage("Data acquisition system ready", 2000);
 }
+
 
 /*
 */
 void xpepedsWindow::disableUnusedWidgets()
 {
-  //m_readoutModeTab -> disableAll();
   m_advancedSettingsTab -> disableNumPedSamplesComboBox();
   m_advancedSettingsTab -> disableMaxWindowSizeSpinBox();
   m_advancedSettingsTab -> disableMinWindowSizeSpinBox();

@@ -29,7 +29,7 @@ with this program; if not, write to the Free Software Foundation Inc.,
 #include <QString>
 #include <QSpinBox>
 #include <QComboBox>
-#include <QRadioButton>
+#include <QCheckBox>
 #include "pQtCustomTextLabel.h"
 #include "pQtCustomTab.h"
 #include "pDetectorConfiguration.h"
@@ -62,16 +62,13 @@ class pReadoutModeTab : public pQtCustomTab
   void disableCalibrationWidgets(bool disable = true);
   void enableBufferModeWidgets(bool enable = true);
   void disableBufferModeWidgets(bool disable = true);
-  void disableAll(bool disable = true);
 
  protected:
 
  private:
   QString m_smallBufferLabel;
   QString m_largeBufferLabel;
-  QRadioButton *m_fullFrameRadioButton;
-  QRadioButton *m_windowRadioButton;
-  QRadioButton *m_chargeInjectionRadioButton;
+  QCheckBox *m_chargeInjectionCheckBox;
   pQtCustomTextLabel *m_bufferModeLabel;
   QComboBox *m_bufferModeComboBox;
   pQtCustomTextLabel *m_calibrationLabel;
