@@ -36,6 +36,8 @@ class xpepedsWindow : public pAcquisitionWindow
   
   xpepedsWindow(pedRunController &runController);
   ~xpepedsWindow() {;}
+  
+  virtual pDetectorConfiguration *detectorConfiguration(int mode = -1);
  
  
  public slots:  

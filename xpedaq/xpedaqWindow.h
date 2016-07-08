@@ -36,6 +36,9 @@ class xpedaqWindow : public pAcquisitionWindow
   xpedaqWindow(pRunController &runController);
   ~xpedaqWindow() {;}
   
+  virtual void displayConfiguration(pDetectorConfiguration *configuration, int mode);
+  virtual pDetectorConfiguration *detectorConfiguration(int mode = -1);
+  
  private: 
   
   void setupConnections();

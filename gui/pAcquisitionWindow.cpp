@@ -39,17 +39,6 @@ pAcquisitionWindow::pAcquisitionWindow(pRunController &runController)
 	  m_usbControlTab,
 	  SLOT(updateInfo(QString, QString, QString, QString)));
   m_runController->connectUsb();
-  setupConnections();
-  pUserPreferences *preferences = m_runController->userPreferences();
-  displayUserPreferences(preferences);
-  m_lastVisualizationMode = preferences->visualizationMode();
-  pDetectorConfiguration *configuration =
-    m_runController->detectorConfiguration();  
-  displayConfiguration(configuration, preferences->visualizationMode());
-  pTriggerMask *triggerMask = m_runController->triggerMask();
-  displayTriggerMask(triggerMask);
-  m_runController->init();
-  showMessage("Data acquisition system ready", 2000);
 }
 
 pAcquisitionWindow::~pAcquisitionWindow()
@@ -113,8 +102,6 @@ void pAcquisitionWindow::setupTabWidget()
 {
   m_mainTabWidget = new QTabWidget(m_centralWidget);
   m_mainGridLayout->addWidget(m_mainTabWidget, 0, 1, 3, 1);
-  m_readoutModeTab = new pReadoutModeTab();
-  m_mainTabWidget->addTab(m_readoutModeTab, "Readout");
   m_thresholdSettingTab = new pThresholdSettingTab();
   m_mainTabWidget->addTab(m_thresholdSettingTab, "Thresholds");
   m_advancedSettingsTab = new pAdvancedSettingsTab();
@@ -157,36 +144,6 @@ void pAcquisitionWindow::disableHardwareWidgets()
 
 /*!
  */
-pDetectorConfiguration *pAcquisitionWindow::detectorConfiguration(int mode)
-{
-  if (mode == -1){
-    mode = visualizationMode();
-  }  
-  pDetectorConfiguration *configuration = new pDetectorConfiguration();
-  configuration->setReadoutMode(m_readoutModeTab->getReadoutMode());
-  configuration->setBufferMode(m_readoutModeTab->getBufferMode());
-  configuration->setCalibrationDac(m_readoutModeTab->
-				   getCalibrationSignal(mode));
-  configuration->setPixelAddressX(m_readoutModeTab->getPixelAddressX());
-  configuration->setPixelAddressY(m_readoutModeTab->getPixelAddressY());
-  for (int i = 0; i < NUM_READOUT_CLUSTERS; i++)
-    {
-      configuration->
-	setThresholdDac(i, m_thresholdSettingTab->getThreshold(i, mode));
-    }
-  configuration->setClockFrequency(m_advancedSettingsTab->clockFrequency());
-  configuration->setClockShift(m_advancedSettingsTab->clockShift());
-  configuration->setNumPedSamples(m_advancedSettingsTab->numPedSamples());
-  configuration->setPedSampleDelay(m_advancedSettingsTab->pedSubDelay());
-  configuration->setTrgEnableDelay(m_advancedSettingsTab->trgEnableDelay());
-  configuration->setMinWindowSize(m_advancedSettingsTab->minWindowSize());
-  configuration->setMaxWindowSize(m_advancedSettingsTab->maxWindowSize());
-  return configuration;
-}
-
-
-/*!
- */
 pUserPreferences *pAcquisitionWindow::userPreferences()
 {
   pUserPreferences *preferences = m_userPreferencesTab->getUserPreferences();
@@ -216,7 +173,6 @@ int pAcquisitionWindow::visualizationMode()
 void pAcquisitionWindow::displayConfiguration(pDetectorConfiguration *configuration,
 				       int mode)
 {
-  m_readoutModeTab->displayConfiguration(configuration, mode);
   m_thresholdSettingTab->displayConfiguration(configuration, mode);
   m_advancedSettingsTab->displayConfiguration(configuration);
 }
@@ -275,6 +231,7 @@ void pAcquisitionWindow::setupLoggerConnections()
  */
 void pAcquisitionWindow::setupConnections()
 {
+  connect(m_transportBar, SIGNAL(start()), this, SLOT(startRun()));    
   connect(m_transportBar, SIGNAL(stop()), this, SLOT(stopRun()));
 
   connect(m_runController, SIGNAL(runStopped()), this, SLOT(stop()));

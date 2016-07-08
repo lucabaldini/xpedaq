@@ -28,6 +28,7 @@ with this program; if not, write to the Free Software Foundation Inc.,
 #include <QDir>
 
 #include "xpollog.h"
+#include "xpoldetector.h"
 #include "pQtMainWindowGui.h"
 #include "pDaqDisplay.h"
 #include "pMessageDisplay.h"
@@ -62,11 +63,11 @@ class pAcquisitionWindow : public pQtMainWindowGui
   
   pAcquisitionWindow(pRunController &runController);
   ~pAcquisitionWindow();
-  pDetectorConfiguration *detectorConfiguration(int mode = -1);
+  virtual pDetectorConfiguration *detectorConfiguration(int mode = -1) = 0;
   pUserPreferences *userPreferences();
   pTriggerMask *triggerMask();
   int visualizationMode();
-  void displayConfiguration(pDetectorConfiguration *configuration, int mode);
+  virtual void displayConfiguration(pDetectorConfiguration *configuration, int mode);
   void displayUserPreferences(pUserPreferences *preferences);
   void displayTriggerMask(pTriggerMask *triggerMask);
   pRunController *runController() const {return m_runController;}

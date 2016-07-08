@@ -26,13 +26,68 @@ with this program; if not, write to the Free Software Foundation Inc.,
 xpedaqWindow::xpedaqWindow(pRunController &runController) :
   pAcquisitionWindow(runController)
 {
-  setupConnections();
   QString title = "xpedaq version " + QString(__XPEDAQ_VERSION__);
   setWindowTitle(title);
+  
+  m_readoutModeTab = new pReadoutModeTab();
+  m_mainTabWidget->insertTab(0, m_readoutModeTab, "Readout");
+  m_mainTabWidget->setCurrentWidget(m_readoutModeTab);
+  
+  setupConnections();
+  pUserPreferences *preferences = m_runController->userPreferences();
+  displayUserPreferences(preferences);
+  m_lastVisualizationMode = preferences->visualizationMode();
+  pDetectorConfiguration *configuration =
+    m_runController->detectorConfiguration();  
+  displayConfiguration(configuration, preferences->visualizationMode());
+  pTriggerMask *triggerMask = m_runController->triggerMask();
+  displayTriggerMask(triggerMask);
+  m_runController->init();
+  showMessage("Data acquisition system ready", 2000);
 }
 
 void xpedaqWindow::setupConnections()
 {
   pAcquisitionWindow::setupConnections();
-  connect(m_transportBar, SIGNAL(start()), this, SLOT(startRun()));  
+}
+
+
+/*!
+ */
+void xpedaqWindow::displayConfiguration(pDetectorConfiguration *configuration,
+				       int mode)
+{
+  m_readoutModeTab->displayConfiguration(configuration, mode);
+  m_thresholdSettingTab->displayConfiguration(configuration, mode);
+  m_advancedSettingsTab->displayConfiguration(configuration);
+}
+
+
+/*!
+ */
+pDetectorConfiguration* xpedaqWindow::detectorConfiguration(int mode)
+{
+  if (mode == -1){
+    mode = visualizationMode();
+  }  
+  pDetectorConfiguration *configuration = new pDetectorConfiguration();
+  configuration->setReadoutMode(m_readoutModeTab->getReadoutMode());
+  configuration->setBufferMode(m_readoutModeTab->getBufferMode());
+  configuration->setCalibrationDac(m_readoutModeTab->
+				   getCalibrationSignal(mode));
+  configuration->setPixelAddressX(m_readoutModeTab->getPixelAddressX());
+  configuration->setPixelAddressY(m_readoutModeTab->getPixelAddressY());
+  for (int i = 0; i < NUM_READOUT_CLUSTERS; i++)
+    {
+      configuration->
+	setThresholdDac(i, m_thresholdSettingTab->getThreshold(i, mode));
+    }
+  configuration->setClockFrequency(m_advancedSettingsTab->clockFrequency());
+  configuration->setClockShift(m_advancedSettingsTab->clockShift());
+  configuration->setNumPedSamples(m_advancedSettingsTab->numPedSamples());
+  configuration->setPedSampleDelay(m_advancedSettingsTab->pedSubDelay());
+  configuration->setTrgEnableDelay(m_advancedSettingsTab->trgEnableDelay());
+  configuration->setMinWindowSize(m_advancedSettingsTab->minWindowSize());
+  configuration->setMaxWindowSize(m_advancedSettingsTab->maxWindowSize());
+  return configuration;
 }

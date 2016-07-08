@@ -27,18 +27,29 @@ with this program; if not, write to the Free Software Foundation Inc.,
 xpepedsWindow::xpepedsWindow(pedRunController &runController) :
   pAcquisitionWindow(runController), m_pedRunController(&runController)
 {
-  setupConnections();
   QString title = "xpepeds version " + QString(__XPEDAQ_VERSION__);
   setWindowTitle(title);
   disableUnusedWidgets();
   m_isWindowOpen = false;
+  
+  setupConnections();
+  pUserPreferences *preferences = m_runController->userPreferences();
+  displayUserPreferences(preferences);
+  m_lastVisualizationMode = preferences->visualizationMode();
+  pDetectorConfiguration *configuration =
+    m_runController->detectorConfiguration();  
+  displayConfiguration(configuration, preferences->visualizationMode());
+  pTriggerMask *triggerMask = m_runController->triggerMask();
+  displayTriggerMask(triggerMask);
+  m_runController->init();
+  showMessage("Data acquisition system ready", 2000);
 }
 
 /*
 */
 void xpepedsWindow::disableUnusedWidgets()
 {
-  m_readoutModeTab -> disableAll();
+  //m_readoutModeTab -> disableAll();
   m_advancedSettingsTab -> disableNumPedSamplesComboBox();
   m_advancedSettingsTab -> disableMaxWindowSizeSpinBox();
   m_advancedSettingsTab -> disableMinWindowSizeSpinBox();
@@ -83,7 +94,40 @@ void xpepedsWindow::displayClosed()
 void xpepedsWindow::setupConnections()
 {
   pAcquisitionWindow::setupConnections();
-  connect(m_transportBar, SIGNAL(start()), this, SLOT(startRun()));
-  connect (m_transportBar, SIGNAL(start()), this, SLOT(closeDisplayWindow()));
-  connect (m_transportBar, SIGNAL(stop()), this, SLOT(showDisplayWindow()));
+  connect (m_transportBar, SIGNAL(start()),
+           this, SLOT(closeDisplayWindow()));
+  connect (m_transportBar, SIGNAL(stop()),
+           this, SLOT(showDisplayWindow()));
+}
+
+
+/*!
+ */
+pDetectorConfiguration* xpepedsWindow::detectorConfiguration(int mode)
+{
+  if (mode == -1){
+    mode = visualizationMode();
+  }  
+  pDetectorConfiguration *configuration = new pDetectorConfiguration();
+  // Pedestals are always read in full frame
+  configuration->setReadoutMode(xpoldetector::kFullFrameReadoutCode);
+  // These are irrelevant (never used)
+  configuration->setBufferMode(xpoldetector::kSmallBufferMode);
+  configuration->setCalibrationDac(0);
+  configuration->setPixelAddressX(0);
+  configuration->setPixelAddressY(0);
+  
+  for (int i = 0; i < NUM_READOUT_CLUSTERS; i++)
+    {
+      configuration->
+	setThresholdDac(i, m_thresholdSettingTab->getThreshold(i, mode));
+    }
+  configuration->setClockFrequency(m_advancedSettingsTab->clockFrequency());
+  configuration->setClockShift(m_advancedSettingsTab->clockShift());
+  configuration->setNumPedSamples(m_advancedSettingsTab->numPedSamples());
+  configuration->setPedSampleDelay(m_advancedSettingsTab->pedSubDelay());
+  configuration->setTrgEnableDelay(m_advancedSettingsTab->trgEnableDelay());
+  configuration->setMinWindowSize(m_advancedSettingsTab->minWindowSize());
+  configuration->setMaxWindowSize(m_advancedSettingsTab->maxWindowSize());
+  return configuration;
 }
