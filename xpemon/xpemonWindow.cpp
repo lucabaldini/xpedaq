@@ -140,7 +140,6 @@ void xpemonWindow::startRun()
   /* If the monitor was paused and not stopped, we just need to reactivate the
      timer controlling the refresh of the plots */
   m_refreshTimer.start(m_options.m_refreshInterval);
-  std::cout << "started" << std::endl;
 }
 
 
@@ -149,7 +148,6 @@ void xpemonWindow::stopRun()
   m_thread.quit();
   m_thread.wait();
   m_isStopped = true;
-  std::cout << "stopped" << std::endl;
 }
 
 
