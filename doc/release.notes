@@ -1,4 +1,11 @@
 
+* A lot of work gone into the monitor, now fully functional and tested with
+  a few weeks of data acquisition.
+* New application for the pedestal up and running.
+* Minor refactoring of the GUI across different applications.
+* Bug fix in xpsrv (closing issue #100).
+
+
 -------------------------------------------------------------------------------
 xpedaq (0.10.0) - Wed, 15 Jun 2016 13:04:45 +0200
 -------------------------------------------------------------------------------
