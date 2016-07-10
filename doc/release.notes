@@ -1,4 +1,7 @@
 
+-------------------------------------------------------------------------------
+xpedaq (0.11.0) - Sun, 10 Jul 2016 15:08:35 +0200
+-------------------------------------------------------------------------------
 * A lot of work gone into the monitor, now fully functional and tested with
   a few weeks of data acquisition.
 * New application for the pedestal up and running.
