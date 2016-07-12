@@ -1,12 +1,12 @@
 #include "xpemonWindow.h"
-#include <iostream>
 
-xpemonWindow::xpemonWindow(QWidget *parent) : QMainWindow(parent),
-                                              m_isStopped(true)
+xpemonWindow::xpemonWindow(std::string preferencesFilePath,
+                           QWidget *parent) :
+                           QMainWindow(parent), m_isStopped(true)
 {
   const int pixelFromScreenLeft = 20;
   const int pixelFromScreenTop = 20;
-  const int pixelWidth = 1366;
+  const int pixelWidth = 1024;
   const int pixelHeight = 768;
   this->setGeometry(pixelFromScreenLeft, pixelFromScreenTop,
                     pixelWidth, pixelHeight);
@@ -14,13 +14,15 @@ xpemonWindow::xpemonWindow(QWidget *parent) : QMainWindow(parent),
   setCentralWidget(m_centralWidget);
   m_mainGridLayout  = new QGridLayout(m_centralWidget);
 
-  m_optionBoxWidget = new pOptionBoxWidget();
+  m_preferences = new pMonitorPreferences(preferencesFilePath); 
+  m_optionBoxWidget = new pOptionBoxWidget(
+                        m_preferences -> socketPort(),
+                        m_preferences -> refreshInterval(),
+                        m_preferences -> zeroSuppressionThreshold());
   const int optBoxRowStart = 0;
   const int optBoxColStart = 0;
   m_mainGridLayout->addWidget(m_optionBoxWidget, optBoxRowStart,
-                                                 optBoxColStart);  
-
-  readOptions();
+                                                 optBoxColStart);
   
   m_plotGrid = new xpemonPlotGrid();
   m_mainGridLayout->addWidget(m_plotGrid, 0, 1, 6, 1);
@@ -28,8 +30,8 @@ xpemonWindow::xpemonWindow(QWidget *parent) : QMainWindow(parent),
   m_transportBar = new pTransportBar(this, false);
   m_mainGridLayout->addWidget(m_transportBar, 5,0);
   
-  m_eventReader = new pEventReader(m_options.m_socketPortNumber,
-                                   m_options.m_zeroSupThreshold);
+  m_eventReader = new pEventReader(m_preferences -> socketPort(),
+                       m_preferences -> zeroSuppressionThreshold());
   
   m_infoBoxWidget = new pInfoBoxWidget();
   m_mainGridLayout->addWidget(m_infoBoxWidget, 2,0);
@@ -48,8 +50,9 @@ void xpemonWindow::readOptions()
   unsigned int zeroSupThreshold;
   m_optionBoxWidget -> options(socketPortNumber, refreshTime,
                                zeroSupThreshold);
-  m_options = pMonitorOptions(refreshTime, socketPortNumber,
-                              zeroSupThreshold);
+  m_preferences -> setSocketPort(socketPortNumber);
+  m_preferences -> setRefreshInterval(refreshTime);
+  m_preferences -> setZeroSuppressionThreshold(zeroSupThreshold);
 }
 
 
@@ -101,9 +104,13 @@ void xpemonWindow::setupEvtReaderConnections()
           m_infoBoxWidget, SLOT(updateWindowSize(unsigned int, unsigned int,
                                                  unsigned int, unsigned int)));
                                                  
-  connect(m_eventReader, SIGNAL(highestPixelFound(unsigned int, unsigned int)),
+  connect(m_eventReader, SIGNAL(highestPixelFound(unsigned int,
+                                                  unsigned int)),
           m_infoBoxWidget, SLOT(updateMaxCoordinates(unsigned int,
-                                                     unsigned int )));
+                                                     unsigned int)));
+  connect(m_eventReader, SIGNAL(barycenterRead(double, double)),
+          m_infoBoxWidget, SLOT(updateBarycenterCoordinates(double,
+                                                            double)));
   
   qRegisterMetaType< std::vector<double> >("std::vector<double>");
   
@@ -130,8 +137,10 @@ void xpemonWindow::startRun()
   if (m_isStopped)
   {
     readOptions();
-    m_eventReader -> setSocketPortNumber(m_options.m_socketPortNumber);
-    m_eventReader -> setZeroSupThreshold(m_options.m_zeroSupThreshold);  
+    m_eventReader -> setSocketPortNumber(m_preferences ->
+                                                        socketPort());
+    m_eventReader -> setZeroSupThreshold(m_preferences ->
+                                          zeroSuppressionThreshold());  
     m_eventReader -> moveToThread(&m_thread);
     m_thread.start();
     emit (startAcquisition());
@@ -139,7 +148,7 @@ void xpemonWindow::startRun()
   }  
   /* If the monitor was paused and not stopped, we just need to reactivate the
      timer controlling the refresh of the plots */
-  m_refreshTimer.start(m_options.m_refreshInterval);
+  m_refreshTimer.start(m_preferences ->refreshInterval());
 }
 
 

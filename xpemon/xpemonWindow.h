@@ -16,7 +16,7 @@
 #include "pInfoBoxWidget.h"
 #include "pTransportBar.h"
 #include "pEventReader.h"
-#include "pMonitorOptions.h"
+#include "pMonitorPreferences.h"
 
 class xpemonWindow : public QMainWindow
 {
@@ -25,7 +25,8 @@ class xpemonWindow : public QMainWindow
   
   public:   
 
-    explicit xpemonWindow(QWidget *parent = 0);
+    xpemonWindow(std::string preferencesFilePath,
+                 QWidget *parent = 0);
     
   signals:
       
@@ -58,7 +59,7 @@ class xpemonWindow : public QMainWindow
     pInfoBoxWidget *m_infoBoxWidget;
 
     /* Data structure holding the user-controlled options */
-    pMonitorOptions m_options;
+    pMonitorPreferences* m_preferences;
 
     /* Read the the data and fill histograms */ 
     pEventReader* m_eventReader;

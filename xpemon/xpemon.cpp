@@ -1,11 +1,19 @@
 #include <QApplication>
 #include "xpemonWindow.h"
+#include "xpedaqutils.h"
 
 int main( int argc, char **argv )
 {
   //QApplication::setGraphicsSystem("raster");
-  QApplication a(argc, argv);
-  xpemonWindow w;
+  QApplication app(argc, argv);
+  std::string cfgFolderPath = xpedaqos::rjoin("xpemon", "config");
+  std::string preferencesFilePath = xpedaqos::join(cfgFolderPath,
+						   "preferences.cfg");
+  if (!xpedaqos::fileExists(preferencesFilePath)) {
+    xpedaqos::copyFile(preferencesFilePath + ".sample",
+		               preferencesFilePath);
+  }						   
+  xpemonWindow w(preferencesFilePath);
   w.show();
-  return a.exec();
+  return app.exec();
 }

@@ -1,13 +1,17 @@
 #include "pOptionBoxWidget.h"
 
-pOptionBoxWidget::pOptionBoxWidget(QWidget *parent): pQtGroupBoxWidget(parent)
+pOptionBoxWidget::pOptionBoxWidget(unsigned int socketPort,
+                                   double refreshInterval,
+                                   unsigned int  zeroSupThreshold,
+                                   QWidget *parent):
+                                   pQtGroupBoxWidget(parent)
 {
   m_socketPortLabel = new pQtCustomTextLabel(this, "Socket Port");
   m_socketPortEdit = new QLineEdit();
   m_refreshIntervalLabel = new pQtCustomTextLabel(this,
-                                                      "Refresh interval (ms)");
+                                             "Refresh interval (ms)");
   m_refreshIntervalEdit = new QLineEdit();
-  m_zeroSupThrLabel = new pQtCustomTextLabel(this, "Zero suppression");
+  m_zeroSupThrLabel = new pQtCustomTextLabel(this,"Zero suppression");
   m_zeroSupThrEdit = new QLineEdit();
   addWidget(m_socketPortLabel, 0,0);
   addWidget(m_socketPortEdit, 0,1);
@@ -16,10 +20,10 @@ pOptionBoxWidget::pOptionBoxWidget(QWidget *parent): pQtGroupBoxWidget(parent)
   addWidget(m_zeroSupThrLabel, 2,0);
   addWidget(m_zeroSupThrEdit, 2,1);
   
-  // TODO: the default value should be written elsewhere
-  m_socketPortText.setNum(50001);
-  m_refreshIntervalText.setNum(500.);
-  m_zeroSupThresholdText.setNum(1);
+  // Display the initial values
+  m_socketPortText.setNum(socketPort);
+  m_refreshIntervalText.setNum(refreshInterval);
+  m_zeroSupThresholdText.setNum(zeroSupThreshold);
   initalizeText();
 }
 

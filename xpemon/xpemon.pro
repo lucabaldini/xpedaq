@@ -80,7 +80,7 @@ HEADERS += xpemonPlotGrid.h
 HEADERS += pOptionBoxWidget.h
 HEADERS += pEventReader.h
 HEADERS += pInfoBoxWidget.h
-HEADERS += pMonitorOptions.h
+HEADERS += pMonitorPreferences.h
 HEADERS += xpemonPlotOptions.h
 
 SOURCES += xpolgui.cpp
@@ -133,7 +133,7 @@ SOURCES += xpemonPlotGrid.cpp
 SOURCES += pOptionBoxWidget.cpp
 SOURCES += pEventReader.cpp
 SOURCES += pInfoBoxWidget.cpp
-SOURCES += pMonitorOptions.cpp
+SOURCES += pMonitorPreferences.cpp
 SOURCES += xpemonPlotOptions.cpp
 
 SOURCES += xpemon.cpp

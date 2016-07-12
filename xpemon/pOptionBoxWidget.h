@@ -16,7 +16,9 @@ class pOptionBoxWidget: public pQtGroupBoxWidget
 
   public:
 
-    explicit pOptionBoxWidget(QWidget *parent=0);
+    pOptionBoxWidget(unsigned int socketPort, double refreshInterval,
+                     unsigned int  zeroSupThreshold,
+                     QWidget *parent=0);
     
     void options(unsigned int &socketPort, double &refreshInterval, 
                  unsigned int  &zeroSupThreshold);
