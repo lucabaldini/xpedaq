@@ -42,6 +42,7 @@ class pIOManager
   unsigned char readUnsignedChar(std::ifstream *inputFile,
 				 bool endline = true);
   int readInteger(std::ifstream *inputFile, bool endline = true);
+  unsigned int readUnsignedInt(std::ifstream *inputFile, bool endline = true);
   double readDouble(std::ifstream *inputFile, bool endline = true);
   std::string readLine(std::ifstream *inputFile, bool endline = true);
   void skipLine(std::ifstream *inputFile);
@@ -58,15 +59,18 @@ class pIOManager
   void write(std::ofstream *outputFile, unsigned short int item,
 	     bool endline = true);
   void write(std::ofstream *outputFile, int item, bool endline = true);
+  void write(std::ofstream *outputFile, unsigned int item, bool endline = true);
   void write(std::ofstream *outputFile, double item, bool endline = true);
   void write(std::ofstream *outputFile, std::string item, bool endline = true);
   void write(std::ofstream *outputFile, unsigned char* item, int length);
   void put(std::string filePath, unsigned short int item);
   void put(std::string filePath, int item);
+  void put(std::string filePath, unsigned int item);
   void put(std::string filePath, double item);
   void put(std::string filePath, std::string item);
   void append(std::string filePath, unsigned short int item);
   void append(std::string filePath, int item);
+  void append(std::string filePath, unsigned int item);
   void append(std::string filePath, double item);
   void append(std::string filePath, std::string item);
   void closeOutputFile(std::ofstream *outputFile);

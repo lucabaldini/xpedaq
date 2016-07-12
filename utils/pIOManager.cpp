@@ -80,6 +80,17 @@ int pIOManager::readInteger(std::ifstream *inputFile, bool endline)
   return item;
 }
 
+unsigned int pIOManager::readUnsignedInt(std::ifstream *inputFile,
+                                         bool endline)
+{
+  unsigned int item;
+  *inputFile >> item;
+  if (endline){
+    inputFile->ignore(1, '\n');
+  }
+  return item;
+}
+
 double pIOManager::readDouble(std::ifstream *inputFile, bool endline)
 {
   double item;
@@ -191,6 +202,14 @@ void pIOManager::write(std::ofstream *outputFile, int item, bool endline)
   }
 }
 
+void pIOManager::write(std::ofstream *outputFile, unsigned int item, bool endline)
+{
+  *outputFile << item;
+  if (endline){
+    *outputFile << std::endl;
+  }
+}
+
 void pIOManager::write(std::ofstream *outputFile, double item, bool endline)
 {
   *outputFile << item;
@@ -228,6 +247,13 @@ void pIOManager::put(std::string filePath, int item)
   closeOutputFile(outputFile);
 }
 
+void pIOManager::put(std::string filePath, unsigned int item)
+{
+  std::ofstream *outputFile = openOutputFile(filePath);
+  write(outputFile, item, true);
+  closeOutputFile(outputFile);
+}
+
 void pIOManager::put(std::string filePath, double item)
 {
   std::ofstream *outputFile = openOutputFile(filePath);
@@ -255,12 +281,21 @@ void pIOManager::append(std::string filePath, int item)
   write(outputFile, item, true);
   closeOutputFile(outputFile);
 }
+
+void pIOManager::append(std::string filePath, unsigned int item)
+{
+  std::ofstream *outputFile = openOutputFile(filePath, true, false);
+  write(outputFile, item, true);
+  closeOutputFile(outputFile);
+}
+
 void pIOManager::append(std::string filePath, double item)
 {
   std::ofstream *outputFile = openOutputFile(filePath, true, false);
   write(outputFile, item, true);
   closeOutputFile(outputFile);
 }
+
 void pIOManager::append(std::string filePath, std::string item)
 {
   std::ofstream *outputFile = openOutputFile(filePath, true, false);
