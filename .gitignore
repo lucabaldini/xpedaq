@@ -51,3 +51,5 @@ xpedaq/config/*.cfg
 xpepeds/config/*.cfg
 
 xpesrv/preferences.cfg
+
+xpemon/config/preferences.cfg
