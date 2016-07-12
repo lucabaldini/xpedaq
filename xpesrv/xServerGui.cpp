@@ -131,7 +131,8 @@ void xServerGui::readPreferences()
   std::string cfgFolderPath = xpedaqos::rjoin("xpesrv");
   std::string preferencesFilePath = xpedaqos::join(cfgFolderPath,
 						                          "preferences.cfg");
-  *xpollog::kInfo << "Reading preferences from preferences.cfg... " << endline;
+  *xpollog::kInfo << "Reading preferences from "
+                  << preferencesFilePath << " ..." << endline;
   std::ifstream *inputFile =
     xpolio::kIOManager->openInputFile(preferencesFilePath);
   xpolio::kIOManager->skipLine(inputFile);
@@ -147,9 +148,13 @@ void xServerGui::readPreferences()
 
 void xServerGui::writePreferences()
 {
-  *xpollog::kInfo << "Writing preferences to .preferences... " << endline;
+  std::string cfgFolderPath = xpedaqos::rjoin("xpesrv");
+  std::string preferencesFilePath = xpedaqos::join(cfgFolderPath,
+						                          "preferences.cfg");
+  *xpollog::kInfo << "Writing preferences to " << preferencesFilePath
+                  << " ..." << endline;
   std::ofstream *outputFile =
-    xpolio::kIOManager->openOutputFile(".preferences");
+    xpolio::kIOManager->openOutputFile(preferencesFilePath);
   xpolio::kIOManager->write(outputFile, "//Input file path//");
   xpolio::kIOManager->write(outputFile, getInputFilePath());
   xpolio::kIOManager->write(outputFile, "//Multicast address//");
