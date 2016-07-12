@@ -58,7 +58,9 @@ class xpemonWindow : public QMainWindow
     /* Widget showing some event info */  
     pInfoBoxWidget *m_infoBoxWidget;
 
-    /* Data structure holding the user-controlled options */
+    /* Path to the preferences file*/
+    std::string m_preferencesFilePath;
+    /* Class for handling the user-controlled options */
     pMonitorPreferences* m_preferences;
 
     /* Read the the data and fill histograms */ 

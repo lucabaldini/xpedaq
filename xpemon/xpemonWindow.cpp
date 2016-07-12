@@ -2,19 +2,21 @@
 
 xpemonWindow::xpemonWindow(std::string preferencesFilePath,
                            QWidget *parent) :
-                           QMainWindow(parent), m_isStopped(true)
+                           QMainWindow(parent),
+                           m_preferencesFilePath (preferencesFilePath),
+                           m_isStopped(true)
 {
   const int pixelFromScreenLeft = 20;
   const int pixelFromScreenTop = 20;
-  const int pixelWidth = 1024;
+  const int pixelWidth = 1280;
   const int pixelHeight = 768;
-  this->setGeometry(pixelFromScreenLeft, pixelFromScreenTop,
+  setGeometry(pixelFromScreenLeft, pixelFromScreenTop,
                     pixelWidth, pixelHeight);
   m_centralWidget   = new QWidget();
   setCentralWidget(m_centralWidget);
   m_mainGridLayout  = new QGridLayout(m_centralWidget);
 
-  m_preferences = new pMonitorPreferences(preferencesFilePath); 
+  m_preferences = new pMonitorPreferences(m_preferencesFilePath); 
   m_optionBoxWidget = new pOptionBoxWidget(
                         m_preferences -> socketPort(),
                         m_preferences -> refreshInterval(),
@@ -137,6 +139,7 @@ void xpemonWindow::startRun()
   if (m_isStopped)
   {
     readOptions();
+    m_preferences -> writeToFile (m_preferencesFilePath);
     m_eventReader -> setSocketPortNumber(m_preferences ->
                                                         socketPort());
     m_eventReader -> setZeroSupThreshold(m_preferences ->

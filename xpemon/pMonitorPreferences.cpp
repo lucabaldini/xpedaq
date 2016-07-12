@@ -50,6 +50,9 @@ void pMonitorPreferences::writeToFile(std::string filePath)
   xpolio::kIOManager->closeOutputFile(outputFile);
 }
 
+
+/*!
+*/
 void pMonitorPreferences::readFromFile(std::string filePath)
 {
   *xpollog::kInfo << "Reading user preferences from " << filePath <<
