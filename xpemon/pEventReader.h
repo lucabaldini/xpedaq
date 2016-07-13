@@ -37,6 +37,8 @@ class pEventReader: public QObject
     void eventRead(unsigned int xmin, unsigned int xmax,
                    unsigned int ymin, unsigned int ymax);
     void highestPixelFound(unsigned int highestX, unsigned int highestY);
+    void barycenterRead(double xBarycenter, double yBarycenter);
+    
     void pulseHeightUpdated(const std::vector<double>& pulseHeightValues);
     void windowSizeUpdated(const std::vector<double>& windowSizeValues);
     void hitMapUpdated(const std::vector<double>& hitMapValues);

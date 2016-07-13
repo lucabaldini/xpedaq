@@ -25,6 +25,7 @@ class pInfoBoxWidget: public pQtGroupBoxWidget
     void updateWindowSize(unsigned int xmin, unsigned int xmax,
                           unsigned int ymin, unsigned int ymax);
     void updateMaxCoordinates(unsigned int x, unsigned int y);
+    void updateBarycenterCoordinates(double x, double y);
     void reset();
  
   private:
@@ -38,6 +39,9 @@ class pInfoBoxWidget: public pQtGroupBoxWidget
     pQtCustomTextLabel *m_highestPixelLabel;
     QLineEdit *m_highestXEdit;
     QLineEdit *m_highestYEdit;
+    pQtCustomTextLabel *m_barycenterLabel;
+    QLineEdit *m_barycenterXEdit;
+    QLineEdit *m_barycenterYEdit;
     unsigned int m_evtCounter;
 };
 

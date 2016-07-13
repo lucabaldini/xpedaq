@@ -61,6 +61,8 @@ void pEventReader::readPendingDatagram()
     unsigned int x = 1000; //initialize to non-physical value
     unsigned int y = 1000; //initialize to non-physical value
     unsigned int height = 0;
+    double xBarycenter = 0.;
+    double yBarycenter = 0.;
     for (unsigned int index = 0; index < nPixel; ++index)
     {
       p.readPixel(evt, index, x, y, height);
@@ -74,15 +76,16 @@ void pEventReader::readPendingDatagram()
         highestY = y;
         maxVal = static_cast<double> (height);
       }
-      //xBarycenter += height * x;
-      //yBaricenter += height * y;
+      xBarycenter += height * x;
+      yBarycenter += height * y;
     }
     if (adcSum > 0)
     {
       m_pulseHeightHist -> fill(adcSum);
       emit highestPixelFound(highestX, highestY);
-      //xBarycenter /= adcSum;
-      //yBaricenter /= adcSum;  
+      xBarycenter /= adcSum;
+      yBarycenter /= adcSum;
+      emit barycenterRead(xBarycenter, yBarycenter);
     }
   }
   // Here we release the memory. Using the data block
