@@ -12,9 +12,9 @@
 class pHistogram
 {
   
-  /* Class describing a histogram (ROOT style).
+  /* Class describing a histogram.
      Entries and values (weights) in each bin are stored separatedly.
-     Please note: bin numbering starts from 0 (no UNDERFLOW/OVERFLOW).
+     Note: bin numbering starts from 0.
   */
   
   public:

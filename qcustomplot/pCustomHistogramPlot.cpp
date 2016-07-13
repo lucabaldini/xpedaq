@@ -1,7 +1,9 @@
 #include "pCustomHistogramPlot.h"
 
-pCustomHistogramPlot::pCustomHistogramPlot(pBasicPlotOptions options) :
-                                                            m_options (options)
+pCustomHistogramPlot::pCustomHistogramPlot(pBasicPlotOptions options,
+                                           bool logScaleY):
+                                           m_options (options),
+                                           m_isLogScaleY (logScaleY)
 {  
   m_bars = new QCPBars(xAxis, yAxis);
   addPlottable(m_bars);
@@ -13,6 +15,7 @@ pCustomHistogramPlot::pCustomHistogramPlot(pBasicPlotOptions options) :
   m_centerPosTolerance = 1.e-5;
   m_bars -> keyAxis() -> setRange(0., 1.);
   m_bars -> setWidth(0.1);
+  if (m_isLogScaleY) setLogScaleY();
    
   // Some graphical stuff
   legend -> setVisible(false);
@@ -183,5 +186,25 @@ void pCustomHistogramPlot::contextMenuRequest(QPoint pos)
   QMenu *menu = new QMenu(this);
   menu->setAttribute(Qt::WA_DeleteOnClose);
   menu->addAction("Restore initial view", this, SLOT(resetView()));
+  if (!m_isLogScaleY){
+    menu->addAction("Set y to log scale", this, SLOT(setLogScaleY()));
+  }
+  else {
+    menu->addAction("Set y to lin scale", this, SLOT(setLinScaleY()));
+  }
   menu->popup(mapToGlobal(pos));
+}
+
+
+void pCustomHistogramPlot::setLogScaleY()
+{
+  yAxis->setScaleType(QCPAxis::stLogarithmic);
+  yAxis->setScaleLogBase(10);
+  m_isLogScaleY = true;
+}
+
+void pCustomHistogramPlot::setLinScaleY()
+{
+  yAxis->setScaleType(QCPAxis::stLinear);
+  m_isLogScaleY = false;
 }

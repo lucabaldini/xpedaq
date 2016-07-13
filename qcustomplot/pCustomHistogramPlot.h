@@ -15,7 +15,8 @@ class pCustomHistogramPlot : public QCustomPlot
   
   public:
   
-    pCustomHistogramPlot(pBasicPlotOptions options = pBasicPlotOptions());      
+    pCustomHistogramPlot(pBasicPlotOptions options = pBasicPlotOptions(),
+                         bool logScaleY = false);      
     
     void setKeyContent(double key, double value);
     void setTolerance (double tolerance);
@@ -37,6 +38,8 @@ class pCustomHistogramPlot : public QCustomPlot
     void paintEvent(QPaintEvent *event);
     void paintCoordinate();
     void contextMenuRequest(QPoint pos);
+    void setLogScaleY();
+    void setLinScaleY();
       
   protected:
     
@@ -46,6 +49,7 @@ class pCustomHistogramPlot : public QCustomPlot
     pBasicPlotOptions m_options;    
     // Needed to properly remove key in QCPBars data
     double m_centerPosTolerance;
+    bool m_isLogScaleY;
     QPoint m_cursorPos;
 
 };
