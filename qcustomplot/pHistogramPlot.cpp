@@ -82,6 +82,14 @@ void pHistogramPlot::updateData (const std::vector<double> &values)
 }
 
 
+void pHistogramPlot::resetView()
+{
+  m_bars -> keyAxis() -> setRange(m_hist -> xMin(), m_hist -> xMax());
+  m_bars -> rescaleValueAxis();
+  replot();
+}
+
+
 /*
 void pHistogramPlot::setupStatBox()
 {

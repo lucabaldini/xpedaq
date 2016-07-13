@@ -26,7 +26,6 @@ class xpepedsPlotGrid: public QWidget
     
     void fillPlots(const PedestalsMap& pedMap);
     void replotAll();
-    void restorePlot();
      
   private:
     

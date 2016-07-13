@@ -51,7 +51,6 @@ class pDisplayWindow : public QMainWindow
     QVBoxLayout *m_verticalLayout;
     xpepedsPlotGrid *m_plotGrid;
     QStatusBar *m_statusBar;
-    pQtCustomPushButton *m_resetButton;
 };
 
 #endif // DISPLAYWINDOW_H

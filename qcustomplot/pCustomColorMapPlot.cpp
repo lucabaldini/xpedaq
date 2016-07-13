@@ -20,6 +20,7 @@ pCustomColorMapPlot::pCustomColorMapPlot(pColorMapOptions options) :
   xAxis -> grid() -> setSubGridVisible(false);
   yAxis -> grid() -> setSubGridVisible(false);
 
+  // Initialize the color scale
   m_colorScale = new QCPColorScale(this);
   plotLayout() -> addElement(0, 1, m_colorScale);
   m_colorScale -> setType(QCPAxis::atRight);
@@ -113,6 +114,11 @@ void pCustomColorMapPlot::setupInteractions()
   connect(this, SIGNAL(mouseWheel(QWheelEvent*)), this, SLOT(mouseWheel()));
   connect(this, SIGNAL(selectionChangedByUser()),
           this, SLOT(selectionChanged()));
+  
+  // Setup policy and connect slot for context menu popup:        
+  setContextMenuPolicy(Qt::CustomContextMenu);
+  connect(this, SIGNAL(customContextMenuRequested(QPoint)),
+          this, SLOT(contextMenuRequest(QPoint)));
 }
 
 
@@ -165,4 +171,13 @@ void pCustomColorMapPlot::mouseWheel()
     {axisRect()->setRangeZoom(yAxis->orientation());}
   else
     {axisRect()->setRangeZoom(Qt::Horizontal|Qt::Vertical);}
+}
+
+
+void pCustomColorMapPlot::contextMenuRequest(QPoint pos)
+{
+  QMenu *menu = new QMenu(this);
+  menu->setAttribute(Qt::WA_DeleteOnClose);
+  menu->addAction("Restore initial view", this, SLOT(resetView()));
+  menu->popup(mapToGlobal(pos));
 }

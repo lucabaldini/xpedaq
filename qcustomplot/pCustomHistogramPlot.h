@@ -1,8 +1,9 @@
 #ifndef CUSTOMHISTOGRAMPLOT_H
 #define CUSTOMHISTOGRAMPLOT_H
 
-#include <iostream>
 #include <vector>
+
+#include <QMenu>
 
 #include "qcustomplot.h"
 #include "pHistogramOptions.h"
@@ -19,6 +20,12 @@ class pCustomHistogramPlot : public QCustomPlot
     void setKeyContent(double key, double value);
     void setTolerance (double tolerance);
     void clearBars();
+    
+  public slots:
+  
+    // Restore the optimal visualization (change axis range so that
+    // all data are visible)
+    virtual void resetView();
 
 
   protected slots:
@@ -29,6 +36,7 @@ class pCustomHistogramPlot : public QCustomPlot
     void mouseMoveEvent(QMouseEvent *event);
     void paintEvent(QPaintEvent *event);
     void paintCoordinate();
+    void contextMenuRequest(QPoint pos);
       
   protected:
     

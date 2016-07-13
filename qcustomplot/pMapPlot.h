@@ -23,18 +23,24 @@ class pMapPlot : public pCustomColorMapPlot
     void fillBin(unsigned int xIndex, unsigned int yIndex);
     void fillBin(unsigned int xIndex, unsigned int yIndex, double value);  
     virtual void updateData (const std::vector<double> &values);
-
+    
+    // Terminal formatting.
+    friend std::ostream& operator<<(std::ostream& os, const pMapPlot& mapPlot)
+      {return mapPlot.m_map-> fillStream(os);}
+     
+  public slots:
+  
+    // Reset the axes to match the histogram dimension and set the
+    // optimal color scale.
+    virtual void resetView();
+    
     // clears data both from the color map and from the histogram.
     // resizes the color map to match the underlying histogram.
     void reset();
     
     // resets the data in the underlying histogram and in the color map
     void resetData();
-    
-    // Terminal formatting.
-    friend std::ostream& operator<<(std::ostream& os, const pMapPlot& mapPlot)
-      {return mapPlot.m_map-> fillStream(os);}
-     
+
   private:
     
     void setupDataMap();    

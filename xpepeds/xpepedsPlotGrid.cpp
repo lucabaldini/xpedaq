@@ -90,10 +90,3 @@ void xpepedsPlotGrid::replotAll()
   m_rmsMap -> replot();
   m_rmsHist -> replot();
 }
-
-
-void xpepedsPlotGrid::restorePlot()
-{
-  m_averageMap -> resetView();
-  m_rmsMap -> resetView();
-}

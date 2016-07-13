@@ -26,6 +26,9 @@ class pHistogramPlot: public pCustomHistogramPlot
 
   public slots:
 
+    // Reset the x-axis to match the histogram dimension and set the
+    // optimal y-axis scale.
+    virtual void resetView();
     void updateData (const std::vector<double> &values);
       
   private:

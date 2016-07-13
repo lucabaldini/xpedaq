@@ -54,6 +54,13 @@ void pCustomHistogramPlot::clearBars()
 }
 
 
+void pCustomHistogramPlot::resetView()
+{
+  m_bars -> rescaleAxes();
+  replot();
+}
+
+
 void pCustomHistogramPlot::mouseMoveEvent(QMouseEvent * event)
 {
   m_cursorPos = event -> pos();
@@ -110,7 +117,12 @@ void pCustomHistogramPlot::setupInteractions()
   connect(this, SIGNAL(mousePress(QMouseEvent*)), this, SLOT(mousePress()));
   connect(this, SIGNAL(mouseWheel(QWheelEvent*)), this, SLOT(mouseWheel()));
   connect(this, SIGNAL(selectionChangedByUser()),
-          this, SLOT(selectionChanged()));        
+          this, SLOT(selectionChanged()));
+          
+  // Setup policy and connect slot for context menu popup:        
+  setContextMenuPolicy(Qt::CustomContextMenu);
+  connect(this, SIGNAL(customContextMenuRequested(QPoint)),
+          this, SLOT(contextMenuRequest(QPoint)));
 }
 
 
@@ -163,4 +175,13 @@ void pCustomHistogramPlot::mouseWheel()
     {axisRect()->setRangeZoom(yAxis->orientation());}
   else
     {axisRect()->setRangeZoom(Qt::Horizontal|Qt::Vertical);}
+}
+
+
+void pCustomHistogramPlot::contextMenuRequest(QPoint pos)
+{
+  QMenu *menu = new QMenu(this);
+  menu->setAttribute(Qt::WA_DeleteOnClose);
+  menu->addAction("Restore initial view", this, SLOT(resetView()));
+  menu->popup(mapToGlobal(pos));
 }

@@ -1,9 +1,10 @@
 #ifndef CUSTOMCOLORMAPPLOT_H
 #define CUSTOMCOLORMAPPLOT_H
 
+#include <QMenu>
+
 #include "qcustomplot.h"
 #include "pHistogramOptions.h"
-#include <iostream>
 
 class pCustomColorMapPlot : public QCustomPlot
 {
@@ -25,15 +26,16 @@ class pCustomColorMapPlot : public QCustomPlot
   
     virtual void updateData (const std::vector<double> &values);
     
-    // Restore the optimal visualization (change axis range so that all data
-    // are visible and set the optimal color scale )
-    void resetView();
+    // Restore the optimal visualization (change axis range so that
+    // all data are visible and set the optimal color scale)
+    virtual void resetView();
   
   protected slots:
   
     void mousePress();
     void mouseWheel();
     void selectionChanged();
+    void contextMenuRequest(QPoint pos);
       
   protected:
     

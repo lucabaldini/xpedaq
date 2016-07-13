@@ -25,12 +25,7 @@ pDisplayWindow::pDisplayWindow(QWidget *parent, int posx, int posy,
   m_statusBar -> setObjectName(QString::fromUtf8("statusBar"));
   setStatusBar(m_statusBar);
   
-  m_resetButton = new pQtCustomPushButton(m_centralWidget, "reset");
-  m_verticalLayout -> addWidget(m_resetButton);
-  
   setGeometry(m_posx, m_posy, m_windowHeight, m_windowWidth);
-  connect (m_resetButton, SIGNAL(clicked()),
-           m_plotGrid, SLOT(restorePlot()));
 }
 
 

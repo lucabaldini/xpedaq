@@ -34,6 +34,15 @@ void pMapPlot::setMacthingRange(double xmin, double xmax,
 }
                               
 
+void pMapPlot::resetView()
+{
+  setMacthingRange(m_map -> xMin(), m_map -> xMax(),
+                   m_map -> yMin(), m_map -> yMax());
+  m_colorMap -> rescaleDataRange();
+  replot();
+}
+
+
 void pMapPlot::fillBin(unsigned int xbin, unsigned int ybin, double value)
 { 
   m_map -> fillBin(xbin, ybin, value);
