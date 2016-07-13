@@ -31,9 +31,9 @@ pAcquisitionWindow::pAcquisitionWindow(pRunController &runController)
   setupTabWidget();  
   m_runController = &runController;
   // This connection needs to be here in order to intercept error signals.
-  //connect(m_runController->usbController(),
-  //  SIGNAL(quickusbError(unsigned long)),
-  //  this, SLOT(disableHardwareWidgets()));
+  connect(m_runController->usbController(),
+    SIGNAL(quickusbError(unsigned long)),
+    this, SLOT(disableHardwareWidgets()));
   connect(m_runController->usbController(),
 	  SIGNAL(connected(QString, QString, QString, QString)),
 	  m_usbControlTab,
@@ -56,7 +56,7 @@ void pAcquisitionWindow::startRun()
 {
   m_runController->setupRun(detectorConfiguration(), userPreferences(),
                             triggerMask());
-  //m_runController->setRunning();
+  m_runController->setRunning();
 }
 
 
@@ -147,6 +147,7 @@ void pAcquisitionWindow::disableTabs()
   m_thresholdSettingTab->setEnabled(0);
   m_advancedSettingsTab->setEnabled(0);
   m_usbControlTab->setEnabled(0);
+  m_userPreferencesTab->setEnabled(0);
 }
 
 
@@ -158,6 +159,7 @@ void pAcquisitionWindow::enableTabs()
   m_thresholdSettingTab->setEnabled(1);
   m_advancedSettingsTab->setEnabled(1);
   m_usbControlTab->setEnabled(1);
+  m_userPreferencesTab->setEnabled(1);
 }
 
 
@@ -254,9 +256,9 @@ void pAcquisitionWindow::setupConnections()
   connect(m_transportBar, SIGNAL(start()), this, SLOT(startRun()));    
   connect(m_transportBar, SIGNAL(stop()), this, SLOT(stopRun()));
 
-  connect(m_transportBar, SIGNAL(start()),
+  connect(m_runController, SIGNAL(runStarted()),
           this, SLOT(disableTabs()));
-  connect(m_transportBar, SIGNAL(stop()),
+  connect(m_runController, SIGNAL(runStopped()),
           this, SLOT(enableTabs()));          
   connect(m_runController, SIGNAL(runStopped()), this, SLOT(stop()));
   connect(m_runController, SIGNAL(stationIdSet(int)), m_daqDisplay,
