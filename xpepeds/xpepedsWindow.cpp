@@ -37,7 +37,7 @@ xpepedsWindow::xpepedsWindow(pedRunController &runController) :
   m_lastVisualizationMode = preferences->visualizationMode();
   pDetectorConfiguration *configuration =
     m_runController->detectorConfiguration();  
-  displayConfiguration(configuration, preferences->visualizationMode());
+  displayConfiguration(configuration, preferences->visualizationMode());  
   m_runController->init();
   showMessage("Data acquisition system ready", 2000);
 }
@@ -57,7 +57,6 @@ void xpepedsWindow::disableUnusedWidgets()
  */
 void xpepedsWindow::showDisplayWindow()
 {
-  //m_pedRunController -> randomFilling(10);
   if (m_isWindowOpen) return;
   m_displayWindow = new pDisplayWindow();
   m_displayWindow -> show();

@@ -28,27 +28,25 @@ xpedaqWindow::xpedaqWindow(pRunController &runController) :
 {
   QString title = "xpedaq version " + QString(__XPEDAQ_VERSION__);
   setWindowTitle(title);
-  
-  setupTabWidget();  
-  setupConnections();
-  
+  setupTabWidget();
+  pTriggerMask *triggerMask = m_runController->triggerMask();
+  displayTriggerMask(triggerMask);
   pUserPreferences *preferences = m_runController->userPreferences();
   displayUserPreferences(preferences);
   m_lastVisualizationMode = preferences->visualizationMode();
   pDetectorConfiguration *configuration =
     m_runController->detectorConfiguration();  
-  displayConfiguration(configuration, preferences->visualizationMode());
-  pTriggerMask *triggerMask = m_runController->triggerMask();
-  displayTriggerMask(triggerMask);
+  displayConfiguration(configuration, preferences->visualizationMode());  
+  setupConnections();
   m_runController->init();
   showMessage("Data acquisition system ready", 2000);
+
 }
 
 /*!
  */
 void xpedaqWindow::setupConnections()
 {
-  pAcquisitionWindow::setupConnections();
 }
 
 
@@ -65,7 +63,7 @@ void xpedaqWindow::setupTabWidget()
 /*!
  */
 void xpedaqWindow::displayConfiguration(pDetectorConfiguration *configuration,
-				       int mode)
+				                        int mode)
 {
   m_readoutModeTab->displayConfiguration(configuration, mode);
   m_thresholdSettingTab->displayConfiguration(configuration, mode);
@@ -108,4 +106,24 @@ pDetectorConfiguration* xpedaqWindow::detectorConfiguration(int mode)
   configuration->setMinWindowSize(m_advancedSettingsTab->minWindowSize());
   configuration->setMaxWindowSize(m_advancedSettingsTab->maxWindowSize());
   return configuration;
+}
+
+
+/*!
+ */
+void xpedaqWindow::enableTabs()
+{
+  pAcquisitionWindow::enableTabs();
+  m_readoutModeTab->setEnabled(1);
+  m_triggerSettingTab->setEnabled(1);
+}
+
+
+/*!
+ */
+void xpedaqWindow::disableTabs()
+{
+  pAcquisitionWindow::disableTabs();
+  m_readoutModeTab->setEnabled(0);
+  m_triggerSettingTab->setEnabled(0);
 }

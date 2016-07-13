@@ -24,6 +24,7 @@ with this program; if not, write to the Free Software Foundation Inc.,
 #define XPEDAQWINDOW_H
 
 #include "pAcquisitionWindow.h"
+#include "pReadoutModeTab.h"
 
 
 class xpedaqWindow : public pAcquisitionWindow
@@ -39,11 +40,18 @@ class xpedaqWindow : public pAcquisitionWindow
   virtual void displayConfiguration(pDetectorConfiguration *configuration, int mode);
   virtual pDetectorConfiguration *detectorConfiguration(int mode = -1);
   virtual pTriggerMask *triggerMask();
-  
- private: 
-  
+ 
+ private slots: 
+ 
+  virtual void disableTabs();
+  virtual void enableTabs();
+
+ private:
+   
+  pReadoutModeTab *m_readoutModeTab;
   void setupTabWidget();
   void setupConnections();
+
   
 };
 

@@ -33,11 +33,9 @@ with this program; if not, write to the Free Software Foundation Inc.,
 #include "pDaqDisplay.h"
 #include "pMessageDisplay.h"
 #include "pTransportBar.h"
-#include "pReadoutModeTab.h"
 #include "pThresholdSettingTab.h"
 #include "pAdvancedSettingsTab.h"
 #include "pTriggerSettingTab.h"
-#include "pProbeSettingTab.h"
 #include "pUsbControlTab.h"
 #include "pUserPreferencesTab.h"
 #include "pRunController.h"
@@ -63,6 +61,7 @@ class pAcquisitionWindow : public pQtMainWindowGui
   
   pAcquisitionWindow(pRunController &runController);
   ~pAcquisitionWindow();
+  // Pure virtual function, need to be reimplemented in the actual application GUIs.
   virtual pDetectorConfiguration *detectorConfiguration(int mode = -1) = 0;
   pUserPreferences *userPreferences();
   virtual pTriggerMask *triggerMask();
@@ -76,6 +75,8 @@ class pAcquisitionWindow : public pQtMainWindowGui
  public slots:
    
   void disableHardwareWidgets();
+  virtual void disableTabs();
+  virtual void enableTabs();
   void changeVisualizationMode(int mode);
   void displayReference(unsigned short reference);
   void start();
@@ -90,11 +91,9 @@ class pAcquisitionWindow : public pQtMainWindowGui
   pMessageDisplay *m_messageDisplay;
   pTransportBar *m_transportBar;
   QTabWidget *m_mainTabWidget;
-  pReadoutModeTab *m_readoutModeTab;
   pThresholdSettingTab *m_thresholdSettingTab;
   pAdvancedSettingsTab *m_advancedSettingsTab;
   pTriggerSettingTab *m_triggerSettingTab;
-  pProbeSettingTab *m_probesSettingTab;
   pUsbControlTab *m_usbControlTab;
   pUserPreferencesTab *m_userPreferencesTab;
   pRunController *m_runController;

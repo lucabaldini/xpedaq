@@ -31,14 +31,15 @@ pAcquisitionWindow::pAcquisitionWindow(pRunController &runController)
   setupTabWidget();  
   m_runController = &runController;
   // This connection needs to be here in order to intercept error signals.
-  connect(m_runController->usbController(),
-    SIGNAL(quickusbError(unsigned long)),
-    this, SLOT(disableHardwareWidgets()));
+  //connect(m_runController->usbController(),
+  //  SIGNAL(quickusbError(unsigned long)),
+  //  this, SLOT(disableHardwareWidgets()));
   connect(m_runController->usbController(),
 	  SIGNAL(connected(QString, QString, QString, QString)),
 	  m_usbControlTab,
 	  SLOT(updateInfo(QString, QString, QString, QString)));
   m_runController->connectUsb();
+  setupConnections();
 }
 
 pAcquisitionWindow::~pAcquisitionWindow()
@@ -54,8 +55,8 @@ pAcquisitionWindow::~pAcquisitionWindow()
 void pAcquisitionWindow::startRun()
 {
   m_runController->setupRun(detectorConfiguration(), userPreferences(),
-			    triggerMask());
-  m_runController->setRunning();
+                            triggerMask());
+  //m_runController->setRunning();
 }
 
 
@@ -106,8 +107,6 @@ void pAcquisitionWindow::setupTabWidget()
   m_mainTabWidget->addTab(m_thresholdSettingTab, "Thresholds");
   m_advancedSettingsTab = new pAdvancedSettingsTab();
   m_mainTabWidget->addTab(m_advancedSettingsTab, "Advanced");
-  //m_probesSettingTab = new pProbeSettingTab();
-  //m_mainTabWidget->addTab(m_probesSettingTab, "Probes");
   m_usbControlTab = new pUsbControlTab();
   m_mainTabWidget->addTab(m_usbControlTab, "USB");
   m_userPreferencesTab = new pUserPreferencesTab();
@@ -137,6 +136,28 @@ void pAcquisitionWindow::disableHardwareWidgets()
 {
   m_transportBar->setEnabled(0);
   m_thresholdSettingTab->getRefreshRefButton()->setEnabled(0);
+}
+
+
+/*!
+*/
+void pAcquisitionWindow::disableTabs()
+{
+  m_thresholdSettingTab->getRefreshRefButton()-> setEnabled(0);
+  m_thresholdSettingTab->setEnabled(0);
+  m_advancedSettingsTab->setEnabled(0);
+  m_usbControlTab->setEnabled(0);
+}
+
+
+/*!
+*/
+void pAcquisitionWindow::enableTabs()
+{
+  m_thresholdSettingTab->getRefreshRefButton()-> setEnabled(1);
+  m_thresholdSettingTab->setEnabled(1);
+  m_advancedSettingsTab->setEnabled(1);
+  m_usbControlTab->setEnabled(1);
 }
 
 
@@ -233,6 +254,10 @@ void pAcquisitionWindow::setupConnections()
   connect(m_transportBar, SIGNAL(start()), this, SLOT(startRun()));    
   connect(m_transportBar, SIGNAL(stop()), this, SLOT(stopRun()));
 
+  connect(m_transportBar, SIGNAL(start()),
+          this, SLOT(disableTabs()));
+  connect(m_transportBar, SIGNAL(stop()),
+          this, SLOT(enableTabs()));          
   connect(m_runController, SIGNAL(runStopped()), this, SLOT(stop()));
   connect(m_runController, SIGNAL(stationIdSet(int)), m_daqDisplay,
 	  SLOT(updateStationId(int)));
