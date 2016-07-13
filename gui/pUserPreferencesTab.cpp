@@ -143,6 +143,11 @@ void pUserPreferencesTab::enableOutputFolderWidgets(int enable)
   m_outputFolderDisplay->setEnabled(enable);
 }
 
+void pUserPreferencesTab::enableMulticastCheckBox(int enable)
+{
+  m_enableMulticastCheckBox->setEnabled(enable);
+}
+
 void pUserPreferencesTab::enableMulticastWidgets(int enable)
 {
   m_multicastAddressLabel->setEnabled(enable);

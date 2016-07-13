@@ -59,6 +59,7 @@ class pUserPreferencesTab : public pQtCustomTab
   void displayUserPreferences(pUserPreferences preferences);
 
  public slots:
+  void enableMulticastCheckBox(int enable = 1);
   void enableMulticastWidgets(int enable = 1);
   void enableOutputFolderWidgets(int enable = 1);
   void changeVisualizationMode();

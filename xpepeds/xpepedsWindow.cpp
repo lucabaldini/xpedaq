@@ -47,9 +47,11 @@ xpepedsWindow::xpepedsWindow(pedRunController &runController) :
 */
 void xpepedsWindow::disableUnusedWidgets()
 {
-  m_advancedSettingsTab -> disableNumPedSamplesComboBox();
-  m_advancedSettingsTab -> disableMaxWindowSizeSpinBox();
-  m_advancedSettingsTab -> disableMinWindowSizeSpinBox();
+  m_advancedSettingsTab->disableNumPedSamplesComboBox();
+  m_advancedSettingsTab->disableMaxWindowSizeSpinBox();
+  m_advancedSettingsTab->disableMinWindowSizeSpinBox();
+  m_userPreferencesTab->enableMulticastCheckBox(0);
+  m_userPreferencesTab->enableMulticastWidgets(0);
 }
 
 
