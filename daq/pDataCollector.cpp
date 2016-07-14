@@ -62,13 +62,18 @@ void pDataCollector::run()
 {
   m_dataFIFO = new pDataFIFO(m_outputFilePath, m_userPreferences);
   m_numMalformedBlocks = 0;
-  unsigned long dataBufferDimension = SRAM_DIM*2;
-  unsigned char dataBuffer[SRAM_DIM*2];
+  m_running = true;
+  unsigned long dataBufferDimension = SRAM_DIM*2;  
+  unsigned char* dataBuffer = new (std::nothrow) unsigned char[dataBufferDimension];
+  if (dataBuffer == nullptr)
+  {
+    std::cout << "allocation failed" << std::endl;
+    m_running = false;    
+  }  
   int maxSize = m_detectorConfiguration->maxBufferSize();
   pDataBlock *curDataBlock;
   m_usbController->resetSequencer();
   m_usbController->startSequencer();
-  m_running = true;
   int errorCode = 0;
   while (m_running) {
     errorCode = m_usbController->readData(dataBuffer, &dataBufferDimension);
@@ -105,6 +110,7 @@ void pDataCollector::run()
   m_usbController->writeUsbSettings();
   m_usbController->readUsbSettings();
   delete m_dataFIFO;
+  delete [] dataBuffer;
 }
 
 /*! This is needed since the data collector needs run based information.
