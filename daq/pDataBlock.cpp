@@ -99,6 +99,7 @@ pDataBlock::pDataBlock(const pDataBlock &cSourceDataBlock) :
 */
 void pDataBlock::setStartSeconds(unsigned int startSeconds)
 {
+  if (!m_isWindowed) return;
   if (errorSummary() == 0) {
     for (unsigned int evt = 0; evt < numEvents(); evt ++) {
       unsigned int offset = m_offsetVec[evt] + Seconds;
