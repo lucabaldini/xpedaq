@@ -129,8 +129,12 @@ void xServerGui::setSleepTime(int msec)
 void xServerGui::readPreferences()
 {
   std::string cfgFolderPath = xpedaqos::rjoin("xpesrv");
-  std::string preferencesFilePath = xpedaqos::join(cfgFolderPath,
-						                          "preferences.cfg");
+  std::string preferencesFilePath = xpedaqos::join(cfgFolderPath, 
+                                               "preferences.cfg");
+  if (!xpedaqos::fileExists(preferencesFilePath)) {
+    xpedaqos::copyFile(preferencesFilePath + ".sample",
+		               preferencesFilePath);
+  }						   
   *xpollog::kInfo << "Reading preferences from "
                   << preferencesFilePath << " ..." << endline;
   std::ifstream *inputFile =
@@ -150,7 +154,7 @@ void xServerGui::writePreferences()
 {
   std::string cfgFolderPath = xpedaqos::rjoin("xpesrv");
   std::string preferencesFilePath = xpedaqos::join(cfgFolderPath,
-						                          "preferences.cfg");
+                                                  "preferences.cfg");
   *xpollog::kInfo << "Writing preferences to " << preferencesFilePath
                   << " ..." << endline;
   std::ofstream *outputFile =
