@@ -35,7 +35,7 @@ pOption::pOption(std::string longName, char shortName, pVariant value,
 
 std::ostream& pOption::fillStream(std::ostream& os) const
 {
-  os << "-" << m_shortName << ", --" << std::setw(15) << std::left
+  os << "-" << m_shortName << ", --" << std::setw(17) << std::left
      << m_longName;
   if (type() != pVariant::Boolean) {
     os << std::setw(7) << typeString();

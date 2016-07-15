@@ -21,11 +21,15 @@ int main(int argn, char *argv[])
   parser.addOption<int>("max-blocks", 'N',
                         "Maximum number of data buffers to be aquired");
   parser.addOption<bool>("batch", 'b',
-			 "Run in batch mode");
-  // Parse the command-line arguments.
-  parser.parse(argn, argv);
+                         "Run in batch mode");  
+  parser.addOption<int>("clock-shift", 'c',
+                        "Clock shift code (0-800 in step of 25)");
+  parser.addOption<int>("clock-frequency", 'f',
+                        "Clock frequency code (0-32-64-96)");
+  parser.addOption<int>("nped-subtracted", 'p',
+           "Number of sampling for pedestal subtraction (0-1-2-4-8)");
   
-  QApplication app(argn, argv);
+
   std::string cfgFolderPath = xpedaqos::rjoin("xpedaq", "config");
   std::string configFilePath = xpedaqos::join(cfgFolderPath, "detector.cfg");
   std::string preferencesFilePath = xpedaqos::join(cfgFolderPath,
@@ -34,6 +38,11 @@ int main(int argn, char *argv[])
   pRunController *runController = new pRunController(configFilePath,
 						     preferencesFilePath,
 						     trgMaskFilePath);
+  pDetectorConfiguration* configuration =
+                               runController->detectorConfiguration();
+
+  // Parse the command-line arguments.
+  parser.parse(argn, argv);
 
   // Apply all command-line options.
   if (parser.optionSet("max-seconds")) {
@@ -48,12 +57,29 @@ int main(int argn, char *argv[])
     const int max_blocks = parser.value<int>("max-blocks");
     runController->setMaxDataBlocks(max_blocks);
   }
+  if (parser.optionSet("clock-shift")){
+    const int clock_shift = parser.value<int>("clock-shift");
+    configuration->setClockShift(clock_shift);
+  }
+  if (parser.optionSet("clock-frequency")){
+    const int clock_frequency = parser.value<int>("clock-frequency");
+    configuration->setClockFrequency(clock_frequency);
+  }
+  if (parser.optionSet("nped-subtracted")){
+    const int nped_subtracted = parser.value<int>("nped-subtracted");
+    configuration->setNumPedSamples(nped_subtracted);
+  }
   bool batch = parser.value<bool>("batch");
+
+  QApplication app(argn, argv);
 
   // Create the window.
   xpedaqWindow window(*runController);
   if (!batch) {
     window.show();
+  }
+  else {
+    window.startRun();
   }
   return app.exec();
 }
