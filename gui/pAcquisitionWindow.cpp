@@ -28,7 +28,8 @@ pAcquisitionWindow::pAcquisitionWindow(pRunController &runController)
   setupMessageDisplay();
   setupLoggerConnections();
   setupTransportBar();
-  setupTabWidget();  
+  setupTabWidget();
+  setupCommentBox();  
   m_runController = &runController;
   // This connection needs to be here in order to intercept error signals.
   connect(m_runController->usbController(),
@@ -49,16 +50,14 @@ pAcquisitionWindow::~pAcquisitionWindow()
   delete m_runController;
 }
 
-
 /*! Pass the configuration from the GUI to the run controller and start the run.
  */
 void pAcquisitionWindow::startRun()
 {
   m_runController->setupRun(detectorConfiguration(), userPreferences(),
-                            triggerMask());
+                            triggerMask(), m_commentBox->comment());
   m_runController->setRunning();
 }
-
 
 /*! Stop the run controller.
  */
@@ -83,17 +82,24 @@ void pAcquisitionWindow::setupDaqDisplay()
 void pAcquisitionWindow::setupMessageDisplay()
 {
   m_messageDisplay = new pMessageDisplay(m_centralWidget);
-  m_messageDisplay->freezeSize(DISPLAYS_WIDTH, 200);
+  m_messageDisplay->freezeSize(DISPLAYS_WIDTH, 150);
   m_mainGridLayout->addWidget(m_messageDisplay, 1, 0, Qt::AlignCenter);
 }
 
+/*!
+ */
+void pAcquisitionWindow::setupCommentBox()
+{
+  m_commentBox = new pCommentBoxWidget(m_centralWidget);
+  m_mainGridLayout->addWidget(m_commentBox, 2, 0, Qt::AlignBottom);
+}
 
 /*!
  */
 void pAcquisitionWindow::setupTransportBar()
 {
   m_transportBar   = new pTransportBar(m_centralWidget);
-  m_mainGridLayout->addWidget(m_transportBar, 2, 0, Qt::AlignBottom);
+  m_mainGridLayout->addWidget(m_transportBar, 3, 0, Qt::AlignBottom);
 }
 
 
@@ -113,7 +119,6 @@ void pAcquisitionWindow::setupTabWidget()
   m_mainTabWidget->addTab(m_userPreferencesTab, "Preferences");
 }
 
-
 /*!
  */
 void pAcquisitionWindow::start()
@@ -121,14 +126,12 @@ void pAcquisitionWindow::start()
   m_transportBar->pressStartButton();
 }
 
-
 /*!
  */
 void pAcquisitionWindow::stop()
 {
   m_transportBar->pressStopButton();
 }
-
 
 /*!
  */
@@ -138,8 +141,7 @@ void pAcquisitionWindow::disableHardwareWidgets()
   m_thresholdSettingTab->getRefreshRefButton()->setEnabled(0);
 }
 
-
-/*!
+/*! Disable all the tabs
 */
 void pAcquisitionWindow::disableTabs()
 {
@@ -149,7 +151,6 @@ void pAcquisitionWindow::disableTabs()
   m_usbControlTab->setEnabled(0);
   m_userPreferencesTab->setEnabled(0);
 }
-
 
 /*!
 */
@@ -162,16 +163,15 @@ void pAcquisitionWindow::enableTabs()
   m_userPreferencesTab->setEnabled(1);
 }
 
-
 /*!
  */
 pUserPreferences *pAcquisitionWindow::userPreferences()
 {
-  pUserPreferences *preferences = m_userPreferencesTab->getUserPreferences();
+  pUserPreferences *preferences = 
+                          m_userPreferencesTab->getUserPreferences();
   preferences->setUsbTimeout(m_usbControlTab->timeout());
   return preferences;
 }
-
 
 /*!
  */
@@ -181,14 +181,12 @@ pTriggerMask *pAcquisitionWindow::triggerMask()
   return mask;
 }
 
-
 /*!
  */
 int pAcquisitionWindow::visualizationMode()
 {
   return userPreferences()->visualizationMode();
 }
-
 
 /*!
  */
@@ -199,7 +197,6 @@ void pAcquisitionWindow::displayConfiguration(pDetectorConfiguration *configurat
   m_advancedSettingsTab->displayConfiguration(configuration);
 }
 
-
 /*!
  */
 void pAcquisitionWindow::displayUserPreferences(pUserPreferences *preferences)
@@ -208,14 +205,12 @@ void pAcquisitionWindow::displayUserPreferences(pUserPreferences *preferences)
   m_usbControlTab->setTimeout(preferences->usbTimeout());
 }
 
-
 /*!
  */
 void pAcquisitionWindow::displayTriggerMask(pTriggerMask *triggerMask)
 {
   m_triggerSettingTab->displayTriggerMask(triggerMask);
 }
-
 
 /*!
  */
@@ -224,7 +219,12 @@ void pAcquisitionWindow::displayReference(unsigned short reference)
   m_thresholdSettingTab->displayReference(reference, visualizationMode());
 }
 
-
+/*!
+ */
+void pAcquisitionWindow::displayUserComment(std::string userComment){
+  m_commentBox->setText(userComment);
+}
+  
 /*!
  */
 void pAcquisitionWindow::changeVisualizationMode(int mode)
@@ -232,7 +232,6 @@ void pAcquisitionWindow::changeVisualizationMode(int mode)
   displayConfiguration(detectorConfiguration(m_lastVisualizationMode), mode);
   m_lastVisualizationMode = mode;
 }
-
 
 /*!
  */
@@ -247,7 +246,6 @@ void pAcquisitionWindow::setupLoggerConnections()
   connect(xpollog::kError, SIGNAL(message(QString)), m_messageDisplay,
 	  SLOT(showMessage(QString)));
 }
-
 
 /*!
  */

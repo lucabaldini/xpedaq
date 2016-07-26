@@ -46,7 +46,8 @@ class pRunController : public pFiniteStateMachine
 
   ///\brief Constructor.
   pRunController(std::string configFilePath, std::string preferencesFilePath,
-		         std::string trgMaskFilePath, bool emitBlocks=false);
+		             std::string trgMaskFilePath, std::string usrComment="",
+		             bool emitBlocks=false);
 
   ///\brief Destructor.
   ~pRunController() {;}
@@ -76,13 +77,20 @@ class pRunController : public pFiniteStateMachine
   ///\brief Return the current trigger mask.
   pTriggerMask *triggerMask() const {return m_triggerMask;}
 
+  ///\brief Return the current user comment.
+  std::string userComment() const {return m_userComment;}
+  
   /// \brief Setup all the relevant run information.
   void setupRun(pDetectorConfiguration *configuration,
-		pUserPreferences *preferences, pTriggerMask *triggerMask);
+                pUserPreferences *preferences,
+                pTriggerMask *triggerMask,
+                std::string usrComment);
 
   /// \brief Same thing but reading the info from file.
-  void setupRun(std::string configFilePath, std::string preferencesFilePath,
-		std::string trgMaskFilePath);
+  void setupRun(std::string configFilePath,
+                std::string preferencesFilePath,
+                std::string trgMaskFilePath,
+                std::string usrComment);
 
   /// \brief Same thing but reading the stuff from the default files.
   void setupRun();
@@ -128,6 +136,9 @@ class pRunController : public pFiniteStateMachine
 
   ///\brief Set the maximum number of events to be collected.
   void setMaxEvents(int maxEvents) {m_maxEvents = maxEvents;}
+  
+   ///\brief Set the user comment
+  void setUserComment(std::string usrComment) {m_userComment = usrComment;}
 
   
  public slots:
@@ -277,7 +288,10 @@ class pRunController : public pFiniteStateMachine
   /// \brief Pointer to the trigger mask member object.
   pTriggerMask *m_triggerMask;
  
-  /// \brief Flag for requiring the dataCollector to emit data blocks on reading
+  /// /brief A run comment inserted by the user
+  std::string m_userComment;
+  
+  /// Flag for requiring the dataCollector to emit data blocks on reading
   bool m_emitBlocks;
   
  private slots:

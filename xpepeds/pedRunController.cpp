@@ -3,10 +3,12 @@
 
 pedRunController::pedRunController(std::string configFilePath,
                                    std::string preferencesFilePath,
-                                   std::string trgMaskFilePath) : 
+                                   std::string trgMaskFilePath,
+                                   std::string usrComment) : 
                                    pRunController(configFilePath,
                                                   preferencesFilePath,
                                                   trgMaskFilePath,
+                                                  usrComment,
                                                   true)
 {
   m_pedestalMap = new PedestalsMap();

@@ -26,8 +26,9 @@ with this program; if not, write to the Free Software Foundation Inc.,
 /*! Basic constructor.
  */
 pRunController::pRunController(std::string configFilePath,
-			                   std::string preferencesFilePath,
+			                         std::string preferencesFilePath,
                                std::string trgMaskFilePath,
+                               std::string usrComment,
                                bool emitBlocks)
   : m_maxSeconds(2592000),
     m_maxEvents(259200000),
@@ -37,6 +38,7 @@ pRunController::pRunController(std::string configFilePath,
     m_configFilePath(configFilePath),
     m_preferencesFilePath(preferencesFilePath),
     m_trgMaskFilePath(trgMaskFilePath),
+    m_userComment (usrComment),
     m_emitBlocks(emitBlocks)
 {
   m_stationIdFilePath = xpedaqos::rjoin("config", "stationId.cfg");
@@ -99,13 +101,15 @@ void pRunController::init()
 /*!
  */
 void pRunController::setupRun(pDetectorConfiguration *configuration,
-			      pUserPreferences *preferences,
-			      pTriggerMask *triggerMask)
+			                        pUserPreferences *preferences,
+                              pTriggerMask *triggerMask,
+                              std::string usrComment)
 {
   *xpollog::kInfo << "Setting up run..." << endline;
   m_detectorConfiguration = configuration;
   m_userPreferences = preferences;
   m_triggerMask = triggerMask;
+  m_userComment = usrComment;
   // The following two lines are duplicated and should be refactored.
   xpollog::kLogger->setTerminalLevel(m_userPreferences->loggerTerminalLevel());
   xpollog::kLogger->setDisplayLevel(m_userPreferences->loggerDisplayLevel());
@@ -115,12 +119,14 @@ void pRunController::setupRun(pDetectorConfiguration *configuration,
 /*!
  */
 void pRunController::setupRun(std::string configFilePath,
-			      std::string preferencesFilePath,
-			      std::string trgMaskFilePath)
+			                        std::string preferencesFilePath,
+                              std::string trgMaskFilePath,
+                              std::string usrComment)
 { 
   m_detectorConfiguration = new pDetectorConfiguration(configFilePath);
   m_userPreferences = new pUserPreferences(preferencesFilePath);
   m_triggerMask = new pTriggerMask(trgMaskFilePath);
+  m_userComment = usrComment;
   xpollog::kLogger->setTerminalLevel(m_userPreferences->loggerTerminalLevel());
   xpollog::kLogger->setDisplayLevel(m_userPreferences->loggerDisplayLevel());
 }
@@ -130,7 +136,8 @@ void pRunController::setupRun(std::string configFilePath,
  */
 void pRunController::setupRun()
 {
-  setupRun(m_configFilePath, m_preferencesFilePath, m_trgMaskFilePath);
+  setupRun(m_configFilePath, m_preferencesFilePath, m_trgMaskFilePath,
+           m_userComment);
 }
 
 
@@ -329,6 +336,7 @@ void pRunController::fsmStartRun()
     m_xpolFpga->setup(m_detectorConfiguration);
     m_dataCollector->setupRun(dataFilePath(), m_startSeconds, m_userPreferences,
 			      m_detectorConfiguration);
+    writeDataFileHeader();  
     m_dataCollector->start();
   } else {
     *xpollog::kError << "The USB device is not open." << endline;
@@ -512,7 +520,12 @@ void pRunController::writeDataFileHeader() const
   header.trgEnableDelay = m_detectorConfiguration->trgEnableDelay();
   header.minWindowSize = m_detectorConfiguration->minWindowSize();
   header.maxWindowSize = m_detectorConfiguration->maxWindowSize();
-  //std::cout << header.startWord << std::endl;
+  header.comment = userComment();
+  std::ofstream *outputFile = xpolio::kIOManager->
+    openOutputFile(dataFilePath(), true, true);
+  //std::cout << header << std::endl;
+  //outputFile->write(header, header.size);
+  xpolio::kIOManager->closeOutputFile(outputFile);
 }
 
 

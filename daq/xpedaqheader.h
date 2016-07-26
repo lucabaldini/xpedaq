@@ -52,6 +52,22 @@ struct pFileHeader_v1
   uint16_t trgEnableDelay;
   uint16_t minWindowSize;
   uint16_t maxWindowSize;
+  std::string comment;
+  
+  // Output formatting
+  std::ostream& fillStream(std::ostream& os) const
+  {
+    os << startWord << version << size << runId << stationId << startSeconds
+       << readoutMode;
+    for (int i =0; i < NUM_READOUT_CLUSTERS; ++i) {os << thresholdDac[i];}
+    os << bufferMode << clockFrequency << clockShift << numPedSamples
+       << pedSampleDelay << trgEnableDelay << minWindowSize << maxWindowSize
+       << comment;
+    return os;
+  }
+  friend std::ostream& operator<<(std::ostream& os,
+                                  const pFileHeader_v1 &header)
+    {return header.fillStream(os);}
 };
 
 

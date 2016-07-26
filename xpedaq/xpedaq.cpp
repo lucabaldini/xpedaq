@@ -36,6 +36,7 @@ int main(int argn, char *argv[])
                         "Charge injection pixel coordinate y");
   parser.addOption<int>("calibration-dac", 'C',
                   "Calibration DAC signal for charge injection mode");
+  parser.addOption<std::string>("comment", 'm', "A user comment");                  
   
 
   std::string cfgFolderPath = xpedaqos::rjoin("xpedaq", "config");
@@ -79,34 +80,41 @@ int main(int argn, char *argv[])
   }
   if (parser.optionSet("charge-injection")){
     const bool charge_injection = parser.value<bool>("charge-injection");
-    if (parser.optionSet("x-pixel-address")) {
-      const int x_pixel_address = parser.value<int>("x-pixel-address");
-      configuration->setPixelAddressX(x_pixel_address);
-    } else {
-      *xpollog::kError << "Missing pixel address x in charge "
-                       << "injection mode. Use option -x [int]."
-                       << endline;
-      return 1;
+    if (charge_injection){
+      configuration->setReadoutMode(xpoldetector::kChargeInjectionReadoutCode);
+      if (parser.optionSet("x-pixel-address")) {
+        const int x_pixel_address = parser.value<int>("x-pixel-address");
+        configuration->setPixelAddressX(x_pixel_address);
+      } else {
+        *xpollog::kError << "Missing pixel address x in charge "
+                         << "injection mode. Use option -x [int]."
+                         << endline;
+        return 1;
+      }
+      if (parser.optionSet("y-pixel-address")) {
+        const int y_pixel_address = parser.value<int>("y-pixel-address");
+        configuration->setPixelAddressY(y_pixel_address);
+      } else {
+        *xpollog::kError << "Missing pixel address y in charge "
+                         << "injection mode. Use option -y [int]."
+                         << endline;
+        return 1;
+      }
+      if (parser.optionSet("calibration-dac")) {
+        const int calibration_dac = parser.value<int>("calibration-dac");
+        configuration->setCalibrationDac(calibration_dac);
+      } else {
+        *xpollog::kError << "No calibration signal intenisty specified "
+                         << "in charge-injection mode. "
+                         << "Use option -C [int]."
+                         << endline;
+        return 1;
+      }
     }
-    if (parser.optionSet("y-pixel-address")) {
-      const int y_pixel_address = parser.value<int>("y-pixel-address");
-      configuration->setPixelAddressY(y_pixel_address);
-    } else {
-      *xpollog::kError << "Missing pixel address y in charge "
-                       << "injection mode. Use option -y [int]."
-                       << endline;
-      return 1;
-    }
-    if (parser.optionSet("calibration-dac")) {
-      const int calibration_dac = parser.value<int>("calibration-dac");
-      configuration->setCalibrationDac(calibration_dac);
-    } else {
-      *xpollog::kError << "No calibration signal intenisty specified "
-                       << "in charge-injection mode. "
-                       << "Use option -C [int]."
-                       << endline;
-      return 1;
-    }
+  }
+  if (parser.optionSet("comment")){
+    const std::string userComment = parser.value<std::string>("comment");
+    runController->setUserComment(userComment);
   }
   bool batch = parser.value<bool>("batch");
 

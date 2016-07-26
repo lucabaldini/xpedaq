@@ -42,6 +42,7 @@ with this program; if not, write to the Free Software Foundation Inc.,
 #include "pDetectorConfiguration.h"
 #include "pUserPreferences.h"
 #include "pTriggerMask.h"
+#include "pCommentBoxWidget.h"
 
 class pRunController;
 
@@ -66,9 +67,11 @@ class pAcquisitionWindow : public pQtMainWindowGui
   pUserPreferences *userPreferences();
   virtual pTriggerMask *triggerMask();
   int visualizationMode();
-  virtual void displayConfiguration(pDetectorConfiguration *configuration, int mode);
+  virtual void displayConfiguration(pDetectorConfiguration *configuration,
+                                    int mode);
   void displayUserPreferences(pUserPreferences *preferences);
   void displayTriggerMask(pTriggerMask *triggerMask);
+  void displayUserComment(std::string userComment);
   pRunController *runController() const {return m_runController;}
   
   
@@ -96,12 +99,14 @@ class pAcquisitionWindow : public pQtMainWindowGui
   pTriggerSettingTab *m_triggerSettingTab;
   pUsbControlTab *m_usbControlTab;
   pUserPreferencesTab *m_userPreferencesTab;
+  pCommentBoxWidget *m_commentBox;
   pRunController *m_runController;
   int m_lastVisualizationMode;
   void setupDaqDisplay();
   void setupMessageDisplay();
   void setupTransportBar();
   void setupTabWidget();
+  void setupCommentBox();  
   void setupConnections();
   void setupLoggerConnections();
 };

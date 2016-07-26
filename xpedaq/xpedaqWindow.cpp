@@ -36,7 +36,8 @@ xpedaqWindow::xpedaqWindow(pRunController &runController) :
   m_lastVisualizationMode = preferences->visualizationMode();
   pDetectorConfiguration *configuration =
     m_runController->detectorConfiguration();  
-  displayConfiguration(configuration, preferences->visualizationMode());  
+  displayConfiguration(configuration, preferences->visualizationMode());
+  displayUserComment(m_runController->userComment());
   setupConnections();
   m_runController->init();
   showMessage("Data acquisition system ready", 2000);

@@ -22,7 +22,8 @@ class pedRunController: public pRunController
     
     pedRunController(std::string configFilePath,
                      std::string preferencesFilePath,
-                     std::string trgMaskFilePath);
+                     std::string trgMaskFilePath,
+                     std::string usrComment="");
 
     const PedestalsMap& pedMap() const {return (*m_pedestalMap);}
 
