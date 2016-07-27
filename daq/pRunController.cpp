@@ -331,12 +331,12 @@ void pRunController::fsmStartRun()
 		  << " (" << m_startSeconds << " s since January 1, 1970)."
 		  << endline;
   m_dataCollector->reset();
-  writeDataFileHeader();    
   if (m_usbController->IsOpened()) {
     m_usbController->setTimeout(m_userPreferences->usbTimeout());
     m_xpolFpga->setup(m_detectorConfiguration);
     m_dataCollector->setupRun(dataFilePath(), m_startSeconds, m_userPreferences,
 			      m_detectorConfiguration);
+    writeDataFileHeader();    
     m_dataCollector->start();
   } else {
     *xpollog::kError << "The USB device is not open." << endline;
