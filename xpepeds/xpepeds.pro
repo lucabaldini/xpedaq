@@ -37,6 +37,7 @@ HEADERS += xpedaqutils.h
 HEADERS += xpedaqos.h
 HEADERS += xpollog.h
 HEADERS += xpolio.h
+HEADERS += xpedaqheader.h
 
 HEADERS += qcustomplot.h
 HEADERS += histogramUtils.h
@@ -101,6 +102,7 @@ SOURCES += xpedaqutils.cpp
 SOURCES += xpedaqos.cpp
 SOURCES += xpollog.cpp
 SOURCES += xpolio.cpp
+SOURCES += xpedaqheader.cpp
 
 SOURCES += qcustomplot.cpp
 SOURCES += histogramUtils.cpp

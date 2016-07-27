@@ -36,6 +36,7 @@ HEADERS += xpedaqutils.h
 HEADERS += xpedaqos.h
 HEADERS += xpollog.h
 HEADERS += xpolio.h
+HEADERS += xpedaqheader.h
 
 HEADERS += pQtGridLayoutWidget.h
 HEADERS += pQtGroupBoxWidget.h
@@ -87,6 +88,7 @@ SOURCES += xpedaqutils.cpp
 SOURCES += xpedaqos.cpp
 SOURCES += xpollog.cpp
 SOURCES += xpolio.cpp
+SOURCES += xpedaqheader.cpp
 
 SOURCES += pQtGridLayoutWidget.cpp
 SOURCES += pQtGroupBoxWidget.cpp

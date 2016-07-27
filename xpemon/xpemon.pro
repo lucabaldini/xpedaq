@@ -59,9 +59,6 @@ HEADERS += pQtCustomTab.h
 HEADERS += pQtMainWindowGui.h
 
 HEADERS += pFiniteStateMachine.h
-HEADERS += pDataCollector.h
-HEADERS += pRunController.h
-HEADERS += pDataFIFO.h
 HEADERS += pDataBlock.h
 HEADERS += CQuickUsb.h
 HEADERS += pUsbController.h
@@ -112,9 +109,6 @@ SOURCES += pQtCustomTab.cpp
 SOURCES += pQtMainWindowGui.cpp
 
 SOURCES += pFiniteStateMachine.cpp
-SOURCES += pDataCollector.cpp
-SOURCES += pRunController.cpp
-SOURCES += pDataFIFO.cpp
 SOURCES += pDataBlock.cpp
 SOURCES += CQuickUsb.cpp
 SOURCES += pUsbController.cpp
