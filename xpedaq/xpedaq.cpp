@@ -36,8 +36,7 @@ int main(int argn, char *argv[])
                         "Charge injection pixel coordinate y");
   parser.addOption<int>("calibration-dac", 'C',
                   "Calibration DAC signal for charge injection mode");
-  parser.addOption<std::string>("comment", 'm', "A user comment");                  
-  
+  parser.addOption<std::string>("comment", 'm', "A user comment");
 
   std::string cfgFolderPath = xpedaqos::rjoin("xpedaq", "config");
   std::string configFilePath = xpedaqos::join(cfgFolderPath, "detector.cfg");

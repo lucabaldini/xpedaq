@@ -38,6 +38,7 @@ xpepedsWindow::xpepedsWindow(pedRunController &runController) :
   pDetectorConfiguration *configuration =
     m_runController->detectorConfiguration();  
   displayConfiguration(configuration, preferences->visualizationMode());  
+  displayUserComment(m_runController->userComment());
   m_runController->init();
   showMessage("Data acquisition system ready", 2000);
 }
