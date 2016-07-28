@@ -84,7 +84,7 @@ void xpemonPlotGrid::updateEventDisplay(double xmin, double xmax,
                                       const std::vector<double>& displayValues)
 {
   // See pMapPlot::setMacthingRange() for the reason of this shift
-  m_eventDisplay -> setRange (xmin + 0.5, xmax - 0.5, ymin + 0.5, ymax - 0.5);
+  m_eventDisplay -> setRange (xmin + 0.5, xmax + 0.5, ymin + 0.5, ymax + 0.5);
   // A small padding avoid unwanted truncament to the wrong unsigned int 
   m_eventDisplay -> setSize (xmax - xmin + 1.001, ymax - ymin + 1.001);
   m_eventDisplay -> updateData (displayValues);
