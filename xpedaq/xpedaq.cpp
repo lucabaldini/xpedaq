@@ -128,7 +128,8 @@ int main(int argn, char *argv[])
   if (!batch) {
     window.show();    
   } else {
-    QObject::connect(runController, SIGNAL(runStopped()), &app, SLOT(quit()));
+    QObject::connect(runController->dataCollector(), SIGNAL(finished()),
+		     &app, SLOT(quit()));
     runController->setRunning();
   }
   return app.exec();

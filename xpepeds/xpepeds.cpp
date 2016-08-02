@@ -73,12 +73,13 @@ int main(int argn, char *argv[])
   // Create the window.
   // Note that eventually we would like to move this inside the if statement
   // below but we can't due to issue #129.
-  xpedaqWindow window(*runController);
+  xpepedsWindow window(*runController);
 
   if (!batch) {
     window.show();    
   } else {
-    QObject::connect(runController, SIGNAL(runStopped()), &app, SLOT(quit()));
+    QObject::connect(runController->dataCollector(), SIGNAL(finished()),
+	 &app, SLOT(quit()));
     runController->setRunning();
   }
   return app.exec();
