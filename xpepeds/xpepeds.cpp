@@ -37,8 +37,7 @@ int main(int argn, char *argv[])
   pedRunController *runController = new pedRunController(configFilePath,
                                        preferencesFilePath, trgMaskFilePath);
   pDetectorConfiguration* configuration =
-                                     runController->detectorConfiguration();                                        
-  
+    runController->detectorConfiguration();  
   // Parse the command-line arguments.
   parser.parse(argn, argv);
 
@@ -70,14 +69,17 @@ int main(int argn, char *argv[])
   bool batch = parser.value<bool>("batch");
   
   QApplication app(argn, argv);
-   
+  
   // Create the window.
-  xpepedsWindow window(*runController);
+  // Note that eventually we would like to move this inside the if statement
+  // below but we can't due to issue #129.
+  xpedaqWindow window(*runController);
+
   if (!batch) {
-    window.show();
-  }
-  else {
-    window.startRun();
+    window.show();    
+  } else {
+    QObject::connect(runController, SIGNAL(runStopped()), &app, SLOT(quit()));
+    runController->setRunning();
   }
   return app.exec();
 }
