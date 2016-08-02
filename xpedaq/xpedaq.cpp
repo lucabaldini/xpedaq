@@ -1,4 +1,5 @@
 #include <QApplication>
+#include <QObject>
 
 #include "pOptionParser.h"
 #include "xpedaqWindow.h"
@@ -27,7 +28,7 @@ int main(int argn, char *argv[])
   parser.addOption<int>("clock-frequency", 'f',
                         "Clock frequency code (0-32-64-96)");
   parser.addOption<int>("nped-subtracted", 'p',
-           "Number of sampling for pedestal subtraction (0-1-2-4-8)");                        
+           "Number of sampling for pedestal subtraction (0-1-2-4-8)");
   parser.addOption<bool>("charge-injection", 'I',
                          "Charge injection mode");
   parser.addOption<int>("x-pixel-address", 'x',
@@ -120,12 +121,15 @@ int main(int argn, char *argv[])
   QApplication app(argn, argv);
 
   // Create the window.
+  // Note that eventually we would like to move this inside the if statement
+  // below but we can't due to issue #129.
   xpedaqWindow window(*runController);
+
   if (!batch) {
-    window.show();
-  }
-  else {
-    window.startRun();
+    window.show();    
+  } else {
+    QObject::connect(runController, SIGNAL(runStopped()), &app, SLOT(quit()));
+    runController->setRunning();
   }
   return app.exec();
 }

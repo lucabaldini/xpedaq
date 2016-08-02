@@ -26,7 +26,7 @@ with this program; if not, write to the Free Software Foundation Inc.,
 /*! Basic constructor.
  */
 pRunController::pRunController(std::string configFilePath,
-			                         std::string preferencesFilePath,
+			       std::string preferencesFilePath,
                                std::string trgMaskFilePath,
                                std::string usrComment,
                                bool emitBlocks)
