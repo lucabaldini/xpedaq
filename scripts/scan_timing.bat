@@ -1,0 +1,27 @@
+@ECHO OFF
+SETLOCAL ENABLEDELAYEDEXPANSION
+
+REM Static settings.
+SET EXECUTABLE=%XPEDAQ_ROOT%\bin\xpedaq.exe
+SET NUM_EVENTS=1000
+SET CHARGE_DAC=400
+SET ADDRESS_X=96
+SET ADDRESS_Y=66
+SET NUM_PEDESTALS=4
+
+REM Scan settings.
+SET CLOCK_FREQUENCY=(96 64 32)
+SET CLOCK_SHIFT=(16 17 18 19 20 21 22 23 24 25 26 27 28 29 30)
+
+
+echo "Starting timing scan..."
+FOR %%F IN %CLOCK_FREQUENCY% DO (
+	FOR %%S in %CLOCK_SHIFT% DO (
+		echo %%F %%S
+		SET CMD=%EXECUTABLE% -b -I -n %NUM_EVENTS% -C %CHARGE_DAC% -x %ADDRESS_X% -y %ADDRESS_Y% -p %NUM_PEDESTALS% -f %%F -c %%S
+		echo "About to execute "!CMD!
+		START /WAIT !CMD!
+		)
+	)
+
+echo "Scan finished, bye!"
