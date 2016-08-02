@@ -336,7 +336,7 @@ void pRunController::fsmStartRun()
     m_xpolFpga->setup(m_detectorConfiguration);
     m_dataCollector->setupRun(dataFilePath(), m_startSeconds, m_userPreferences,
 			      m_detectorConfiguration);
-    writeDataFileHeader();    
+    //writeDataFileHeader();    
     m_dataCollector->start();
   } else {
     *xpollog::kError << "The USB device is not open." << endline;
