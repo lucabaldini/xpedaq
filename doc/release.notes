@@ -1,4 +1,7 @@
 
+-------------------------------------------------------------------------------
+xpedaq (0.12.0) - Tue, 09 Aug 2016 10:46:35 +0200
+-------------------------------------------------------------------------------
 * Switching to c++ 11 consistently (closing issue #87).
 * Semi-complete set of command-line switches added to xpedaq and xpepeds.
 * QApplication now exits at the end of the event loop when running in batch.
