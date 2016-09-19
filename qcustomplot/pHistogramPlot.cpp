@@ -11,7 +11,17 @@ pHistogramPlot::pHistogramPlot(unsigned int nBins, double xmin, double xmax,
   m_hist = new pHistogram(nBins, xmin, xmax);
   m_bars -> keyAxis() -> setRange(m_hist -> xMin(), m_hist -> xMax());
   m_bars -> setWidth(m_hist -> binWidth());
-  setTolerance (1.e-4 * (m_hist -> binWidth()));
+  setTolerance (TOLER_FACTOR * (m_hist -> binWidth()));
+}
+
+pHistogramPlot::pHistogramPlot(pHistogram* hist, 
+                               pBasicPlotOptions options) :
+                               pCustomHistogramPlot(options)
+{
+  m_hist = hist;
+  m_bars -> keyAxis() -> setRange(m_hist -> xMin(), m_hist -> xMax());
+  m_bars -> setWidth(m_hist -> binWidth());
+  setTolerance (TOLER_FACTOR * (m_hist -> binWidth()));
 }
 
 
