@@ -8,6 +8,8 @@
 
 #include "pHistogramOptions.h"
 #include "pHistogramPlot.h"
+#include "pHistogram.h"
+#include "pMap.h"
 #include "pMapPlot.h"
 #include "pedestalsMap.h"
 
@@ -34,11 +36,15 @@ class xpepedsPlotGrid: public QWidget
     void setupAverageHist();
     void setupRmsHist();
     
+    pMap *m_averageMap;
+    pMap *m_rmsMap;
+    pHistogram *m_averageHist;
+    pHistogram *m_rmsHist;
     QGridLayout *m_PlotLayout;
-    pMapPlot *m_averageMap;
-    pMapPlot *m_rmsMap;
-    pHistogramPlot *m_averageHist;
-    pHistogramPlot *m_rmsHist;
+    pMapPlot *m_averageMapPlot;
+    pMapPlot *m_rmsMapPlot;
+    pHistogramPlot *m_averagePlot;
+    pHistogramPlot *m_rmsPlot;
         
 };
 

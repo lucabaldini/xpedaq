@@ -33,7 +33,10 @@ xpemonWindow::xpemonWindow(std::string preferencesFilePath,
   m_mainGridLayout->addWidget(m_transportBar, 5,0);
   
   m_eventReader = new pEventReader(m_preferences -> socketPort(),
-                       m_preferences -> zeroSuppressionThreshold());
+                    m_preferences -> zeroSuppressionThreshold(),
+                    m_plotGrid -> pulseHeightHist(),
+                    m_plotGrid -> windowSizeHist(),
+                    m_plotGrid -> hitMap());
   
   m_infoBoxWidget = new pInfoBoxWidget();
   m_mainGridLayout->addWidget(m_infoBoxWidget, 2,0);
@@ -116,14 +119,14 @@ void xpemonWindow::setupEvtReaderConnections()
   
   qRegisterMetaType< std::vector<double> >("std::vector<double>");
   
-  connect (m_eventReader, SIGNAL(pulseHeightUpdated(const std::vector<double>&)),
-           m_plotGrid, SLOT(updatePulseHeightPlot(const std::vector<double>&)));
+  connect (m_eventReader, SIGNAL(pulseHeightUpdated()),
+           m_plotGrid, SLOT(updatePulseHeightPlot()));
 
-  connect (m_eventReader, SIGNAL(windowSizeUpdated(const std::vector<double>&)),
-           m_plotGrid, SLOT(updateWindowSizePlot(const std::vector<double>&)));
+  connect (m_eventReader, SIGNAL(windowSizeUpdated()),
+           m_plotGrid, SLOT(updateWindowSizePlot()));
            
-  connect (m_eventReader, SIGNAL(hitMapUpdated(const std::vector<double>&)),
-           m_plotGrid, SLOT(updateHitMap(const std::vector<double>&)));
+  connect (m_eventReader, SIGNAL(hitMapUpdated()),
+           m_plotGrid, SLOT(updateHitMapPlot()));
   
   connect (m_eventReader, SIGNAL(evtDisplayUpdated(double, double,
                                                    double, double,
@@ -140,8 +143,7 @@ void xpemonWindow::startRun()
   {
     readOptions();
     m_preferences -> writeToFile (m_preferencesFilePath);
-    m_eventReader -> setSocketPortNumber(m_preferences ->
-                                                        socketPort());
+    m_eventReader -> setSocketPortNumber(m_preferences -> socketPort());
     m_eventReader -> setZeroSupThreshold(m_preferences ->
                                           zeroSuppressionThreshold());  
     m_eventReader -> moveToThread(&m_thread);
@@ -166,5 +168,4 @@ void xpemonWindow::stopRun()
 void xpemonWindow::reset()
 {
   m_plotGrid -> resetPlot();
-  m_eventReader -> resetHistograms();
 }

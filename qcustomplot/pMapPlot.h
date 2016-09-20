@@ -12,17 +12,10 @@ class pMapPlot : public pCustomColorMapPlot
   
   public:
   
-    pMapPlot(unsigned int nXbins, double xmin, double xmax,
-             unsigned int nYbins, double ymin, double ymax,
-             pColorMapOptions options = pColorMapOptions());
+    pMapPlot(const pMap* map, pColorMapOptions options = pColorMapOptions());
   
     unsigned int entries() const {return m_map -> entries();}
     double sum() const {return m_map -> sum();}
-    void fill(double x, double y);
-    void fill(double x, double y, double value);
-    void fillBin(unsigned int xIndex, unsigned int yIndex);
-    void fillBin(unsigned int xIndex, unsigned int yIndex, double value);  
-    virtual void updateData (const std::vector<double> &values);
     
     // Terminal formatting.
     friend std::ostream& operator<<(std::ostream& os, const pMapPlot& mapPlot)
@@ -34,12 +27,12 @@ class pMapPlot : public pCustomColorMapPlot
     // optimal color scale.
     virtual void resetView();
     
-    // clears data both from the color map and from the histogram.
-    // resizes the color map to match the underlying histogram.
-    void reset();
+    // Update the displayed color map to the underlying pMap content
+    void updateDisplay();
     
-    // resets the data in the underlying histogram and in the color map
-    void resetData();
+    // Clears data from the color map and resizes it to match the
+    // underlying histogram.
+    void reset();
 
   private:
     
@@ -48,7 +41,7 @@ class pMapPlot : public pCustomColorMapPlot
     void setMacthingRange(double xmin, double xmax,
                           double ymin, double ymax);
     
-    pMap *m_map;
+    const pMap *m_map;
 
 };
 

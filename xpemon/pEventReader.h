@@ -7,7 +7,6 @@
 #include <QUdpSocket>
 #include <QHostAddress>
 
-#include "xpemonPlotOptions.h"
 #include "pDataBlock.h"
 #include "pHistogram.h"
 #include "pMap.h"
@@ -19,7 +18,9 @@ class pEventReader: public QObject
   
   public:
   
-    pEventReader(unsigned int socketPortNumber, double zeroSupThreshold);
+    pEventReader(unsigned int socketPortNumber, double zeroSupThreshold,
+                 pHistogram* pulseHeightHist, pHistogram* windowSizeHist,
+                 pMap* hitMap);
   
   public slots:
   
@@ -29,7 +30,6 @@ class pEventReader: public QObject
     void setStopped();
     void setSocketPortNumber(unsigned int socketPortNumber);
     void setZeroSupThreshold(double zeroSupThreshold);
-    void resetHistograms();
   
   signals:
   
@@ -39,9 +39,9 @@ class pEventReader: public QObject
     void highestPixelFound(unsigned int highestX, unsigned int highestY);
     void barycenterRead(double xBarycenter, double yBarycenter);
     
-    void pulseHeightUpdated(const std::vector<double>& pulseHeightValues);
-    void windowSizeUpdated(const std::vector<double>& windowSizeValues);
-    void hitMapUpdated(const std::vector<double>& hitMapValues);
+    void pulseHeightUpdated();
+    void windowSizeUpdated();
+    void hitMapUpdated();
     void evtDisplayUpdated(double xmin, double xmax, double ymin, double ymax,
                            const std::vector<double>& displayValues);
   
@@ -49,9 +49,11 @@ class pEventReader: public QObject
     
     void readPendingDatagram();
   
+    //Data structures
     pHistogram *m_pulseHeightHist;
     pHistogram *m_windowSizeHist;
     pMap *m_hitMap;
+    
     //Current event info:
     unsigned int m_curXmin;
     unsigned int m_curXmax;

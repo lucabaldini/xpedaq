@@ -67,7 +67,8 @@ class xpemonWindow : public QMainWindow
     pEventReader* m_eventReader;
     /* Thread where the event reader operates */
     QThread m_thread;
-    /* Flag to distinguish a restart from a stop and a restart from a pause */
+    /* Flag to differentiate a restart from a stop status and a restart from
+       a pause status */
     bool m_isStopped;
 
     /* Timer controlling the refresh of the plot */

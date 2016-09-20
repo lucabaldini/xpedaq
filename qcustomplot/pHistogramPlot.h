@@ -7,14 +7,15 @@
 #include "pHistogram.h"
 #include "pHistogramOptions.h"
 
-#define TOLER_FACTOR  1.e-5
+#define TOLERANCE_FACTOR  1.e-5
 
 
-/* Class handling the interactions (drawing and data access) of a 1d
-   histogram. Inherits from pCustomHistogramPlot.
-   The underlying data structure is a pHistogram object, which may be created
-   with the object or pre-existant. The class is responsible for keeping
-   synchronized the pHistogram and the pCustomHistogramPlot data content.
+/* Class for drawing a 1d histogram. Inherits from pCustomHistogramPlot.
+   The underlying data structure is a pHistogram object, which is
+   passed as a constant to the constructor and cannot be modified in any way
+   (nor deleted) inside the class.
+   The class is responsible for synchronizing what is displayed on the screen
+   with the content of the histogram.
 */
    
 class pHistogramPlot: public pCustomHistogramPlot
@@ -23,21 +24,13 @@ class pHistogramPlot: public pCustomHistogramPlot
   Q_OBJECT
   
   public:
-    
-    //Construct from scracth, creating its own underlying pHistorgram
-    pHistogramPlot(unsigned int nBins, double xmin, double xmax, 
-                   pBasicPlotOptions options = pBasicPlotOptions());
-    //Initialize from existing pHistogram (shared ownership)
-    pHistogramPlot(pHistogram* hist, 
+       
+    //Initialize from existing pHistogram
+    pHistogramPlot(const pHistogram* hist, 
                    pBasicPlotOptions options = pBasicPlotOptions());
     
     unsigned int entries() const;
     double sum() const;
-    
-    void fillBin(unsigned int binNumber, double value);
-    void fillBin(unsigned int binNumber);
-    void fill(double x, double value);
-    void fill(double x);
     void reset();
 
   public slots:
@@ -46,11 +39,14 @@ class pHistogramPlot: public pCustomHistogramPlot
       optimal y-axis scale. */
     virtual void resetView();
     
-    void updateData (const std::vector<double> &values);
+    /* Synchronize the plot with the content of the pHistogram */
+    void updateDisplay();
       
   private:
     
-    pHistogram *m_hist;
+    pHistogramPlot(){;} //so it cannot be used
+
+    const pHistogram *m_hist;
     
 };
 

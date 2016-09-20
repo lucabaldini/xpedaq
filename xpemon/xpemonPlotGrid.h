@@ -8,8 +8,10 @@
 
 #include "pHistogramOptions.h"
 #include "pHistogramPlot.h"
+#include "pHistogram.h"
 #include "pCustomColorMapPlot.h"
 #include "pMapPlot.h"
+#include "pMap.h"
 #include "xpemonPlotOptions.h"
 
 class xpemonPlotGrid: public QWidget
@@ -23,12 +25,19 @@ class xpemonPlotGrid: public QWidget
     // Sets the preferred initial size
     QSize sizeHint() const {return QSize(800, 800);}
     
+  public:
+  
+    pHistogram* pulseHeightHist() {return m_pulseHeightHist;}
+    pHistogram* windowSizeHist() {return m_windowSizeHist;}
+    pMap* hitMap() {return m_hitMap;}
+  
   public slots:
     
-    void updatePulseHeightPlot(const std::vector<double>& pulseHeightValues);
-    void updateWindowSizePlot(const std::vector<double>& windowSizeValues);
-    void updateHitMap(const std::vector<double>& hitMapValues);
-    void updateEventDisplay(double xmin, double xmax, double ymin, double ymax,
+    void updatePulseHeightPlot();
+    void updateWindowSizePlot();
+    void updateHitMapPlot();
+    void updateEventDisplay(double xmin, double xmax,
+                            double ymin, double ymax,
                             const std::vector<double>& displayValues);
     void resetPlot();
      
@@ -39,10 +48,13 @@ class xpemonPlotGrid: public QWidget
     void setupHitMap();
     void setupEventDisplay();
     
+    pHistogram* m_pulseHeightHist;
+    pHistogram* m_windowSizeHist;
+    pMap* m_hitMap;
     QGridLayout *m_PlotLayout;
     pHistogramPlot *m_pulseHeightPlot;
     pHistogramPlot *m_windowSizePlot;
-    pMapPlot *m_hitMap;
+    pMapPlot *m_hitMapPlot;
     pCustomColorMapPlot *m_eventDisplay;
         
 };

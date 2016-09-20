@@ -1,22 +1,19 @@
 #include "pEventReader.h"
 
-using namespace xpemonPlotOptions;
-
 pEventReader::pEventReader(unsigned int socketPortNumber,
-                           double zeroSupThreshold) : 
+                           double zeroSupThreshold,
+                           pHistogram* pulseHeightHist, 
+                           pHistogram* windowSizeHist,
+                           pMap* hitMap) :
+                           m_pulseHeightHist(pulseHeightHist),
+                           m_windowSizeHist(windowSizeHist),
+                           m_hitMap(hitMap),
                            m_curXmin(0), m_curXmax(0),
                            m_curYmin(0), m_curYmax(0),
                            m_socketPortNumber(socketPortNumber),
                            m_zeroSupThreshold(zeroSupThreshold)
 {
   m_udpSocket = new QUdpSocket (this);
-  m_pulseHeightHist = new pHistogram(pulseHeightNbins, pulseHeightXmin,
-                                     pulseHeightXmax);
-  m_windowSizeHist = new pHistogram(windowSizeNbins, windowSizeXmin,
-                                    windowSizeXmax);
-  //We shift the edges so that bins are centered on pixel indices
-  m_hitMap = new pMap(xpoldetector::kNumPixelsX, -0.5, xPixelMax - 0.5,
-                      xpoldetector::kNumPixelsY, -0.5, yPixelMax -0.5);
 }
 
 
@@ -108,12 +105,12 @@ void pEventReader::updateRequested()
 {
   QMutexLocker locker(&m_mutex);
   if (!m_isContentChanged) return;
-  std::vector<double> pulseHeightValues = m_pulseHeightHist -> values();
-  std::vector<double> windowSizeValues = m_windowSizeHist -> values();
-  std::vector<double> hitMapValues = m_hitMap -> values();
-  emit pulseHeightUpdated(pulseHeightValues);
-  emit windowSizeUpdated(windowSizeValues);
-  emit hitMapUpdated(hitMapValues);
+  //std::vector<double> pulseHeightValues = m_pulseHeightHist -> values();
+  //std::vector<double> windowSizeValues = m_windowSizeHist -> values();
+  //std::vector<double> hitMapValues = m_hitMap -> values();
+  emit pulseHeightUpdated();
+  emit windowSizeUpdated();
+  emit hitMapUpdated();
   emit evtDisplayUpdated(m_curXmin, m_curXmax, m_curYmin, m_curYmax,
                          m_curHitMap);
   m_isContentChanged = false;                         
@@ -151,14 +148,4 @@ void pEventReader::setZeroSupThreshold(double zeroSupThreshold)
 {
   QMutexLocker locker(&m_mutex);
   m_zeroSupThreshold = zeroSupThreshold;
-}
-
-
-void pEventReader::resetHistograms()
-{
-  /* We don't need a mutex here, since this can only happen when the acquisition
-     is stopped */
-  m_pulseHeightHist -> reset();
-  m_windowSizeHist -> reset();
-  m_hitMap -> reset();
 }

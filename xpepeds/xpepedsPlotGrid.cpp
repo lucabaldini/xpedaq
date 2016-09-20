@@ -20,11 +20,11 @@ void xpepedsPlotGrid::setupAverageMap()
   pColorMapOptions averageMapOptions ("Average map", "x", "y",
                                       "average [counts]",
                                       QCPColorGradient::gpThermal);
-  m_averageMap = new pMapPlot(pedestals::kNx, 0, pedestals::kNx,
-                              pedestals::kNy, 0, pedestals::kNy,
-                              averageMapOptions);
-  m_averageMap -> setObjectName(QString::fromUtf8("average map"));                              
-  m_PlotLayout -> addWidget(m_averageMap, 0, 0);
+  m_averageMap = new pMap(pedestals::kNx, 0, pedestals::kNx,
+                          pedestals::kNy, 0, pedestals::kNy);
+  m_averageMapPlot = new pMapPlot(m_averageMap, averageMapOptions);
+  m_averageMapPlot -> setObjectName(QString::fromUtf8("average map"));                              
+  m_PlotLayout -> addWidget(m_averageMapPlot, 0, 0);
 }
 
 
@@ -32,10 +32,11 @@ void xpepedsPlotGrid::setupAverageHist()
 {
   pBasicPlotOptions averageHistOptions = pBasicPlotOptions("Average",
                                      "Average [counts]", "n. pixel");
-  m_averageHist = new pHistogramPlot(200, 0., 1800.,
-                                     averageHistOptions);
-  m_averageHist -> setObjectName(QString::fromUtf8("average hist"));
-  m_PlotLayout -> addWidget(m_averageHist, 0, 1);
+  
+  m_averageHist = new pHistogram(200, 0., 1800.);
+  m_averagePlot = new pHistogramPlot(m_averageHist, averageHistOptions);
+  m_averagePlot -> setObjectName(QString::fromUtf8("average hist"));
+  m_PlotLayout -> addWidget(m_averagePlot, 0, 1);
 }
 
 
@@ -43,11 +44,11 @@ void xpepedsPlotGrid::setupRmsMap()
 {
   pColorMapOptions rmsMapOptions ("Rms map", "x", "y", "rms [counts]",
                                    QCPColorGradient::gpThermal);
-  m_rmsMap = new pMapPlot(pedestals::kNx, 0, pedestals::kNx,
-                          pedestals::kNy, 0, pedestals::kNy,
-                          rmsMapOptions);
-  m_rmsMap -> setObjectName(QString::fromUtf8("rms map"));
-  m_PlotLayout -> addWidget(m_rmsMap, 1, 0);
+  m_rmsMap = new pMap(pedestals::kNx, 0, pedestals::kNx,
+                      pedestals::kNy, 0, pedestals::kNy);
+  m_rmsMapPlot = new pMapPlot(m_rmsMap, rmsMapOptions);
+  m_rmsMapPlot -> setObjectName(QString::fromUtf8("rms map"));
+  m_PlotLayout -> addWidget(m_rmsMapPlot, 1, 0);
 }
 
 
@@ -55,9 +56,10 @@ void xpepedsPlotGrid::setupRmsHist()
 {
   pBasicPlotOptions rmsHistOptions = pBasicPlotOptions("Rms",
                                         "Rms [counts]", "n. pixel");
-  m_rmsHist = new pHistogramPlot(100, 0., 150., rmsHistOptions);
-  m_rmsHist -> setObjectName(QString::fromUtf8("rms hist"));
-  m_PlotLayout -> addWidget(m_rmsHist, 1, 1);
+  m_rmsHist = new pHistogram(100, 0., 150.);
+  m_rmsPlot = new pHistogramPlot(m_rmsHist, rmsHistOptions);
+  m_rmsPlot -> setObjectName(QString::fromUtf8("rms hist"));
+  m_PlotLayout -> addWidget(m_rmsPlot, 1, 1);
 }
 
 
@@ -80,13 +82,17 @@ void xpepedsPlotGrid::fillPlots(const PedestalsMap& pedMap)
       }    
     }
   }
+  m_averagePlot -> updateDisplay();
+  m_rmsPlot -> updateDisplay();
+  m_averageMapPlot -> updateDisplay();
+  m_rmsMapPlot -> updateDisplay();
 }
 
 
 void xpepedsPlotGrid::replotAll()
 {
-  m_averageMap -> replot();
-  m_averageHist -> replot();
-  m_rmsMap -> replot();
-  m_rmsHist -> replot();
+  m_averageMapPlot -> replot();
+  m_averagePlot -> replot();
+  m_rmsMapPlot -> replot();
+  m_rmsPlot -> replot();
 }
