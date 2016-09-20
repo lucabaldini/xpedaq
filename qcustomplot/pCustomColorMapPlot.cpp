@@ -13,7 +13,7 @@ pCustomColorMapPlot::pCustomColorMapPlot(pColorMapOptions options) :
   m_data = new QCPColorMapData(1, 1, QCPRange(0., 1.), QCPRange(0., 1.));
   
   m_colorMap -> setData(m_data);
-  m_colorMap -> setTightBoundary(false); // display full cell at the boundaries
+  m_colorMap -> setTightBoundary(false); //display full cell at the boundaries
   m_colorMap -> setInterpolate(false); //disable graphical smoothing
   
   // Do not show the grid
@@ -39,7 +39,8 @@ pCustomColorMapPlot::pCustomColorMapPlot(pColorMapOptions options) :
 }
 
 
-void pCustomColorMapPlot::setCellContent(unsigned int xCell, unsigned int yCell,
+void pCustomColorMapPlot::setCellContent(unsigned int xCell,
+                                         unsigned int yCell,
                                          double value)
 {
   m_data -> setCell (xCell, yCell, value);
@@ -56,8 +57,8 @@ void pCustomColorMapPlot::setDataContent(double x, double y, double value)
 void pCustomColorMapPlot::updateData (const std::vector<double> &values)
 {
   /* This is a fast (and unsafe) method for filling the color map.
-     It assumes that the input vector has the correct size and follows the same
-     ordering logic as a pMap::m_values.
+     It assumes that the input vector has the correct size and follows the
+     same ordering logic as a pMap::m_values.
   */
   for (unsigned int iy = 0; iy < m_data -> valueSize(); ++iy)
   {
