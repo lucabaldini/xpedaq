@@ -35,7 +35,12 @@ class pCustomColorMapPlot : public QCustomPlot
     void mousePress();
     void mouseWheel();
     void selectionChanged();
+    void mouseMoveEvent(QMouseEvent *event);
+    void paintEvent(QPaintEvent *event);
+    void paintCoordinate();
     void contextMenuRequest(QPoint pos);
+    void setLogScaleZ();
+    void setLinScaleZ();
       
   protected:
     
@@ -46,7 +51,8 @@ class pCustomColorMapPlot : public QCustomPlot
     QCPMarginGroup *m_marginGroup;
     QCPColorMapData *m_data;  
     pColorMapOptions m_options;
-
+    bool m_isLogScaleZ;
+    QPoint m_cursorPos;
 };
 
 #endif  //CUSTOMCOLORMAPPLOT_H

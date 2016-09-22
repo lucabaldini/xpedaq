@@ -37,6 +37,7 @@ void pHistogramPlot::updateDisplay()
       double key = m_hist -> binCenter(binIndex);
       setKeyContent(key, m_hist -> binContent(binIndex));
   }
+  resetView();
 }
 
 

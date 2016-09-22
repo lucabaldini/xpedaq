@@ -37,7 +37,7 @@ void pMapPlot::resetView()
 {
   setMacthingRange(m_map -> xMin(), m_map -> xMax(),
                    m_map -> yMin(), m_map -> yMax());
-  m_colorMap -> rescaleDataRange();
+  m_colorMap -> rescaleDataRange(true);
   replot();
 }
 
@@ -51,12 +51,12 @@ void pMapPlot::updateDisplay()
           setDataContent(x, y, m_map -> binContent(i, j));
       }
   }
+  resetView();
 }
 
 
 void pMapPlot::reset()
 {
-  //m_map -> reset();
   clearMap();
   setupDataMap();
 }

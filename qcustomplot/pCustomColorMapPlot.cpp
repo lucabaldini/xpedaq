@@ -1,7 +1,8 @@
 #include "pCustomColorMapPlot.h"
 
 pCustomColorMapPlot::pCustomColorMapPlot(pColorMapOptions options) : 
-                                                            m_options(options)
+                                   m_options(options), m_isLogScaleZ (false)
+                                                          
 {
   axisRect() -> setupFullAxesBox(true);
   xAxis -> setLabel(m_options.m_xTitle);
@@ -70,8 +71,8 @@ void pCustomColorMapPlot::updateData (const std::vector<double> &values)
 
 void pCustomColorMapPlot::resetView()
 {
-  m_colorMap -> rescaleAxes();
   m_colorMap -> rescaleDataRange();
+  m_colorMap -> rescaleAxes();
   replot();
 }
 
@@ -88,6 +89,42 @@ void pCustomColorMapPlot::clearMap()
 {
   m_colorMap -> clearData();
   replot();
+}
+
+
+void pCustomColorMapPlot::mouseMoveEvent(QMouseEvent * event)
+{
+  m_cursorPos = event -> pos();
+  //replot();
+  QCustomPlot::mouseMoveEvent(event);
+}
+
+
+void pCustomColorMapPlot::paintEvent(QPaintEvent *event)
+{
+  QCustomPlot::paintEvent(event);
+  if (m_colorMap -> selectTest(m_cursorPos, false) > 0.){
+    //paintCoordinate();
+  }
+}
+
+
+void pCustomColorMapPlot::paintCoordinate()
+{  
+  double x = xAxis -> pixelToCoord(m_cursorPos.x());
+  double y = yAxis -> pixelToCoord(m_cursorPos.y());
+  int fontSize = 12;
+  QFont font("times", fontSize);
+  QFontMetrics fm(font);
+  QPainter painter(this);
+  painter.setFont(font);
+  painter.setPen(QPen(Qt::black));
+  painter.drawText(m_cursorPos, QString::number(x));
+  int shift = fm.width(QString::number(x));
+  painter.drawText(QPoint(m_cursorPos.x() + shift, m_cursorPos.y()),
+                   ", ");
+  painter.drawText(QPoint(m_cursorPos.x() + shift + 10,
+                   m_cursorPos.y()), QString::number(y));
 }
 
 
@@ -180,5 +217,27 @@ void pCustomColorMapPlot::contextMenuRequest(QPoint pos)
   QMenu *menu = new QMenu(this);
   menu->setAttribute(Qt::WA_DeleteOnClose);
   menu->addAction("Restore initial view", this, SLOT(resetView()));
+  if (!m_isLogScaleZ){
+    menu->addAction("Set z to log scale", this, SLOT(setLogScaleZ()));
+  }
+  else {
+    menu->addAction("Set z to lin scale", this, SLOT(setLinScaleZ()));
+  }
   menu->popup(mapToGlobal(pos));
+}
+
+
+void pCustomColorMapPlot::setLogScaleZ()
+{
+  m_colorMap->setDataScaleType(QCPAxis::stLogarithmic);
+  m_isLogScaleZ = true;
+  replot();
+}
+
+
+void pCustomColorMapPlot::setLinScaleZ()
+{
+  m_colorMap->setDataScaleType(QCPAxis::stLinear);
+  m_isLogScaleZ = false;
+  replot();
 }

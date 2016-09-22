@@ -65,6 +65,12 @@ void pEventDisplay::setDataRange (const QCPRange &dataRange)
 void pEventDisplay::setAdcData(const std::vector<double> &values)
 {
   m_AdcCounts = values; //will automatically resize m_AdcCounts if necessary
+  updateDataRange();
+}
+
+
+void pEventDisplay::updateDataRange()
+{
   double xmin = 0;
   double xmax = 0;
   for (auto it = m_AdcCounts.begin(); it!= m_AdcCounts.end(); ++it){
@@ -126,9 +132,7 @@ void pEventDisplay::draw()
 
 void pEventDisplay::resetView()
 {
-//  m_colorMap -> rescaleAxes();
-//  m_colorMap -> rescaleDataRange();
-//  replot();
+  updateDataRange();
 }
 
 

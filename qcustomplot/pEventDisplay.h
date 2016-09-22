@@ -37,6 +37,7 @@ class pEventDisplay : public QCustomPlot
   
     void setDataRange (const QCPRange &dataRange);
     void updateAxesRange();
+    void updateDataRange();
     void updateColorScale();
     void updateMatrixColor();
     void drawMatrix();

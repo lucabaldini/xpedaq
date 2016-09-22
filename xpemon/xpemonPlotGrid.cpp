@@ -76,7 +76,7 @@ void xpemonPlotGrid::updateWindowSizePlot()
 
 void xpemonPlotGrid::updateHitMapPlot()
 {
-  m_hitMapPlot -> updateDisplay ();
+  m_hitMapPlot -> updateDisplay();
   m_hitMapPlot -> replot();
 }
 
@@ -95,13 +95,10 @@ void xpemonPlotGrid::resetPlot()
 {
   m_pulseHeightHist -> reset();
   m_pulseHeightPlot -> updateDisplay();
-  m_pulseHeightPlot -> replot();
   m_windowSizeHist -> reset();
   m_windowSizePlot -> updateDisplay();
-  m_windowSizePlot -> replot();
   m_hitMap -> reset();
   m_hitMapPlot -> updateDisplay();
-  m_hitMapPlot -> replot();
   m_eventDisplay -> clearMap();
 }
 
