@@ -52,16 +52,17 @@ void xpemonPlotGrid::setupHitMap()
 
 void xpemonPlotGrid::setupEventDisplay()
 {
-  pColorMapOptions eventDisplayOptions ("Event display", "x", "y", "counts",
+  pColorMapOptions eventDisplayOptions ("Event display", "x[mm]",
+                                        "y[mm]", "Adc counts",
                                         QCPColorGradient::gpThermal);
-  m_eventDisplay = new pCustomColorMapPlot(eventDisplayOptions);
+  m_eventDisplay = new pEventDisplay(eventDisplayOptions);
   m_PlotLayout->addWidget(m_eventDisplay, 1, 1);
 }
 
 
 void xpemonPlotGrid::updatePulseHeightPlot()
 {
-  m_pulseHeightPlot -> updateDisplay ();
+  m_pulseHeightPlot -> updateDisplay();
   m_pulseHeightPlot -> replot();
 }
 
@@ -80,16 +81,13 @@ void xpemonPlotGrid::updateHitMapPlot()
 }
 
 
-void xpemonPlotGrid::updateEventDisplay(double xmin, double xmax,
-                                        double ymin, double ymax,
+void xpemonPlotGrid::updateEventDisplay(unsigned int xmin, unsigned int xmax,
+                                        unsigned int ymin, unsigned int ymax,
                                      const std::vector<double>& displayValues)
 {
   // See pMapPlot::setMacthingRange() for the reason of this shift
-  m_eventDisplay -> setRange (xmin + 0.5, xmax + 0.5, ymin + 0.5, ymax + 0.5);
-  // A small padding avoid unwanted truncament to the wrong unsigned int 
-  m_eventDisplay -> setSize (xmax - xmin + 1.001, ymax - ymin + 1.001);
-  m_eventDisplay -> updateData (displayValues);
-  m_eventDisplay -> replot();
+  m_eventDisplay -> setWindowRange(xmin, xmax, ymin, ymax);
+  m_eventDisplay -> setAdcData(displayValues);
 }
 
 

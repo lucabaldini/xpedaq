@@ -42,7 +42,8 @@ class pEventReader: public QObject
     void pulseHeightUpdated();
     void windowSizeUpdated();
     void hitMapUpdated();
-    void evtDisplayUpdated(double xmin, double xmax, double ymin, double ymax,
+    void evtDisplayUpdated(unsigned int xmin, unsigned int xmax,
+                           unsigned int ymin, unsigned int ymax,
                            const std::vector<double>& displayValues);
   
   private:

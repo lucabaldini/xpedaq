@@ -128,11 +128,11 @@ void xpemonWindow::setupEvtReaderConnections()
   connect (m_eventReader, SIGNAL(hitMapUpdated()),
            m_plotGrid, SLOT(updateHitMapPlot()));
   
-  connect (m_eventReader, SIGNAL(evtDisplayUpdated(double, double,
-                                                   double, double,
+  connect (m_eventReader, SIGNAL(evtDisplayUpdated(unsigned int, unsigned int,
+                                                   unsigned int, unsigned int,
                                                    const std::vector<double>&)),
-           m_plotGrid, SLOT(updateEventDisplay(double, double,
-                                               double, double,
+           m_plotGrid, SLOT(updateEventDisplay(unsigned int, unsigned int,
+                                               unsigned int, unsigned int,
                                                const std::vector<double>&)));                                                             
 }
 

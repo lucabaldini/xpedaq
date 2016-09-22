@@ -105,9 +105,6 @@ void pEventReader::updateRequested()
 {
   QMutexLocker locker(&m_mutex);
   if (!m_isContentChanged) return;
-  //std::vector<double> pulseHeightValues = m_pulseHeightHist -> values();
-  //std::vector<double> windowSizeValues = m_windowSizeHist -> values();
-  //std::vector<double> hitMapValues = m_hitMap -> values();
   emit pulseHeightUpdated();
   emit windowSizeUpdated();
   emit hitMapUpdated();

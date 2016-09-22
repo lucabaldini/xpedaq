@@ -47,6 +47,9 @@ HEADERS += pHistogramPlot.h
 HEADERS += pMap.h
 HEADERS += pMapPlot.h
 HEADERS += pCustomColorMapPlot.h
+HEADERS += pHexagon.h
+HEADERS += pHexagonMatrix.h
+HEADERS += pEventDisplay.h
  
 HEADERS += pQtGridLayoutWidget.h
 HEADERS += pQtGroupBoxWidget.h
@@ -97,6 +100,9 @@ SOURCES += pHistogramPlot.cpp
 SOURCES += pMap.cpp
 SOURCES += pMapPlot.cpp
 SOURCES += pCustomColorMapPlot.cpp
+SOURCES += pHexagon.cpp
+SOURCES += pHexagonMatrix.cpp
+SOURCES += pEventDisplay.cpp
 
 SOURCES += pQtGridLayoutWidget.cpp
 SOURCES += pQtGroupBoxWidget.cpp

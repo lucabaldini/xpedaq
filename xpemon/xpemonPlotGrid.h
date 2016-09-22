@@ -9,7 +9,7 @@
 #include "pHistogramOptions.h"
 #include "pHistogramPlot.h"
 #include "pHistogram.h"
-#include "pCustomColorMapPlot.h"
+#include "pEventDisplay.h"
 #include "pMapPlot.h"
 #include "pMap.h"
 #include "xpemonPlotOptions.h"
@@ -36,8 +36,8 @@ class xpemonPlotGrid: public QWidget
     void updatePulseHeightPlot();
     void updateWindowSizePlot();
     void updateHitMapPlot();
-    void updateEventDisplay(double xmin, double xmax,
-                            double ymin, double ymax,
+    void updateEventDisplay(unsigned int xmin, unsigned int xmax,
+                            unsigned int ymin, unsigned int ymax,
                             const std::vector<double>& displayValues);
     void resetPlot();
      
@@ -55,7 +55,7 @@ class xpemonPlotGrid: public QWidget
     pHistogramPlot *m_pulseHeightPlot;
     pHistogramPlot *m_windowSizePlot;
     pMapPlot *m_hitMapPlot;
-    pCustomColorMapPlot *m_eventDisplay;
+    pEventDisplay *m_eventDisplay;
         
 };
 
