@@ -84,10 +84,14 @@ void pEventDisplay::updateDataRange()
 void pEventDisplay::updateAxesRange()
 {
   double xmin, xmax, ymin, ymax;
-  pixelToCoord(m_colMin, m_rowMin, xmin, ymin);
-  pixelToCoord(m_colMax, m_rowMax, xmax, ymax);
-  xAxis->setRange(xmin-P_C, xmax+P_C);
-  yAxis->setRange(ymin+P_C, ymax-P_C);
+  //Note that y is decreasing with row number. (0,0) is left uppermost.
+  pixelToCoord(m_colMin, m_rowMax, xmin, ymin);
+  pixelToCoord(m_colMax, m_rowMin, xmax, ymax);
+  double maxDim = std::max(xmax - xmin, ymax - ymin);
+  double padX = 0.5*(maxDim - (xmax - xmin));
+  double padY = 0.5*(maxDim - (ymax - ymin));
+  xAxis->setRange(xmin - padX - P_C, xmax + padX + P_C);
+  yAxis->setRange(ymin - padY - P_C, ymax + padY + P_C);
 }
 
 
