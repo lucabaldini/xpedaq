@@ -29,7 +29,7 @@ pCustomColorMapPlot::pCustomColorMapPlot(pColorMapOptions options) :
   m_colorMap -> setGradient(m_options.m_gradientType);
   m_colorMap -> rescaleDataRange(true);
   
-  //Align thing using a margin group
+  //Align things using a margin group
   m_marginGroup = new QCPMarginGroup(this);
   axisRect() -> setMarginGroup(QCP::msBottom|QCP::msTop, m_marginGroup);
   m_colorScale -> setMarginGroup(QCP::msBottom|QCP::msTop, m_marginGroup);

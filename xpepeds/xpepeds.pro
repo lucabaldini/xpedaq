@@ -7,6 +7,7 @@ equals(QT_MAJOR_VERSION, 4) {
   DEPENDPATH  += ../daq
   DEPENDPATH  += ../utils
   DEPENDPATH  += ../qcustomplot
+  DEPENDPATH  += ../fits
   QT += network
   }
 
@@ -17,6 +18,7 @@ equals(QT_MAJOR_VERSION, 5) {
   VPATH  += ../daq
   VPATH  += ../utils
   VPATH  += ../qcustomplot
+  VPATH  += ../fits
   QT += network opengl
   }
 
@@ -25,7 +27,11 @@ INCLUDEPATH += ..
 INCLUDEPATH += ../gui
 INCLUDEPATH += ../daq
 INCLUDEPATH += ../utils
-INCLUDEPATH  += ../qcustomplot
+INCLUDEPATH += ../qcustomplot
+INCLUDEPATH += ../fits
+INCLUDEPATH += /usr/include
+
+LIBS += -L/usr/lib -lcfitsio -lm
 
 include(../quickusb-2.15.2/quickusb.pro)
 
@@ -97,6 +103,8 @@ HEADERS += pOption.h
 HEADERS += pOptionParser.h
 HEADERS += pRunningStat.h
 
+HEADERS += xpeCfitsio.h
+
 SOURCES += xpolgui.cpp
 SOURCES += xpoldetector.cpp
 SOURCES += xpolfpga.cpp
@@ -163,6 +171,8 @@ SOURCES += pVariant.cpp
 SOURCES += pOption.cpp
 SOURCES += pOptionParser.cpp
 SOURCES += pRunningStat.cpp
+
+SOURCES += xpeCfitsio.cpp
 
 SOURCES += xpepeds.cpp
 
