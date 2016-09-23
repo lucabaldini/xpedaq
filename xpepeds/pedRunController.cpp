@@ -16,7 +16,6 @@ pedRunController::pedRunController(std::string configFilePath,
           this, SLOT(readDataBlock(const pDataBlock&)));
 }                                   
 
-
 void pedRunController::readDataBlock(const pDataBlock &p)
 {
   for (unsigned int evt = 0; evt < p.numEvents(); ++evt) {   
@@ -34,55 +33,4 @@ void pedRunController::readDataBlock(const pDataBlock &p)
 void pedRunController::resetPedMap()
 {
   m_pedestalMap -> reset();
-}
-
-
-void pedRunController::writeHeader(std::string fileName)
-{
-  pedHeader_t pedHeader;
-  pedHeader.version = FILE_HEADER_VERSION;
-  pedHeader.startTime = startSeconds();
-  pedHeader.stopTime = stopSeconds();
-  pedHeader.nEvents = numEvents();  
-  pedHeader.runId = m_runId;
-  pedHeader.clockFrequency = m_detectorConfiguration->clockFrequency();
-  pedHeader.clockShift = m_detectorConfiguration->clockShift();
-  pedHeader.comment = userComment().c_str(); 
-  writePedestalHeader(fileName, &pedHeader);
-}
-
-void pedRunController::writeMeanFitsImage(std::string fileName)
-{
-  float values [300*352]; 
-  for (int i=0; i<300; ++i){
-    for (int j=0; j<352; ++j){
-      values[i+300*j] = m_pedestalMap->average(i,j);
-    }
-  }
-  long naxes[2] = {300, 352};
-  writeImageExtension(fileName, "PEDMEAN", 2, naxes, values);
-}
-
-
-void pedRunController::writeRmsFitsImage(std::string fileName)
-{
-  float values [300*352]; 
-  for (int i=0; i<300; ++i){
-    for (int j=0; j<352; ++j){
-      values[i+300*j] = m_pedestalMap->rms(i,j);
-    }
-  }
-  long naxes[2] = {300, 352};
-  writeImageExtension(fileName, "PEDRMS", 2, naxes, values);
-}
-
-
-void pedRunController::writeToFile()
-{
-  std::string filePath = "/home/alberto/xpedaq/fits/prova.fits";
-  *xpollog::kInfo << "Writing pedestals map to " << filePath <<
-    "... " << endline;
-  writeHeader(filePath);
-  writeMeanFitsImage(filePath);
-  writeRmsFitsImage(filePath);
 }
