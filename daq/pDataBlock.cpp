@@ -48,6 +48,7 @@ pDataBlock::pDataBlock(unsigned char *buffer, unsigned int bufferSize) :
   unsigned int evt = 0;
   while (pos < bufferSize) {
     m_offsetVec.push_back(pos);
+    //std::cout << "**** " << header(evt) << std::endl;
     if (header(evt) != 0xffff) {
       m_errorSummary += IdMismatch;
     }
@@ -228,8 +229,8 @@ double pDataBlock::averageEventRate() const
 
 /*
 */
-unsigned int pDataBlock::pixelCounts(unsigned int event,
-                                     unsigned int index) const
+adc_count_t pDataBlock::pixelCounts(unsigned int event,
+				    unsigned int index) const
 {
   /* TODO: we should check that index < numPixels() and throw an
      exception in case it is not.
@@ -241,7 +242,7 @@ unsigned int pDataBlock::pixelCounts(unsigned int event,
 
 void pDataBlock::readPixel(unsigned int event, unsigned int index,
 			   unsigned int &x, unsigned int &y,
-			   unsigned int &height) const
+			   adc_count_t &height) const
 {
   static const unsigned int bufferHeight = xpoldetector::kNumPixelsY
                                    / xpoldetector::kNumReadOutBuffers;

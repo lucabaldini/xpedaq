@@ -21,7 +21,7 @@ void pedRunController::readDataBlock(const pDataBlock &p)
   for (unsigned int evt = 0; evt < p.numEvents(); ++evt) {   
     unsigned int x = 1000; //unphysical initialization
     unsigned int y = 1000; //unphysical initialization
-    unsigned int height = 0;
+    adc_count_t height = 0;
     for (unsigned int index = 0; index < p.numPixels(evt); ++index) {
       p.readPixel(evt, index, x, y, height);
       m_pedestalMap -> fill(x, y, height);

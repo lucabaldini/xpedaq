@@ -44,7 +44,11 @@ with this program; if not, write to the Free Software Foundation Inc.,
   event headers are stored since they are used for multicasting packets
   to the monitor and while writing to file.
 */
-  
+
+
+typedef uint16_t adc_count_t;
+
+
 class pDataBlock
 {
   
@@ -79,9 +83,9 @@ class pDataBlock
   double timestamp(unsigned int event) const;
 
   // Random access to the content of single pixels in an event
-  unsigned int pixelCounts(unsigned int event, unsigned int index) const;
+  adc_count_t pixelCounts(unsigned int event, unsigned int index) const;
   void readPixel(unsigned int event, unsigned int index,
-                 unsigned int &x, unsigned int &y, unsigned int &height) const;
+                 unsigned int &x, unsigned int &y, adc_count_t &height) const;
   
   double averageEventRate() const;
 

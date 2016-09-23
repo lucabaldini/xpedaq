@@ -57,7 +57,7 @@ void pEventReader::readPendingDatagram()
     double maxVal = 0;
     unsigned int x = 1000; //initialize to non-physical value
     unsigned int y = 1000; //initialize to non-physical value
-    unsigned int height = 0;
+    adc_count_t height = 0;
     double xBarycenter = 0.;
     double yBarycenter = 0.;
     for (unsigned int index = 0; index < nPixel; ++index)
