@@ -6,7 +6,7 @@ pEventDisplay::pEventDisplay(pColorMapOptions options) : m_options(options)
   m_colMin = 0;
   m_colMax = 0;
   m_rowMin = 0;
-  m_rowMax = 0;  
+  m_rowMax = 0;
   
   //Initialize axes with default range
   axisRect()->setupFullAxesBox(true);
@@ -36,6 +36,7 @@ pEventDisplay::pEventDisplay(pColorMapOptions options) : m_options(options)
   
   //Initialize the matrix
   m_hexMatrix = new pHexagonMatrix(P_C);  
+  m_isSyncronized = true;
   
   setupInteractions();
 }
@@ -58,13 +59,17 @@ void pEventDisplay::setDataRange (const QCPRange &dataRange)
     m_dataRange = dataRange;
     emit dataRangeChanged(m_dataRange);
   }
-  draw();
+  if (m_isSyncronized){
+    updateMatrixColor();
+    replot();
+  }
 }
 
 
 void pEventDisplay::setAdcData(const std::vector<double> &values)
 {
   m_AdcCounts = values; //will automatically resize m_AdcCounts if necessary
+  m_isSyncronized = false;
   updateDataRange();
 }
 
@@ -120,6 +125,7 @@ void pEventDisplay::drawMatrix()
   pixelToCoord(m_colMin, m_rowMin, xmin, ymin);
   m_hexMatrix->draw(this, xmin, ymin, m_colMax - m_colMin + 1,
                     m_rowMax - m_rowMin + 1, m_colMin%2);
+  m_isSyncronized = true;
 }
 
 
@@ -136,6 +142,9 @@ void pEventDisplay::draw()
 
 void pEventDisplay::resetView()
 {
+  clearPlottables();
+  updateAxesRange();
+  drawMatrix();
   updateDataRange();
 }
 

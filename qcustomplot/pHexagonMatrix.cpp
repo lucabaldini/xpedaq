@@ -5,12 +5,13 @@ void pHexagonMatrix::draw(QCustomPlot *parentPlot,
                          unsigned int nCol, unsigned int nRow,
                          int startOdd)
 {
+  double padding = 0.9;
   m_hexArray.resize(nCol*nRow);
   for (unsigned int j=0; j < nRow; ++j){
     for (unsigned int i=0; i < nCol; ++i){
       double xPos = xStart + (i - 0.5 *((j+startOdd)%2)) * columnPitch();
       double yPos = yStart - j * rowPitch();
-      pHexagon* hex = new pHexagon(xPos, yPos, hexEdge(), parentPlot);
+      pHexagon* hex = new pHexagon(xPos, yPos, padding*hexEdge(), parentPlot);
       m_hexArray[i+j*nCol] = hex;
     }
   }

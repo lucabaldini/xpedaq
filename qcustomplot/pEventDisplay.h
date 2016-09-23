@@ -61,6 +61,7 @@ class pEventDisplay : public QCustomPlot
     QCPColorScale *m_colorScale;
     QCPMarginGroup *m_marginGroup;
     pColorMapOptions m_options;
+    bool m_isSyncronized;
 
 };
 

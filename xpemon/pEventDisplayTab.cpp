@@ -51,6 +51,7 @@ void pEventDisplayTab::updateEventDisplay(unsigned int xmin,
   // See pMapPlot::setMacthingRange() for the reason of this shift
   m_eventDisplay -> setWindowRange(xmin, xmax, ymin, ymax);
   m_eventDisplay -> setAdcData(displayValues);
+  m_eventDisplay -> draw();
 }
 
 
