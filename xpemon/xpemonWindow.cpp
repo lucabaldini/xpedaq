@@ -26,17 +26,24 @@ xpemonWindow::xpemonWindow(std::string preferencesFilePath,
   m_mainGridLayout->addWidget(m_optionBoxWidget, optBoxRowStart,
                                                  optBoxColStart);
   
-  m_plotGrid = new xpemonPlotGrid();
-  m_mainGridLayout->addWidget(m_plotGrid, 0, 1, 6, 1);
+  m_mainTabWidget = new QTabWidget(m_centralWidget);
+  m_mainGridLayout->addWidget(m_mainTabWidget, 0, 1, 6, 1);
+  m_eventDisplayTab = new pEventDisplayTab();
+  m_mainTabWidget->addTab(m_eventDisplayTab, "Event Display");
+  m_monitorTab = new pMonitorTab();
+  m_mainTabWidget->addTab(m_monitorTab, "Monitor Plots");
+  
+  //m_plotGrid = new xpemonPlotGrid();
+  //m_mainGridLayout->addWidget(m_plotGrid, 0, 1, 6, 1);
   
   m_transportBar = new pTransportBar(this, false);
   m_mainGridLayout->addWidget(m_transportBar, 5,0);
   
   m_eventReader = new pEventReader(m_preferences -> socketPort(),
                     m_preferences -> zeroSuppressionThreshold(),
-                    m_plotGrid -> pulseHeightHist(),
-                    m_plotGrid -> windowSizeHist(),
-                    m_plotGrid -> hitMap());
+                    m_monitorTab -> pulseHeightHist(),
+                    m_monitorTab -> windowSizeHist(),
+                    m_monitorTab -> hitMap());
   
   m_infoBoxWidget = new pInfoBoxWidget();
   m_mainGridLayout->addWidget(m_infoBoxWidget, 2,0);
@@ -120,20 +127,18 @@ void xpemonWindow::setupEvtReaderConnections()
   qRegisterMetaType< std::vector<double> >("std::vector<double>");
   
   connect (m_eventReader, SIGNAL(pulseHeightUpdated()),
-           m_plotGrid, SLOT(updatePulseHeightPlot()));
+           m_monitorTab, SLOT(updatePulseHeightPlot()));
 
   connect (m_eventReader, SIGNAL(windowSizeUpdated()),
-           m_plotGrid, SLOT(updateWindowSizePlot()));
+           m_monitorTab, SLOT(updateWindowSizePlot()));
            
   connect (m_eventReader, SIGNAL(hitMapUpdated()),
-           m_plotGrid, SLOT(updateHitMapPlot()));
+           m_monitorTab, SLOT(updateHitMapPlot()));
   
   connect (m_eventReader, SIGNAL(evtDisplayUpdated(unsigned int, unsigned int,
-                                                   unsigned int, unsigned int,
-                                                   const std::vector<double>&)),
-           m_plotGrid, SLOT(updateEventDisplay(unsigned int, unsigned int,
-                                               unsigned int, unsigned int,
-                                               const std::vector<double>&)));                                                             
+                     unsigned int, unsigned int, const std::vector<double>&)),
+           m_eventDisplayTab, SLOT(updateEventDisplay(unsigned int,
+      unsigned int, unsigned int, unsigned int, const std::vector<double>&)));                                                             
 }
 
 
@@ -167,5 +172,6 @@ void xpemonWindow::stopRun()
 
 void xpemonWindow::reset()
 {
-  m_plotGrid -> resetPlot();
+  m_monitorTab -> resetPlot();
+  m_eventDisplayTab -> resetPlot();  
 }

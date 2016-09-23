@@ -12,7 +12,8 @@
 #include <QMetaType>
 
 #include "pOptionBoxWidget.h"
-#include "xpemonPlotGrid.h"
+#include "pEventDisplayTab.h"
+#include "pMonitorTab.h"
 #include "pInfoBoxWidget.h"
 #include "pTransportBar.h"
 #include "pEventReader.h"
@@ -49,8 +50,12 @@ class xpemonWindow : public QMainWindow
     QWidget* m_centralWidget;
     /* Main layout object */
     QGridLayout* m_mainGridLayout;
-    /* Widget containings the plots */
-    xpemonPlotGrid* m_plotGrid;
+    /* Widget containing all the tabs */
+    QTabWidget *m_mainTabWidget;    
+    /* Tab containing the event diplay */
+    pEventDisplayTab *m_eventDisplayTab;
+    /* Tab containing the incremental plots */
+    pMonitorTab* m_monitorTab;
     /* Transport bar */
     pTransportBar* m_transportBar;  
     /* Widget showing the options that can be setted by the user */ 

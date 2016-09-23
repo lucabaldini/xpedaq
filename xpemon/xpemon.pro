@@ -76,12 +76,13 @@ HEADERS += pIOManager.h
 HEADERS += pUdpSender.h
 
 HEADERS += xpemonWindow.h
-HEADERS += xpemonPlotGrid.h
 HEADERS += pOptionBoxWidget.h
 HEADERS += pEventReader.h
 HEADERS += pInfoBoxWidget.h
 HEADERS += pMonitorPreferences.h
 HEADERS += xpemonPlotOptions.h
+HEADERS += pMonitorTab.h
+HEADERS += pEventDisplayTab.h
 
 SOURCES += xpolgui.cpp
 SOURCES += xpoldetector.cpp
@@ -129,12 +130,13 @@ SOURCES += pIOManager.cpp
 SOURCES += pUdpSender.cpp
 
 SOURCES += xpemonWindow.cpp
-SOURCES += xpemonPlotGrid.cpp
 SOURCES += pOptionBoxWidget.cpp
 SOURCES += pEventReader.cpp
 SOURCES += pInfoBoxWidget.cpp
 SOURCES += pMonitorPreferences.cpp
 SOURCES += xpemonPlotOptions.cpp
+SOURCES += pMonitorTab.cpp
+SOURCES += pEventDisplayTab.cpp
 
 SOURCES += xpemon.cpp
 
