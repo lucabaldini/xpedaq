@@ -9,29 +9,32 @@ pEventDisplay::pEventDisplay(pColorMapOptions options) : m_options(options)
   m_rowMax = 0;
   
   //Initialize axes with default range
-  axisRect()->setupFullAxesBox(true);
-  xAxis->setRange(0., 1.);
+  axisRect()->setupFullAxesBox(false);
+
+  xAxis->setRange(-7.4875, 7.4875);
   xAxis->setLabel(m_options.m_xTitle);
-  yAxis->setRange(0., 1.); 
-  yAxis->setLabel(m_options.m_yTitle);
   
-  xAxis2->setVisible(true);
-  xAxis2->setTickLabels(true);
+  yAxis->setRange(-7.5991, 7.5991); 
+  yAxis->setLabel(m_options.m_yTitle);
+    
   xAxis2->setRange(0, 300);
   xAxis2->setLabel("column number");
   xAxis2->setNumberFormat("f");
-  xAxis2->setNumberPrecision(0);
+  xAxis2->setNumberPrecision(0); // no decimal digits for integer index
+  xAxis2->setVisible(true);
+  xAxis2->setTickLabels(true);
   
-  yAxis2->setVisible(true);
-  yAxis2->setTickLabels(true);
   yAxis2->setRange(0, 352);
   yAxis2->setLabel("row number");
   yAxis2->setNumberFormat("f");
-  yAxis2->setNumberPrecision(0);  
-    
+  yAxis2->setNumberPrecision(0);  // no decimal digits for integer index
+  yAxis2->setRangeReversed(true);
+  yAxis2->setVisible(true);
+  yAxis2->setTickLabels(true);  
+
   //Do not show the grid
-  xAxis -> grid() -> setSubGridVisible(false);
-  yAxis -> grid() -> setSubGridVisible(false);
+  xAxis->grid()->setSubGridVisible(false);
+  yAxis->grid()->setSubGridVisible(false);
   
   //Initialize the color scale:
   m_dataRange = QCPRange(0., 1.);
@@ -41,7 +44,7 @@ pEventDisplay::pEventDisplay(pColorMapOptions options) : m_options(options)
   m_colorScale->axis()->setLabel(m_options.m_zTitle);
   m_colorScale->setDataRange(m_dataRange);
   m_colorScale->setGradient(m_options.m_gradientType);
-  m_colorScale -> axis() -> setLabel(m_options.m_zTitle);
+  m_colorScale->axis()->setLabel(m_options.m_zTitle);
   
   //Align things using a margin group:
   m_marginGroup = new QCPMarginGroup(this);
@@ -56,10 +59,10 @@ pEventDisplay::pEventDisplay(pColorMapOptions options) : m_options(options)
 }
 
 
-void pEventDisplay::setWindowRange (unsigned int firstCol,
-                                    unsigned int lastCol,
-                                    unsigned int firstRow,
-                                    unsigned int lastRow)
+void pEventDisplay::setWindowRange (int firstCol,
+                                    int lastCol,
+                                    int firstRow,
+                                    int lastRow)
 {
   m_colMin = firstCol;
   m_colMax = lastCol;
@@ -92,29 +95,51 @@ void pEventDisplay::setAdcData(const std::vector<double> &values)
 
 void pEventDisplay::updateDataRange()
 {
-  double xmin = 0;
-  double xmax = 0;
+  double zmin = 0;
+  double zmax = 0;
   for (auto it = m_AdcCounts.begin(); it!= m_AdcCounts.end(); ++it){
-    if ((*it) < xmin) xmin = (*it);
-    if ((*it) > xmax) xmax = (*it);
+    if ((*it) < zmin) zmin = (*it);
+    if ((*it) > zmax) zmax = (*it);
   }
-  setDataRange(QCPRange(xmin, xmax));
+  setDataRange(QCPRange(zmin, zmax));
 }
 
 
 void pEventDisplay::updateAxesRange()
 {
+  int maxRange = std::max(m_rowMax - m_rowMin + 1, m_colMax - m_colMin + 1);
+  int halfColExtension = (maxRange - (m_colMax - m_colMin + 1))/2;
+  int halfRowExtension = (maxRange - (m_rowMax - m_rowMin + 1))/2;
+  int wideColMin = m_colMin - halfColExtension - 1;
+  int wideColMax = m_colMax + halfColExtension + 1;
+  int wideRowMin = m_rowMin - halfRowExtension - 1;
+  int wideRowMax = m_rowMax + halfRowExtension + 1;
   double xmin, xmax, ymin, ymax;
-  //Note that y is decreasing with row number. (0,0) is left uppermost.
-  pixelToCoord(m_colMin, m_rowMax, xmin, ymin);
-  pixelToCoord(m_colMax, m_rowMin, xmax, ymax);
-  double maxDim = std::max(xmax - xmin, ymax - ymin);
-  double padX = 0.5*(maxDim - (xmax - xmin));
-  double padY = 0.5*(maxDim - (ymax - ymin));
-  xAxis->setRange(xmin - padX - P_C, xmax + padX + P_C);
-  yAxis->setRange(ymin - padY - P_C, ymax + padY + P_C);
-  xAxis2->setRange(m_colMin, m_colMax);
-  yAxis2->setRange(m_rowMin, m_rowMax);
+  //Note that y is decreasing with row number, so (0,0) is left uppermost. 
+  pixelToCoord(wideColMin, wideRowMax, xmin, ymin);
+  pixelToCoord(wideColMax, wideRowMin, xmax, ymax);
+  xAxis->setRange(xmin, xmax);
+  yAxis->setRange(ymin, ymax);
+  xAxis2->setRange(wideColMin, wideColMax);
+  yAxis2->setRange(wideRowMin, wideRowMax);  
+}
+
+
+void pEventDisplay::colAxisUpdate(QCPRange range)
+{
+  int row, colMin, colMax;
+  coordToPixel(range.lower, 0., colMin, row);
+  coordToPixel(range.upper, 0., colMax, row);
+  xAxis2->setRange(colMin, colMax);
+}
+
+
+void pEventDisplay::rowAxisUpdate(QCPRange range)
+{
+  int col, rowMin, rowMax;
+  coordToPixel(0., range.lower, col, rowMin);
+  coordToPixel(0., range.upper, col, rowMax);
+  yAxis2->setRange(rowMin, rowMax);
 }
 
 
@@ -139,9 +164,10 @@ void pEventDisplay::updateMatrixColor()
 
 void pEventDisplay::drawMatrix()
 {
-  double xmin, ymin;
-  pixelToCoord(m_colMin, m_rowMin, xmin, ymin);
-  m_hexMatrix->draw(this, xmin, ymin, m_colMax - m_colMin + 1,
+  double xmin, xmax, ymin, ymax;
+  pixelToCoord(m_colMin, m_rowMin, xmin, ymax);
+  pixelToCoord(m_colMax, m_rowMax, xmax, ymin);
+  m_hexMatrix->draw(this, xmin, ymax, m_colMax - m_colMin + 1,
                     m_rowMax - m_rowMin + 1, m_colMin%2);
   m_isSyncronized = true;
 }
@@ -155,7 +181,6 @@ void pEventDisplay::draw()
   updateMatrixColor();
   replot();
 }
-
 
 
 void pEventDisplay::resetView()
@@ -175,11 +200,18 @@ void pEventDisplay::clearMap()
 }
 
 
-void pEventDisplay::pixelToCoord(unsigned int i, unsigned int j,
-                             double &x, double &y)
+void pEventDisplay::pixelToCoord(int i, int j, double &x, double &y)
 {
-  x = (i - 0.5 * (300 - 1.5 + j%2 )) * (m_hexMatrix->columnPitch());
-  y = (0.5 * (352 - 1) - j) * (m_hexMatrix->rowPitch());
+  x = (i - 0.5 * (298.5 + j%2 )) * (m_hexMatrix->columnPitch());
+  y = (175.5 - j) * (m_hexMatrix->rowPitch());
+}
+
+
+void pEventDisplay::coordToPixel(double x, double y,
+                                 int &i, int &j)
+{
+  j = std::round(175.5 - y/(m_hexMatrix->rowPitch()));
+  i = std::round(x/(m_hexMatrix->columnPitch()) + 0.5 * (298.5 + j%2));
 }
 
  
@@ -202,6 +234,12 @@ void pEventDisplay::setupInteractions()
   // Set the quickness of the zooming
   axisRect() -> setRangeZoomFactor(0.9, 0.9);
   
+  // Keep axes synchronized
+  connect(xAxis, SIGNAL(rangeChanged(QCPRange)),
+          this, SLOT(colAxisUpdate(QCPRange)));
+  connect(yAxis, SIGNAL(rangeChanged(QCPRange)),
+          this, SLOT(rowAxisUpdate(QCPRange)));
+  
   // Activate connections for mouse actions
   connect(this, SIGNAL(mousePress(QMouseEvent*)), this, SLOT(mousePress()));
   connect(this, SIGNAL(mouseWheel(QWheelEvent*)), this, SLOT(mouseWheel()));
@@ -218,14 +256,10 @@ void pEventDisplay::setupInteractions()
           m_colorScale, SLOT(setDataRange(QCPRange)));
   //connect(this, SIGNAL(dataScaleTypeChanged(QCPAxis::ScaleType)),
   //        m_colorScale, SLOT(setDataScaleType(QCPAxis::ScaleType)));
-  //connect(this, SIGNAL(gradientChanged(QCPColorGradient)),
-  //        m_colorScale, SLOT(setGradient(QCPColorGradient)));
   connect(m_colorScale, SIGNAL(dataRangeChanged(QCPRange)),
           this, SLOT(setDataRange(QCPRange)));
   //connect(m_colorScale, SIGNAL(gradientChanged(QCPColorGradient)),
   //        this, SLOT(setGradient(QCPColorGradient)));
-  //connect(m_colorScale, SIGNAL(dataScaleTypeChanged(QCPAxis::ScaleType)),
-  //        this, SLOT(setDataScaleType(QCPAxis::ScaleType)));
 }
   
 
@@ -249,6 +283,17 @@ void pEventDisplay::selectionChanged()
   {
     yAxis -> setSelectedParts(QCPAxis::spAxis|QCPAxis::spTickLabels);
   }
+  if (xAxis2 -> selectedParts().testFlag(QCPAxis::spAxis) ||
+      xAxis2 -> selectedParts().testFlag(QCPAxis::spTickLabels))
+  {
+    xAxis2 -> setSelectedParts(QCPAxis::spAxis|QCPAxis::spTickLabels);
+  }
+  
+  if (yAxis2 -> selectedParts().testFlag(QCPAxis::spAxis) ||
+      yAxis2 -> selectedParts().testFlag(QCPAxis::spTickLabels))
+  {
+    yAxis2 -> setSelectedParts(QCPAxis::spAxis|QCPAxis::spTickLabels);
+  }
 }
 
 
@@ -262,6 +307,10 @@ void pEventDisplay::mousePress()
     {axisRect()->setRangeDrag(xAxis->orientation());}
   else if (yAxis->selectedParts().testFlag(QCPAxis::spAxis))
     {axisRect()->setRangeDrag(yAxis->orientation());}
+  else if (xAxis2->selectedParts().testFlag(QCPAxis::spAxis))
+    {axisRect()->setRangeDrag(xAxis2->orientation());}
+  else if (yAxis2->selectedParts().testFlag(QCPAxis::spAxis))
+    {axisRect()->setRangeDrag(yAxis2->orientation());}    
   else
     {axisRect()->setRangeDrag(Qt::Horizontal|Qt::Vertical);}
 }
@@ -277,6 +326,10 @@ void pEventDisplay::mouseWheel()
     {axisRect()->setRangeZoom(xAxis->orientation());}
   else if (yAxis->selectedParts().testFlag(QCPAxis::spAxis))
     {axisRect()->setRangeZoom(yAxis->orientation());}
+  else if (xAxis2->selectedParts().testFlag(QCPAxis::spAxis))
+    {axisRect()->setRangeZoom(xAxis2->orientation());}
+  else if (yAxis2->selectedParts().testFlag(QCPAxis::spAxis))
+    {axisRect()->setRangeZoom(yAxis2->orientation());}
   else
     {axisRect()->setRangeZoom(Qt::Horizontal|Qt::Vertical);}
 }

@@ -6,6 +6,8 @@
 #include "qcustomplot.h"
 #include "pHistogramOptions.h"
 #include "pHexagonMatrix.h"
+#include <iostream>
+#include <cmath>
 
 #define P_C 0.05 // column pitch [mm] of the ASIC
 
@@ -21,8 +23,8 @@ class pEventDisplay : public QCustomPlot
   public slots:
   
     void setAdcData(const std::vector<double> &values);
-    void setWindowRange (unsigned int firstCol, unsigned int lastCol,
-                         unsigned int firstRow, unsigned int lastRow);
+    void setWindowRange (int firstCol, int lastCol,
+                         int firstRow, int lastRow);
     void draw();
     // Restore the optimal visualization (change axis range so that
     // all data are visible and set the optimal color scale)
@@ -37,6 +39,8 @@ class pEventDisplay : public QCustomPlot
   
     void setDataRange (const QCPRange &dataRange);
     void updateAxesRange();
+    void rowAxisUpdate(QCPRange range);
+    void colAxisUpdate(QCPRange range);
     void updateDataRange();
     void updateColorScale();
     void updateMatrixColor();
@@ -49,15 +53,16 @@ class pEventDisplay : public QCustomPlot
   protected:
     
     void setupInteractions();
-    void pixelToCoord(unsigned int i, unsigned int j, double &x, double &y);
+    void pixelToCoord(int i, int j, double &x, double &y);
+    void coordToPixel(double x, double y, int &i, int &j);
     
     pHexagonMatrix *m_hexMatrix;
     std::vector<double> m_AdcCounts;
     QCPRange m_dataRange;
-    unsigned int m_colMin;
-    unsigned int m_colMax;
-    unsigned int m_rowMin;
-    unsigned int m_rowMax;
+    int m_colMin;
+    int m_colMax;
+    int m_rowMin;
+    int m_rowMax;
     QCPColorScale *m_colorScale;
     QCPMarginGroup *m_marginGroup;
     pColorMapOptions m_options;

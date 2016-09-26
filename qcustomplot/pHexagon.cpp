@@ -1,5 +1,4 @@
 #include "pHexagon.h"
-#include <iostream>
 
 //see http://www.redblobgames.com/grids/hexagons/
 
