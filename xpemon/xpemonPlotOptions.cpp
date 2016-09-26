@@ -7,6 +7,6 @@ const unsigned int xpemonPlotOptions::windowSizeNbins = 100;
 const double xpemonPlotOptions::windowSizeXmin = 0.;
 const double xpemonPlotOptions::windowSizeXmax = 2000.;
 const double xpemonPlotOptions::xPixelMax =
-                               static_cast<double> (xpoldetector::kNumPixelsX);
+                              static_cast<double> (xpoldetector::kNumPixelsX);
 const double xpemonPlotOptions::yPixelMax =
-                               static_cast<double> (xpoldetector::kNumPixelsY);
+                              static_cast<double> (xpoldetector::kNumPixelsY);
