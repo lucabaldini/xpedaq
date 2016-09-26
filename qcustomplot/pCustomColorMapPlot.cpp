@@ -4,36 +4,36 @@ pCustomColorMapPlot::pCustomColorMapPlot(pColorMapOptions options) :
                                    m_options(options), m_isLogScaleZ (false)
                                                           
 {
-  axisRect() -> setupFullAxesBox(true);
-  xAxis -> setLabel(m_options.m_xTitle);
-  yAxis -> setLabel(m_options.m_yTitle);
+  axisRect()->setupFullAxesBox(true);
+  xAxis->setLabel(m_options.m_xTitle);
+  yAxis->setLabel(m_options.m_yTitle);
   m_colorMap = new QCPColorMap(xAxis, yAxis);
   addPlottable(m_colorMap);
   
   // Initializing the QCPColorMapData with default values
   m_data = new QCPColorMapData(1, 1, QCPRange(0., 1.), QCPRange(0., 1.));
   
-  m_colorMap -> setData(m_data);
-  m_colorMap -> setTightBoundary(false); //display full cell at the boundaries
-  m_colorMap -> setInterpolate(false); //disable graphical smoothing
+  m_colorMap->setData(m_data);
+  m_colorMap->setTightBoundary(false); //display full cell at the boundaries
+  m_colorMap->setInterpolate(false); //disable graphical smoothing
   
   // Do not show the grid
-  xAxis -> grid() -> setSubGridVisible(false);
-  yAxis -> grid() -> setSubGridVisible(false);
+  xAxis->grid()->setSubGridVisible(false);
+  yAxis->grid()->setSubGridVisible(false);
 
   // Initialize the color scale
   m_colorScale = new QCPColorScale(this);
-  plotLayout() -> addElement(0, 1, m_colorScale);
-  m_colorScale -> setType(QCPAxis::atRight);
-  m_colorMap -> setColorScale(m_colorScale);
-  m_colorScale -> axis() -> setLabel(m_options.m_zTitle);
-  m_colorMap -> setGradient(m_options.m_gradientType);
-  m_colorMap -> rescaleDataRange(true);
+  plotLayout()->addElement(0, 1, m_colorScale);
+  m_colorScale->setType(QCPAxis::atRight);
+  m_colorMap->setColorScale(m_colorScale);
+  m_colorScale->axis()->setLabel(m_options.m_zTitle);
+  m_colorMap->setGradient(m_options.m_gradientType);
+  m_colorMap->rescaleDataRange(true);
   
   //Align things using a margin group
   m_marginGroup = new QCPMarginGroup(this);
-  axisRect() -> setMarginGroup(QCP::msBottom|QCP::msTop, m_marginGroup);
-  m_colorScale -> setMarginGroup(QCP::msBottom|QCP::msTop, m_marginGroup);
+  axisRect()->setMarginGroup(QCP::msBottom|QCP::msTop, m_marginGroup);
+  m_colorScale->setMarginGroup(QCP::msBottom|QCP::msTop, m_marginGroup);
 
   rescaleAxes();
   setupInteractions(); 
@@ -44,14 +44,14 @@ void pCustomColorMapPlot::setCellContent(unsigned int xCell,
                                          unsigned int yCell,
                                          double value)
 {
-  m_data -> setCell (xCell, yCell, value);
-  m_colorMap -> rescaleDataRange();
+  m_data->setCell (xCell, yCell, value);
+  m_colorMap->rescaleDataRange();
 }
 
 void pCustomColorMapPlot::setDataContent(double x, double y, double value)
 {
-  m_data -> setData (x, y, value);
-  m_colorMap -> rescaleDataRange();
+  m_data->setData (x, y, value);
+  m_colorMap->rescaleDataRange();
 }
 
 
@@ -61,18 +61,25 @@ void pCustomColorMapPlot::updateData (const std::vector<double> &values)
      It assumes that the input vector has the correct size and follows the
      same ordering logic as a pMap::m_values.
   */
-  for (unsigned int iy = 0; iy < m_data -> valueSize(); ++iy)
+  for (unsigned int iy = 0; iy < m_data->valueSize(); ++iy)
   {
-    for (unsigned int ix = 0; ix < m_data -> keySize(); ++ix)
-      {setCellContent(ix, iy, values.at(ix + iy * m_data -> keySize()));}
+    for (unsigned int ix = 0; ix < m_data->keySize(); ++ix)
+      {setCellContent(ix, iy, values.at(ix + iy * m_data->keySize()));}
   }
   rescaleAxes();
 }
 
 void pCustomColorMapPlot::resetView()
 {
-  m_colorMap -> rescaleDataRange();
-  m_colorMap -> rescaleAxes();
+  if (m_isLogScaleZ){
+    QCPRange newRange = m_data->dataBounds();
+    newRange.lower = 1;
+    m_colorMap->setDataRange(newRange);
+  }
+  else{
+    m_colorMap->rescaleDataRange();
+  }
+  m_colorMap->rescaleAxes();
   replot();
 }
 
@@ -80,21 +87,21 @@ void pCustomColorMapPlot::resetView()
 void pCustomColorMapPlot::setRange (double xmin, double xmax,
                                     double ymin, double ymax)
 {
-  m_data -> setRange(QCPRange(xmin, xmax), QCPRange(ymin, ymax));
+  m_data->setRange(QCPRange(xmin, xmax), QCPRange(ymin, ymax));
   rescaleAxes();
 }
 
 
 void pCustomColorMapPlot::clearMap()
 {
-  m_colorMap -> clearData();
+  m_colorMap->clearData();
   replot();
 }
 
 
 void pCustomColorMapPlot::mouseMoveEvent(QMouseEvent * event)
 {
-  m_cursorPos = event -> pos();
+  m_cursorPos = event->pos();
   //replot();
   QCustomPlot::mouseMoveEvent(event);
 }
@@ -103,7 +110,7 @@ void pCustomColorMapPlot::mouseMoveEvent(QMouseEvent * event)
 void pCustomColorMapPlot::paintEvent(QPaintEvent *event)
 {
   QCustomPlot::paintEvent(event);
-  if (m_colorMap -> selectTest(m_cursorPos, false) > 0.){
+  if (m_colorMap->selectTest(m_cursorPos, false) > 0.){
     //paintCoordinate();
   }
 }
@@ -111,8 +118,8 @@ void pCustomColorMapPlot::paintEvent(QPaintEvent *event)
 
 void pCustomColorMapPlot::paintCoordinate()
 {  
-  double x = xAxis -> pixelToCoord(m_cursorPos.x());
-  double y = yAxis -> pixelToCoord(m_cursorPos.y());
+  double x = xAxis->pixelToCoord(m_cursorPos.x());
+  double y = yAxis->pixelToCoord(m_cursorPos.y());
   int fontSize = 12;
   QFont font("times", fontSize);
   QFontMetrics fm(font);
@@ -141,11 +148,11 @@ void pCustomColorMapPlot::setupInteractions()
      - axis base line
      - axis tick labels 
   */
-  xAxis -> setSelectableParts(QCPAxis::spAxis | QCPAxis::spTickLabels);
-  yAxis -> setSelectableParts(QCPAxis::spAxis | QCPAxis::spTickLabels);
+  xAxis->setSelectableParts(QCPAxis::spAxis | QCPAxis::spTickLabels);
+  yAxis->setSelectableParts(QCPAxis::spAxis | QCPAxis::spTickLabels);
 
   // Set the quickness of the zooming
-  axisRect() -> setRangeZoomFactor(0.9, 0.9);
+  axisRect()->setRangeZoomFactor(0.9, 0.9);
   
   // Activate connections for mouse actions
   connect(this, SIGNAL(mousePress(QMouseEvent*)), this, SLOT(mousePress()));
@@ -168,16 +175,16 @@ void pCustomColorMapPlot::selectionChanged()
      together. The axis labels are not selectable.
   */
   
-  if (xAxis -> selectedParts().testFlag(QCPAxis::spAxis) ||
-      xAxis -> selectedParts().testFlag(QCPAxis::spTickLabels))
+  if (xAxis->selectedParts().testFlag(QCPAxis::spAxis) ||
+      xAxis->selectedParts().testFlag(QCPAxis::spTickLabels))
   {
-    xAxis -> setSelectedParts(QCPAxis::spAxis|QCPAxis::spTickLabels);
+    xAxis->setSelectedParts(QCPAxis::spAxis|QCPAxis::spTickLabels);
   }
   
-  if (yAxis -> selectedParts().testFlag(QCPAxis::spAxis) ||
-      yAxis -> selectedParts().testFlag(QCPAxis::spTickLabels))
+  if (yAxis->selectedParts().testFlag(QCPAxis::spAxis) ||
+      yAxis->selectedParts().testFlag(QCPAxis::spTickLabels))
   {
-    yAxis -> setSelectedParts(QCPAxis::spAxis|QCPAxis::spTickLabels);
+    yAxis->setSelectedParts(QCPAxis::spAxis|QCPAxis::spTickLabels);
   }
 }
 
