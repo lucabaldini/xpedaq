@@ -14,6 +14,20 @@ pEventDisplay::pEventDisplay(pColorMapOptions options) : m_options(options)
   xAxis->setLabel(m_options.m_xTitle);
   yAxis->setRange(0., 1.); 
   yAxis->setLabel(m_options.m_yTitle);
+  
+  xAxis2->setVisible(true);
+  xAxis2->setTickLabels(true);
+  xAxis2->setRange(0, 300);
+  xAxis2->setLabel("column number");
+  xAxis2->setNumberFormat("f");
+  xAxis2->setNumberPrecision(0);
+  
+  yAxis2->setVisible(true);
+  yAxis2->setTickLabels(true);
+  yAxis2->setRange(0, 352);
+  yAxis2->setLabel("row number");
+  yAxis2->setNumberFormat("f");
+  yAxis2->setNumberPrecision(0);  
     
   //Do not show the grid
   xAxis -> grid() -> setSubGridVisible(false);
@@ -42,8 +56,10 @@ pEventDisplay::pEventDisplay(pColorMapOptions options) : m_options(options)
 }
 
 
-void pEventDisplay::setWindowRange (unsigned int firstCol, unsigned int lastCol,
-                                unsigned int firstRow, unsigned int lastRow)
+void pEventDisplay::setWindowRange (unsigned int firstCol,
+                                    unsigned int lastCol,
+                                    unsigned int firstRow,
+                                    unsigned int lastRow)
 {
   m_colMin = firstCol;
   m_colMax = lastCol;
@@ -97,6 +113,8 @@ void pEventDisplay::updateAxesRange()
   double padY = 0.5*(maxDim - (ymax - ymin));
   xAxis->setRange(xmin - padX - P_C, xmax + padX + P_C);
   yAxis->setRange(ymin - padY - P_C, ymax + padY + P_C);
+  xAxis2->setRange(m_colMin, m_colMax);
+  yAxis2->setRange(m_rowMin, m_rowMax);
 }
 
 
