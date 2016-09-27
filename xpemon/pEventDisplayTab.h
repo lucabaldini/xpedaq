@@ -26,6 +26,7 @@ with this program; if not, write to the Free Software Foundation Inc.,
 #include <QString>
 #include "pEventDisplay.h"
 #include "pHistogramOptions.h"
+#include "xpemonPlotOptions.h"
 #include "pQtCustomTab.h"
 #include "xpolgui.h"
 #include "xpoldetector.h"

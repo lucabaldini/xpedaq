@@ -2,6 +2,7 @@
 #define XPEMONPLOTOPTIONS_H
 
 #include "xpoldetector.h"
+#include "qcustomplot.h"
 
 namespace xpemonPlotOptions
 {
@@ -13,6 +14,7 @@ namespace xpemonPlotOptions
   extern const double windowSizeXmax;
   extern const double xPixelMax;
   extern const double yPixelMax;
+  QCPColorGradient loadRedToWhiteGradient();
 }
 
 #endif // XPEMONPLOTOPTIONS_H
