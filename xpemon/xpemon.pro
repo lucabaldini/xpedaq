@@ -83,6 +83,7 @@ HEADERS += pMonitorPreferences.h
 HEADERS += xpemonPlotOptions.h
 HEADERS += pMonitorTab.h
 HEADERS += pEventDisplayTab.h
+HEADERS += pHexagonCoordinates.h
 
 SOURCES += xpolgui.cpp
 SOURCES += xpoldetector.cpp
@@ -137,6 +138,7 @@ SOURCES += pMonitorPreferences.cpp
 SOURCES += xpemonPlotOptions.cpp
 SOURCES += pMonitorTab.cpp
 SOURCES += pEventDisplayTab.cpp
+SOURCES += pHexagonCoordinates.cpp
 
 SOURCES += xpemon.cpp
 

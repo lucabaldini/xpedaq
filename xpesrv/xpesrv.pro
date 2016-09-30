@@ -43,7 +43,6 @@ HEADERS += pLogger.h
 HEADERS += pIOManager.h
 HEADERS += pQtCustomTextLabel.h
 HEADERS += xpoldetector.h
-HEADERS += pEvent.h
 
 SOURCES += xServer.cpp
 SOURCES += xServerGui.cpp
@@ -59,7 +58,6 @@ SOURCES += pIOManager.cpp
 SOURCES += pQtCustomTextLabel.cpp
 SOURCES += xpesrv.cpp
 SOURCES += xpoldetector.cpp
-SOURCES += pEvent.cpp
 
 OBJECTS_DIR = ../build
 MOC_DIR = ../moc
