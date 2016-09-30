@@ -51,6 +51,8 @@ const double xpoldetector::kReferenceDacTomV = 0.763;
 const double xpoldetector::kThresholdSensitivity = 200.0;
 const double xpoldetector::kCalibrationSensitivity = 0.010;
 const double xpoldetector::kElectronsPerfC = 6200.0;
+const double xpoldetector::kColPitch = 0.0500; //[mm]
+const double xpoldetector::kRowPitch = 0.0433; //[mm]
 
 int xpoldetector::thrDacToVoltage(unsigned short dac)
 {

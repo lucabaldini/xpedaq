@@ -2,12 +2,13 @@
 #define PIXELMAP_H
 
 #include <QMenu>
+#include <iostream>
+#include <cmath>
 
 #include "qcustomplot.h"
 #include "pHistogramOptions.h"
 #include "pHexagonMatrix.h"
-#include <iostream>
-#include <cmath>
+#include "pEvent.h"
 
 #define P_C 0.05 // column pitch [mm] of the ASIC
 
@@ -22,7 +23,7 @@ class pEventDisplay : public QCustomPlot
   
   public slots:
   
-    void setAdcData(const std::vector<double> &values);
+    void setAdcData(const event::Adc_vec_t &values);
     void setWindowRange (int firstCol, int lastCol,
                          int firstRow, int lastRow);
     void draw();
@@ -57,7 +58,7 @@ class pEventDisplay : public QCustomPlot
     void coordToPixel(double x, double y, int &i, int &j);
     
     pHexagonMatrix *m_hexMatrix;
-    std::vector<double> m_AdcCounts;
+    event::Adc_vec_t m_AdcCounts;
     QCPRange m_dataRange;
     int m_colMin;
     int m_colMax;

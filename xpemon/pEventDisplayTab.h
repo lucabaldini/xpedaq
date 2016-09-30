@@ -30,6 +30,7 @@ with this program; if not, write to the Free Software Foundation Inc.,
 #include "pQtCustomTab.h"
 #include "xpolgui.h"
 #include "xpoldetector.h"
+#include "pEvent.h"
 
 class pEventDisplayTab : public pQtCustomTab
 {
@@ -45,7 +46,7 @@ class pEventDisplayTab : public pQtCustomTab
   
   void updateEventDisplay(unsigned int xmin, unsigned int xmax,
                           unsigned int ymin, unsigned int ymax,
-                          const std::vector<double>& displayValues);
+                          const event::Adc_vec_t& displayValues);
   void resetPlot();
   
  private:

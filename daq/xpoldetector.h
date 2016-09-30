@@ -95,6 +95,8 @@ namespace xpoldetector{
   extern const unsigned short kNumReadOutBuffers;
   extern const int kSmallBufferSize;
   extern const int kLargeBufferSize;
+  extern const double kColPitch;
+  extern const double kRowPitch;
 }
 
 #endif

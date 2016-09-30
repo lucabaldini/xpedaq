@@ -48,19 +48,19 @@ void pEventReader::readPendingDatagram()
     m_curYmin = p.ymin(evt);    
     m_curYmax = p.ymax(evt);
     emit eventRead(m_curXmin, m_curXmax, m_curYmin, m_curYmax);
-    unsigned int nPixel = p.numPixels(evt);
+    int nPixel = p.numPixels(evt);
     m_windowSizeHist -> fill(static_cast<double> (nPixel));
     m_curHitMap.resize(nPixel);
     double adcSum = 0;
     unsigned int highestX = 0;
     unsigned int highestY = 0;
-    double maxVal = 0;
+    adc_count_t maxVal = 0;
     unsigned int x = 1000; //initialize to non-physical value
     unsigned int y = 1000; //initialize to non-physical value
     adc_count_t height = 0;
     double xBarycenter = 0.;
     double yBarycenter = 0.;
-    for (unsigned int index = 0; index < nPixel; ++index)
+    for (int index = 0; index < nPixel; ++index)
     {
       p.readPixel(evt, index, x, y, height);
       if (height < m_zeroSupThreshold) { height = 0.;}
@@ -71,7 +71,7 @@ void pEventReader::readPendingDatagram()
       {
         highestX = x;
         highestY = y;
-        maxVal = static_cast<double> (height);
+        maxVal = height;
       }
       xBarycenter += height * x;
       yBarycenter += height * y;

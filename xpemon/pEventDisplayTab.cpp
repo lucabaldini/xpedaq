@@ -47,10 +47,11 @@ void pEventDisplayTab::setupEventDisplay()
 
 
 void pEventDisplayTab::updateEventDisplay(unsigned int xmin,
-    unsigned int xmax, unsigned int ymin, unsigned int ymax,
-    const std::vector<double>& displayValues)
+                                          unsigned int xmax,
+                                          unsigned int ymin,
+                                          unsigned int ymax,
+                                        const event::Adc_vec_t& displayValues)
 {
-  // See pMapPlot::setMacthingRange() for the reason of this shift
   m_eventDisplay -> setWindowRange(xmin, xmax, ymin, ymax);
   m_eventDisplay -> setAdcData(displayValues);
   m_eventDisplay -> draw();

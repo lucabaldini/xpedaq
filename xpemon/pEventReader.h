@@ -45,7 +45,7 @@ class pEventReader: public QObject
     void hitMapUpdated();
     void evtDisplayUpdated(unsigned int xmin, unsigned int xmax,
                            unsigned int ymin, unsigned int ymax,
-                           const std::vector<double>& displayValues);
+                           const event::Adc_vec_t& displayValues);
   
   private:
     
@@ -61,7 +61,7 @@ class pEventReader: public QObject
     unsigned int m_curXmax;
     unsigned int m_curYmin;
     unsigned int m_curYmax;
-    std::vector<double> m_curHitMap;
+    event::Adc_vec_t m_curHitMap;
       
     unsigned int m_socketPortNumber;
     double m_zeroSupThreshold;

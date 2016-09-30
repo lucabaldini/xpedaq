@@ -85,7 +85,7 @@ void pEventDisplay::setDataRange (const QCPRange &dataRange)
 }
 
 
-void pEventDisplay::setAdcData(const std::vector<double> &values)
+void pEventDisplay::setAdcData(const event::Adc_vec_t& values)
 {
   m_AdcCounts = values; //will automatically resize m_AdcCounts if necessary
   m_isSyncronized = false;
@@ -154,7 +154,10 @@ void pEventDisplay::updateMatrixColor()
   int nData = m_AdcCounts.size();
   QRgb* scanLine = new QRgb[nData];
   QCPColorGradient gradient = QCPColorGradient(m_options.m_gradientType);   
-  gradient.colorize (m_AdcCounts.data(), m_dataRange, scanLine, nData); 
+  /* This is awful, but colorize() apparently works only with double and I
+     have found no other way to make this conversion */
+  std::vector<double> doubleVec(m_AdcCounts.begin(), m_AdcCounts.end());
+  gradient.colorize (doubleVec.data(), m_dataRange, scanLine, nData); 
   for (int i=0; i<nData ;++i) {
     QColor color (scanLine[i]);
     m_hexMatrix -> hexagon(i) -> setBrush(QBrush(color));
