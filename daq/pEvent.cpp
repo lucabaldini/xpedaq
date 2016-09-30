@@ -2,15 +2,19 @@
 
 pEvent::pEvent(int firstCol, int lastCol,
                int firstRow, int lastRow,
-               int bufferId, event::Adc_vec_t adcCounts): 
+               int bufferId, const event::Adc_vec_t& adcCounts): 
                m_firstCol(firstCol), m_lastCol(lastCol),
                m_firstRow(firstRow), m_lastRow(lastRow), m_bufferId(bufferId)
 {
   if (adcCounts.size() != nRows() * nColumns()) {
-    std::cout << "WARNING: Window size delcared in header does not match with"
-                 " buffer dimension" << std::endl;
+    std::cout << "WARNING: Buffer does not fit window size passed"
+              << std::endl;
   }
-  m_adcCounts = adcCounts;
+  for (unsigned int i =0; i < adcCounts.size(); ++i){
+    double x, y;
+    pixelToCoord(pixelCoord(i), x, y);
+    m_hits.push_back(event::Hit{x, y, adcCounts.at(i)});
+  }
 }
 
 /*** COORDINATE TRANSFORMATIONS ***/
@@ -40,18 +44,20 @@ CubeCoordinate pEvent::cubeCoord(int index) const
 }
 
 // pixel coordinates to physical coordinates
-void pEvent::pixelToCoord(int i, int j, double &x, double &y) const
+void pEvent::pixelToCoord(const OffsetCoordinate &p,
+                          double &x, double &y) const
 {
-  x = (i - 0.5 * (298.5 + j%2 )) * (event::colPitch);
-  y = (175.5 - j) * (event::rowPitch);
+  x = (p.row() - 0.5 * (298.5 + p.col()%2 )) * (event::colPitch);
+  y = (175.5 - p.col()) * (event::rowPitch);
 }
 
 // physical coordinates to pixel coordinates
-void pEvent::coordToPixel(double x, double y, int &i, int &j) const
+OffsetCoordinate pEvent::coordToPixel(double x, double y) const
 {
-  // TODO: check this transformation!
+  int i,j;  
   j = std::round(175.5 - y/(event::rowPitch));
   i = std::round(x/(event::colPitch) + 0.5 * (298.5 + j%2));
+  return OffsetCoordinate(j, i);
 }
 
 /**********************************/
@@ -59,13 +65,13 @@ void pEvent::coordToPixel(double x, double y, int &i, int &j) const
 
 adc_count_t pEvent::pixelCounts(const OffsetCoordinate &p) const
 {
-  return m_adcCounts.at(index(p));
+  return m_hits.at(index(p)).counts;
 }
 
 
 adc_count_t pEvent::pixelCounts(const CubeCoordinate &p) const
 {
-  return m_adcCounts.at(index(p));
+  return m_hits.at(index(p)).counts;
 }
 
 
@@ -73,11 +79,11 @@ adc_count_t pEvent::totalAdcCounts() const
 {
   using namespace event;
   adc_count_t sum = 0; 
-  for(Adc_vec_t::const_iterator it = m_adcCounts.begin();
-      it != m_adcCounts.end();
+  for(std::vector<event::Hit>::const_iterator it = m_hits.begin();
+      it != m_hits.end();
       ++it)
    {
-     sum += (*it);
+     sum += (*it).counts;
    }
    return sum;
 }
@@ -90,17 +96,23 @@ int pEvent::cubeDistance(const OffsetCoordinate &p1,
 }
 
 
-int pEvent::highestPixel() const
+int pEvent::highestPixelAddress() const
 {
   int maxPos = -1;
   int maxVal = 0;
   for (int i =0; i < evtSize(); ++i){
-    if (m_adcCounts.at(i) > maxVal){
-      maxVal = m_adcCounts.at(i);
+    if (m_hits.at(i).counts > maxVal){
+      maxVal = m_hits.at(i).counts;
       maxPos = i;
     }
   }
   return maxPos;
+}
+
+
+const event::Hit& pEvent::highestPixel() const
+{
+  return m_hits.at(highestPixelAddress());
 }
 
 

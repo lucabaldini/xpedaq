@@ -50,6 +50,8 @@ HEADERS += pCustomColorMapPlot.h
 HEADERS += pHexagon.h
 HEADERS += pHexagonMatrix.h
 HEADERS += pEventDisplay.h
+HEADERS += pEvent.h
+HEADERS += pCluster.h
  
 HEADERS += pQtGridLayoutWidget.h
 HEADERS += pQtGroupBoxWidget.h
@@ -139,6 +141,8 @@ SOURCES += xpemonPlotOptions.cpp
 SOURCES += pMonitorTab.cpp
 SOURCES += pEventDisplayTab.cpp
 SOURCES += pHexagonCoordinates.cpp
+SOURCES += pCluster.cpp
+SOURCES += pEvent.cpp
 
 SOURCES += xpemon.cpp
 

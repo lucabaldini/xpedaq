@@ -10,6 +10,7 @@
 #include "pDataBlock.h"
 #include "pHistogram.h"
 #include "pMap.h"
+#include "pEvent.h"
 
 class pEventReader: public QObject
 {
