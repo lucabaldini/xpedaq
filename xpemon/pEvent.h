@@ -29,7 +29,7 @@ class pEvent
     
     pEvent(int firstCol, int lastCol,
            int firstRow, int lastRow,
-           int bufferId, const event::Adc_vec_t &adcCounts);
+           const event::Adc_vec_t &adcCounts);
   public:
     
     //Getters
@@ -39,7 +39,6 @@ class pEvent
     inline int lastCol() const {return m_lastCol;}
     inline int firstRow() const {return m_firstRow;}
     inline int lastRow() const {return m_lastRow;}
-    inline int bufferId() const {return m_bufferId;}
     inline int nColumns() const {return m_lastCol - m_firstCol + 1;}
     inline int nRows() const {return m_lastRow - m_firstRow + 1;}
     inline int evtSize() const {return nRows() * nColumns();}
@@ -73,7 +72,6 @@ class pEvent
     int m_lastCol;
     int m_firstRow;
     int m_lastRow;
-    int m_bufferId;
     std::vector<event::Hit> m_hits;  // hits
 };
 

@@ -57,11 +57,23 @@ pCluster::pCluster(const pEvent &evt, int threshold)
     }
   }
   /* The address of pixels where parent is > 0 are the pixel of the cluster */
+  
+  /*** DEBUG ***/
+  //for (int row=0; row<evt.nRows(); ++row){
+  //  for (int col=0; col<evt.nColumns(); ++col){
+  //    int index = row*evt.nColumns() + col;
+  //    if (parent.at(index) >=0)
+  //      std::cout << evt(index).counts << " ";
+  //    else
+  //      std::cout << "// ";
+  //  }
+  //  std::cout << std::endl;
+  //}
+  /******/  
   for (int i = 0; i < parent.size(); ++i){
      if (parent.at(i) >=0)
         m_hits.push_back(evt(i));
-   }
-  
+  }
 }
 
 
@@ -69,7 +81,7 @@ int pCluster::minKey(const std::vector<int> &key,
                      const std::vector<bool> &mstSet) const
 {
    // Initialize min value
-   static int min = INT_MAX;
+   int min = INT_MAX;
    int min_index = -1;
  
    for (int v = 0; v < key.size(); v++){
@@ -79,4 +91,13 @@ int pCluster::minKey(const std::vector<int> &key,
      }
    }
    return min_index;
+}
+
+
+std::ostream& pCluster::fillStream(std::ostream& os) const
+{
+  for (const event::Hit& hit : m_hits) // access by const reference
+        os << "(" << hit.x << "-" << hit.y << ") -> " << hit.counts
+           << std::endl;
+  return os;
 }

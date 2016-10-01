@@ -2,9 +2,9 @@
 
 pEvent::pEvent(int firstCol, int lastCol,
                int firstRow, int lastRow,
-               int bufferId, const event::Adc_vec_t& adcCounts): 
+               const event::Adc_vec_t& adcCounts): 
                m_firstCol(firstCol), m_lastCol(lastCol),
-               m_firstRow(firstRow), m_lastRow(lastRow), m_bufferId(bufferId)
+               m_firstRow(firstRow), m_lastRow(lastRow)
 {
   if (adcCounts.size() != nRows() * nColumns()) {
     std::cout << "WARNING: Buffer does not fit window size passed"
@@ -47,17 +47,18 @@ CubeCoordinate pEvent::cubeCoord(int index) const
 void pEvent::pixelToCoord(const OffsetCoordinate &p,
                           double &x, double &y) const
 {
-  x = (p.row() - 0.5 * (298.5 + p.col()%2 )) * (event::colPitch);
-  y = (175.5 - p.col()) * (event::rowPitch);
+  x = ((m_firstCol + p.col()) - 0.5 * (298.5 + (m_firstRow + p.row())%2 ))
+      * (event::colPitch);
+  y = (175.5 - (m_firstRow + p.row())) * (event::rowPitch);
 }
 
 // physical coordinates to pixel coordinates
 OffsetCoordinate pEvent::coordToPixel(double x, double y) const
 {
-  int i,j;  
-  j = std::round(175.5 - y/(event::rowPitch));
-  i = std::round(x/(event::colPitch) + 0.5 * (298.5 + j%2));
-  return OffsetCoordinate(j, i);
+  int col, row;  
+  row = std::round(175.5 - y/(event::rowPitch));
+  col = std::round(x/(event::colPitch) + 0.5 * (298.5 + row%2));
+  return OffsetCoordinate(col - m_firstCol, row - m_firstRow);
 }
 
 /**********************************/

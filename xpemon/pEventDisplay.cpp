@@ -203,18 +203,18 @@ void pEventDisplay::clearMap()
 }
 
 
-void pEventDisplay::pixelToCoord(int i, int j, double &x, double &y)
+void pEventDisplay::pixelToCoord(int col, int row, double &x, double &y)
 {
-  x = (i - 0.5 * (298.5 + j%2 )) * (m_hexMatrix->columnPitch());
-  y = (175.5 - j) * (m_hexMatrix->rowPitch());
+  x = (col - 0.5 * (298.5 + row%2 )) * (m_hexMatrix->columnPitch());
+  y = (175.5 - row) * (m_hexMatrix->rowPitch());
 }
 
 
 void pEventDisplay::coordToPixel(double x, double y,
-                                 int &i, int &j)
+                                 int &col, int &row)
 {
-  j = std::round(175.5 - y/(m_hexMatrix->rowPitch()));
-  i = std::round(x/(m_hexMatrix->columnPitch()) + 0.5 * (298.5 + j%2));
+  row = std::round(175.5 - y/(m_hexMatrix->rowPitch()));
+  col = std::round(x/(m_hexMatrix->columnPitch()) + 0.5 * (298.5 + row%2));
 }
 
  

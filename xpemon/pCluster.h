@@ -2,6 +2,7 @@
 #define PCLUSTER_H
 
 #include <limits.h>
+#include <iostream>
 #include <vector>
 #include "pEvent.h"
 
@@ -11,6 +12,11 @@ class pCluster
     
     pCluster(const pEvent &evt, int threshold);
   
+    // Terminal formatting.
+    std::ostream& fillStream(std::ostream& os) const;
+    friend std::ostream& operator<<(std::ostream& os, const pCluster& clst)
+      {return clst.fillStream(os);}
+    
   private:
     
     int minKey(const std::vector<int> &key, 

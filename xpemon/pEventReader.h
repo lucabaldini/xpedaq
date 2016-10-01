@@ -11,6 +11,7 @@
 #include "pHistogram.h"
 #include "pMap.h"
 #include "pEvent.h"
+#include "pCluster.h"
 
 class pEventReader: public QObject
 {

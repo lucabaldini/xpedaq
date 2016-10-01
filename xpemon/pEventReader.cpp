@@ -85,6 +85,10 @@ void pEventReader::readPendingDatagram()
       emit barycenterRead(xBarycenter, yBarycenter);
     }
   }
+  pEvent event = pEvent(m_curXmin, m_curXmax, m_curYmin, m_curYmax,
+                        m_curHitMap);
+  pCluster cluster = pCluster(event, m_zeroSupThreshold);
+  //std::cout << cluster;
   // Here we release the memory. Using the data block
   // after this point will lead to incorect behaviour.
   delete [] data; 
