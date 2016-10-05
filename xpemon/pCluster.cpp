@@ -47,11 +47,13 @@ pCluster::pCluster(const pEvent &evt, int threshold)
         /* Update the key only if distance from minKeyId is smaller than
            key[v] and is less than 2 (adjacent pixels).
            Ignore under threshold pixels. */
-        int dist = evt.cubeDistance(evt.pixelCoord(minKeyId),
-                                    evt.pixelCoord(v));
-        if (dist && dist < 2 && dist <  key[v] && evt(v).counts >= threshold){
-          parent[v] = minKeyId;
-          key[v] = dist;    
+        if (evt(v).counts >= threshold){
+          int dist = evt.cubeDistance(evt.pixelCoord(minKeyId),
+                                      evt.pixelCoord(v));
+          if (dist && dist < 2 && dist <  key[v]){
+            parent[v] = minKeyId;
+            key[v] = dist;    
+          }
         }
       }
     }
