@@ -30,7 +30,6 @@ with this program; if not, write to the Free Software Foundation Inc.,
 #include "pQtCustomTab.h"
 #include "xpolgui.h"
 #include "xpoldetector.h"
-#include "pEvent.h"
 
 class pEventDisplayTab : public pQtCustomTab
 {

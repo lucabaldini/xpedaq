@@ -12,6 +12,9 @@ class pCluster
     
     pCluster(const pEvent &evt, int threshold);
   
+    //getters
+    const event::Hit& operator() (int index) const {return m_hits.at(index);}  //access by index number
+    
     // Terminal formatting.
     std::ostream& fillStream(std::ostream& os) const;
     friend std::ostream& operator<<(std::ostream& os, const pCluster& clst)

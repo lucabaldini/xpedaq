@@ -48,32 +48,20 @@ void pEvent::pixelToCoord(const OffsetCoordinate &p,
                           double &x, double &y) const
 {
   x = ((m_firstCol + p.col()) - 0.5 * (298.5 + (m_firstRow + p.row())%2 ))
-      * (event::colPitch);
-  y = (175.5 - (m_firstRow + p.row())) * (event::rowPitch);
+      * (xpoldetector::kColPitch);
+  y = (175.5 - (m_firstRow + p.row())) * (xpoldetector::kRowPitch);
 }
 
 // physical coordinates to pixel coordinates
 OffsetCoordinate pEvent::coordToPixel(double x, double y) const
 {
   int col, row;  
-  row = std::round(175.5 - y/(event::rowPitch));
-  col = std::round(x/(event::colPitch) + 0.5 * (298.5 + row%2));
+  row = std::round(175.5 - y/(xpoldetector::kRowPitch));
+  col = std::round(x/(xpoldetector::kColPitch) + 0.5 * (298.5 + row%2));
   return OffsetCoordinate(col - m_firstCol, row - m_firstRow);
 }
 
 /**********************************/
-
-
-adc_count_t pEvent::pixelCounts(const OffsetCoordinate &p) const
-{
-  return m_hits.at(index(p)).counts;
-}
-
-
-adc_count_t pEvent::pixelCounts(const CubeCoordinate &p) const
-{
-  return m_hits.at(index(p)).counts;
-}
 
 
 adc_count_t pEvent::totalAdcCounts() const

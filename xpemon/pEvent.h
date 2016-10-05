@@ -6,14 +6,13 @@
 #include <sstream>
 #include <iomanip>
 #include "pDataBlock.h"
+#include "xpoldetector.h"
 #include "pHexagonCoordinates.h"
 
 namespace event
 {
   typedef std::vector<adc_count_t> Adc_vec_t;
-  const double colPitch = 0.0500; // [mm]
-  const double rowPitch = 0.0433; //[mm]
-  
+ 
   struct Hit{
     double x;
     double y;
@@ -42,9 +41,14 @@ class pEvent
     inline int nColumns() const {return m_lastCol - m_firstCol + 1;}
     inline int nRows() const {return m_lastRow - m_firstRow + 1;}
     inline int evtSize() const {return nRows() * nColumns();}
-    adc_count_t pixelCounts(const OffsetCoordinate &p) const;
-    adc_count_t pixelCounts(const CubeCoordinate &p) const;
+    //access by index number    
     const event::Hit& operator() (int index) const {return m_hits.at(index);}
+    //access by offset coordinates
+    const event::Hit& operator() (const OffsetCoordinate& p) const
+      {return m_hits.at(index(p));}
+    //access by cubic coordinates
+    const event::Hit& operator() (const CubeCoordinate& p) const
+      {return m_hits.at(index(p));}    
     adc_count_t totalAdcCounts() const; // sum of all pulse heights
     int cubeDistance(const OffsetCoordinate &p1,
                      const OffsetCoordinate &p2) const;  
