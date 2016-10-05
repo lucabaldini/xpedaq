@@ -25,9 +25,11 @@ pEventReader::pEventReader(unsigned int socketPortNumber,
                            double zeroSupThreshold,
                            pHistogram* pulseHeightHist, 
                            pHistogram* windowSizeHist,
+                           pHistogram* modulationHist,
                            pMap* hitMap) :
                            m_pulseHeightHist(pulseHeightHist),
                            m_windowSizeHist(windowSizeHist),
+                           m_modulationHist(modulationHist),
                            m_hitMap(hitMap),
                            m_socketPortNumber(socketPortNumber),
                            m_zeroSupThreshold(zeroSupThreshold)

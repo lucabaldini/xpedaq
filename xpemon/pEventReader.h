@@ -43,7 +43,7 @@ class pEventReader: public QObject
   
     pEventReader(unsigned int socketPortNumber, double zeroSupThreshold,
                  pHistogram* pulseHeightHist, pHistogram* windowSizeHist,
-                 pMap* hitMap);
+                 pHistogram* modulationHist, pMap* hitMap);
   
   public slots:
   
@@ -64,6 +64,7 @@ class pEventReader: public QObject
     
     void pulseHeightUpdated();
     void windowSizeUpdated();
+    void modulationUpdated();
     void hitMapUpdated();
     void evtDisplayUpdated(const pEvent& evt);
   
@@ -74,6 +75,7 @@ class pEventReader: public QObject
     //Data structures
     pHistogram *m_pulseHeightHist;
     pHistogram *m_windowSizeHist;
+    pHistogram *m_modulationHist;
     pMap *m_hitMap;
     
     //Current event info:

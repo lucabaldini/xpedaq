@@ -50,12 +50,14 @@ class pMonitorTab : public pQtCustomTab
   
     pHistogram* pulseHeightHist() {return m_pulseHeightHist;}
     pHistogram* windowSizeHist() {return m_windowSizeHist;}
+    pHistogram* modulationHist() {return m_modulationHist;}
     pMap* hitMap() {return m_hitMap;}
   
   public slots:
     
     void updatePulseHeightPlot();
     void updateWindowSizePlot();
+    void updateModulationPlot();
     void updateHitMapPlot();
     void resetPlot();
      
@@ -63,13 +65,16 @@ class pMonitorTab : public pQtCustomTab
     
     void setupPulseHeightPlot();
     void setupWindowSizePlot();
+    void setupModulationPlot();
     void setupHitMap();
     
     pHistogram* m_pulseHeightHist;
     pHistogram* m_windowSizeHist;
+    pHistogram* m_modulationHist;
     pMap* m_hitMap;
     pHistogramPlot *m_pulseHeightPlot;
     pHistogramPlot *m_windowSizePlot;
+    pHistogramPlot *m_modulationPlot;
     pMapPlot *m_hitMapPlot;
 };
 

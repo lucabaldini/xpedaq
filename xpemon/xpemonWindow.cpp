@@ -64,6 +64,7 @@ xpemonWindow::xpemonWindow(std::string preferencesFilePath,
                     m_preferences -> zeroSuppressionThreshold(),
                     m_monitorTab -> pulseHeightHist(),
                     m_monitorTab -> windowSizeHist(),
+                    m_monitorTab -> modulationHist(),
                     m_monitorTab -> hitMap());
   
   m_infoBoxWidget = new pInfoBoxWidget();
@@ -152,6 +153,9 @@ void xpemonWindow::setupEvtReaderConnections()
 
   connect (m_eventReader, SIGNAL(windowSizeUpdated()),
            m_monitorTab, SLOT(updateWindowSizePlot()));
+           
+  connect (m_eventReader, SIGNAL(modulationUpdated()),
+           m_monitorTab, SLOT(updateModulationPlot()));           
            
   connect (m_eventReader, SIGNAL(hitMapUpdated()),
            m_monitorTab, SLOT(updateHitMapPlot()));

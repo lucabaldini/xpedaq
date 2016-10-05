@@ -33,6 +33,9 @@ namespace xpemonPlotOptions
   extern const unsigned int windowSizeNbins;
   extern const double windowSizeXmin;
   extern const double windowSizeXmax;
+  extern const unsigned int modulationNbins;  
+  extern const double modulationThetaMin;
+  extern const double modulationThetaMax;
   extern const double xPixelMax;
   extern const double yPixelMax;
   QCPColorGradient loadRedToWhiteGradient();

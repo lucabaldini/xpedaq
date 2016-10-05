@@ -32,6 +32,7 @@ pMonitorTab::pMonitorTab(): pQtCustomTab("Monitor Plots")
   
   setupPulseHeightPlot(); 
   setupWindowSizePlot();
+  setupModulationPlot();
   setupHitMap();
 }
 
@@ -53,9 +54,20 @@ void pMonitorTab::setupWindowSizePlot()
   pBasicPlotOptions windowSizeOptions = pBasicPlotOptions("Window size",
                                              "Window size (pixel)", "n. evt");
   m_windowSizeHist = new pHistogram(windowSizeNbins, windowSizeXmin,
-                                        windowSizeXmax);
+                                    windowSizeXmax);
   m_windowSizePlot = new pHistogramPlot(m_windowSizeHist, windowSizeOptions);
   m_groupBoxGridLayout -> addWidget(m_windowSizePlot, 0, 1);
+}
+
+
+void pMonitorTab::setupModulationPlot()
+{
+  pBasicPlotOptions modulationOptions = pBasicPlotOptions("Modulation",
+                                             "theta", "n. evt");
+  m_modulationHist = new pHistogram(modulationNbins, modulationThetaMin,
+                                    modulationThetaMax);
+  m_modulationPlot = new pHistogramPlot(m_modulationHist, modulationOptions);
+  m_groupBoxGridLayout -> addWidget(m_modulationPlot, 1, 1);
 }
 
 
@@ -81,6 +93,13 @@ void pMonitorTab::updateWindowSizePlot()
 {
   m_windowSizePlot -> updateDisplay();
   m_windowSizePlot -> replot();
+}
+
+
+void pMonitorTab::updateModulationPlot()
+{
+  m_modulationPlot -> updateDisplay();
+  m_modulationPlot -> replot();
 }
 
 
