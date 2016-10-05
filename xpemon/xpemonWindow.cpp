@@ -124,7 +124,7 @@ void xpemonWindow::setupEvtReaderConnections()
           m_infoBoxWidget, SLOT(updateBarycenterCoordinates(double,
                                                             double)));
   
-  qRegisterMetaType< event::Adc_vec_t >("event::Adc_vec_t");
+  qRegisterMetaType< pEvent >("pEvent");
   
   connect (m_eventReader, SIGNAL(pulseHeightUpdated()),
            m_monitorTab, SLOT(updatePulseHeightPlot()));
@@ -135,10 +135,8 @@ void xpemonWindow::setupEvtReaderConnections()
   connect (m_eventReader, SIGNAL(hitMapUpdated()),
            m_monitorTab, SLOT(updateHitMapPlot()));
   
-  connect (m_eventReader, SIGNAL(evtDisplayUpdated(unsigned int, unsigned int,
-                     unsigned int, unsigned int, const event::Adc_vec_t&)),
-           m_eventDisplayTab, SLOT(updateEventDisplay(unsigned int,
-      unsigned int, unsigned int, unsigned int, const event::Adc_vec_t&)));                                                             
+  connect (m_eventReader, SIGNAL(evtDisplayUpdated(const pEvent&)),
+           m_eventDisplayTab, SLOT(updateEventDisplay(const pEvent&)));                                                             
 }
 
 

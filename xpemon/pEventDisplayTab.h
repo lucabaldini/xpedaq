@@ -44,9 +44,7 @@ class pEventDisplayTab : public pQtCustomTab
 
  public slots: 
   
-  void updateEventDisplay(unsigned int xmin, unsigned int xmax,
-                          unsigned int ymin, unsigned int ymax,
-                          const event::Adc_vec_t& displayValues);
+  void updateEventDisplay(const pEvent &evt);
   void resetPlot();
   
  private:

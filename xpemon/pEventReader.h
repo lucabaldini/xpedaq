@@ -44,9 +44,7 @@ class pEventReader: public QObject
     void pulseHeightUpdated();
     void windowSizeUpdated();
     void hitMapUpdated();
-    void evtDisplayUpdated(unsigned int xmin, unsigned int xmax,
-                           unsigned int ymin, unsigned int ymax,
-                           const event::Adc_vec_t& displayValues);
+    void evtDisplayUpdated(const pEvent& evt);
   
   private:
     
@@ -58,11 +56,7 @@ class pEventReader: public QObject
     pMap *m_hitMap;
     
     //Current event info:
-    unsigned int m_curXmin;
-    unsigned int m_curXmax;
-    unsigned int m_curYmin;
-    unsigned int m_curYmax;
-    event::Adc_vec_t m_curHitMap;
+    pEvent m_lastEvent;
       
     unsigned int m_socketPortNumber;
     double m_zeroSupThreshold;

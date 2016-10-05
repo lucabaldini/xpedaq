@@ -8,8 +8,6 @@ pEventReader::pEventReader(unsigned int socketPortNumber,
                            m_pulseHeightHist(pulseHeightHist),
                            m_windowSizeHist(windowSizeHist),
                            m_hitMap(hitMap),
-                           m_curXmin(0), m_curXmax(0),
-                           m_curYmin(0), m_curYmax(0),
                            m_socketPortNumber(socketPortNumber),
                            m_zeroSupThreshold(zeroSupThreshold)
 {
@@ -43,14 +41,11 @@ void pEventReader::readPendingDatagram()
       return;
     }
     m_isContentChanged = true;    
-    m_curXmin = p.xmin(evt);
-    m_curXmax = p.xmax(evt);
-    m_curYmin = p.ymin(evt);    
-    m_curYmax = p.ymax(evt);
-    emit eventRead(m_curXmin, m_curXmax, m_curYmin, m_curYmax);
+    emit eventRead(p.xmin(evt), p.xmax(evt), p.ymin(evt), p.ymax(evt));
     int nPixel = p.numPixels(evt);
     m_windowSizeHist -> fill(static_cast<double> (nPixel));
-    m_curHitMap.resize(nPixel);
+    event::Adc_vec_t curHitMap;
+    curHitMap.resize(nPixel);
     double adcSum = 0;
     unsigned int highestX = 0;
     unsigned int highestY = 0;
@@ -64,7 +59,7 @@ void pEventReader::readPendingDatagram()
     {
       p.readPixel(evt, index, x, y, height);
       if (height < m_zeroSupThreshold) { height = 0.;}
-      m_curHitMap.at(index) = height;
+      curHitMap.at(index) = height;
       m_hitMap -> fill(x, y, static_cast<double> (height));
       adcSum += height;
       if (height > maxVal)
@@ -84,10 +79,10 @@ void pEventReader::readPendingDatagram()
       yBarycenter /= adcSum;
       emit barycenterRead(xBarycenter, yBarycenter);
     }
+    m_lastEvent = pEvent(p.xmin(evt), p.xmax(evt), p.ymin(evt), p.ymax(evt),
+                         curHitMap);
+    m_lastEvent.clusterize(m_zeroSupThreshold);
   }
-  pEvent event = pEvent(m_curXmin, m_curXmax, m_curYmin, m_curYmax,
-                        m_curHitMap);
-  event.clusterize(m_zeroSupThreshold);
   //std::cout << cluster;
   // Here we release the memory. Using the data block
   // after this point will lead to incorect behaviour.
@@ -112,8 +107,7 @@ void pEventReader::updateRequested()
   emit pulseHeightUpdated();
   emit windowSizeUpdated();
   emit hitMapUpdated();
-  emit evtDisplayUpdated(m_curXmin, m_curXmax, m_curYmin, m_curYmax,
-                         m_curHitMap);
+  emit evtDisplayUpdated(m_lastEvent);
   m_isContentChanged = false;                         
 }
 

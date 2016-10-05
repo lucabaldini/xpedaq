@@ -2,11 +2,8 @@
 
 pEventDisplay::pEventDisplay(pColorMapOptions options) : m_options(options)
 {
-  //Initialize window boundaries
-  m_colMin = 0;
-  m_colMax = 0;
-  m_rowMin = 0;
-  m_rowMax = 0;
+  //Initialize with void event
+  m_event = pEvent();
   
   //Initialize axes with default range
   axisRect()->setupFullAxesBox(false);
@@ -58,19 +55,6 @@ pEventDisplay::pEventDisplay(pColorMapOptions options) : m_options(options)
   setupInteractions();
 }
 
-
-void pEventDisplay::setWindowRange (int firstCol,
-                                    int lastCol,
-                                    int firstRow,
-                                    int lastRow)
-{
-  m_colMin = firstCol;
-  m_colMax = lastCol;
-  m_rowMin = firstRow;
-  m_rowMax = lastRow;
-}
-
-
 void pEventDisplay::setDataRange (const QCPRange &dataRange)
 {
   if (m_dataRange.lower != dataRange.lower ||
@@ -85,11 +69,12 @@ void pEventDisplay::setDataRange (const QCPRange &dataRange)
 }
 
 
-void pEventDisplay::setAdcData(const event::Adc_vec_t& values)
+void pEventDisplay::loadEvent (const pEvent& evt)
 {
-  m_AdcCounts = values; //will automatically resize m_AdcCounts if necessary
+  m_event = evt;
   m_isSyncronized = false;
-  updateDataRange();
+  updateDataRange();  
+  
 }
 
 
@@ -97,9 +82,9 @@ void pEventDisplay::updateDataRange()
 {
   double zmin = 0;
   double zmax = 0;
-  for (auto it = m_AdcCounts.begin(); it!= m_AdcCounts.end(); ++it){
-    if ((*it) < zmin) zmin = (*it);
-    if ((*it) > zmax) zmax = (*it);
+  for (const event::Hit& hit : m_event){
+    if (hit.counts < zmin) zmin = hit.counts;
+    if (hit.counts > zmax) zmax = hit.counts;
   }
   setDataRange(QCPRange(zmin, zmax));
 }
@@ -107,13 +92,16 @@ void pEventDisplay::updateDataRange()
 
 void pEventDisplay::updateAxesRange()
 {
-  int maxRange = std::max(m_rowMax - m_rowMin + 1, m_colMax - m_colMin + 1);
-  int halfColExtension = (maxRange - (m_colMax - m_colMin + 1))/2;
-  int halfRowExtension = (maxRange - (m_rowMax - m_rowMin + 1))/2;
-  int wideColMin = m_colMin - halfColExtension - 1;
-  int wideColMax = m_colMax + halfColExtension + 1;
-  int wideRowMin = m_rowMin - halfRowExtension - 1;
-  int wideRowMax = m_rowMax + halfRowExtension + 1;
+  int maxRange = std::max(m_event.lastRow() - m_event.firstRow() + 1,
+                          m_event.lastCol() - m_event.firstCol() + 1);
+  int halfColExtension = (maxRange -
+                         (m_event.lastCol() - m_event.firstCol() + 1)) / 2;
+  int halfRowExtension = (maxRange -
+                          (m_event.lastRow() - m_event.firstRow() + 1)) / 2;
+  int wideColMin = m_event.firstCol() - halfColExtension - 1;
+  int wideColMax = m_event.lastCol() + halfColExtension + 1;
+  int wideRowMin = m_event.firstRow() - halfRowExtension - 1;
+  int wideRowMax = m_event.lastRow() + halfRowExtension + 1;
   double xmin, xmax, ymin, ymax;
   //Note that y is decreasing with row number, so (0,0) is left uppermost. 
   pixelToCoord(wideColMin, wideRowMax, xmin, ymin);
@@ -151,12 +139,15 @@ void pEventDisplay::updateColorScale()
 
 void pEventDisplay::updateMatrixColor()
 {
-  int nData = m_AdcCounts.size();
+  int nData = m_event.evtSize();
   QRgb* scanLine = new QRgb[nData];
   QCPColorGradient gradient = QCPColorGradient(m_options.m_gradientType);   
   /* This is awful, but colorize() apparently works only with double and I
      have found no other way to make this conversion */
-  std::vector<double> doubleVec(m_AdcCounts.begin(), m_AdcCounts.end());
+  std::vector<double> doubleVec;
+  for (const event::Hit& hit : m_event){
+    doubleVec.push_back(hit.counts);
+  }
   gradient.colorize (doubleVec.data(), m_dataRange, scanLine, nData); 
   for (int i=0; i<nData ;++i) {
     QColor color (scanLine[i]);
@@ -168,10 +159,12 @@ void pEventDisplay::updateMatrixColor()
 void pEventDisplay::drawMatrix()
 {
   double xmin, xmax, ymin, ymax;
-  pixelToCoord(m_colMin, m_rowMin, xmin, ymax);
-  pixelToCoord(m_colMax, m_rowMax, xmax, ymin);
-  m_hexMatrix->draw(this, xmin, ymax, m_colMax - m_colMin + 1,
-                    m_rowMax - m_rowMin + 1, m_colMin%2);
+  pixelToCoord(m_event.firstCol(), m_event.firstRow(), xmin, ymax);
+  pixelToCoord(m_event.lastCol(), m_event.lastRow(), xmax, ymin);
+  m_hexMatrix->draw(this, xmin, ymax,
+                    m_event.lastCol() - m_event.firstCol() + 1,
+                    m_event.lastRow() - m_event.firstRow() + 1,
+                    m_event.firstCol() % 2);
   m_isSyncronized = true;
 }
 

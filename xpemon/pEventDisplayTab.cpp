@@ -46,14 +46,12 @@ void pEventDisplayTab::setupEventDisplay()
 }
 
 
-void pEventDisplayTab::updateEventDisplay(unsigned int xmin,
-                                          unsigned int xmax,
-                                          unsigned int ymin,
-                                          unsigned int ymax,
-                                        const event::Adc_vec_t& displayValues)
+void pEventDisplayTab::updateEventDisplay(const pEvent &evt)
 {
-  m_eventDisplay -> setWindowRange(xmin, xmax, ymin, ymax);
-  m_eventDisplay -> setAdcData(displayValues);
+  m_eventDisplay -> loadEvent (evt);
+  //m_eventDisplay -> setWindowRange(evt.firstCol(), evt.lastCol(),
+  //                                 evt.firstRow(), evt.lastRow());
+  //m_eventDisplay -> setAdcData(displayValues);
   m_eventDisplay -> draw();
 }
 

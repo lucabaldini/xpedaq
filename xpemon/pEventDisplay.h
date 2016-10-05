@@ -23,9 +23,7 @@ class pEventDisplay : public QCustomPlot
   
   public slots:
   
-    void setAdcData(const event::Adc_vec_t &values);
-    void setWindowRange (int firstCol, int lastCol,
-                         int firstRow, int lastRow);
+    void loadEvent(const pEvent& evt);
     void draw();
     // Restore the optimal visualization (change axis range so that
     // all data are visible and set the optimal color scale)
@@ -58,12 +56,13 @@ class pEventDisplay : public QCustomPlot
     void coordToPixel(double x, double y, int &i, int &j);
     
     pHexagonMatrix *m_hexMatrix;
-    event::Adc_vec_t m_AdcCounts;
     QCPRange m_dataRange;
-    int m_colMin;
-    int m_colMax;
-    int m_rowMin;
-    int m_rowMax;
+    pEvent m_event;
+    //event::Adc_vec_t m_AdcCounts;
+    //int m_colMin;
+    //int m_colMax;
+    //int m_rowMin;
+    //int m_rowMax;
     QCPColorScale *m_colorScale;
     QCPMarginGroup *m_marginGroup;
     pColorMapOptions m_options;

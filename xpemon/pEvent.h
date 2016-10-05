@@ -15,6 +15,8 @@ class pEvent: public pEventWindow
   
   public:
     
+    pEvent() : pEventWindow (){;}
+    
     pEvent(int firstCol, int lastCol,
            int firstRow, int lastRow,
            const event::Adc_vec_t &adcCounts);
@@ -33,6 +35,11 @@ class pEvent: public pEventWindow
     adc_count_t totalAdcCounts() const; // sum of all pulse heights
     int highestPixelAddress() const; //index of highest Pixel
     const event::Hit& highestPixel() const; //highest Pixel
+    
+    //iterator
+    typedef std::vector<event::Hit>::const_iterator const_eventIterator;
+    const_eventIterator begin() {return m_hits.begin();}
+    const_eventIterator end() {return m_hits.end();}
     
     void clusterize(int threshold);
 

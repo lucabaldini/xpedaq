@@ -12,6 +12,9 @@ class pEventWindow{
 
   public:
   
+    pEventWindow(): m_firstCol(0), m_lastCol(0),
+                    m_firstRow(0), m_lastRow(0)
+                    {;}
     pEventWindow(int firstCol, int lastCol, int firstRow, int lastRow) : 
                  m_firstCol(firstCol), m_lastCol(lastCol),
                  m_firstRow(firstRow), m_lastRow(lastRow)
