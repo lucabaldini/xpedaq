@@ -52,7 +52,7 @@ pEventDisplay::pEventDisplay(pColorMapOptions options) : m_options(options)
   m_colorScale->setMarginGroup(QCP::msBottom|QCP::msTop, m_marginGroup);
   
   //Initialize the matrix
-  m_hexMatrix = new pHexagonMatrix(P_C);  
+  m_hexMatrix = new pHexagonMatrix(xpoldetector::kColPitch);  
   m_isSyncronized = true;
   
   setupInteractions();

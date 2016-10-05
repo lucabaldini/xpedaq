@@ -4,6 +4,9 @@
 #include <cmath>
 #include <vector>
 
+
+/* Class describing a cubic coordinate system for an hexagonal grid.
+   See also //see http://www.redblobgames.com/grids/hexagons/ */
 class CubeCoordinate
 {
   public:
@@ -17,6 +20,10 @@ class CubeCoordinate
     
     friend  CubeCoordinate operator+ (const CubeCoordinate &p1,
                                       const CubeCoordinate &p2);
+    friend  CubeCoordinate operator- (const CubeCoordinate &p1,
+                                      const CubeCoordinate &p2);                                      
+    /* Function for finding the coordinates of the neighbours of a hexagon
+       in a grid */
     std::vector<CubeCoordinate> neighbours(CubeCoordinate point);
 
  private:    
@@ -26,7 +33,9 @@ class CubeCoordinate
     int m_z;
 };
 
-class OffsetCoordinate  // even-r case
+
+/* Class describing (column, row) coordinate pairs in a grid */
+class OffsetCoordinate
 {
   public:
      
@@ -38,6 +47,8 @@ class OffsetCoordinate  // even-r case
     
     friend  OffsetCoordinate operator+ (const OffsetCoordinate &p1,
                                         const OffsetCoordinate &p2);
+    friend  OffsetCoordinate operator- (const OffsetCoordinate &p1,
+                                        const OffsetCoordinate &p2);                                        
 
  private:    
    
@@ -45,8 +56,13 @@ class OffsetCoordinate  // even-r case
     int m_row;    
 };
 
+
+/* Covertion functions for the even-r case (even rows are right shifted) */
 OffsetCoordinate cube2Offset(const CubeCoordinate &p);
 CubeCoordinate offset2Cube(const OffsetCoordinate &p);
+
+
+/* Distance in cubic coordinate */
 int distance (const CubeCoordinate &p1, const CubeCoordinate &p2);
 
 #endif //PHEXAGONCOORDINATES_H

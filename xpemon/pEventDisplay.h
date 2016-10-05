@@ -9,8 +9,8 @@
 #include "pHistogramOptions.h"
 #include "pHexagonMatrix.h"
 #include "pEvent.h"
+#include "xpoldetector.h"
 
-#define P_C 0.05 // column pitch [mm] of the ASIC
 
 class pEventDisplay : public QCustomPlot
 {

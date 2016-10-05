@@ -21,11 +21,28 @@ CubeCoordinate operator+ (const CubeCoordinate &p1,
 }
 
 
+CubeCoordinate operator- (const CubeCoordinate &p1,
+                          const CubeCoordinate &p2)
+{
+	// we can access member directly because this is a friend function
+	return CubeCoordinate(p1.m_x - p2.m_x, p1.m_y - p2.m_y, p1.m_z - p2.m_z);
+}
+
+
+
 OffsetCoordinate operator+ (const OffsetCoordinate &p1,
                             const OffsetCoordinate &p2)
 {
   // we can access member directly because this is a friend function
 	return OffsetCoordinate(p1.m_col + p2.m_col, p1.m_row + p2.m_row);
+}
+
+
+OffsetCoordinate operator- (const OffsetCoordinate &p1,
+                            const OffsetCoordinate &p2)
+{
+  // we can access member directly because this is a friend function
+	return OffsetCoordinate(p1.m_col - p2.m_col, p1.m_row - p2.m_row);
 }
 
 
