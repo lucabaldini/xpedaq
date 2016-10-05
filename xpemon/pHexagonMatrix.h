@@ -45,14 +45,14 @@ class pHexagonMatrix
     
   private:
 
-   double m_columnPitch;
-   double m_xStart;
-   double m_yStart;
-   int m_nCol;
-   int m_nRow;
-   bool m_firstLeft; // first row is left shifted (odd rows in xpe)
-   std::vector<pHexagon*> m_hexArray;
-   double m_padding;
+    double m_columnPitch;
+    double m_xStart;
+    double m_yStart;
+    int m_nCol;
+    int m_nRow;
+    bool m_firstLeft; // first row is left shifted (odd rows in xpe)
+    std::vector<pHexagon*> m_hexArray;
+    double m_padding;
 };
 
 #endif //HEXAGONMATRIX_H

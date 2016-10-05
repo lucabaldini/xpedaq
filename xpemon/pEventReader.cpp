@@ -54,7 +54,7 @@ void pEventReader::readPendingDatagram()
     double adcSum = 0;
     unsigned int highestX = 0;
     unsigned int highestY = 0;
-    adc_count_t maxVal = 0;
+    adc_count_t maxVal = 0; //counts in the highest pixels
     unsigned int x = 1000; //initialize to non-physical value
     unsigned int y = 1000; //initialize to non-physical value
     adc_count_t height = 0;
@@ -87,7 +87,7 @@ void pEventReader::readPendingDatagram()
   }
   pEvent event = pEvent(m_curXmin, m_curXmax, m_curYmin, m_curYmax,
                         m_curHitMap);
-  pCluster cluster = pCluster(event, m_zeroSupThreshold);
+  event.clusterize(m_zeroSupThreshold);
   //std::cout << cluster;
   // Here we release the memory. Using the data block
   // after this point will lead to incorect behaviour.

@@ -1,15 +1,15 @@
-#ifndef PIXELMAP_H
-#define PIXELMAP_H
+#ifndef PEVENTDISPLAY_H
+#define PEVENTDISPLAY_H
 
-#include <QMenu>
 #include <iostream>
 #include <cmath>
+
+#include <QMenu>
 
 #include "qcustomplot.h"
 #include "pHistogramOptions.h"
 #include "pHexagonMatrix.h"
 #include "pEvent.h"
-#include "xpoldetector.h"
 
 
 class pEventDisplay : public QCustomPlot
@@ -71,4 +71,4 @@ class pEventDisplay : public QCustomPlot
 
 };
 
-#endif  //CUSTOMCOLORMAPPLOT_H
+#endif  //PEVENTDISPLAY_H

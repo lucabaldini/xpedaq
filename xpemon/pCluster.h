@@ -1,19 +1,23 @@
 #ifndef PCLUSTER_H
 #define PCLUSTER_H
 
-#include <limits.h>
-#include <iostream>
-#include <vector>
-#include "pEvent.h"
+#include "pEventWindow.h"
+
+/* Class describing a cluster in an event. Basically it is a std::vector of
+   bool, of the same size of the event, telling if the hit at that position
+   belong to the cluster or not */
 
 class pCluster
 {
   public:
     
-    pCluster(const pEvent &evt, int threshold);
-  
+    pCluster() {;}
+    
+    void build(const pEventWindow &evt, const std::vector<event::Hit> &hits,
+               int threshold);
+      
     //getters
-    const event::Hit& operator() (int index) const {return m_hits.at(index);}  //access by index number
+    bool operator() (int index) const {return m_isInCluster.at(index);}
     
     // Terminal formatting.
     std::ostream& fillStream(std::ostream& os) const;
@@ -22,10 +26,9 @@ class pCluster
     
   private:
     
-    int minKey(const std::vector<int> &key, 
-               const std::vector<bool> &mstSet) const;
-    
-    std::vector<event::Hit> m_hits;
+    int minKey(const std::vector<int> &key) const;
+     
+    std::vector<bool> m_isInCluster;
     
 };
 

@@ -45,10 +45,6 @@ with this program; if not, write to the Free Software Foundation Inc.,
   to the monitor and while writing to file.
 */
 
-
-typedef uint16_t adc_count_t;
-
-
 class pDataBlock
 {
   

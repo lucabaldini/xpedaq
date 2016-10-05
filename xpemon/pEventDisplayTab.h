@@ -23,13 +23,14 @@ with this program; if not, write to the Free Software Foundation Inc.,
 #define PEVENTDISPLAYTAB_H
 
 #include <iostream>
+
 #include <QString>
+
 #include "pEventDisplay.h"
 #include "pHistogramOptions.h"
 #include "xpemonPlotOptions.h"
 #include "pQtCustomTab.h"
 #include "xpolgui.h"
-#include "xpoldetector.h"
 
 class pEventDisplayTab : public pQtCustomTab
 {

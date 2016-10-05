@@ -25,7 +25,21 @@ with this program; if not, write to the Free Software Foundation Inc.,
 #define XPOLDETECTOR_H
 
 #include <math.h>
-#include <iostream>
+#include <vector>
+#include <cstdint>
+
+typedef uint16_t adc_count_t;
+
+namespace event
+{
+  typedef std::vector<adc_count_t> Adc_vec_t;
+ 
+  struct Hit{
+    double x;
+    double y;
+    adc_count_t counts;
+  };
+}
 
 namespace xpoldetector{
   extern const unsigned short kUndefinedReadoutCode;

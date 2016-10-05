@@ -2,9 +2,8 @@
 
 pEvent::pEvent(int firstCol, int lastCol,
                int firstRow, int lastRow,
-               const event::Adc_vec_t& adcCounts): 
-               m_firstCol(firstCol), m_lastCol(lastCol),
-               m_firstRow(firstRow), m_lastRow(lastRow)
+               const event::Adc_vec_t& adcCounts):
+               pEventWindow(firstCol, lastCol, firstRow, lastRow)
 {
   if (adcCounts.size() != nRows() * nColumns()) {
     std::cout << "WARNING: Buffer does not fit window size passed"
@@ -15,53 +14,8 @@ pEvent::pEvent(int firstCol, int lastCol,
     pixelToCoord(pixelCoord(i), x, y);
     m_hits.push_back(event::Hit{x, y, adcCounts.at(i)});
   }
+  m_cluster = pCluster();
 }
-
-/*** COORDINATE TRANSFORMATIONS ***/
-
-// pixel coordinates to internal vector index
-int pEvent::index(const OffsetCoordinate &p) const
-{
-  return p.col() + p.row() * nColumns();
-}
-
-// internal vector index to pixel coordinates
-OffsetCoordinate pEvent::pixelCoord(int index) const
-{
-  return OffsetCoordinate(index % nColumns(), index / nColumns());
-}
-
-// cube coordinates to internal vector index
-int pEvent::index(const CubeCoordinate &p) const
-{
-  return index(cube2Offset(p));
-}
-
-// internal vector index to cube coordinates
-CubeCoordinate pEvent::cubeCoord(int index) const
-{
-  return offset2Cube(pixelCoord(index));
-}
-
-// pixel coordinates to physical coordinates
-void pEvent::pixelToCoord(const OffsetCoordinate &p,
-                          double &x, double &y) const
-{
-  x = ((m_firstCol + p.col()) - 0.5 * (298.5 + (m_firstRow + p.row())%2 ))
-      * (xpoldetector::kColPitch);
-  y = (175.5 - (m_firstRow + p.row())) * (xpoldetector::kRowPitch);
-}
-
-// physical coordinates to pixel coordinates
-OffsetCoordinate pEvent::coordToPixel(double x, double y) const
-{
-  int col, row;  
-  row = std::round(175.5 - y/(xpoldetector::kRowPitch));
-  col = std::round(x/(xpoldetector::kColPitch) + 0.5 * (298.5 + row%2));
-  return OffsetCoordinate(col - m_firstCol, row - m_firstRow);
-}
-
-/**********************************/
 
 
 adc_count_t pEvent::totalAdcCounts() const
@@ -75,13 +29,6 @@ adc_count_t pEvent::totalAdcCounts() const
      sum += (*it).counts;
    }
    return sum;
-}
-
-
-int pEvent::cubeDistance(const OffsetCoordinate &p1,
-                         const OffsetCoordinate &p2) const
-{
-  return distance(offset2Cube(p1), offset2Cube(p2));
 }
 
 
@@ -102,6 +49,12 @@ int pEvent::highestPixelAddress() const
 const event::Hit& pEvent::highestPixel() const
 {
   return m_hits.at(highestPixelAddress());
+}
+
+
+void pEvent::clusterize(int threshold)
+{
+  m_cluster.build(*this, hits(), threshold);
 }
 
 

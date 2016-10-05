@@ -26,10 +26,10 @@ with this program; if not, write to the Free Software Foundation Inc.,
 #ifndef XPEDAQHEADER_H
 #define XPEDAQHEADER_H
 
+#include <stdint.h>
+#include <iostream>
 
 #include "xpoldetector.h"
-#include <stdint.h>
-
 
 struct pFileHeader_v1
 {

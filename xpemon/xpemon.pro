@@ -47,11 +47,6 @@ HEADERS += pHistogramPlot.h
 HEADERS += pMap.h
 HEADERS += pMapPlot.h
 HEADERS += pCustomColorMapPlot.h
-HEADERS += pHexagon.h
-HEADERS += pHexagonMatrix.h
-HEADERS += pEventDisplay.h
-HEADERS += pEvent.h
-HEADERS += pCluster.h
  
 HEADERS += pQtGridLayoutWidget.h
 HEADERS += pQtGroupBoxWidget.h
@@ -63,7 +58,6 @@ HEADERS += pQtDisplayGui.h
 HEADERS += pQtCustomTab.h
 HEADERS += pQtMainWindowGui.h
 
-HEADERS += pFiniteStateMachine.h
 HEADERS += pDataBlock.h
 HEADERS += CQuickUsb.h
 HEADERS += pUsbController.h
@@ -86,6 +80,12 @@ HEADERS += xpemonPlotOptions.h
 HEADERS += pMonitorTab.h
 HEADERS += pEventDisplayTab.h
 HEADERS += pHexagonCoordinates.h
+HEADERS += pHexagon.h
+HEADERS += pHexagonMatrix.h
+HEADERS += pEventDisplay.h
+HEADERS += pEvent.h
+HEADERS += pEventWindow.h
+HEADERS += pCluster.h
 
 SOURCES += xpolgui.cpp
 SOURCES += xpoldetector.cpp
@@ -104,9 +104,6 @@ SOURCES += pHistogramPlot.cpp
 SOURCES += pMap.cpp
 SOURCES += pMapPlot.cpp
 SOURCES += pCustomColorMapPlot.cpp
-SOURCES += pHexagon.cpp
-SOURCES += pHexagonMatrix.cpp
-SOURCES += pEventDisplay.cpp
 
 SOURCES += pQtGridLayoutWidget.cpp
 SOURCES += pQtGroupBoxWidget.cpp
@@ -118,7 +115,6 @@ SOURCES += pQtDisplayGui.cpp
 SOURCES += pQtCustomTab.cpp
 SOURCES += pQtMainWindowGui.cpp
 
-SOURCES += pFiniteStateMachine.cpp
 SOURCES += pDataBlock.cpp
 SOURCES += CQuickUsb.cpp
 SOURCES += pUsbController.cpp
@@ -143,6 +139,10 @@ SOURCES += pEventDisplayTab.cpp
 SOURCES += pHexagonCoordinates.cpp
 SOURCES += pCluster.cpp
 SOURCES += pEvent.cpp
+SOURCES += pEventWindow.cpp
+SOURCES += pHexagon.cpp
+SOURCES += pHexagonMatrix.cpp
+SOURCES += pEventDisplay.cpp
 
 SOURCES += xpemon.cpp
 
