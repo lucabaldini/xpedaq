@@ -50,7 +50,7 @@ class pHexagonMatrix
    double m_yStart;
    int m_nCol;
    int m_nRow;
-   bool m_firstLeft; // first row is left shifted (like odd rows in xpe)
+   bool m_firstLeft; // first row is left shifted (odd rows in xpe)
    std::vector<pHexagon*> m_hexArray;
    double m_padding;
 };
