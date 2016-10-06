@@ -41,8 +41,8 @@ QCPColorGradient xpemonPlotOptions::loadRedToWhiteGradient(){
   gradient.setColorStopAt(0, QColor(50, 0, 0));
   gradient.setColorStopAt(0.2, QColor(180, 0, 0));
   gradient.setColorStopAt(0.4, QColor(240, 30, 00));
-  gradient.setColorStopAt(0.6, QColor(255, 110, 80));
-  gradient.setColorStopAt(0.8, QColor(255, 180, 150));
-  gradient.setColorStopAt(1, QColor(255, 255, 255));
+  gradient.setColorStopAt(0.6, QColor(255, 110, 60));
+  gradient.setColorStopAt(0.8, QColor(255, 150, 100));
+  gradient.setColorStopAt(1, QColor(255, 255, 250));
   return gradient;
 }
