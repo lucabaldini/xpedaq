@@ -51,6 +51,8 @@ pEventDisplay::pEventDisplay(pColorMapOptions options) : m_options(options)
   yAxis2->setTickLabels(true);  
 
   //Do not show the grid
+  xAxis->grid()->setVisible(false);
+  yAxis->grid()->setVisible(false);
   xAxis->grid()->setSubGridVisible(false);
   yAxis->grid()->setSubGridVisible(false);
   
@@ -172,7 +174,12 @@ void pEventDisplay::updateMatrixColor()
   gradient.colorize (doubleVec.data(), m_dataRange, scanLine, nData); 
   for (int i=0; i<nData ;++i) {
     QColor color (scanLine[i]);
-    m_hexMatrix -> hexagon(i) -> setBrush(QBrush(color));
+    m_hexMatrix -> hexagon(i) -> setPen(QPen(QColor(220, 220, 220)));
+    // Add color only for the pixels belonging to the firts cluster.
+    if (m_event.hits().at(i).clusterId == 0) {
+      m_hexMatrix -> hexagon(i) -> setBrush(QBrush(color));
+    }
+    //else if (m_hexMatrix->border(i))
   }
 }
 
@@ -180,12 +187,13 @@ void pEventDisplay::updateMatrixColor()
 void pEventDisplay::drawMatrix()
 {
   double xmin, xmax, ymin, ymax;
+  double padding = 0.;
   pixelToCoord(m_event.firstCol(), m_event.firstRow(), xmin, ymax);
   pixelToCoord(m_event.lastCol(), m_event.lastRow(), xmax, ymin);
   m_hexMatrix->draw(this, xmin, ymax,
                     m_event.lastCol() - m_event.firstCol() + 1,
                     m_event.lastRow() - m_event.firstRow() + 1,
-                    m_event.firstCol() % 2);
+                    m_event.firstCol() % 2, padding);
   m_isSyncronized = true;
 }
 

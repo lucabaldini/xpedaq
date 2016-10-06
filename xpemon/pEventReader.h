@@ -32,7 +32,6 @@ with this program; if not, write to the Free Software Foundation Inc.,
 #include "pHistogram.h"
 #include "pMap.h"
 #include "pEvent.h"
-#include "pCluster.h"
 
 class pEventReader: public QObject
 {

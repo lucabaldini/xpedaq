@@ -21,6 +21,7 @@ with this program; if not, write to the Free Software Foundation Inc.,
 
 #include "pEvent.h"
 
+
 pEvent::pEvent(int firstCol, int lastCol,
                int firstRow, int lastRow,
                const event::Adc_vec_t& adcCounts):
@@ -33,9 +34,8 @@ pEvent::pEvent(int firstCol, int lastCol,
   for (unsigned int i =0; i < adcCounts.size(); ++i){
     double x, y;
     pixelToCoord(pixelCoord(i), x, y);
-    m_hits.push_back(event::Hit{x, y, adcCounts.at(i)});
+    m_hits.push_back(event::Hit{x, y, adcCounts.at(i), -1});
   }
-  m_cluster = pCluster();
 }
 
 
@@ -73,9 +73,123 @@ const event::Hit& pEvent::highestPixel() const
 }
 
 
+/* Utility function for  finding the minimum key between those not yet
+   included in the MST.
+*/
+int pEvent::minKey(const std::vector<int> &key) const
+{
+   // Initialize min value
+   int min = INT_MAX;
+   int minIndex = -1;
+   for (int v = 0; v < key.size(); v++){
+     if (m_hits.at(v).clusterId < 0 && key.at(v) < min){
+       min = key.at(v);
+       minIndex = v;
+     }
+   }
+   return minIndex;
+}
+
+
 void pEvent::clusterize(int threshold)
 {
-  m_cluster.build(*this, hits(), threshold);
+  int dim = evtSize();
+  std::vector<int> parent; // Array to store constructed MST
+  std::vector<int> key;   // Key values used to pick minimum weight edge
+  
+  // Initialize all keys as INT_MAX
+  for (int i = 0; i < dim; ++i){
+    key.push_back(INT_MAX);
+    parent.push_back(-1); // non physical init
+  }
+  
+  // Start from higest pixel in MST.
+  // Make key 0 so that this pixel is picked as first pixel
+   int highestAddress = highestPixelAddress();
+  key[highestAddress] = 0;
+  parent[highestAddress] = highestAddress; //This pixel is root of MST
+
+  // Loop on all the pixels
+  for (int index = 0; index < dim - 1; ++index)
+  {
+    /* Pick the minimum key pixel from the set of pixels not yet included
+       in MST */
+    int minKeyId = minKey(key); //return -1 if no pixel is found
+    /* A result -1 means all pixels not included in MST are under theshold
+       or not adjacent to any included pixel. In that case the cluster is
+       complete and we exit the loop. */
+    if (minKeyId < 0)
+      break;
+    // Else add the picked pixel to the MST Set
+    m_hits[minKeyId].clusterId = 0;
+    
+    /* Update key value and pixel index of the adjacent pixels of
+       the picked pixel. Consider only those pixels which are not yet
+       included in MST. */
+    for (int v = 0; v < dim; ++v){
+      if (m_hits.at(v).clusterId < 0){ //check only pixels not yet included in MST
+        /* Update the key only if distance from minKeyId is smaller than
+           key[v] and is less than 2 (adjacent pixels).
+           Ignore under threshold pixels. */
+        if (m_hits.at(v).counts >= threshold){
+          int dist = cubeDistance(pixelCoord(minKeyId), pixelCoord(v));
+          if (dist && dist < 2 && dist <  key[v]){
+            parent[v] = minKeyId;
+            key[v] = dist;
+          }
+        }
+      }
+    }
+  }
+}
+
+
+int pEvent::doMomentsAnalysis()
+{
+ /*
+ if pivot is None:
+            pivot = cluster.baricenter
+        self.pivot = pivot
+        w = cluster.adc_values*weights
+        wsum = numpy.sum(w)
+        # Calculate the offsets with respect to the pivot.
+        dx = (cluster.x - pivot.x())
+        dy = (cluster.y - pivot.y())
+        # Solve for the angle of the principal axis (note that at this point
+        # phi is comprised between -pi/2 and pi/2 and might indicate either
+        # the major or the minor axis of the tensor of inertia).
+        A = numpy.sum(dx*dy*w)
+        B = numpy.sum((dy**2. - dx**2.)*w)
+        phi = -0.5*numpy.arctan2(2.*A, B)
+        # Rotate by an angle phi and calculate the eigenvalues of the tensor
+        # of inertia.
+        xp = numpy.cos(phi)*dx + numpy.sin(phi)*dy
+        yp = -numpy.sin(phi)*dx + numpy.cos(phi)*dy
+        mom2_long = numpy.sum((xp**2.)*w)/wsum
+        mom2_trans = numpy.sum((yp**2.)*w)/wsum
+        # We want mom2_long to be the highest eigenvalue, so we need to
+        # check wheteher we have to swap the eigenvalues, here. Note that
+        # at this point phi is still comprised between -pi/2 and pi/2.
+        if mom2_long < mom2_trans:
+            mom2_long, mom2_trans = mom2_trans, mom2_long
+            phi -= 0.5*numpy.pi*numpy.sign(phi)
+        # Set the class members.
+        self.phi = phi
+        self.mom2_long = mom2_long
+        self.mom2_trans = mom2_trans
+   */
+  // Calculate the barycenter of the cluster a
+  double x0 = 0.;
+  double y0 = 0.;
+  double pulseHeight = 0.;
+  for (const event::Hit& hit : m_hits) {
+    x0 += hit.x * hit.counts;
+    y0 += hit.y * hit.counts;
+    pulseHeight += hit.counts;
+  }
+  x0 /= pulseHeight;
+  y0 /= pulseHeight;
+  //std::cout << x0 << " " << y0  << std::endl;
 }
 
 

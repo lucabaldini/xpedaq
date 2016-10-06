@@ -29,8 +29,8 @@ xpemonWindow::xpemonWindow(std::string preferencesFilePath,
 {
   const int pixelFromScreenLeft = 20;
   const int pixelFromScreenTop = 20;
-  const int pixelWidth = 1280;
-  const int pixelHeight = 768;
+  const int pixelWidth = 1260;
+  const int pixelHeight = 750;
   setGeometry(pixelFromScreenLeft, pixelFromScreenTop,
                     pixelWidth, pixelHeight);
   m_centralWidget   = new QWidget();

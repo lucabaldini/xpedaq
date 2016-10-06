@@ -52,6 +52,12 @@ void pHexagonMatrix::draw(QCustomPlot *parentPlot,
 }
 
 
+bool pHexagonMatrix::border(int index) const
+{
+  return (index % m_nCol == 0) || (index % m_nCol == m_nCol - 1) ||
+    (index / m_nCol == 0) || (index / m_nCol == m_nRow - 1);
+}
+
 double pHexagonMatrix::hexEdge()
 {
   return 0.57735026919*columnPitch(); // edge = col_pitch * 3**(-1/2)

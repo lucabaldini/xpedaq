@@ -51,12 +51,13 @@ class pHexagonMatrix
     void reset();
     
     //getters
-    pHexagon* hexagon(int i);
+    pHexagon* hexagon(int index);
     double columnPitch(){return m_columnPitch;}
     double rowPitch();
     double hexEdge();
     int nRow(){return m_nRow;}
     int nColumn(){return m_nCol;}
+    bool border(int index) const; 
     
     //iterator
     typedef std::vector<pHexagon*>::iterator matrixIterator;

@@ -26,10 +26,12 @@ with this program; if not, write to the Free Software Foundation Inc.,
 #include <iostream>
 #include <sstream>
 #include <iomanip>
+#include <limits.h>
 
 #include "pHexagonCoordinates.h"
-#include "pCluster.h"
 #include "pEventWindow.h"
+#include "pMomentsAnalysis.h"
+
 
 class pEvent: public pEventWindow
 {
@@ -63,6 +65,8 @@ class pEvent: public pEventWindow
     const_eventIterator end() {return m_hits.end();}
     
     void clusterize(int threshold);
+    
+    int doMomentsAnalysis();
 
     // Terminal formatting.
     std::ostream& fillStream(std::ostream& os) const;
@@ -73,7 +77,11 @@ class pEvent: public pEventWindow
   protected:
     
     std::vector<event::Hit> m_hits;  // hits
-    pCluster m_cluster;
+    pMomentsAnalysis m_momentsAnalysis;
+
+  private:
+
+    int minKey(const std::vector<int> &key) const;
        
 };
 

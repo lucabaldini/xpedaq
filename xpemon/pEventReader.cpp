@@ -105,6 +105,7 @@ void pEventReader::readPendingDatagram()
     m_lastEvent = pEvent(p.xmin(evt), p.xmax(evt), p.ymin(evt), p.ymax(evt),
                          curHitMap);
     m_lastEvent.clusterize(m_zeroSupThreshold);
+    m_lastEvent.doMomentsAnalysis();
   }
   //std::cout << cluster;
   // Here we release the memory. Using the data block

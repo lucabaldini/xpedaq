@@ -24,6 +24,7 @@ with this program; if not, write to the Free Software Foundation Inc.,
 
 #include <iostream>
 
+
 /* Class describing the outcome of a moments analysis. */
 
 class pMomentsAnalysis
@@ -32,7 +33,7 @@ class pMomentsAnalysis
   
     pMomentsAnalysis();
 
-    int run();
+    //int run(const pEvent event);
     //void run(event);
     //void run(event, threshold);
     //void run(event, threshold, pivot);
@@ -48,11 +49,11 @@ class pMomentsAnalysis
 
     /*! \brief The x coordinate of the pivot point.
      */
-    double m_xPivot;
+    double m_x0;
 
     /*! \brief The y coordinate of the pivot point.
      */
-    double m_yPivot;
+    double m_y0;
     
     /*! \brief The azimuthal angle of the major axis of the charge distribution.
      */

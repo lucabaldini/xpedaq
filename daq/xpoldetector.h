@@ -38,6 +38,7 @@ namespace event
     double x;
     double y;
     adc_count_t counts;
+    int clusterId;
   };
 }
 

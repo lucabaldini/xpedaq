@@ -85,7 +85,6 @@ HEADERS += pHexagonMatrix.h
 HEADERS += pEventDisplay.h
 HEADERS += pEvent.h
 HEADERS += pEventWindow.h
-HEADERS += pCluster.h
 HEADERS += pMomentsAnalysis.h
 
 SOURCES += xpolgui.cpp
@@ -138,7 +137,6 @@ SOURCES += xpemonPlotOptions.cpp
 SOURCES += pMonitorTab.cpp
 SOURCES += pEventDisplayTab.cpp
 SOURCES += pHexagonCoordinates.cpp
-SOURCES += pCluster.cpp
 SOURCES += pMomentsAnalysis.cpp
 SOURCES += pEvent.cpp
 SOURCES += pEventWindow.cpp

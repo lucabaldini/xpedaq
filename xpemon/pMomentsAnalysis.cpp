@@ -23,18 +23,12 @@ with this program; if not, write to the Free Software Foundation Inc.,
 
 
 pMomentsAnalysis::pMomentsAnalysis() :
-  m_xPivot(0.),
-  m_yPivot(0.),  
+  m_x0(0.),
+  m_y0(0.),  
   m_phi(0.),
   m_mom2Trans(-1.),
   m_mom2Long(-1.),
   m_statusCode(UNDEFINED)
 {
-  
-}
-
-
-int pMomentsAnalysis::run()
-{
-  return UNDEFINED;
+  // Do-nothing.
 }
