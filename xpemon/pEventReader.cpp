@@ -64,48 +64,35 @@ void pEventReader::readPendingDatagram()
       return;
     }
     m_isContentChanged = true;    
-    emit eventRead(p.xmin(evt), p.xmax(evt), p.ymin(evt), p.ymax(evt));
     int nPixel = p.numPixels(evt);
+    //if (nPixel < 400)  // remove noise events
+    //  continue;
+    emit eventRead(p.xmin(evt), p.xmax(evt), p.ymin(evt), p.ymax(evt));
     m_windowSizeHist -> fill(static_cast<double> (nPixel));
     event::Adc_vec_t curHitMap;
     curHitMap.resize(nPixel);
-    double adcSum = 0;
-    unsigned int highestX = 0;
-    unsigned int highestY = 0;
-    adc_count_t maxVal = 0; //counts in the highest pixels
     unsigned int x = 1000; //initialize to non-physical value
     unsigned int y = 1000; //initialize to non-physical value
     adc_count_t height = 0;
-    double xBarycenter = 0.;
-    double yBarycenter = 0.;
     for (int index = 0; index < nPixel; ++index)
     {
       p.readPixel(evt, index, x, y, height);
-      if (height < m_zeroSupThreshold) { height = 0.;}
+      if (height < m_zeroSupThreshold)
+        {height = 0;}
       curHitMap.at(index) = height;
       m_hitMap -> fill(x, y, static_cast<double> (height));
-      adcSum += height;
-      if (height > maxVal)
-      {
-        highestX = x;
-        highestY = y;
-        maxVal = height;
-      }
-      xBarycenter += height * x;
-      yBarycenter += height * y;
-    }
-    if (adcSum > 0)
-    {
-      m_pulseHeightHist -> fill(adcSum);
-      emit highestPixelFound(highestX, highestY);
-      xBarycenter /= adcSum;
-      yBarycenter /= adcSum;
-      emit barycenterRead(xBarycenter, yBarycenter);
     }
     m_lastEvent = pEvent(p.xmin(evt), p.xmax(evt), p.ymin(evt), p.ymax(evt),
-                         curHitMap);
+                         curHitMap, m_zeroSupThreshold);
+    if (m_lastEvent.totalAdcCounts() < 1)
+      continue;
     m_lastEvent.clusterize(m_zeroSupThreshold);
-    m_lastEvent.doMomentsAnalysis();
+    m_lastEvent.doMomentsAnalysis();                         
+    m_pulseHeightHist -> fill(m_lastEvent.totalAdcCounts());
+    m_modulationHist -> fill(m_lastEvent.phi());
+    emit highestPixelFound(m_lastEvent.highestPixel().x,
+                           m_lastEvent.highestPixel().y);
+    emit barycenterRead(m_lastEvent.xBarycenter(), m_lastEvent.yBarycenter());  
   }
   //std::cout << cluster;
   // Here we release the memory. Using the data block
@@ -130,6 +117,7 @@ void pEventReader::updateRequested()
   if (!m_isContentChanged) return;
   emit pulseHeightUpdated();
   emit windowSizeUpdated();
+  emit modulationUpdated();
   emit hitMapUpdated();
   emit evtDisplayUpdated(m_lastEvent);
   m_isContentChanged = false;                         

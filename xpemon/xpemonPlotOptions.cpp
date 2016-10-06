@@ -31,9 +31,9 @@ const double xpemonPlotOptions::xPixelMax =
                               static_cast<double> (xpoldetector::kNumPixelsX);
 const double xpemonPlotOptions::yPixelMax =
                               static_cast<double> (xpoldetector::kNumPixelsY);
-const unsigned int xpemonPlotOptions::modulationNbins = 180;
-const double xpemonPlotOptions::modulationThetaMin = 0.;
-const double xpemonPlotOptions::modulationThetaMax = 6.19;
+const unsigned int xpemonPlotOptions::modulationNbins = 50;
+const double xpemonPlotOptions::modulationThetaMin = - 1.6;
+const double xpemonPlotOptions::modulationThetaMax = 1.6;
 
 QCPColorGradient xpemonPlotOptions::loadRedToWhiteGradient(){
   QCPColorGradient gradient = QCPColorGradient();

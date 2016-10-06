@@ -24,8 +24,10 @@ with this program; if not, write to the Free Software Foundation Inc.,
 
 pEvent::pEvent(int firstCol, int lastCol,
                int firstRow, int lastRow,
-               const event::Adc_vec_t& adcCounts):
-               pEventWindow(firstCol, lastCol, firstRow, lastRow)
+               const event::Adc_vec_t& adcCounts, 
+               adc_count_t threshold):
+               pEventWindow(firstCol, lastCol, firstRow, lastRow),
+               m_threshold(threshold)
 {
   if (adcCounts.size() != nRows() * nColumns()) {
     std::cout << "WARNING: Buffer does not fit window size passed"
@@ -36,24 +38,23 @@ pEvent::pEvent(int firstCol, int lastCol,
     pixelToCoord(pixelCoord(i), x, y);
     m_hits.push_back(event::Hit{x, y, adcCounts.at(i), -1});
   }
+  m_highestPixelAddress = findHighestPixel();
+  m_pixelHeight = pixelSum(m_threshold);
 }
 
 
-adc_count_t pEvent::totalAdcCounts() const
+adc_count_t pEvent::pixelSum(adc_count_t threshold) const
 {
-  using namespace event;
   adc_count_t sum = 0; 
-  for(std::vector<event::Hit>::const_iterator it = m_hits.begin();
-      it != m_hits.end();
-      ++it)
-   {
-     sum += (*it).counts;
-   }
-   return sum;
+  for (const event::Hit& hit : m_hits){
+    if (hit.counts >= threshold)
+      sum += hit.counts;
+  }
+  return sum;
 }
 
 
-int pEvent::highestPixelAddress() const
+int pEvent::findHighestPixel() const
 {
   int maxPos = -1;
   int maxVal = 0;
@@ -66,31 +67,12 @@ int pEvent::highestPixelAddress() const
   return maxPos;
 }
 
-
-const event::Hit& pEvent::highestPixel() const
-{
-  return m_hits.at(highestPixelAddress());
-}
-
-
-/* Utility function for  finding the minimum key between those not yet
-   included in the MST.
+/* Clustering based on a modified Prim's Minimum Spanning Tree (MST)
+   algorithm (http://www.geeksforgeeks.org/greedy-algorithms-set-5-prims-minimum-spanning-tree-mst-2/)
+   The MST is built starting from the highest pixel and connecting adjacent
+   pixels (excluding those under threshold).
+   The MST constructed is the cluster.
 */
-int pEvent::minKey(const std::vector<int> &key) const
-{
-   // Initialize min value
-   int min = INT_MAX;
-   int minIndex = -1;
-   for (int v = 0; v < key.size(); v++){
-     if (m_hits.at(v).clusterId < 0 && key.at(v) < min){
-       min = key.at(v);
-       minIndex = v;
-     }
-   }
-   return minIndex;
-}
-
-
 void pEvent::clusterize(int threshold)
 {
   int dim = evtSize();
@@ -105,7 +87,7 @@ void pEvent::clusterize(int threshold)
   
   // Start from higest pixel in MST.
   // Make key 0 so that this pixel is picked as first pixel
-   int highestAddress = highestPixelAddress();
+  int highestAddress = highestPixelAddress();
   key[highestAddress] = 0;
   parent[highestAddress] = highestAddress; //This pixel is root of MST
 
@@ -144,52 +126,98 @@ void pEvent::clusterize(int threshold)
 }
 
 
+/* Utility function for  finding the minimum key between those not yet
+   included in the MST.
+*/
+int pEvent::minKey(const std::vector<int> &key) const
+{
+   // Initialize min value
+   int min = INT_MAX;
+   int minIndex = -1;
+   for (unsigned int v = 0; v < key.size(); v++){
+     if (m_hits.at(v).clusterId < 0 && key.at(v) < min){
+       min = key.at(v);
+       minIndex = v;
+     }
+   }
+   return minIndex;
+}
+
+
 int pEvent::doMomentsAnalysis()
 {
- /*
- if pivot is None:
-            pivot = cluster.baricenter
-        self.pivot = pivot
-        w = cluster.adc_values*weights
-        wsum = numpy.sum(w)
-        # Calculate the offsets with respect to the pivot.
-        dx = (cluster.x - pivot.x())
-        dy = (cluster.y - pivot.y())
-        # Solve for the angle of the principal axis (note that at this point
-        # phi is comprised between -pi/2 and pi/2 and might indicate either
-        # the major or the minor axis of the tensor of inertia).
-        A = numpy.sum(dx*dy*w)
-        B = numpy.sum((dy**2. - dx**2.)*w)
-        phi = -0.5*numpy.arctan2(2.*A, B)
-        # Rotate by an angle phi and calculate the eigenvalues of the tensor
-        # of inertia.
-        xp = numpy.cos(phi)*dx + numpy.sin(phi)*dy
-        yp = -numpy.sin(phi)*dx + numpy.cos(phi)*dy
-        mom2_long = numpy.sum((xp**2.)*w)/wsum
-        mom2_trans = numpy.sum((yp**2.)*w)/wsum
-        # We want mom2_long to be the highest eigenvalue, so we need to
-        # check wheteher we have to swap the eigenvalues, here. Note that
-        # at this point phi is still comprised between -pi/2 and pi/2.
-        if mom2_long < mom2_trans:
-            mom2_long, mom2_trans = mom2_trans, mom2_long
-            phi -= 0.5*numpy.pi*numpy.sign(phi)
-        # Set the class members.
-        self.phi = phi
-        self.mom2_long = mom2_long
-        self.mom2_trans = mom2_trans
-   */
   // Calculate the barycenter of the cluster a
+  adc_count_t threshold = m_threshold;
   double x0 = 0.;
   double y0 = 0.;
   double pulseHeight = 0.;
+  double weight = 1.;
+  std::vector<double> w;
+  double wsum = 0.;
   for (const event::Hit& hit : m_hits) {
-    x0 += hit.x * hit.counts;
-    y0 += hit.y * hit.counts;
-    pulseHeight += hit.counts;
+    if (hit.counts >= threshold && hit.clusterId == 0){
+      x0 += hit.x * hit.counts;
+      y0 += hit.y * hit.counts;
+      pulseHeight += hit.counts;
+      w.push_back(hit.counts * weight);
+      wsum += hit.counts * weight;
+    }
   }
   x0 /= pulseHeight;
   y0 /= pulseHeight;
-  //std::cout << x0 << " " << y0  << std::endl;
+  // Calculate the offsets with respect to the barycenter.
+  std::vector<double> dx;
+  std::vector<double> dy;
+  for (const event::Hit& hit : m_hits){
+    if (hit.counts >= threshold && hit.clusterId == 0){
+      dx.push_back(hit.x - x0);
+      dy.push_back(hit.y - y0);
+    }
+  }
+  // Solve for the angle of the principal axis (note that at this point
+  // phi is comprised between -pi/2 and pi/2 and might indicate either
+  // the major or the minor axis of the tensor of inertia).
+  double A = 0;
+  double B = 0;
+  for (unsigned int i = 0; i < dx.size(); ++i){
+    A += (dx.at(i) * dy.at(i) * w.at(i));
+    B += ((pow(dy.at(i), 2.) - pow(dx.at(i), 2.)) * w.at(i));
+  }
+  double phi = -0.5 * atan2(2*A, B);
+  // Rotate by an angle phi and calculate the eigenvalues of the tensor
+  // of inertia.
+  std::vector<double> xp;
+  std::vector<double> yp;
+  for (unsigned int i = 0; i < dx.size(); ++i){
+    xp.push_back(cos(phi) * dx.at(i) + sin(phi) * dy.at(i));
+    yp.push_back(sin(phi) * dx.at(i) + cos(phi) * dy.at(i));
+  }
+  double mom2long = 0.;
+  double mom2trans = 0.;
+  for (unsigned int i = 0; i < xp.size(); ++i){
+    mom2long += (pow(xp.at(i), 2.) * w.at(i));
+    mom2trans += (pow(yp.at(i), 2.) * w.at(i));
+  }
+  mom2long /= wsum;
+  mom2trans /= wsum;
+  // We want mom2long to be the highest eigenvalue, so we need to
+  // check wheteher we have to swap the eigenvalues, here. Note that
+  // at this point phi is still comprised between -pi/2 and pi/2.
+  if (mom2long < mom2trans){
+    double tmp = mom2long;
+    mom2long = mom2trans;
+    mom2trans = tmp;
+    phi -= 0.5 * M_PI * (2 * (phi > 0) -1);
+  }
+  // Set the class members.
+  m_momentsAnalysis.setX0(x0);
+  m_momentsAnalysis.setY0(y0);
+  m_momentsAnalysis.setPhi(phi);
+  m_momentsAnalysis.setMom2long(mom2long);
+  m_momentsAnalysis.setMom2trans(mom2trans);
+  //std::cout << x0 << " " << y0 << " " << phi << " " << mom2long << " " 
+  //          << mom2trans << std::endl;
+  return 0;
 }
 
 

@@ -136,12 +136,12 @@ void xpemonWindow::setupEvtReaderConnections()
   connect(m_eventReader, SIGNAL(eventRead(unsigned int, unsigned int,
                                           unsigned int, unsigned int)),
           m_infoBoxWidget, SLOT(updateWindowSize(unsigned int, unsigned int,
-                                                 unsigned int, unsigned int)));
+                                                unsigned int, unsigned int)));
                                                  
-  connect(m_eventReader, SIGNAL(highestPixelFound(unsigned int,
-                                                  unsigned int)),
-          m_infoBoxWidget, SLOT(updateMaxCoordinates(unsigned int,
-                                                     unsigned int)));
+  connect(m_eventReader, SIGNAL(highestPixelFound(double,
+                                                  double)),
+          m_infoBoxWidget, SLOT(updateMaxCoordinates(double,
+                                                     double)));
   connect(m_eventReader, SIGNAL(barycenterRead(double, double)),
           m_infoBoxWidget, SLOT(updateBarycenterCoordinates(double,
                                                             double)));

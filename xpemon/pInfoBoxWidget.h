@@ -43,9 +43,9 @@ class pInfoBoxWidget: public pQtGroupBoxWidget
   public slots:
   
     void updateCounter();
-    void updateWindowSize(unsigned int xmin, unsigned int xmax,
-                          unsigned int ymin, unsigned int ymax);
-    void updateMaxCoordinates(unsigned int x, unsigned int y);
+    void updateWindowSize(unsigned int colMin, unsigned int colMax,
+                          unsigned int rowMin, unsigned int rowMax);
+    void updateMaxCoordinates(double x, double y);
     void updateBarycenterCoordinates(double x, double y);
     void reset();
  

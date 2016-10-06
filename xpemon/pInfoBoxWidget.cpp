@@ -85,15 +85,17 @@ void pInfoBoxWidget::updateCounter()
 }
 
 
-void pInfoBoxWidget::updateWindowSize(unsigned int xmin, unsigned int xmax,
-                                      unsigned int ymin, unsigned int ymax)
+void pInfoBoxWidget::updateWindowSize(unsigned int colMin,
+                                      unsigned int colMax,
+                                      unsigned int rowMin,
+                                      unsigned int rowMax)
 {
-  unsigned int windowSize = (xmax - xmin + 1) * (ymax - ymin + 1);
+  unsigned int windowSize = (colMax - colMin + 1) * (rowMax - rowMin + 1);
   m_windowSizeEdit -> setText(QString::number(windowSize));
 }
 
 
-void pInfoBoxWidget::updateMaxCoordinates(unsigned int x, unsigned int y)
+void pInfoBoxWidget::updateMaxCoordinates(double x, double y)
 {
   m_highestXEdit -> setText(QString::number(x));
   m_highestYEdit -> setText(QString::number(y));

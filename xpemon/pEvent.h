@@ -27,6 +27,7 @@ with this program; if not, write to the Free Software Foundation Inc.,
 #include <sstream>
 #include <iomanip>
 #include <limits.h>
+#include <cmath>
 
 #include "pHexagonCoordinates.h"
 #include "pEventWindow.h"
@@ -42,7 +43,8 @@ class pEvent: public pEventWindow
     
     pEvent(int firstCol, int lastCol,
            int firstRow, int lastRow,
-           const event::Adc_vec_t &adcCounts);
+           const event::Adc_vec_t &adcCounts,
+           adc_count_t threshold);
   public:
     
     /* Getters */
@@ -55,9 +57,18 @@ class pEvent: public pEventWindow
     //access by cubic coordinates
     const event::Hit& operator() (const CubeCoordinate& p) const
       {return m_hits.at(index(p));} 
-    adc_count_t totalAdcCounts() const; // sum of all pulse heights
-    int highestPixelAddress() const; //index of highest Pixel
-    const event::Hit& highestPixel() const; //highest Pixel
+    inline int highestPixelAddress() const //index of highest Pixel
+      {return m_highestPixelAddress;}
+    inline const event::Hit& highestPixel() const //highest Pixel
+      {return m_hits.at(highestPixelAddress());}
+    inline adc_count_t totalAdcCounts() const // sum of all pulse heights
+      {return m_pixelHeight;}
+    inline double xBarycenter() const // x coordinate of the barycenter
+      {return m_momentsAnalysis.x0();}
+    inline double yBarycenter() const // y coordinate of the barycenter
+      {return m_momentsAnalysis.y0();}
+    inline double phi() const // y coordinate of the barycenter
+      {return m_momentsAnalysis.phi();}      
     
     //iterator
     typedef std::vector<event::Hit>::const_iterator const_eventIterator;
@@ -76,13 +87,17 @@ class pEvent: public pEventWindow
     
   protected:
     
-    std::vector<event::Hit> m_hits;  // hits
-    pMomentsAnalysis m_momentsAnalysis;
+    adc_count_t m_threshold; // zero suppression threshold
+    int m_highestPixelAddress;  // address of the highest pixel
+    adc_count_t m_pixelHeight;  // sum of all pixel counts
+    std::vector<event::Hit> m_hits;  // hits vector
+    pMomentsAnalysis m_momentsAnalysis;  // moment analysis info
 
   private:
 
+    int findHighestPixel() const;
+    adc_count_t pixelSum(adc_count_t threshold) const;
     int minKey(const std::vector<int> &key) const;
-       
 };
 
 #endif //PEVENT_H

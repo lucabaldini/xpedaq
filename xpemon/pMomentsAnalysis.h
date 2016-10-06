@@ -39,6 +39,20 @@ class pMomentsAnalysis
     //void run(event, threshold, pivot);
     //void run(event, threshold, pivot, weights)
     
+    // Getters
+    double x0() const {return m_x0;}
+    double y0() const {return m_y0;}
+    double phi() const {return m_phi;}
+    double mom2long() const {return m_mom2Long;}        
+    double mom2trans() const {return m_mom2Trans;}
+    
+    // Setters
+    void setX0(double x0) {m_x0 = x0;}
+    void setY0(double y0) {m_y0 = y0;}
+    void setPhi(double phi) {m_phi = phi;}
+    void setMom2long(double mom2long) {m_mom2Long = mom2long;}
+    void setMom2trans(double mom2trans) {m_mom2Trans = mom2trans;}
+    
     // Terminal formatting.
     std::ostream& fillStream(std::ostream& os) const;
     friend std::ostream& operator<<(std::ostream& os,

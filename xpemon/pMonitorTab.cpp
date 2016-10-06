@@ -63,7 +63,7 @@ void pMonitorTab::setupWindowSizePlot()
 void pMonitorTab::setupModulationPlot()
 {
   pBasicPlotOptions modulationOptions = pBasicPlotOptions("Modulation",
-                                             "theta", "n. evt");
+                                             "phi", "n. evt");
   m_modulationHist = new pHistogram(modulationNbins, modulationThetaMin,
                                     modulationThetaMax);
   m_modulationPlot = new pHistogramPlot(m_modulationHist, modulationOptions);
@@ -116,6 +116,8 @@ void pMonitorTab::resetPlot()
   m_pulseHeightPlot -> updateDisplay();
   m_windowSizeHist -> reset();
   m_windowSizePlot -> updateDisplay();
+  m_modulationHist -> reset();
+  m_modulationPlot -> updateDisplay();
   m_hitMap -> reset();
   m_hitMapPlot -> updateDisplay();
 }

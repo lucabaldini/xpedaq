@@ -58,7 +58,7 @@ class pEventReader: public QObject
     void stopped();
     void eventRead(unsigned int xmin, unsigned int xmax,
                    unsigned int ymin, unsigned int ymax);
-    void highestPixelFound(unsigned int highestX, unsigned int highestY);
+    void highestPixelFound(double highestX, double highestY);
     void barycenterRead(double xBarycenter, double yBarycenter);
     
     void pulseHeightUpdated();
