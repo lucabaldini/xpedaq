@@ -1,4 +1,9 @@
 
+* Clustering implemented in the monitoring.
+* Single event display now implemented on a hexagonal matrix.
+* Added a single tab for the single event display.
+* Lots of relatively minor tweaks in the monitoring.
+
 -------------------------------------------------------------------------------
 xpedaq (0.12.0) - Tue, 09 Aug 2016 10:46:35 +0200
 -------------------------------------------------------------------------------
