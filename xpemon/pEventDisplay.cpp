@@ -28,7 +28,10 @@ pEventDisplay::pEventDisplay(pColorMapOptions options) : m_options(options)
   
   //Initialize axes with default range
   axisRect()->setupFullAxesBox(false);
-
+  axisRect()->setAutoMargins(QCP::msNone);
+  QMargins *mapMargins = new QMargins(60, 50, 65, 50);
+  axisRect()->setMargins(*mapMargins);
+  
   xAxis->setRange(-7.4875, 7.4875);
   xAxis->setLabel(m_options.m_xTitle);
   
@@ -56,11 +59,16 @@ pEventDisplay::pEventDisplay(pColorMapOptions options) : m_options(options)
   xAxis->grid()->setSubGridVisible(false);
   yAxis->grid()->setSubGridVisible(false);
   
-  //Initialize the color scale:
+  //Initialize the color scale: 
   m_dataRange = QCPRange(0., 1.);
   m_colorScale = new QCPColorScale(this);
-  plotLayout()->addElement(0, 1, m_colorScale);
-  m_colorScale->setType(QCPAxis::atRight);
+  m_colorScale->setAutoMargins(QCP::msNone);
+  QCPLayoutGrid *subLayout = new QCPLayoutGrid;
+  plotLayout()->addElement(0, 1, subLayout);
+  subLayout->addElement(0, 0, m_colorScale);
+  subLayout->setMinimumSize(100, 10);   // minimum width=100
+  QMargins *subMargins = new QMargins(0, 50, 0, 50);
+  subLayout->setMargins(*subMargins);
   m_colorScale->axis()->setLabel(m_options.m_zTitle);
   m_colorScale->setDataRange(m_dataRange);
   m_colorScale->setGradient(m_options.m_gradientType);
@@ -69,7 +77,7 @@ pEventDisplay::pEventDisplay(pColorMapOptions options) : m_options(options)
   //Align things using a margin group:
   m_marginGroup = new QCPMarginGroup(this);
   axisRect()->setMarginGroup(QCP::msBottom|QCP::msTop, m_marginGroup);
-  m_colorScale->setMarginGroup(QCP::msBottom|QCP::msTop, m_marginGroup);
+  subLayout->setMarginGroup(QCP::msBottom|QCP::msTop, m_marginGroup);
   
   //Initialize the matrix
   m_hexMatrix = new pHexagonMatrix(xpoldetector::kColPitch);  
@@ -115,6 +123,25 @@ void pEventDisplay::updateDataRange()
 
 void pEventDisplay::updateAxesRange()
 {
+  double padding = 0.1; // Padding in mm.
+  double xmin, xmax, ymin, ymax, x0, y0, side;
+  pixelToCoord(m_event.firstCol(), m_event.firstRow(), xmin, ymax);
+  pixelToCoord(m_event.lastCol(), m_event.lastRow(), xmax, ymin);
+  // Add half a column pitch to the maximum coordinate, as the columns are
+  // staggered.
+  xmax += 0.5*m_hexMatrix->columnPitch();
+  // Define the window.
+  x0 = 0.5*(xmax + xmin);
+  y0 = 0.5*(ymax + ymin);
+  side = 0.5*std::max(xmax - xmin, ymax - ymin);
+  xmin = x0 - side - padding;
+  xmax = x0 + side + padding;
+  ymin = y0 - side - padding;
+  ymax = y0 + side + padding;
+  xAxis->setRange(xmin, xmax);
+  yAxis->setRange(ymin, ymax);
+  std::cout << axisRect()->width() << " " << axisRect()->height()  << std::endl;
+   
   int maxRange = std::max(m_event.lastRow() - m_event.firstRow() + 1,
                           m_event.lastCol() - m_event.firstCol() + 1);
   int halfColExtension = (maxRange -
@@ -125,12 +152,12 @@ void pEventDisplay::updateAxesRange()
   int wideColMax = m_event.lastCol() + halfColExtension + 1;
   int wideRowMin = m_event.firstRow() - halfRowExtension - 1;
   int wideRowMax = m_event.lastRow() + halfRowExtension + 1;
-  double xmin, xmax, ymin, ymax;
+  //double xmin, xmax, ymin, ymax;
   //Note that y is decreasing with row number, so (0,0) is left uppermost. 
   pixelToCoord(wideColMin, wideRowMax, xmin, ymin);
   pixelToCoord(wideColMax, wideRowMin, xmax, ymax);
-  xAxis->setRange(xmin, xmax);
-  yAxis->setRange(ymin, ymax);
+  //xAxis->setRange(xmin, xmax);
+  //yAxis->setRange(ymin, ymax);
   xAxis2->setRange(wideColMin, wideColMax);
   yAxis2->setRange(wideRowMin, wideRowMax);  
 }
