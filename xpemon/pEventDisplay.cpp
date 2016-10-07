@@ -143,8 +143,8 @@ void pEventDisplay::updateAxesRange()
   ymax = y0 + side + padding;
   xAxis->setRange(xmin, xmax);
   yAxis->setRange(ymin, ymax);
-  std::cout << axisRect()->width() << " " << axisRect()->height()  << std::endl;
-   
+  //std::cout << axisRect()->width() << " " << axisRect()->height()  << std::endl;
+ 
   int maxRange = std::max(m_event.lastRow() - m_event.firstRow() + 1,
                           m_event.lastCol() - m_event.firstCol() + 1);
   int halfColExtension = (maxRange -

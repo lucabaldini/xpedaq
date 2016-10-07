@@ -39,41 +39,46 @@ pMonitorTab::pMonitorTab(): pQtCustomTab("Monitor Plots")
 
 void pMonitorTab::setupPulseHeightPlot()
 {
-  pBasicPlotOptions pulseHeightOptions = pBasicPlotOptions("Acd sum",
-                             "Total over threshold evt adc counts", "n. evt");
+  pBasicPlotOptions pulseHeightOptions = pBasicPlotOptions("ADC sum",
+                                              "Pulse height [ADC counts]",
+                                              "Events/bin");
   m_pulseHeightHist = new pHistogram(pulseHeightNbins, pulseHeightXmin,
                                      pulseHeightXmax);
   m_pulseHeightPlot = new pHistogramPlot(m_pulseHeightHist,
                                          pulseHeightOptions);
   m_groupBoxGridLayout -> addWidget(m_pulseHeightPlot, 0, 0);
+  m_pulseHeightPlot -> setPen(Qt::NoPen);
 }
 
 
 void pMonitorTab::setupWindowSizePlot()
 {
   pBasicPlotOptions windowSizeOptions = pBasicPlotOptions("Window size",
-                                             "Window size (pixel)", "n. evt");
+                                             "Window size [pixel]",
+                                             "Events/bin");
   m_windowSizeHist = new pHistogram(windowSizeNbins, windowSizeXmin,
                                     windowSizeXmax);
   m_windowSizePlot = new pHistogramPlot(m_windowSizeHist, windowSizeOptions);
   m_groupBoxGridLayout -> addWidget(m_windowSizePlot, 0, 1);
+  m_windowSizePlot -> setPen(Qt::NoPen);
 }
 
 
 void pMonitorTab::setupModulationPlot()
 {
   pBasicPlotOptions modulationOptions = pBasicPlotOptions("Modulation",
-                                             "phi", "n. evt");
+                                                   "Phi [rad]", "Events/bin");
   m_modulationHist = new pHistogram(modulationNbins, modulationThetaMin,
                                     modulationThetaMax);
   m_modulationPlot = new pHistogramPlot(m_modulationHist, modulationOptions);
+  m_modulationPlot -> setPen(Qt::NoPen);
   m_groupBoxGridLayout -> addWidget(m_modulationPlot, 1, 1);
 }
 
 
 void pMonitorTab::setupHitMap()
 {
-  pColorMapOptions hitMapOptions ("Hit map", "x", "y", "counts",
+  pColorMapOptions hitMapOptions ("Hit map", "Column", "Row", "ADC counts",
                                   QCPColorGradient::gpThermal);
   m_hitMap = new pMap(xpoldetector::kNumPixelsX, -0.5, xPixelMax - 0.5,
                       xpoldetector::kNumPixelsY, -0.5, yPixelMax - 0.5);

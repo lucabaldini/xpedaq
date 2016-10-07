@@ -77,18 +77,18 @@ void pEventReader::readPendingDatagram()
     for (int index = 0; index < nPixel; ++index)
     {
       p.readPixel(evt, index, x, y, height);
-      if (height < m_zeroSupThreshold)
-        {height = 0;}
+      //if (height < m_zeroSupThreshold)
+      //  {height = 0;}
       curHitMap.at(index) = height;
       m_hitMap -> fill(x, y, static_cast<double> (height));
     }
     m_lastEvent = pEvent(p.xmin(evt), p.xmax(evt), p.ymin(evt), p.ymax(evt),
                          curHitMap, m_zeroSupThreshold);
-    if (m_lastEvent.totalAdcCounts() < 1)
+    if (m_lastEvent.totalPulseHeight() < 1)
       continue;
     m_lastEvent.clusterize(m_zeroSupThreshold);
     m_lastEvent.doMomentsAnalysis();                         
-    m_pulseHeightHist -> fill(m_lastEvent.totalAdcCounts());
+    m_pulseHeightHist -> fill(m_lastEvent.clusterPulseHeight());
     m_modulationHist -> fill(m_lastEvent.phi());
     emit highestPixelFound(m_lastEvent.highestPixel().x,
                            m_lastEvent.highestPixel().y);

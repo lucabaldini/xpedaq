@@ -61,14 +61,18 @@ class pEvent: public pEventWindow
       {return m_highestPixelAddress;}
     inline const event::Hit& highestPixel() const //highest Pixel
       {return m_hits.at(highestPixelAddress());}
-    inline adc_count_t totalAdcCounts() const // sum of all pulse heights
-      {return m_pixelHeight;}
+    inline adc_count_t totalPulseHeight() const // sum of all pulse heights
+      {return m_totalPulseHeight;}
+    inline adc_count_t clusterPulseHeight() const // sum of all pixel in cluster
+      {return m_clusterPulseHeight;}
     inline double xBarycenter() const // x coordinate of the barycenter
       {return m_momentsAnalysis.x0();}
     inline double yBarycenter() const // y coordinate of the barycenter
       {return m_momentsAnalysis.y0();}
     inline double phi() const // y coordinate of the barycenter
-      {return m_momentsAnalysis.phi();}      
+      {return m_momentsAnalysis.phi();}
+    inline int clusterSize() const // number of pixel in main cluster
+      {return m_clusterSize;}      
     
     //iterator
     typedef std::vector<event::Hit>::const_iterator const_eventIterator;
@@ -89,8 +93,10 @@ class pEvent: public pEventWindow
     
     adc_count_t m_threshold; // zero suppression threshold
     int m_highestPixelAddress;  // address of the highest pixel
-    adc_count_t m_pixelHeight;  // sum of all pixel counts
+    adc_count_t m_totalPulseHeight;  // sum of all pixel counts
+    adc_count_t m_clusterPulseHeight; // sum of all pixel in cluster
     std::vector<event::Hit> m_hits;  // hits vector
+    int m_clusterSize;
     pMomentsAnalysis m_momentsAnalysis;  // moment analysis info
 
   private:

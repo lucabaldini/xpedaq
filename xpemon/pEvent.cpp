@@ -27,7 +27,7 @@ pEvent::pEvent(int firstCol, int lastCol,
                const event::Adc_vec_t& adcCounts, 
                adc_count_t threshold):
                pEventWindow(firstCol, lastCol, firstRow, lastRow),
-               m_threshold(threshold)
+               m_threshold(threshold), m_clusterSize(0)
 {
   if (adcCounts.size() != nRows() * nColumns()) {
     std::cout << "WARNING: Buffer does not fit window size passed"
@@ -39,7 +39,8 @@ pEvent::pEvent(int firstCol, int lastCol,
     m_hits.push_back(event::Hit{x, y, adcCounts.at(i), -1});
   }
   m_highestPixelAddress = findHighestPixel();
-  m_pixelHeight = pixelSum(m_threshold);
+  m_totalPulseHeight= pixelSum(m_threshold);
+  m_clusterPulseHeight = 0;
 }
 
 
@@ -47,7 +48,7 @@ adc_count_t pEvent::pixelSum(adc_count_t threshold) const
 {
   adc_count_t sum = 0; 
   for (const event::Hit& hit : m_hits){
-    if (hit.counts >= threshold)
+    if (hit.counts > threshold)
       sum += hit.counts;
   }
   return sum;
@@ -104,6 +105,8 @@ void pEvent::clusterize(int threshold)
       break;
     // Else add the picked pixel to the MST Set
     m_hits[minKeyId].clusterId = 0;
+    m_clusterSize += 1;
+    m_clusterPulseHeight += m_hits[minKeyId].counts;
     
     /* Update key value and pixel index of the adjacent pixels of
        the picked pixel. Consider only those pixels which are not yet
@@ -113,7 +116,7 @@ void pEvent::clusterize(int threshold)
         /* Update the key only if distance from minKeyId is smaller than
            key[v] and is less than 2 (adjacent pixels).
            Ignore under threshold pixels. */
-        if (m_hits.at(v).counts >= threshold){
+        if (m_hits.at(v).counts > threshold){
           int dist = cubeDistance(pixelCoord(minKeyId), pixelCoord(v));
           if (dist && dist < 2 && dist <  key[v]){
             parent[v] = minKeyId;
@@ -151,16 +154,19 @@ int pEvent::doMomentsAnalysis()
   double x0 = 0.;
   double y0 = 0.;
   double pulseHeight = 0.;
-  double weight = 1.;
+  std::vector<double> weights;
+  weights.resize(m_hits.size());
+  for (double& weight : weights)
+    {weight = 1.;}
   std::vector<double> w;
   double wsum = 0.;
-  for (const event::Hit& hit : m_hits) {
-    if (hit.counts >= threshold && hit.clusterId == 0){
-      x0 += hit.x * hit.counts;
-      y0 += hit.y * hit.counts;
-      pulseHeight += hit.counts;
-      w.push_back(hit.counts * weight);
-      wsum += hit.counts * weight;
+  for (unsigned int index =0; index < m_hits.size(); ++index) {
+    if (m_hits[index].counts > threshold && m_hits[index].clusterId == 0){
+      x0 += m_hits[index].x * m_hits[index].counts;
+      y0 += m_hits[index].y * m_hits[index].counts;
+      pulseHeight += m_hits[index].counts;
+      w.push_back(m_hits[index].counts * weights[index]);
+      wsum += m_hits[index].counts * weights[index];
     }
   }
   x0 /= pulseHeight;
@@ -169,7 +175,7 @@ int pEvent::doMomentsAnalysis()
   std::vector<double> dx;
   std::vector<double> dy;
   for (const event::Hit& hit : m_hits){
-    if (hit.counts >= threshold && hit.clusterId == 0){
+    if (hit.counts > threshold && hit.clusterId == 0){
       dx.push_back(hit.x - x0);
       dy.push_back(hit.y - y0);
     }
@@ -190,7 +196,7 @@ int pEvent::doMomentsAnalysis()
   std::vector<double> yp;
   for (unsigned int i = 0; i < dx.size(); ++i){
     xp.push_back(cos(phi) * dx.at(i) + sin(phi) * dy.at(i));
-    yp.push_back(sin(phi) * dx.at(i) + cos(phi) * dy.at(i));
+    yp.push_back(-sin(phi) * dx.at(i) + cos(phi) * dy.at(i));
   }
   double mom2long = 0.;
   double mom2trans = 0.;
@@ -215,8 +221,9 @@ int pEvent::doMomentsAnalysis()
   m_momentsAnalysis.setPhi(phi);
   m_momentsAnalysis.setMom2long(mom2long);
   m_momentsAnalysis.setMom2trans(mom2trans);
-  //std::cout << x0 << " " << y0 << " " << phi << " " << mom2long << " " 
-  //          << mom2trans << std::endl;
+  //std::cout << m_totalPulseHeight << " " << m_clusterPulseHeight << " "
+  //          << m_clusterSize << " " << x0 << " " << y0 << " "
+  //          << phi << " " << mom2long << " " << mom2trans << std::endl;
   return 0;
 }
 

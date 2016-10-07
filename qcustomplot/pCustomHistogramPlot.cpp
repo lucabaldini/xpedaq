@@ -50,6 +50,11 @@ void pCustomHistogramPlot::setKeyContent(double key, double value)
 } 
 
 
+void pCustomHistogramPlot::setPen (const QPen& pen){
+  m_bars -> setPen(pen);
+}
+
+
 void pCustomHistogramPlot::clearBars()
 {
   m_bars -> clearData();
