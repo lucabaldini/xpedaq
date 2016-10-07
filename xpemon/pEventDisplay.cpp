@@ -31,6 +31,9 @@ pEventDisplay::pEventDisplay(pColorMapOptions options) : m_options(options)
   axisRect()->setAutoMargins(QCP::msNone);
   QMargins *mapMargins = new QMargins(60, 50, 65, 50);
   axisRect()->setMargins(*mapMargins);
+  axisRect()->setMinimumSize(725, 700);
+  axisRect()->setMaximumSize(725, 700);
+  axisRect()->center();
   
   xAxis->setRange(-7.4875, 7.4875);
   xAxis->setLabel(m_options.m_xTitle);
@@ -77,7 +80,7 @@ pEventDisplay::pEventDisplay(pColorMapOptions options) : m_options(options)
   //Align things using a margin group:
   m_marginGroup = new QCPMarginGroup(this);
   axisRect()->setMarginGroup(QCP::msBottom|QCP::msTop, m_marginGroup);
-  subLayout->setMarginGroup(QCP::msBottom|QCP::msTop, m_marginGroup);
+  subLayout->setMarginGroup(QCP::msBottom|QCP::msTop, m_marginGroup);  
   
   //Initialize the matrix
   m_hexMatrix = new pHexagonMatrix(xpoldetector::kColPitch);  
@@ -159,7 +162,7 @@ void pEventDisplay::updateAxesRange()
   //xAxis->setRange(xmin, xmax);
   //yAxis->setRange(ymin, ymax);
   xAxis2->setRange(wideColMin, wideColMax);
-  yAxis2->setRange(wideRowMin, wideRowMax);  
+  yAxis2->setRange(wideRowMin, wideRowMax); 
 }
 
 

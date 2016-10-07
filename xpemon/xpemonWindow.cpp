@@ -29,7 +29,7 @@ xpemonWindow::xpemonWindow(std::string preferencesFilePath,
 {
   const int pixelFromScreenLeft = 20;
   const int pixelFromScreenTop = 20;
-  const int pixelWidth = 1130;
+  const int pixelWidth = 1150;
   const int pixelHeight = 750;
   setGeometry(pixelFromScreenLeft, pixelFromScreenTop,
                     pixelWidth, pixelHeight);
