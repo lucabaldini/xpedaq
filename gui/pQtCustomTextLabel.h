@@ -62,6 +62,9 @@ class pQtCustomTextLabel : public QLabel
   void setText(int value)
     {QLabel::setText(QString("%1").arg(value));}
   /*! \brief Set the widget text.*/
+  void setText(unsigned int value)
+    {QLabel::setText(QString("%1").arg(value));}
+  /*! \brief Set the widget text.*/
   void setText(double value)
     {QLabel::setText(QString("%1").arg(value, 1, 'f', 2));}
 

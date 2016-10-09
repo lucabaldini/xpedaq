@@ -21,20 +21,34 @@ with this program; if not, write to the Free Software Foundation Inc.,
 
 #include "xpemonPlotOptions.h"
 
+// Basic
+
+const QPen xpemonPlotOptions::defaultPen = QPen(Qt::NoPen);
+const QBrush xpemonPlotOptions::defaultBrush =
+                                            QBrush(QColor(0, 50, 255, 150));
+
+// Pulse height
 const unsigned int xpemonPlotOptions::pulseHeightNbins = 100;
 const double xpemonPlotOptions::pulseHeightXmin = 0.;
 const double xpemonPlotOptions::pulseHeightXmax = 10000.;
-const unsigned int xpemonPlotOptions::windowSizeNbins = 100;
+
+// Window size
+const unsigned int xpemonPlotOptions::windowSizeNbins = 50;
 const double xpemonPlotOptions::windowSizeXmin = 0.;
 const double xpemonPlotOptions::windowSizeXmax = 2000.;
+
+// Hit map
 const double xpemonPlotOptions::xPixelMax =
                               static_cast<double> (xpoldetector::kNumPixelsX);
 const double xpemonPlotOptions::yPixelMax =
                               static_cast<double> (xpoldetector::kNumPixelsY);
-const unsigned int xpemonPlotOptions::modulationNbins = 50;
-const double xpemonPlotOptions::modulationThetaMin = - 1.6;
-const double xpemonPlotOptions::modulationThetaMax = 1.6;
 
+// Modulation
+const unsigned int xpemonPlotOptions::modulationNbins = 30;
+const double xpemonPlotOptions::modulationThetaMin = -92.;
+const double xpemonPlotOptions::modulationThetaMax = 92.;
+
+// Event display
 QCPColorGradient xpemonPlotOptions::loadRedToWhiteGradient(){
   QCPColorGradient gradient = QCPColorGradient();
   gradient.setColorInterpolation(QCPColorGradient::ciRGB);

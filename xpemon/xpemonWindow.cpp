@@ -53,10 +53,7 @@ xpemonWindow::xpemonWindow(std::string preferencesFilePath,
   m_mainTabWidget->addTab(m_eventDisplayTab, "Event Display");
   m_monitorTab = new pMonitorTab();
   m_mainTabWidget->addTab(m_monitorTab, "Monitor Plots");
-  
-  //m_plotGrid = new xpemonPlotGrid();
-  //m_mainGridLayout->addWidget(m_plotGrid, 0, 1, 6, 1);
-  
+ 
   m_transportBar = new pTransportBar(this, false);
   m_mainGridLayout->addWidget(m_transportBar, 5,0);
   
@@ -67,7 +64,7 @@ xpemonWindow::xpemonWindow(std::string preferencesFilePath,
                     m_monitorTab -> modulationHist(),
                     m_monitorTab -> hitMap());
   
-  m_infoBoxWidget = new pInfoBoxWidget();
+  m_infoBoxWidget = new pInfoBoxWidget(this);
   m_mainGridLayout->addWidget(m_infoBoxWidget, 2,0);
   
   m_mainGridLayout->setColumnStretch(1, 12);
@@ -130,44 +127,48 @@ void xpemonWindow::setupEvtReaderConnections()
 {
   connect(m_eventReader, SIGNAL(stopped()), this, SLOT(stopRun()));
                                            
-  connect(m_eventReader, SIGNAL(eventRead(unsigned int, unsigned int,
-                                          unsigned int, unsigned int)),
-          m_infoBoxWidget, SLOT(updateCounter()));          
-  connect(m_eventReader, SIGNAL(eventRead(unsigned int, unsigned int,
-                                          unsigned int, unsigned int)),
-          m_infoBoxWidget, SLOT(updateWindowSize(unsigned int, unsigned int,
-                                                unsigned int, unsigned int)));
-                                                 
-  connect(m_eventReader, SIGNAL(highestPixelFound(double,
-                                                  double)),
-          m_infoBoxWidget, SLOT(updateMaxCoordinates(double,
-                                                     double)));
-  connect(m_eventReader, SIGNAL(barycenterRead(double, double)),
-          m_infoBoxWidget, SLOT(updateBarycenterCoordinates(double,
-                                                            double)));
-  
+  connect(m_eventReader, SIGNAL(eventRead()),
+          m_infoBoxWidget, SLOT(updateCounter()));
+          
   qRegisterMetaType< pEvent >("pEvent");
+   
+  //send the event to the event diplay
+  connect (m_eventReader, SIGNAL(evtDisplayUpdated(const pEvent&)),
+           m_eventDisplayTab, SLOT(updateEventDisplay(const pEvent&)));
   
-  connect (m_eventReader, SIGNAL(pulseHeightUpdated()),
+  //send event info to the infoBoxWidget
+  connect(m_eventReader, SIGNAL(windowSizeRead(unsigned int, unsigned int,
+                                               unsigned int, unsigned int)),
+          m_infoBoxWidget, SLOT(updateWindowSize(unsigned int, unsigned int,
+                                                unsigned int, unsigned int)));                                                 
+  connect(m_eventReader, SIGNAL(highestPixelFound(double, double)),
+          m_infoBoxWidget, SLOT(updateMaxCoordinates(double, double)));
+  connect(m_eventReader, SIGNAL(clusterSizeRead(int)),
+          m_infoBoxWidget, SLOT(updateClusterSize(int)));
+  connect(m_eventReader, SIGNAL(barycenterFound(double, double)),
+          m_infoBoxWidget, SLOT(updateBarycenterCoordinates(double, double)));
+  connect(m_eventReader, SIGNAL(pulseHeightFound(int)),
+          m_infoBoxWidget, SLOT(updatePulseHeight(int)));
+  
+  //update the other plots
+  connect (m_eventReader, SIGNAL(pulseHeightHistUpdated()),
            m_monitorTab, SLOT(updatePulseHeightPlot()));
 
-  connect (m_eventReader, SIGNAL(windowSizeUpdated()),
+  connect (m_eventReader, SIGNAL(windowSizeHistUpdated()),
            m_monitorTab, SLOT(updateWindowSizePlot()));
            
-  connect (m_eventReader, SIGNAL(modulationUpdated()),
+  connect (m_eventReader, SIGNAL(modulationHistUpdated()),
            m_monitorTab, SLOT(updateModulationPlot()));           
            
   connect (m_eventReader, SIGNAL(hitMapUpdated()),
-           m_monitorTab, SLOT(updateHitMapPlot()));
-  
-  connect (m_eventReader, SIGNAL(evtDisplayUpdated(const pEvent&)),
-           m_eventDisplayTab, SLOT(updateEventDisplay(const pEvent&)));                                                             
+           m_monitorTab, SLOT(updateHitMapPlot()));                                                             
 }
 
 
 void xpemonWindow::startRun()
 {
   if (m_isStopped)
+  /* If the monitor was stopped, we need to restart the socket thread */
   {
     readOptions();
     m_preferences -> writeToFile (m_preferencesFilePath);

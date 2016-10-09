@@ -7,22 +7,24 @@ pCustomHistogramPlot::pCustomHistogramPlot(pBasicPlotOptions options,
 {  
   m_bars = new QCPBars(xAxis, yAxis);
   addPlottable(m_bars);
-  m_bars -> setName(m_options.m_plotName);
-  xAxis -> setLabel(m_options.m_xTitle);
-  yAxis -> setLabel(m_options.m_yTitle);  
+  m_bars->setName(m_options.m_plotName);
+  xAxis->setLabel(m_options.m_xTitle);
+  yAxis->setLabel(m_options.m_yTitle);
+  m_bars->setPen(m_options.m_pen);
+  m_bars->setBrush(m_options.m_brush);
 
   // Initializing range, binWidth and tolerance with default values
   m_centerPosTolerance = 1.e-5;
-  m_bars -> keyAxis() -> setRange(0., 1.);
-  m_bars -> setWidth(0.1);
+  m_bars->keyAxis()->setRange(0., 1.);
+  m_bars->setWidth(0.1);
   if (m_isLogScaleY) setLogScaleY();
    
   // Some graphical stuff
-  legend -> setVisible(false);
+  legend->setVisible(false);
   QFont legendFont = font();
   legendFont.setPointSize(10);
-  legend -> setFont(legendFont);
-  legend -> setSelectedFont(legendFont);
+  legend->setFont(legendFont);
+  legend->setSelectedFont(legendFont);
   setupInteractions();
 }
 
@@ -43,35 +45,40 @@ void pCustomHistogramPlot::setKeyContent(double key, double value)
      We use removeData() on a small interval centered around the key value
      to make sure we actually remove it.
   */
-  m_bars -> removeData(key - m_centerPosTolerance,
+  m_bars->removeData(key - m_centerPosTolerance,
                        key + m_centerPosTolerance);
-  m_bars -> addData(key, value);
-  m_bars -> rescaleValueAxis();
+  m_bars->addData(key, value);
+  m_bars->rescaleValueAxis();
 } 
 
 
 void pCustomHistogramPlot::setPen (const QPen& pen){
-  m_bars -> setPen(pen);
+  m_bars->setPen(pen);
+}
+
+
+void pCustomHistogramPlot::setBrush (const QBrush& brush){
+  m_bars->setBrush(brush);
 }
 
 
 void pCustomHistogramPlot::clearBars()
 {
-  m_bars -> clearData();
+  m_bars->clearData();
   replot();  
 }
 
 
 void pCustomHistogramPlot::resetView()
 {
-  m_bars -> rescaleAxes();
+  m_bars->rescaleAxes();
   replot();
 }
 
 
 void pCustomHistogramPlot::mouseMoveEvent(QMouseEvent * event)
 {
-  m_cursorPos = event -> pos();
+  m_cursorPos = event->pos();
   replot();
   QCustomPlot::mouseMoveEvent(event);
 }
@@ -80,7 +87,7 @@ void pCustomHistogramPlot::mouseMoveEvent(QMouseEvent * event)
 void pCustomHistogramPlot::paintEvent(QPaintEvent *event)
 {
   QCustomPlot::paintEvent(event);
-  if (m_bars -> selectTest(m_cursorPos, false) > 0.){
+  if (m_bars->selectTest(m_cursorPos, false) > 0.){
     paintCoordinate();
   }
 }
@@ -88,20 +95,20 @@ void pCustomHistogramPlot::paintEvent(QPaintEvent *event)
 
 void pCustomHistogramPlot::paintCoordinate()
 {  
-  double x = xAxis -> pixelToCoord(m_cursorPos.x());
-  double y = yAxis -> pixelToCoord(m_cursorPos.y());
+  double x = xAxis->pixelToCoord(m_cursorPos.x());
+  double y = yAxis->pixelToCoord(m_cursorPos.y());
   int fontSize = 12;
   QFont font("times", fontSize);
   QFontMetrics fm(font);
   QPainter painter(this);
   painter.setFont(font);
   painter.setPen(QPen(Qt::black));
-  painter.drawText(m_cursorPos, QString::number(x));
-  int shift = fm.width(QString::number(x));
+  painter.drawText(m_cursorPos, QString::number(x, 'g', 5));
+  int shift = fm.width(QString::number(x, 'g', 5));
   painter.drawText(QPoint(m_cursorPos.x() + shift, m_cursorPos.y()),
                    ", ");
   painter.drawText(QPoint(m_cursorPos.x() + shift + 10,
-                   m_cursorPos.y()), QString::number(y));
+                   m_cursorPos.y()), QString::number(y, 'g', 5));
 }
 
 
@@ -118,11 +125,11 @@ void pCustomHistogramPlot::setupInteractions()
      - axis base line
      - axis tick labels 
   */
-  xAxis -> setSelectableParts(QCPAxis::spAxis | QCPAxis::spTickLabels);
-  yAxis -> setSelectableParts(QCPAxis::spAxis | QCPAxis::spTickLabels);
+  xAxis->setSelectableParts(QCPAxis::spAxis | QCPAxis::spTickLabels);
+  yAxis->setSelectableParts(QCPAxis::spAxis | QCPAxis::spTickLabels);
 
   // Set the quickness of the zooming
-  axisRect() -> setRangeZoomFactor(0.9, 0.9);
+  axisRect()->setRangeZoomFactor(0.9, 0.9);
   
   // Activate connections for mouse actions
   connect(this, SIGNAL(mousePress(QMouseEvent*)), this, SLOT(mousePress()));
@@ -145,16 +152,16 @@ void pCustomHistogramPlot::selectionChanged()
      together. The axis labels are made not selectable.
   */
   
-  if (xAxis -> selectedParts().testFlag(QCPAxis::spAxis) ||
-      xAxis -> selectedParts().testFlag(QCPAxis::spTickLabels))
+  if (xAxis->selectedParts().testFlag(QCPAxis::spAxis) ||
+      xAxis->selectedParts().testFlag(QCPAxis::spTickLabels))
   {
-    xAxis -> setSelectedParts(QCPAxis::spAxis|QCPAxis::spTickLabels);
+    xAxis->setSelectedParts(QCPAxis::spAxis|QCPAxis::spTickLabels);
   }
   
-  if (yAxis -> selectedParts().testFlag(QCPAxis::spAxis) ||
-      yAxis -> selectedParts().testFlag(QCPAxis::spTickLabels))
+  if (yAxis->selectedParts().testFlag(QCPAxis::spAxis) ||
+      yAxis->selectedParts().testFlag(QCPAxis::spTickLabels))
   {
-    yAxis -> setSelectedParts(QCPAxis::spAxis|QCPAxis::spTickLabels);
+    yAxis->setSelectedParts(QCPAxis::spAxis|QCPAxis::spTickLabels);
   }
 }
 

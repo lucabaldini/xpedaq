@@ -27,6 +27,8 @@ with this program; if not, write to the Free Software Foundation Inc.,
 
 namespace xpemonPlotOptions
 {
+  extern const QBrush defaultBrush;
+  extern const QPen defaultPen;
   extern const unsigned int pulseHeightNbins;
   extern const double pulseHeightXmin;
   extern const double pulseHeightXmax;

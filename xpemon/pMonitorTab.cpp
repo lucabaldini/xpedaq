@@ -40,38 +40,33 @@ pMonitorTab::pMonitorTab(): pQtCustomTab("Monitor Plots")
 void pMonitorTab::setupPulseHeightPlot()
 {
   pBasicPlotOptions pulseHeightOptions = pBasicPlotOptions("ADC sum",
-                                              "Pulse height [ADC counts]",
-                                              "Events/bin");
+    "Pulse height [ADC counts]", "Events/bin", defaultPen, defaultBrush);
   m_pulseHeightHist = new pHistogram(pulseHeightNbins, pulseHeightXmin,
                                      pulseHeightXmax);
   m_pulseHeightPlot = new pHistogramPlot(m_pulseHeightHist,
                                          pulseHeightOptions);
-  m_groupBoxGridLayout -> addWidget(m_pulseHeightPlot, 0, 0);
-  m_pulseHeightPlot -> setPen(Qt::NoPen);
+  m_groupBoxGridLayout -> addWidget(m_pulseHeightPlot, 0, 0);  
 }
 
 
 void pMonitorTab::setupWindowSizePlot()
 {
   pBasicPlotOptions windowSizeOptions = pBasicPlotOptions("Window size",
-                                             "Window size [pixel]",
-                                             "Events/bin");
+    "Window size [pixel]", "Events/bin", defaultPen, defaultBrush);
   m_windowSizeHist = new pHistogram(windowSizeNbins, windowSizeXmin,
                                     windowSizeXmax);
   m_windowSizePlot = new pHistogramPlot(m_windowSizeHist, windowSizeOptions);
   m_groupBoxGridLayout -> addWidget(m_windowSizePlot, 0, 1);
-  m_windowSizePlot -> setPen(Qt::NoPen);
 }
 
 
 void pMonitorTab::setupModulationPlot()
 {
   pBasicPlotOptions modulationOptions = pBasicPlotOptions("Modulation",
-                                                   "Phi [rad]", "Events/bin");
+    "Phi [deg]", "Events/bin", defaultPen, defaultBrush);
   m_modulationHist = new pHistogram(modulationNbins, modulationThetaMin,
                                     modulationThetaMax);
   m_modulationPlot = new pHistogramPlot(m_modulationHist, modulationOptions);
-  m_modulationPlot -> setPen(Qt::NoPen);
   m_groupBoxGridLayout -> addWidget(m_modulationPlot, 1, 1);
 }
 

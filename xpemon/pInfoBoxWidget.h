@@ -29,9 +29,9 @@ with this program; if not, write to the Free Software Foundation Inc.,
 #include <QWidget>
 
 #include "pQtCustomTextLabel.h"
-#include "pQtGroupBoxWidget.h"
+#include "pInfoBoxGui.h"
 
-class pInfoBoxWidget: public pQtGroupBoxWidget
+class pInfoBoxWidget: public pInfoBoxGui
 {
 
   Q_OBJECT
@@ -47,22 +47,30 @@ class pInfoBoxWidget: public pQtGroupBoxWidget
                           unsigned int rowMin, unsigned int rowMax);
     void updateMaxCoordinates(double x, double y);
     void updateBarycenterCoordinates(double x, double y);
+    void updateClusterSize(int size);
+    void updatePulseHeight(int pulseHeight);
     void reset();
  
   private:
   
-    void initalizeText();
+    void initializeText();
   
-    pQtCustomTextLabel *m_nEventsLabel;
-    QLineEdit *m_nEventsEdit;
-    pQtCustomTextLabel *m_windowSizeLabel;
-    QLineEdit *m_windowSizeEdit;
-    pQtCustomTextLabel *m_highestPixelLabel;
-    QLineEdit *m_highestXEdit;
-    QLineEdit *m_highestYEdit;
-    pQtCustomTextLabel *m_barycenterLabel;
-    QLineEdit *m_barycenterXEdit;
-    QLineEdit *m_barycenterYEdit;
+    QString m_counterLabelName;
+    QString m_windowSizeLabelName;
+    QString m_maxPosLabelName;
+    QString m_barycenterPosLabelName;
+    QString m_clusterSizeLabelName;
+    QString m_pulseHeightLabelName;
+    //pQtCustomTextLabel *m_nEventsLabel;
+    //QLineEdit *m_nEventsEdit;
+    //pQtCustomTextLabel *m_windowSizeLabel;
+    //QLineEdit *m_windowSizeEdit;
+    //pQtCustomTextLabel *m_highestPixelLabel;
+    //QLineEdit *m_highestXEdit;
+    //QLineEdit *m_highestYEdit;
+    //pQtCustomTextLabel *m_barycenterLabel;
+    //QLineEdit *m_barycenterXEdit;
+    //QLineEdit *m_barycenterYEdit;
     unsigned int m_evtCounter;
 };
 

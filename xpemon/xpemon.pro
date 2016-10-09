@@ -57,6 +57,7 @@ HEADERS += pTransportBar.h
 HEADERS += pQtDisplayGui.h
 HEADERS += pQtCustomTab.h
 HEADERS += pQtMainWindowGui.h
+HEADERS += pInfoBoxGui.h
 
 HEADERS += pDataBlock.h
 HEADERS += CQuickUsb.h
@@ -114,6 +115,7 @@ SOURCES += pTransportBar.cpp
 SOURCES += pQtDisplayGui.cpp
 SOURCES += pQtCustomTab.cpp
 SOURCES += pQtMainWindowGui.cpp
+SOURCES += pInfoBoxGui.cpp
 
 SOURCES += pDataBlock.cpp
 SOURCES += CQuickUsb.cpp

@@ -21,6 +21,7 @@ class pCustomHistogramPlot : public QCustomPlot
     void setKeyContent(double key, double value);
     void setTolerance (double tolerance);
     void setPen (const QPen& pen);
+    void setBrush (const QBrush& brush);
     void clearBars();
     
   public slots:

@@ -12,13 +12,17 @@ class pBasicPlotOptions
 public: 
   
   pBasicPlotOptions (QString plotName = "", QString xtitle = "x",
-                     QString ytitle = "y") :
-                     m_plotName (plotName), m_xTitle(xtitle), m_yTitle(ytitle)
+                     QString ytitle = "y", QPen pen = QPen(),
+                     QBrush brush = QBrush()) :
+                     m_plotName (plotName), m_xTitle(xtitle),
+                     m_yTitle(ytitle), m_pen (pen), m_brush (brush)
                      {};
 
   QString m_plotName;
   QString m_xTitle;
   QString m_yTitle;
+  QPen m_pen;
+  QBrush m_brush;
                
 };
 

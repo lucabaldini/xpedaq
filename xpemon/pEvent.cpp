@@ -150,6 +150,8 @@ int pEvent::minKey(const std::vector<int> &key) const
 int pEvent::doMomentsAnalysis()
 {
   // Calculate the barycenter of the cluster a
+  if (m_clusterSize < 6)
+    return 0;
   adc_count_t threshold = m_threshold;
   double x0 = 0.;
   double y0 = 0.;
@@ -213,7 +215,7 @@ int pEvent::doMomentsAnalysis()
     double tmp = mom2long;
     mom2long = mom2trans;
     mom2trans = tmp;
-    phi -= 0.5 * M_PI * (2 * (phi > 0) -1);
+    phi -= 0.5 * M_PI * (2 * (phi > 0) -1);  
   }
   // Set the class members.
   m_momentsAnalysis.setX0(x0);

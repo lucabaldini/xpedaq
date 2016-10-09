@@ -40,7 +40,7 @@ pEventReader::pEventReader(unsigned int socketPortNumber,
 
 void pEventReader::readPendingDatagram()
 {
-  qint64 size = m_udpSocket -> pendingDatagramSize();
+  qint64 size = m_udpSocket->pendingDatagramSize();
   //we need a char* because of QUdpSocket->readDatagram() signature  
   char* data = new (std::nothrow) char[size];
   if (data == nullptr)
@@ -48,7 +48,7 @@ void pEventReader::readPendingDatagram()
     std::cout << "allocation failed" << std::endl;
     return;
   }
-  m_udpSocket -> readDatagram(data, size);
+  m_udpSocket->readDatagram(data, size);
   
   /* When instantiating a pDataBlock we pass to its constructor a pointer
      to the buffer - no actual copy of the data involved.
@@ -65,10 +65,7 @@ void pEventReader::readPendingDatagram()
     }
     m_isContentChanged = true;    
     int nPixel = p.numPixels(evt);
-    //if (nPixel < 400)  // remove noise events
-    //  continue;
-    emit eventRead(p.xmin(evt), p.xmax(evt), p.ymin(evt), p.ymax(evt));
-    m_windowSizeHist -> fill(static_cast<double> (nPixel));
+    m_windowSizeHist->fill(static_cast<double> (nPixel));
     event::Adc_vec_t curHitMap;
     curHitMap.resize(nPixel);
     unsigned int x = 1000; //initialize to non-physical value
@@ -77,24 +74,17 @@ void pEventReader::readPendingDatagram()
     for (int index = 0; index < nPixel; ++index)
     {
       p.readPixel(evt, index, x, y, height);
-      //if (height < m_zeroSupThreshold)
-      //  {height = 0;}
       curHitMap.at(index) = height;
-      m_hitMap -> fill(x, y, static_cast<double> (height));
+      m_hitMap->fill(x, y, static_cast<double> (height));
     }
     m_lastEvent = pEvent(p.xmin(evt), p.xmax(evt), p.ymin(evt), p.ymax(evt),
                          curHitMap, m_zeroSupThreshold);
-    if (m_lastEvent.totalPulseHeight() < 1)
-      continue;
     m_lastEvent.clusterize(m_zeroSupThreshold);
-    m_lastEvent.doMomentsAnalysis();                         
-    m_pulseHeightHist -> fill(m_lastEvent.clusterPulseHeight());
-    m_modulationHist -> fill(m_lastEvent.phi());
-    emit highestPixelFound(m_lastEvent.highestPixel().x,
-                           m_lastEvent.highestPixel().y);
-    emit barycenterRead(m_lastEvent.xBarycenter(), m_lastEvent.yBarycenter());  
+    m_lastEvent.doMomentsAnalysis();
+    emit eventRead();
+    m_pulseHeightHist->fill(m_lastEvent.clusterPulseHeight());
+    m_modulationHist->fill(180 * m_lastEvent.phi() / 3.1415926535897932);
   }
-  //std::cout << cluster;
   // Here we release the memory. Using the data block
   // after this point will lead to incorect behaviour.
   delete [] data; 
@@ -104,7 +94,7 @@ void pEventReader::readPendingDatagram()
 void pEventReader::readPendingDatagrams()
 {  
   QMutexLocker locker(&m_mutex);
-  while ((!m_stopped) && (m_udpSocket -> hasPendingDatagrams()))
+  while ((!m_stopped) && (m_udpSocket->hasPendingDatagrams()))
   {
     readPendingDatagram();
   }
@@ -115,12 +105,21 @@ void pEventReader::updateRequested()
 {
   QMutexLocker locker(&m_mutex);
   if (!m_isContentChanged) return;
-  emit pulseHeightUpdated();
-  emit windowSizeUpdated();
-  emit modulationUpdated();
-  emit hitMapUpdated();
+  
+  emit windowSizeRead(m_lastEvent.firstCol(), m_lastEvent.lastCol(),
+                      m_lastEvent.firstRow(), m_lastEvent.lastRow());
+  emit highestPixelFound(m_lastEvent.highestPixel().x,
+                         m_lastEvent.highestPixel().y);
+  emit clusterSizeRead(m_lastEvent.clusterSize());
+  emit barycenterFound(m_lastEvent.xBarycenter(), m_lastEvent.yBarycenter());
+  emit pulseHeightFound(m_lastEvent.clusterPulseHeight());  
   emit evtDisplayUpdated(m_lastEvent);
-  m_isContentChanged = false;                         
+
+  emit pulseHeightHistUpdated();
+  emit windowSizeHistUpdated();
+  emit modulationHistUpdated();
+  emit hitMapUpdated();
+  m_isContentChanged = false;
 }
 
 
@@ -129,7 +128,7 @@ void pEventReader::startReading()
   QMutexLocker locker(&m_mutex);
   m_stopped = false;
   m_isContentChanged = false;
-  m_udpSocket -> bind(m_socketPortNumber);
+  m_udpSocket->bind(m_socketPortNumber);
   connect(m_udpSocket, SIGNAL(readyRead()), 
           this, SLOT(readPendingDatagrams()));
 }
@@ -138,7 +137,7 @@ void pEventReader::startReading()
 void pEventReader::setStopped()
 {
   QMutexLocker locker(&m_mutex);
-  m_udpSocket -> disconnectFromHost();
+  m_udpSocket->disconnectFromHost();
   m_stopped = true;
   emit stopped();
 }
