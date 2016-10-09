@@ -180,8 +180,9 @@ void xpemonWindow::showLastEvent(const pEvent& evt)
   // Update event info and send last event to the event diplay
   m_infoBoxWidget->updateWindowSize(evt.firstCol(), evt.lastCol(),
                                     evt.firstRow(), evt.lastRow());
-  m_infoBoxWidget->updateMaxCoordinates(evt.highestPixel().x,
-                                        evt.highestPixel().y);
+  int row, col;
+  evt.highestPixelCoordinates(col, row);
+  m_infoBoxWidget->updateMaxCoordinates(col, row);
   m_infoBoxWidget->updateClusterSize(evt.clusterSize());
   m_infoBoxWidget->updateBarycenterCoordinates(evt.xBarycenter(),
                                                evt.yBarycenter());

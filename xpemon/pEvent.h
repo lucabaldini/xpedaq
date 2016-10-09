@@ -57,27 +57,40 @@ class pEvent: public pEventWindow
     //access by cubic coordinates
     const event::Hit& operator() (const CubeCoordinate& p) const
       {return m_hits.at(index(p));} 
-    inline int highestPixelAddress() const //index of highest Pixel
+    //index of highest Pixel
+    inline int highestPixelAddress() const 
       {return m_highestPixelAddress;}
-    inline const event::Hit& highestPixel() const //highest Pixel
+    //highest Pixel
+    inline const event::Hit& highestPixel() const
       {return m_hits.at(highestPixelAddress());}
-    inline adc_count_t totalPulseHeight() const // sum of all pulse heights
+    //highest Pixel row and column
+    void highestPixelCoordinates(int& row, int& col) const;
+    // sum of all pulse heights
+    inline adc_count_t totalPulseHeight() const
       {return m_totalPulseHeight;}
-    inline adc_count_t clusterPulseHeight() const // sum of all pixel in cluster
+    // sum of all pixels in cluster
+    inline adc_count_t clusterPulseHeight() const
       {return m_clusterPulseHeight;}
-    inline double xBarycenter() const // x coordinate of the barycenter
+    // x coordinate of the barycenter 
+    inline double xBarycenter() const
       {return m_momentsAnalysis.x0();}
-    inline double yBarycenter() const // y coordinate of the barycenter
+    // y coordinate of the barycenter      
+    inline double yBarycenter() const
       {return m_momentsAnalysis.y0();}
-    inline double phi() const // y coordinate of the barycenter
+    // y coordinate of the barycenter   
+    inline double phi() const
       {return m_momentsAnalysis.phi();}
-    inline int clusterSize() const // number of pixel in main cluster
+    // number of pixels in main cluster   
+    inline int clusterSize() const
       {return m_clusterSize;}
-    inline double mom2Long() const //longitudinal second moment of the cluster
+    //longitudinal second moment of the cluster
+    inline double mom2Long() const
       {return m_momentsAnalysis.mom2long();}
-    inline double mom2Trans() const // transverse second moment of the cluster
+    // transverse second moment of the cluster
+    inline double mom2Trans() const 
       {return m_momentsAnalysis.mom2trans();}
-    inline double skewness() const // transverse second moment of the cluster
+    // transverse second moment of the cluster
+    inline double skewness() const
       {return m_momentsAnalysis.skewness();}
     
     //iterator

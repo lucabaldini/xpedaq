@@ -68,6 +68,15 @@ int pEvent::findHighestPixel() const
   return maxPos;
 }
 
+
+void pEvent::highestPixelCoordinates(int& row, int& col) const
+{
+  OffsetCoordinate p = coordToPixel(highestPixel().x, highestPixel().y);
+  row = p.row();
+  col = p.col();
+}
+
+
 /* Clustering based on a modified Prim's Minimum Spanning Tree (MST)
    algorithm (http://www.geeksforgeeks.org/greedy-algorithms-set-5-prims-minimum-spanning-tree-mst-2/)
    The MST is built starting from the highest pixel and connecting adjacent
@@ -221,9 +230,9 @@ int pEvent::doMomentsAnalysis()
   m_momentsAnalysis.setPhi(phi);
   m_momentsAnalysis.setMom2long(mom2long);
   m_momentsAnalysis.setMom2trans(mom2trans);
-  std::cout << m_totalPulseHeight << " " << m_clusterPulseHeight << " "
-            << m_clusterSize << " " << x0 << " " << y0 << " "
-            << phi << " " << mom2long << " " << mom2trans << std::endl;
+  //std::cout << m_totalPulseHeight << " " << m_clusterPulseHeight << " "
+  //          << m_clusterSize << " " << x0 << " " << y0 << " "
+  //          << phi << " " << mom2long << " " << mom2trans << std::endl;
   return 0;
 }
 

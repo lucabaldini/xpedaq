@@ -145,24 +145,12 @@ void pEventDisplay::updateAxesRange()
   yAxis->setRange(ymin, ymax);
   //std::cout << axisRect()->width() << " " << axisRect()->height()  << std::endl;
  
-  int maxRange = std::max(m_event.lastRow() - m_event.firstRow() + 1,
-                          m_event.lastCol() - m_event.firstCol() + 1);
-  int halfColExtension = (maxRange -
-                         (m_event.lastCol() - m_event.firstCol() + 1)) / 2;
-  int halfRowExtension = (maxRange -
-                          (m_event.lastRow() - m_event.firstRow() + 1)) / 2;
-  int wideColMin = m_event.firstCol() - halfColExtension - 1;
-  int wideColMax = m_event.lastCol() + halfColExtension + 1;
-  int wideRowMin = m_event.firstRow() - halfRowExtension - 1;
-  int wideRowMax = m_event.lastRow() + halfRowExtension + 1;
-  //double xmin, xmax, ymin, ymax;
+  int colMin, colMax, rowMin, rowMax;
   //Note that y is decreasing with row number, so (0,0) is left uppermost. 
-  pixelToCoord(wideColMin, wideRowMax, xmin, ymin);
-  pixelToCoord(wideColMax, wideRowMin, xmax, ymax);
-  //xAxis->setRange(xmin, xmax);
-  //yAxis->setRange(ymin, ymax);
-  xAxis2->setRange(wideColMin, wideColMax);
-  yAxis2->setRange(wideRowMin, wideRowMax); 
+  coordToPixel(xmin, ymin, colMin, rowMax);
+  coordToPixel(xmax, ymax, colMax, rowMin);
+  xAxis2->setRange(colMin, colMax);
+  yAxis2->setRange(rowMin, rowMax); 
 }
 
 
@@ -240,6 +228,7 @@ void pEventDisplay::draw()
 
 void pEventDisplay::resetView()
 {
+  // Go back to the optimal view (all data are in axis range)
   clearPlottables();
   updateAxesRange();
   drawMatrix();

@@ -24,13 +24,15 @@ with this program; if not, write to the Free Software Foundation Inc.,
 // pixel coordinates to order index
 int pEventWindow::index(const OffsetCoordinate &p) const
 {
-  return p.col() + p.row() * nColumns();
+  return p.col() - m_firstCol + (p.row() - m_firstRow) * nColumns();
 }
 
 // order index to pixel coordinates
 OffsetCoordinate pEventWindow::pixelCoord(int index) const
 {
-  return OffsetCoordinate(index % nColumns(), index / nColumns());
+  //return OffsetCoordinate(index % nColumns(), index / nColumns());
+  return OffsetCoordinate(index % nColumns() + m_firstCol,
+                          index / nColumns() + m_firstRow);
 }
 
 // cube coordinates to order index
@@ -49,9 +51,8 @@ CubeCoordinate pEventWindow::cubeCoord(int index) const
 void pEventWindow::pixelToCoord(const OffsetCoordinate &p,
                                 double &x, double &y) const
 {
-  x = ((m_firstCol + p.col()) - 0.5 * (298.5 + (m_firstRow + p.row())%2 ))
-      * (xpoldetector::kColPitch);
-  y = (175.5 - (m_firstRow + p.row())) * (xpoldetector::kRowPitch);
+  x = ((p.col()) - 0.5 * (298.5 + (p.row())%2 )) * (xpoldetector::kColPitch);
+  y = (175.5 - (p.row())) * (xpoldetector::kRowPitch);
 }
 
 // physical xpe coordinates to offset coordinates
@@ -60,13 +61,13 @@ OffsetCoordinate pEventWindow::coordToPixel(double x, double y) const
   int col, row;  
   row = std::round(175.5 - y/(xpoldetector::kRowPitch));
   col = std::round(x/(xpoldetector::kColPitch) + 0.5 * (298.5 + row%2));
-  return OffsetCoordinate(col - m_firstCol, row - m_firstRow);
+  return OffsetCoordinate(col, row);
 }
 
 
 bool pEventWindow::isInWindow(const CubeCoordinate& point) const
 {
   OffsetCoordinate offc = cube2Offset(point);
-  return (offc.row() >= 0 && offc.row() < nRows() &&
-          offc.col() >= 0 && offc.col() < nColumns());
+  return (offc.row() >= m_firstRow && offc.row() <= m_lastRow &&
+          offc.col() >= m_firstCol && offc.col() <= m_lastCol);
 }

@@ -54,7 +54,7 @@ class pEventWindow{
     
     // Coordinate transformations
     void pixelToCoord(const OffsetCoordinate &p, double &x, double &y) const;
-    OffsetCoordinate coordToPixel(double x, double y) const; 
+    OffsetCoordinate coordToPixel(const double x, const double y) const; 
     int index(const OffsetCoordinate &p) const;
     OffsetCoordinate pixelCoord(int index) const;
     int index(const CubeCoordinate &p) const;  

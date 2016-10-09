@@ -84,9 +84,9 @@ void pInfoBoxWidget::updateWindowSize(unsigned int colMin,
 }
 
 
-void pInfoBoxWidget::updateMaxCoordinates(double x, double y)
+void pInfoBoxWidget::updateMaxCoordinates(int col, int row)
 {
-  setField(m_maxPosLabelName, coordinateStringFormat(x, y));
+  setField(m_maxPosLabelName, coordinateStringFormat(col, row, 3));
 }
 
 

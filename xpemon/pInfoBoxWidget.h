@@ -46,7 +46,7 @@ class pInfoBoxWidget: public pInfoBoxGui
     void updateCounter();
     void updateWindowSize(unsigned int colMin, unsigned int colMax,
                           unsigned int rowMin, unsigned int rowMax);
-    void updateMaxCoordinates(double x, double y);
+    void updateMaxCoordinates(int col, int row);
     void updateBarycenterCoordinates(double x, double y);
     void updateClusterSize(int size);
     void updatePulseHeight(int pulseHeight);
