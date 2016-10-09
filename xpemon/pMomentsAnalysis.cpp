@@ -28,6 +28,7 @@ pMomentsAnalysis::pMomentsAnalysis() :
   m_phi(9.),
   m_mom2Trans(-1.),
   m_mom2Long(-1.),
+  m_skewness(0.),
   m_statusCode(UNDEFINED)
 {
   // Do-nothing.

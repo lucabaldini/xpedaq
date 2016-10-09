@@ -104,17 +104,8 @@ void pEventReader::readPendingDatagrams()
 void pEventReader::updateRequested()
 {
   QMutexLocker locker(&m_mutex);
-  if (!m_isContentChanged) return;
-  
-  emit windowSizeRead(m_lastEvent.firstCol(), m_lastEvent.lastCol(),
-                      m_lastEvent.firstRow(), m_lastEvent.lastRow());
-  emit highestPixelFound(m_lastEvent.highestPixel().x,
-                         m_lastEvent.highestPixel().y);
-  emit clusterSizeRead(m_lastEvent.clusterSize());
-  emit barycenterFound(m_lastEvent.xBarycenter(), m_lastEvent.yBarycenter());
-  emit pulseHeightFound(m_lastEvent.clusterPulseHeight());  
-  emit evtDisplayUpdated(m_lastEvent);
-
+  if (!m_isContentChanged) return; 
+  emit lastEventUpdated(m_lastEvent);
   emit pulseHeightHistUpdated();
   emit windowSizeHistUpdated();
   emit modulationHistUpdated();

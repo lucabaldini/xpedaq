@@ -72,7 +72,13 @@ class pEvent: public pEventWindow
     inline double phi() const // y coordinate of the barycenter
       {return m_momentsAnalysis.phi();}
     inline int clusterSize() const // number of pixel in main cluster
-      {return m_clusterSize;}      
+      {return m_clusterSize;}
+    inline double mom2Long() const //longitudinal second moment of the cluster
+      {return m_momentsAnalysis.mom2long();}
+    inline double mom2Trans() const // transverse second moment of the cluster
+      {return m_momentsAnalysis.mom2trans();}
+    inline double skewness() const // transverse second moment of the cluster
+      {return m_momentsAnalysis.skewness();}
     
     //iterator
     typedef std::vector<event::Hit>::const_iterator const_eventIterator;

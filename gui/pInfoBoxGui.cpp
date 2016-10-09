@@ -23,7 +23,7 @@ with this program; if not, write to the Free Software Foundation Inc.,
 
 pInfoBoxGui::pInfoBoxGui(QWidget *parent) : pQtGroupBoxWidget(parent)
 {
-  m_groupBoxGridLayout->setSpacing(1);
+  m_groupBoxGridLayout->setSpacing(3);
 }
 
 
@@ -34,7 +34,8 @@ pQtCustomTextLabel* pInfoBoxGui::addField(QString fieldLabel)
     new pQtCustomTextLabel(this, xpolgui::kNotAvailable);
   pQtCustomTextLabel *labelWidget = new pQtCustomTextLabel(this, fieldLabel);
   dataWidget->setDataStyle();
-  labelWidget->setLabelStyle(xpolgui::kDaqDisplayLabelsWidth);
+  dataWidget->setFixedWidth(140);
+  labelWidget->setLabelStyle(190);
   m_groupBoxGridLayout->addWidget(labelWidget, row ,0);
   m_groupBoxGridLayout->addWidget(dataWidget, row ,1);
   varField field {labelWidget, dataWidget};

@@ -22,7 +22,8 @@ with this program; if not, write to the Free Software Foundation Inc.,
 #ifndef INFOBOXWIDGET_H
 #define INFOBOXWIDGET_H
 
-#include <iostream>
+#include <sstream>
+#include <iomanip>
 
 #include <QLineEdit>
 #include <QGridLayout>
@@ -49,11 +50,20 @@ class pInfoBoxWidget: public pInfoBoxGui
     void updateBarycenterCoordinates(double x, double y);
     void updateClusterSize(int size);
     void updatePulseHeight(int pulseHeight);
+    void updatePhi(double phi);
+    void updateMom2Trans(double mom2Trans);
+    void updateMom2Long(double mom2Long);
+    void updateMomRatio(double momRatio);
+    void updateSkewness(double skewness);
     void reset();
  
   private:
   
     void initializeText();
+    template<typename T>
+    std::string number2String (T x, int precision = 4);
+    template<typename T>
+    std::string coordinateStringFormat(T x, T y, int precision = 4);
   
     QString m_counterLabelName;
     QString m_windowSizeLabelName;
@@ -61,17 +71,33 @@ class pInfoBoxWidget: public pInfoBoxGui
     QString m_barycenterPosLabelName;
     QString m_clusterSizeLabelName;
     QString m_pulseHeightLabelName;
-    //pQtCustomTextLabel *m_nEventsLabel;
-    //QLineEdit *m_nEventsEdit;
-    //pQtCustomTextLabel *m_windowSizeLabel;
-    //QLineEdit *m_windowSizeEdit;
-    //pQtCustomTextLabel *m_highestPixelLabel;
-    //QLineEdit *m_highestXEdit;
-    //QLineEdit *m_highestYEdit;
-    //pQtCustomTextLabel *m_barycenterLabel;
-    //QLineEdit *m_barycenterXEdit;
-    //QLineEdit *m_barycenterYEdit;
+    QString m_angleLabelName;
+    QString m_mom2LongLabelName;
+    QString m_mom2TransLabelName;
+    QString m_momRatioLabelName;
+    QString m_skewnessLabelName;
+
     unsigned int m_evtCounter;
 };
+
+
+// Definitions here because of template restricition
+template<typename T>
+std::string pInfoBoxWidget::number2String(T x, int precision)
+{
+  std::ostringstream ostr; //output string stream
+  ostr << std::setprecision(precision) << x;
+  return ostr.str();
+}
+
+
+template<typename T>
+std::string pInfoBoxWidget::coordinateStringFormat(T x, T y, int precision)
+{
+  std::ostringstream ostr; //output string stream
+  ostr << std::setprecision(precision) << x << ", " << y;
+  return ostr.str();
+}
+
 
 #endif // INFBOXWIDGET_H

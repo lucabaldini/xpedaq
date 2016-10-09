@@ -39,9 +39,9 @@ xpemonWindow::xpemonWindow(std::string preferencesFilePath,
 
   m_preferences = new pMonitorPreferences(m_preferencesFilePath); 
   m_optionBoxWidget = new pOptionBoxWidget(
-                        m_preferences -> socketPort(),
-                        m_preferences -> refreshInterval(),
-                        m_preferences -> zeroSuppressionThreshold());
+                        m_preferences->socketPort(),
+                        m_preferences->refreshInterval(),
+                        m_preferences->zeroSuppressionThreshold());
   const int optBoxRowStart = 0;
   const int optBoxColStart = 0;
   m_mainGridLayout->addWidget(m_optionBoxWidget, optBoxRowStart,
@@ -57,12 +57,12 @@ xpemonWindow::xpemonWindow(std::string preferencesFilePath,
   m_transportBar = new pTransportBar(this, false);
   m_mainGridLayout->addWidget(m_transportBar, 5,0);
   
-  m_eventReader = new pEventReader(m_preferences -> socketPort(),
-                    m_preferences -> zeroSuppressionThreshold(),
-                    m_monitorTab -> pulseHeightHist(),
-                    m_monitorTab -> windowSizeHist(),
-                    m_monitorTab -> modulationHist(),
-                    m_monitorTab -> hitMap());
+  m_eventReader = new pEventReader(m_preferences->socketPort(),
+                    m_preferences->zeroSuppressionThreshold(),
+                    m_monitorTab->pulseHeightHist(),
+                    m_monitorTab->windowSizeHist(),
+                    m_monitorTab->modulationHist(),
+                    m_monitorTab->hitMap());
   
   m_infoBoxWidget = new pInfoBoxWidget(this);
   m_mainGridLayout->addWidget(m_infoBoxWidget, 2,0);
@@ -79,11 +79,11 @@ void xpemonWindow::readOptions()
   unsigned int socketPortNumber;
   double refreshTime;
   unsigned int zeroSupThreshold;
-  m_optionBoxWidget -> options(socketPortNumber, refreshTime,
+  m_optionBoxWidget->options(socketPortNumber, refreshTime,
                                zeroSupThreshold);
-  m_preferences -> setSocketPort(socketPortNumber);
-  m_preferences -> setRefreshInterval(refreshTime);
-  m_preferences -> setZeroSuppressionThreshold(zeroSupThreshold);
+  m_preferences->setSocketPort(socketPortNumber);
+  m_preferences->setRefreshInterval(refreshTime);
+  m_preferences->setZeroSuppressionThreshold(zeroSupThreshold);
 }
 
 
@@ -117,7 +117,7 @@ void xpemonWindow::setupTransportBarConnections()
   connect(m_transportBar, SIGNAL(stop()),
           m_optionBoxWidget, SLOT(activateWidgets()));
 
-  /* The pause button suspends the refresh of the plot, but continue the
+  /* The pause button suspends the refresh of the plots, but continue the
      acquisition of data */
   connect(m_transportBar, SIGNAL(pause()), &m_refreshTimer, SLOT(stop()));
 }
@@ -125,41 +125,22 @@ void xpemonWindow::setupTransportBarConnections()
 
 void xpemonWindow::setupEvtReaderConnections()
 {
-  connect(m_eventReader, SIGNAL(stopped()), this, SLOT(stopRun()));
-                                           
+  connect(m_eventReader, SIGNAL(stopped()), this, SLOT(stopRun()));                                         
+  // Update the event counter when an event is read 
   connect(m_eventReader, SIGNAL(eventRead()),
           m_infoBoxWidget, SLOT(updateCounter()));
-          
-  qRegisterMetaType< pEvent >("pEvent");
-   
-  //send the event to the event diplay
-  connect (m_eventReader, SIGNAL(evtDisplayUpdated(const pEvent&)),
-           m_eventDisplayTab, SLOT(updateEventDisplay(const pEvent&)));
-  
-  //send event info to the infoBoxWidget
-  connect(m_eventReader, SIGNAL(windowSizeRead(unsigned int, unsigned int,
-                                               unsigned int, unsigned int)),
-          m_infoBoxWidget, SLOT(updateWindowSize(unsigned int, unsigned int,
-                                                unsigned int, unsigned int)));                                                 
-  connect(m_eventReader, SIGNAL(highestPixelFound(double, double)),
-          m_infoBoxWidget, SLOT(updateMaxCoordinates(double, double)));
-  connect(m_eventReader, SIGNAL(clusterSizeRead(int)),
-          m_infoBoxWidget, SLOT(updateClusterSize(int)));
-  connect(m_eventReader, SIGNAL(barycenterFound(double, double)),
-          m_infoBoxWidget, SLOT(updateBarycenterCoordinates(double, double)));
-  connect(m_eventReader, SIGNAL(pulseHeightFound(int)),
-          m_infoBoxWidget, SLOT(updatePulseHeight(int)));
-  
-  //update the other plots
+  // Allow to pass events through signal/slot connection
+  qRegisterMetaType< pEvent >("pEvent"); 
+  // When the eventReader is ready, get the last event from it
+  connect(m_eventReader, SIGNAL(lastEventUpdated(const pEvent&)),
+          this, SLOT(showLastEvent(const pEvent&)));  
+  // Update the other plots
   connect (m_eventReader, SIGNAL(pulseHeightHistUpdated()),
            m_monitorTab, SLOT(updatePulseHeightPlot()));
-
   connect (m_eventReader, SIGNAL(windowSizeHistUpdated()),
            m_monitorTab, SLOT(updateWindowSizePlot()));
-           
   connect (m_eventReader, SIGNAL(modulationHistUpdated()),
            m_monitorTab, SLOT(updateModulationPlot()));           
-           
   connect (m_eventReader, SIGNAL(hitMapUpdated()),
            m_monitorTab, SLOT(updateHitMapPlot()));                                                             
 }
@@ -171,11 +152,11 @@ void xpemonWindow::startRun()
   /* If the monitor was stopped, we need to restart the socket thread */
   {
     readOptions();
-    m_preferences -> writeToFile (m_preferencesFilePath);
-    m_eventReader -> setSocketPortNumber(m_preferences -> socketPort());
-    m_eventReader -> setZeroSupThreshold(m_preferences ->
+    m_preferences->writeToFile (m_preferencesFilePath);
+    m_eventReader->setSocketPortNumber(m_preferences->socketPort());
+    m_eventReader->setZeroSupThreshold(m_preferences->
                                           zeroSuppressionThreshold());  
-    m_eventReader -> moveToThread(&m_thread);
+    m_eventReader->moveToThread(&m_thread);
     m_thread.start();
     emit (startAcquisition());
     m_isStopped = false;
@@ -194,8 +175,29 @@ void xpemonWindow::stopRun()
 }
 
 
+void xpemonWindow::showLastEvent(const pEvent& evt)
+{
+  // Update event info and send last event to the event diplay
+  m_infoBoxWidget->updateWindowSize(evt.firstCol(), evt.lastCol(),
+                                    evt.firstRow(), evt.lastRow());
+  m_infoBoxWidget->updateMaxCoordinates(evt.highestPixel().x,
+                                        evt.highestPixel().y);
+  m_infoBoxWidget->updateClusterSize(evt.clusterSize());
+  m_infoBoxWidget->updateBarycenterCoordinates(evt.xBarycenter(),
+                                               evt.yBarycenter());
+  m_infoBoxWidget->updatePulseHeight(evt.clusterPulseHeight());
+  m_infoBoxWidget->updatePhi(evt.phi());
+  m_infoBoxWidget->updateMom2Trans(evt.mom2Trans());
+  m_infoBoxWidget->updateMom2Long(evt.mom2Long());
+  m_eventDisplayTab->updateEventDisplay(evt);  
+  m_infoBoxWidget->updateMomRatio(evt.mom2Trans()/evt.mom2Long());
+  m_infoBoxWidget->updateSkewness(evt.skewness());
+}
+
+
+
 void xpemonWindow::reset()
 {
-  m_monitorTab -> resetPlot();
-  m_eventDisplayTab -> resetPlot();  
+  m_monitorTab->resetPlot();
+  m_eventDisplayTab->resetPlot();  
 }

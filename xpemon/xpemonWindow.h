@@ -59,8 +59,9 @@ class xpemonWindow : public QMainWindow
     void startRun();
     void stopRun();
     void setupConnections();
-    void reset();
     void readOptions();
+    void showLastEvent(const pEvent& evt);
+    void reset();
   
   private:
   
@@ -82,7 +83,7 @@ class xpemonWindow : public QMainWindow
     /* Widget showing the options that can be setted by the user */ 
     pOptionBoxWidget* m_optionBoxWidget;
     /* Widget showing some event info */  
-    pInfoBoxWidget *m_infoBoxWidget;
+    pInfoBoxWidget* m_infoBoxWidget;
 
     /* Path to the preferences file*/
     std::string m_preferencesFilePath;

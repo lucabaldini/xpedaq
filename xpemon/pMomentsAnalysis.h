@@ -45,6 +45,7 @@ class pMomentsAnalysis
     double phi() const {return m_phi;}
     double mom2long() const {return m_mom2Long;}        
     double mom2trans() const {return m_mom2Trans;}
+    double skewness() const {return m_skewness;}
     
     // Setters
     void setX0(double x0) {m_x0 = x0;}
@@ -52,6 +53,7 @@ class pMomentsAnalysis
     void setPhi(double phi) {m_phi = phi;}
     void setMom2long(double mom2long) {m_mom2Long = mom2long;}
     void setMom2trans(double mom2trans) {m_mom2Trans = mom2trans;}
+    void setSkewness(double skewness) {m_skewness = skewness;}
     
     // Terminal formatting.
     std::ostream& fillStream(std::ostream& os) const;
@@ -80,6 +82,10 @@ class pMomentsAnalysis
     /*! \brief The longitudinal second moment.
      */
     double m_mom2Long;
+    
+    /*! \brief The skewness.
+     */
+    double m_skewness;
 
     enum StatusCode
     {

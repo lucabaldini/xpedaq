@@ -57,18 +57,11 @@ class pEventReader: public QObject
   
     void stopped();
     void eventRead();
-    void windowSizeRead(unsigned int xmin, unsigned int xmax,
-                        unsigned int ymin, unsigned int ymax);
-    void highestPixelFound(double highestX, double highestY);
-    void clusterSizeRead(int clusterSize);
-    void barycenterFound(double xBarycenter, double yBarycenter);
-    void pulseHeightFound(int pulseHeight);
-    
+    void lastEventUpdated(const pEvent& evt);
     void pulseHeightHistUpdated();
     void windowSizeHistUpdated();
     void modulationHistUpdated();
     void hitMapUpdated();
-    void evtDisplayUpdated(const pEvent& evt);
   
   private:
     
