@@ -45,7 +45,7 @@ class CubeCoordinate
                                       const CubeCoordinate &p2);                                      
     /* Function for finding the coordinates of the neighbours of a hexagon
        in a grid */
-    std::vector<CubeCoordinate> neighbours(CubeCoordinate point);
+    std::vector<CubeCoordinate> neighbours();
 
  private:    
    
@@ -84,6 +84,6 @@ CubeCoordinate offset2Cube(const OffsetCoordinate &p);
 
 
 /* Distance in cubic coordinate */
-int distance (const CubeCoordinate &p1, const CubeCoordinate &p2);
+int cubicDistance (const CubeCoordinate &p1, const CubeCoordinate &p2);
 
 #endif //PHEXAGONCOORDINATES_H

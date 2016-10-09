@@ -22,6 +22,8 @@ with this program; if not, write to the Free Software Foundation Inc.,
 #ifndef PEVENTWINDOW_H
 #define PEVENTWINDOW_H
 
+#include <iostream>
+
 #include "xpoldetector.h"
 #include "pHexagonCoordinates.h"
 
@@ -58,9 +60,7 @@ class pEventWindow{
     int index(const CubeCoordinate &p) const;  
     CubeCoordinate cubeCoord(int index) const;
     
-    // Distance in cubic coordinates
-    int cubeDistance(const OffsetCoordinate &p1,
-                     const OffsetCoordinate &p2) const;    
+    bool isInWindow(const CubeCoordinate& point) const;
     
   protected:
   

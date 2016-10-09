@@ -93,7 +93,7 @@ void pEvent::clusterize(int threshold)
   parent[highestAddress] = highestAddress; //This pixel is root of MST
 
   // Loop on all the pixels
-  for (int index = 0; index < dim - 1; ++index)
+  for (int i = 0; i < dim - 1; ++i)
   {
     /* Pick the minimum key pixel from the set of pixels not yet included
        in MST */
@@ -109,20 +109,18 @@ void pEvent::clusterize(int threshold)
     m_clusterPulseHeight += m_hits[minKeyId].counts;
     
     /* Update key value and pixel index of the adjacent pixels of
-       the picked pixel. Consider only those pixels which are not yet
-       included in MST. */
-    for (int v = 0; v < dim; ++v){
-      if (m_hits.at(v).clusterId < 0){ //check only pixels not yet included in MST
-        /* Update the key only if distance from minKeyId is smaller than
-           key[v] and is less than 2 (adjacent pixels).
-           Ignore under threshold pixels. */
-        if (m_hits.at(v).counts > threshold){
-          int dist = cubeDistance(pixelCoord(minKeyId), pixelCoord(v));
-          if (dist && dist < 2 && dist <  key[v]){
-            parent[v] = minKeyId;
-            key[v] = dist;
-          }
-        }
+       the picked pixel. Consider only those pixels which are over 
+       threshold and not yet included in MST. */
+    std::vector<CubeCoordinate> neighbourVec =
+                                             cubeCoord(minKeyId).neighbours();
+    for (const auto& neighbour : neighbourVec){
+      if (!isInWindow(neighbour)) //exclude pixels outside the window
+        continue;
+      //convert cubic coordinates in array position
+      int v = index(neighbour); 
+      if (m_hits.at(v).clusterId < 0 && m_hits.at(v).counts > threshold){
+        parent[v] = minKeyId;
+        key[v] = 1; //the distance between neighbours is always 1
       }
     }
   }
@@ -223,9 +221,9 @@ int pEvent::doMomentsAnalysis()
   m_momentsAnalysis.setPhi(phi);
   m_momentsAnalysis.setMom2long(mom2long);
   m_momentsAnalysis.setMom2trans(mom2trans);
-  //std::cout << m_totalPulseHeight << " " << m_clusterPulseHeight << " "
-  //          << m_clusterSize << " " << x0 << " " << y0 << " "
-  //          << phi << " " << mom2long << " " << mom2trans << std::endl;
+  std::cout << m_totalPulseHeight << " " << m_clusterPulseHeight << " "
+            << m_clusterSize << " " << x0 << " " << y0 << " "
+            << phi << " " << mom2long << " " << mom2trans << std::endl;
   return 0;
 }
 

@@ -21,15 +21,15 @@ with this program; if not, write to the Free Software Foundation Inc.,
 
 #include "pHexagonCoordinates.h"
 
-std::vector<CubeCoordinate> CubeCoordinate::neighbours(CubeCoordinate point)
+std::vector<CubeCoordinate> CubeCoordinate::neighbours()
 {
   std::vector<CubeCoordinate> neighboursVec;
-  neighboursVec.push_back(point + CubeCoordinate(+1, -1,  0));
-  neighboursVec.push_back(point + CubeCoordinate(+1,  0, -1));
-  neighboursVec.push_back(point + CubeCoordinate( 0, +1, -1));
-  neighboursVec.push_back(point + CubeCoordinate(-1, +1,  0));
-  neighboursVec.push_back(point + CubeCoordinate(-1,  0, +1));
-  neighboursVec.push_back(point + CubeCoordinate( 0, -1, +1));
+  neighboursVec.push_back(*this + CubeCoordinate(+1, -1,  0));
+  neighboursVec.push_back(*this + CubeCoordinate(+1,  0, -1));
+  neighboursVec.push_back(*this + CubeCoordinate( 0, +1, -1));
+  neighboursVec.push_back(*this + CubeCoordinate(-1, +1,  0));
+  neighboursVec.push_back(*this + CubeCoordinate(-1,  0, +1));
+  neighboursVec.push_back(*this + CubeCoordinate( 0, -1, +1));
   return neighboursVec;
 }
 
@@ -84,7 +84,7 @@ CubeCoordinate offset2Cube(const OffsetCoordinate &p)
 }
 
 
-int distance (const CubeCoordinate &p1, const CubeCoordinate &p2)
+int cubicDistance (const CubeCoordinate &p1, const CubeCoordinate &p2)
 {
   return std::max(std::max(std::abs(p1.x() - p2.x()),
                            std::abs(p1.y() - p2.y())),

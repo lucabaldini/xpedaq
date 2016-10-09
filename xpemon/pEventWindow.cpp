@@ -63,9 +63,10 @@ OffsetCoordinate pEventWindow::coordToPixel(double x, double y) const
   return OffsetCoordinate(col - m_firstCol, row - m_firstRow);
 }
 
-// distance in cubic coordinates
-int pEventWindow::cubeDistance(const OffsetCoordinate &p1,
-                               const OffsetCoordinate &p2) const
+
+bool pEventWindow::isInWindow(const CubeCoordinate& point) const
 {
-  return distance(offset2Cube(p1), offset2Cube(p2));
+  OffsetCoordinate offc = cube2Offset(point);
+  return (offc.row() >= 0 && offc.row() < nRows() &&
+          offc.col() >= 0 && offc.col() < nColumns());
 }
