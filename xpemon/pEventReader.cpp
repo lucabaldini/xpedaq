@@ -65,7 +65,6 @@ void pEventReader::readPendingDatagram()
     }
     m_isContentChanged = true;    
     int nPixel = p.numPixels(evt);
-    m_windowSizeHist->fill(static_cast<double> (nPixel));
     event::Adc_vec_t curHitMap;
     curHitMap.resize(nPixel);
     unsigned int x = 1000; //initialize to non-physical value
@@ -82,6 +81,7 @@ void pEventReader::readPendingDatagram()
     m_lastEvent.clusterize(m_zeroSupThreshold);
     m_lastEvent.doMomentsAnalysis();
     emit eventRead();
+    m_windowSizeHist->fill(nPixel);
     m_pulseHeightHist->fill(m_lastEvent.clusterPulseHeight());
     m_modulationHist->fill(180 * m_lastEvent.phi() / 3.1415926535897932);
   }

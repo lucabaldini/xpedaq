@@ -48,6 +48,7 @@ xpemonWindow::xpemonWindow(std::string preferencesFilePath,
                                                  optBoxColStart);
   
   m_mainTabWidget = new QTabWidget(m_centralWidget);
+  m_mainTabWidget->heightForWidth(1.);
   m_mainGridLayout->addWidget(m_mainTabWidget, 0, 1, 6, 1);
   m_eventDisplayTab = new pEventDisplayTab();
   m_mainTabWidget->addTab(m_eventDisplayTab, "Event Display");

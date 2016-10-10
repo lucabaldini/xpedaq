@@ -25,7 +25,7 @@ with this program; if not, write to the Free Software Foundation Inc.,
 
 const QPen xpemonPlotOptions::defaultPen = QPen(Qt::NoPen);
 const QBrush xpemonPlotOptions::defaultBrush =
-                                            QBrush(QColor(0, 50, 255, 150));
+                                            QBrush(QColor(0, 10, 255, 180));
 
 // Pulse height
 const unsigned int xpemonPlotOptions::pulseHeightNbins = 100;

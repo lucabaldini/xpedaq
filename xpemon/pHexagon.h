@@ -24,6 +24,7 @@ with this program; if not, write to the Free Software Foundation Inc.,
 
 #include <cmath>
 #include <QVector>
+
 #include "qcustomplot.h"
 
 #define PI 3.1415926535

@@ -65,31 +65,31 @@ class pEvent: public pEventWindow
       {return m_hits.at(highestPixelAddress());}
     //highest Pixel row and column
     void highestPixelCoordinates(int& row, int& col) const;
-    // sum of all pulse heights
+    //total pulse height
     inline adc_count_t totalPulseHeight() const
       {return m_totalPulseHeight;}
-    // sum of all pixels in cluster
+    //cluster pulse hieght
     inline adc_count_t clusterPulseHeight() const
       {return m_clusterPulseHeight;}
-    // x coordinate of the barycenter 
-    inline double xBarycenter() const
-      {return m_momentsAnalysis.x0();}
-    // y coordinate of the barycenter      
-    inline double yBarycenter() const
-      {return m_momentsAnalysis.y0();}
-    // y coordinate of the barycenter   
-    inline double phi() const
-      {return m_momentsAnalysis.phi();}
-    // number of pixels in main cluster   
+    //number of pixels in main cluster   
     inline int clusterSize() const
       {return m_clusterSize;}
+    //x coordinate of the barycenter 
+    inline double xBarycenter() const
+      {return m_momentsAnalysis.x0();}
+    //y coordinate of the barycenter      
+    inline double yBarycenter() const
+      {return m_momentsAnalysis.y0();}
+    //emission angle   
+    inline double phi() const
+      {return m_momentsAnalysis.phi();}
     //longitudinal second moment of the cluster
     inline double mom2Long() const
       {return m_momentsAnalysis.mom2long();}
-    // transverse second moment of the cluster
+    //transverse second moment of the cluster
     inline double mom2Trans() const 
       {return m_momentsAnalysis.mom2trans();}
-    // transverse second moment of the cluster
+    //skweness
     inline double skewness() const
       {return m_momentsAnalysis.skewness();}
     

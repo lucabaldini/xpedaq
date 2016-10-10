@@ -22,9 +22,10 @@ with this program; if not, write to the Free Software Foundation Inc.,
 #ifndef HEXAGONMATRIX_H
 #define HEXAGONMATRIX_H
 
+#include <vector>
+
 #include "pHexagon.h"
 #include "qcustomplot.h"
-#include <vector>
 
 
 /* 2D matrix of horizontally contiguos regular hexagons (pointy topped).
