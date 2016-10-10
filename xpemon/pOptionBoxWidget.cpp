@@ -64,15 +64,15 @@ pOptionBoxWidget::pOptionBoxWidget(const pMonitorPreferences &preferences,
 
 void pOptionBoxWidget::initalizeText()
 {
-  m_socketPortEdit->setText(QString::number(m_preferences.socketPort()));  
+  m_socketPortEdit->setText(QString::number(m_preferences.m_socketPort));  
   m_refreshIntervalEdit->setText(QString::number(
-                                            m_preferences.refreshInterval()));
+                                            m_preferences.m_refreshInterval));
   m_zeroSupThrEdit->setText(QString::number(
-                                  m_preferences.zeroSuppressionThreshold()));
+                                  m_preferences.m_zeroSuppressionThreshold));
   m_minElongationEdit->setText(QString::number(
-                                             m_preferences.minElongation()));
+                                             m_preferences.m_minElongation));
   m_maxElongationEdit->setText(QString::number(
-                                             m_preferences.maxElongation()));
+                                             m_preferences.m_maxElongation));
 }
 
 
@@ -115,10 +115,10 @@ void pOptionBoxWidget::readSocketPort()
   unsigned int socketPort = (m_socketPortEdit->text()).toUInt(&convSuccess);
   if (!convSuccess || socketPort > 65535) // maximum value for Udp socket port
   {
-    m_socketPortEdit->setText(QString::number(m_preferences.socketPort()));
+    m_socketPortEdit->setText(QString::number(m_preferences.m_socketPort));
     return;
   }
-  m_preferences.setSocketPort(socketPort);
+  m_preferences.m_socketPort = socketPort;
 }
 
 
@@ -130,10 +130,10 @@ void pOptionBoxWidget::readRefreshInterval()
   if (!convSuccess || refreshInterval <= 0.)
   {
     m_refreshIntervalEdit->setText(QString::number(
-                                           m_preferences.refreshInterval()));
+                                           m_preferences.m_refreshInterval));
     return;
   }
-  m_preferences.setRefreshInterval(refreshInterval);  
+  m_preferences.m_refreshInterval = refreshInterval;
 }
 
 
@@ -145,9 +145,9 @@ void pOptionBoxWidget::readZeroSupThreshold()
   if (!convSuccess)
   {
     m_zeroSupThrEdit->setText(QString::number(
-                                   m_preferences.zeroSuppressionThreshold()));
+                                   m_preferences.m_zeroSuppressionThreshold));
   }
-  m_preferences.setZeroSuppressionThreshold(zeroSupThreshold);
+  m_preferences.m_zeroSuppressionThreshold = zeroSupThreshold;
 }
 
 
@@ -156,13 +156,13 @@ void pOptionBoxWidget::readMinElongation()
   bool convSuccess;
   double minElongation = (m_minElongationEdit->text()).toDouble(&convSuccess);
   if (!convSuccess || minElongation <= 0. ||
-      minElongation > m_preferences.maxElongation())
+      minElongation > m_preferences.m_maxElongation)
   {
     m_minElongationEdit->setText(QString::number(
-                                             m_preferences.minElongation()));
+                                             m_preferences.m_minElongation));
     return;
   }
-  m_preferences.setMinElongation(minElongation);  
+  m_preferences.m_minElongation = minElongation;
 }
 
 
@@ -170,13 +170,13 @@ void pOptionBoxWidget::readMaxElongation()
 {
   bool convSuccess;
   double maxElongation = (m_maxElongationEdit->text()).toDouble(&convSuccess);
-  if (!convSuccess || maxElongation <= m_preferences.minElongation())
+  if (!convSuccess || maxElongation <= m_preferences.m_minElongation)
   {
     m_maxElongationEdit->setText(QString::number(
-                                             m_preferences.maxElongation()));
+                                             m_preferences.m_maxElongation));
     return;
   }
-  m_preferences.setMaxElongation(maxElongation);  
+  m_preferences.m_maxElongation = maxElongation;  
 }
 
 

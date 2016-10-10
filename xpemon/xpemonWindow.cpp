@@ -41,10 +41,6 @@ xpemonWindow::xpemonWindow(std::string preferencesFilePath,
   m_preferences = new pMonitorPreferences(m_preferencesFilePath); 
   //Initialize option box with last used preferences
   m_optionBoxWidget = new pOptionBoxWidget(*m_preferences);
-  //m_optionBoxWidget = new pOptionBoxWidget(
-  //                      m_preferences->socketPort(),
-  //                      m_preferences->refreshInterval(),
-  //                      m_preferences->zeroSuppressionThreshold());
   const int optBoxRowStart = 0;
   const int optBoxColStart = 0;
   m_mainGridLayout->addWidget(m_optionBoxWidget, optBoxRowStart,
@@ -60,8 +56,8 @@ xpemonWindow::xpemonWindow(std::string preferencesFilePath,
   m_transportBar = new pTransportBar(this, false);
   m_mainGridLayout->addWidget(m_transportBar, 5,0);
   
-  m_eventReader = new pEventReader(m_preferences->socketPort(),
-                    m_preferences->zeroSuppressionThreshold(),
+  m_eventReader = new pEventReader(m_preferences->m_socketPort,
+                    m_preferences->m_zeroSuppressionThreshold,
                     m_monitorTab->pulseHeightHist(),
                     m_monitorTab->windowSizeHist(),
                     m_monitorTab->modulationHist(),
@@ -79,14 +75,6 @@ xpemonWindow::xpemonWindow(std::string preferencesFilePath,
 void xpemonWindow::readOptions()
 {
   // Read options from the option boxes
-  //unsigned int socketPortNumber;
-  //double refreshTime;
-  //unsigned int zeroSupThreshold;
-  //m_optionBoxWidget->options(socketPortNumber, refreshTime,
-  //                             zeroSupThreshold);
-  //m_preferences->setSocketPort(socketPortNumber);
-  //m_preferences->setRefreshInterval(refreshTime);
-  //m_preferences->setZeroSuppressionThreshold(zeroSupThreshold);
   m_optionBoxWidget->options(m_preferences);
 }
 
@@ -160,10 +148,10 @@ void xpemonWindow::startRun()
   /* If the monitor was stopped, we need to restart the socket thread */
   {
     readOptions();
-    m_preferences->writeToFile (m_preferencesFilePath);
-    m_eventReader->setSocketPortNumber(m_preferences->socketPort());
+    m_preferences->writeToFile(m_preferencesFilePath);
+    m_eventReader->setSocketPortNumber(m_preferences->m_socketPort);
     m_eventReader->setZeroSupThreshold(m_preferences->
-                                          zeroSuppressionThreshold());  
+                                                 m_zeroSuppressionThreshold);  
     m_eventReader->moveToThread(&m_thread);
     m_thread.start();
     emit (startAcquisition());
@@ -171,7 +159,7 @@ void xpemonWindow::startRun()
   }  
   /* If the monitor was paused and not stopped, we just need to reactivate the
      timer controlling the refresh of the plots */
-  m_refreshTimer.start(m_preferences ->refreshInterval());
+  m_refreshTimer.start(m_preferences->m_refreshInterval);
 }
 
 
