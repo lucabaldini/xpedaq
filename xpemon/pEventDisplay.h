@@ -40,7 +40,8 @@ class pEventDisplay : public QCustomPlot
   
   public:
   
-    pEventDisplay(pColorMapOptions options = pColorMapOptions());
+    pEventDisplay(pColorMapOptions options = pColorMapOptions(),
+                 bool displayReconInfo = false);
   
   public slots:
   
@@ -50,6 +51,8 @@ class pEventDisplay : public QCustomPlot
     // all data are visible and set the optimal color scale)
     virtual void resetView();
     void clearMap();
+    void enableReconDisplay() {m_displayReconInfo = true;}
+    void disableReconDisplay() {m_displayReconInfo = false;}
   
   signals:
   
@@ -64,6 +67,7 @@ class pEventDisplay : public QCustomPlot
     void updateDataRange();
     void updateColorScale();
     void updateMatrixColor();
+    void drawReconInfo();
     void drawMatrix();
     void mousePress();
     void mouseWheel();
@@ -79,15 +83,11 @@ class pEventDisplay : public QCustomPlot
     pHexagonMatrix *m_hexMatrix;
     QCPRange m_dataRange;
     pEvent m_event;
-    //event::Adc_vec_t m_AdcCounts;
-    //int m_colMin;
-    //int m_colMax;
-    //int m_rowMin;
-    //int m_rowMax;
     QCPColorScale *m_colorScale;
     QCPMarginGroup *m_marginGroup;
     pColorMapOptions m_options;
-    bool m_isSyncronized;
+    bool m_isSyncronized; //check if the last event has been already drawn
+    bool m_displayReconInfo; //draw some recon info on the plots
 
 };
 

@@ -37,18 +37,20 @@ xpemonWindow::xpemonWindow(std::string preferencesFilePath,
   setCentralWidget(m_centralWidget);
   m_mainGridLayout  = new QGridLayout(m_centralWidget);
 
+  //Read last used preferences from file
   m_preferences = new pMonitorPreferences(m_preferencesFilePath); 
-  m_optionBoxWidget = new pOptionBoxWidget(
-                        m_preferences->socketPort(),
-                        m_preferences->refreshInterval(),
-                        m_preferences->zeroSuppressionThreshold());
+  //Initialize option box with last used preferences
+  m_optionBoxWidget = new pOptionBoxWidget(*m_preferences);
+  //m_optionBoxWidget = new pOptionBoxWidget(
+  //                      m_preferences->socketPort(),
+  //                      m_preferences->refreshInterval(),
+  //                      m_preferences->zeroSuppressionThreshold());
   const int optBoxRowStart = 0;
   const int optBoxColStart = 0;
   m_mainGridLayout->addWidget(m_optionBoxWidget, optBoxRowStart,
                                                  optBoxColStart);
   
   m_mainTabWidget = new QTabWidget(m_centralWidget);
-  m_mainTabWidget->heightForWidth(1.);
   m_mainGridLayout->addWidget(m_mainTabWidget, 0, 1, 6, 1);
   m_eventDisplayTab = new pEventDisplayTab();
   m_mainTabWidget->addTab(m_eventDisplayTab, "Event Display");
@@ -66,7 +68,7 @@ xpemonWindow::xpemonWindow(std::string preferencesFilePath,
                     m_monitorTab->hitMap());
   
   m_infoBoxWidget = new pInfoBoxWidget(this);
-  m_mainGridLayout->addWidget(m_infoBoxWidget, 2,0);
+  m_mainGridLayout->addWidget(m_infoBoxWidget, 1,0);
   
   m_mainGridLayout->setColumnStretch(1, 12);
 
@@ -77,14 +79,15 @@ xpemonWindow::xpemonWindow(std::string preferencesFilePath,
 void xpemonWindow::readOptions()
 {
   // Read options from the option boxes
-  unsigned int socketPortNumber;
-  double refreshTime;
-  unsigned int zeroSupThreshold;
-  m_optionBoxWidget->options(socketPortNumber, refreshTime,
-                               zeroSupThreshold);
-  m_preferences->setSocketPort(socketPortNumber);
-  m_preferences->setRefreshInterval(refreshTime);
-  m_preferences->setZeroSuppressionThreshold(zeroSupThreshold);
+  //unsigned int socketPortNumber;
+  //double refreshTime;
+  //unsigned int zeroSupThreshold;
+  //m_optionBoxWidget->options(socketPortNumber, refreshTime,
+  //                             zeroSupThreshold);
+  //m_preferences->setSocketPort(socketPortNumber);
+  //m_preferences->setRefreshInterval(refreshTime);
+  //m_preferences->setZeroSuppressionThreshold(zeroSupThreshold);
+  m_optionBoxWidget->options(m_preferences);
 }
 
 
@@ -95,7 +98,11 @@ void xpemonWindow::setupConnections()
           m_eventReader, SLOT(updateRequested()));
   connect(this, SIGNAL(startAcquisition()),
           m_eventReader, SLOT(startReading()));
-  setupEvtReaderConnections();            
+  connect(m_optionBoxWidget, SIGNAL(drawReconInfoCheckBoxStatusChanged(int)),
+          m_eventDisplayTab, SLOT(changeReconInfoDrawStatus(int)));
+  setupEvtReaderConnections();
+  
+  
 }
 
 
@@ -192,7 +199,7 @@ void xpemonWindow::showLastEvent(const pEvent& evt)
   m_infoBoxWidget->updateMom2Trans(evt.mom2Trans());
   m_infoBoxWidget->updateMom2Long(evt.mom2Long());
   m_eventDisplayTab->updateEventDisplay(evt);  
-  m_infoBoxWidget->updateMomRatio(evt.mom2Trans()/evt.mom2Long());
+  m_infoBoxWidget->updateMomRatio(evt.mom2Long()/evt.mom2Trans());
   m_infoBoxWidget->updateSkewness(evt.skewness());
 }
 

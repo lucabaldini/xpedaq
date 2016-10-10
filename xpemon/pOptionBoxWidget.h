@@ -26,7 +26,9 @@ with this program; if not, write to the Free Software Foundation Inc.,
 #include <QGridLayout>
 #include <QWidget>
 #include <QString>
+#include <QCheckBox>
 
+#include "pMonitorPreferences.h"
 #include "pQtCustomTextLabel.h"
 #include "pQtGroupBoxWidget.h"
 
@@ -37,17 +39,26 @@ class pOptionBoxWidget: public pQtGroupBoxWidget
 
   public:
 
-    pOptionBoxWidget(unsigned int socketPort, double refreshInterval,
-                     unsigned int  zeroSupThreshold,
-                     QWidget *parent=0);
+    explicit pOptionBoxWidget(const pMonitorPreferences& preferences,
+                              QWidget *parent = 0);
     
-    void options(unsigned int &socketPort, double &refreshInterval, 
-                 unsigned int  &zeroSupThreshold);
+    void options(pMonitorPreferences* preferences);
+    //pOptionBoxWidget(unsigned int socketPort, double refreshInterval,
+    //                 unsigned int  zeroSupThreshold,
+    //                 QWidget *parent=0);
+    
+    //void options(unsigned int &socketPort, double &refreshInterval, 
+    //             unsigned int  &zeroSupThreshold);
+  
+  signals:
+  
+    void drawReconInfoCheckBoxStatusChanged(int state);
   
   public slots:
 
     void activateWidgets();
     void disableWidgets();
+    void updateReconInfoBoxStatus(int state);
   
   private:
   
@@ -61,7 +72,8 @@ class pOptionBoxWidget: public pQtGroupBoxWidget
     pQtCustomTextLabel *m_refreshIntervalLabel;
     QLineEdit *m_refreshIntervalEdit;
     pQtCustomTextLabel *m_zeroSupThrLabel;
-    QLineEdit *m_zeroSupThrEdit;    
+    QLineEdit *m_zeroSupThrEdit;
+    QCheckBox *m_drawReconInfoCheckBox;
     QString m_socketPortText;
     QString m_refreshIntervalText;
     QString m_zeroSupThresholdText;

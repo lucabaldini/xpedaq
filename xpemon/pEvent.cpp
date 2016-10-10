@@ -156,9 +156,9 @@ int pEvent::minKey(const std::vector<int> &key) const
 
 int pEvent::doMomentsAnalysis()
 {
-  // Calculate the barycenter of the cluster a
   if (m_clusterSize < 6)
     return 0;
+  // Calculate the barycenter of the cluster
   adc_count_t threshold = m_threshold;
   double x0 = 0.;
   double y0 = 0.;

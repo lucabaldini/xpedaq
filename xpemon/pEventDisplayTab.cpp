@@ -28,7 +28,7 @@ pEventDisplayTab::pEventDisplayTab()
   : pQtCustomTab("Event Display")
 {
   // Get as much space as possible, starting from the preferred initial size
-  setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+  //setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
   setupEventDisplay();
 }
@@ -48,10 +48,7 @@ void pEventDisplayTab::setupEventDisplay()
 
 void pEventDisplayTab::updateEventDisplay(const pEvent &evt)
 {
-  m_eventDisplay -> loadEvent (evt);
-  //m_eventDisplay -> setWindowRange(evt.firstCol(), evt.lastCol(),
-  //                                 evt.firstRow(), evt.lastRow());
-  //m_eventDisplay -> setAdcData(displayValues);
+  m_eventDisplay -> loadEvent(evt);
   m_eventDisplay -> draw();
 }
 
@@ -59,5 +56,15 @@ void pEventDisplayTab::updateEventDisplay(const pEvent &evt)
 void pEventDisplayTab::resetPlot()
 {
   m_eventDisplay -> clearMap();
+}
+
+
+void pEventDisplayTab::changeReconInfoDrawStatus(int state)
+{
+  if (state)
+    m_eventDisplay->enableReconDisplay();
+  else
+    m_eventDisplay->disableReconDisplay();
+  m_eventDisplay->draw();
 }
 

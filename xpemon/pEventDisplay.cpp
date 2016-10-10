@@ -21,7 +21,8 @@ with this program; if not, write to the Free Software Foundation Inc.,
 
 #include "pEventDisplay.h"
 
-pEventDisplay::pEventDisplay(pColorMapOptions options) : m_options(options)
+pEventDisplay::pEventDisplay(pColorMapOptions options, bool displayReconInfo)
+  : m_options(options), m_displayReconInfo(displayReconInfo)
 {
   //Initialize with void event
   m_event = pEvent();
@@ -88,6 +89,7 @@ pEventDisplay::pEventDisplay(pColorMapOptions options) : m_options(options)
   
   setupInteractions();
 }
+
 
 void pEventDisplay::setDataRange (const QCPRange &dataRange)
 {
@@ -216,12 +218,30 @@ void pEventDisplay::drawMatrix()
 }
 
 
+void pEventDisplay::drawReconInfo()
+{
+  //std::cout<<"drawing"<<std::endl;
+  //QCPItemLine* direction = new QCPItemLine();
+  //addPlottable(direction);
+  //direction->SetPen(QPen("blue"));
+  //direction->start->setCoords(m_event.xBarycenter(), m_event.yBarycenter());
+  //double m = tan(m_event.phi());
+  //
+  //direction->end->setCoords();
+  //
+}
+
+
 void pEventDisplay::draw()
 {
   clearPlottables();
-  updateAxesRange();
-  drawMatrix();
-  updateMatrixColor();
+  if (!m_isSyncronized){
+    updateAxesRange();
+    drawMatrix();
+    updateMatrixColor();
+  }
+  if (m_displayReconInfo)
+    drawReconInfo();
   replot();
 }
 
