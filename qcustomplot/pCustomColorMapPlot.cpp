@@ -18,8 +18,8 @@ pCustomColorMapPlot::pCustomColorMapPlot(pColorMapOptions options) :
   m_colorMap->setInterpolate(false); //disable graphical smoothing
   
   // Do not show the grid
-  xAxis->grid()->setSubGridVisible(false);
-  yAxis->grid()->setSubGridVisible(false);
+  xAxis->grid()->setVisible(false);
+  yAxis->grid()->setVisible(false);
 
   // Initialize the color scale
   m_colorScale = new QCPColorScale(this);
@@ -36,7 +36,7 @@ pCustomColorMapPlot::pCustomColorMapPlot(pColorMapOptions options) :
   m_colorScale->setMarginGroup(QCP::msBottom|QCP::msTop, m_marginGroup);
 
   rescaleAxes();
-  setupInteractions(); 
+  setupInteractions();
 }
 
 
@@ -48,26 +48,13 @@ void pCustomColorMapPlot::setCellContent(unsigned int xCell,
   m_colorMap->rescaleDataRange();
 }
 
+
 void pCustomColorMapPlot::setDataContent(double x, double y, double value)
 {
   m_data->setData (x, y, value);
   m_colorMap->rescaleDataRange();
 }
 
-
-void pCustomColorMapPlot::updateData (const std::vector<double> &values)
-{
-  /* This is a fast (and unsafe) method for filling the color map.
-     It assumes that the input vector has the correct size and follows the
-     same ordering logic as a pMap::m_values.
-  */
-  for (unsigned int iy = 0; iy < m_data->valueSize(); ++iy)
-  {
-    for (unsigned int ix = 0; ix < m_data->keySize(); ++ix)
-      {setCellContent(ix, iy, values.at(ix + iy * m_data->keySize()));}
-  }
-  rescaleAxes();
-}
 
 void pCustomColorMapPlot::resetView()
 {
@@ -88,7 +75,11 @@ void pCustomColorMapPlot::setRange (double xmin, double xmax,
                                     double ymin, double ymax)
 {
   m_data->setRange(QCPRange(xmin, xmax), QCPRange(ymin, ymax));
-  rescaleAxes();
+  //Leave some margin on the axes (for better visibility) 
+  double cellWidth = (xmax - xmin) / m_data->keySize();
+  double cellHeight = (ymax - ymin) / m_data->valueSize();
+  xAxis->setRange(xmin - 3*cellWidth, xmax + 3*cellWidth);
+  yAxis->setRange(ymin - 3*cellHeight, ymax + 3*cellHeight);
 }
 
 

@@ -75,8 +75,15 @@ void pMonitorTab::setupHitMap()
 {
   pColorMapOptions hitMapOptions ("Hit map", "Column", "Row", "ADC counts",
                                   QCPColorGradient::gpThermal);
-  m_hitMap = new pMap(xpoldetector::kNumPixelsX, -0.5, xPixelMax - 0.5,
-                      xpoldetector::kNumPixelsY, -0.5, yPixelMax - 0.5);
+  /* We want the bins to be centered at their coordinate value so that,
+     for example, the bins corresponding to column 0 have -0.5 < x < 0.5
+  */
+  unsigned int nXbins = xpoldetector::kNumPixelsX;
+  unsigned int nYbins = xpoldetector::kNumPixelsY;
+  double halfBinWidth = 0.5*xPixelMax/nXbins;
+  double halfBinHeight = 0.5*yPixelMax/nYbins;
+  m_hitMap = new pMap(nXbins, - halfBinWidth, xPixelMax - halfBinWidth,
+                      nYbins, - halfBinHeight, yPixelMax - halfBinHeight);
   m_hitMapPlot = new pMapPlot(m_hitMap, hitMapOptions);
   m_groupBoxGridLayout -> addWidget(m_hitMapPlot, 1, 0);
 }

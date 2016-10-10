@@ -39,7 +39,7 @@ pEvent::pEvent(int firstCol, int lastCol,
     m_hits.push_back(event::Hit{x, y, adcCounts.at(i), -1});
   }
   m_highestPixelAddress = findHighestPixel();
-  m_totalPulseHeight= pixelSum(m_threshold);
+  m_totalPulseHeight = pixelSum(m_threshold);
   m_clusterPulseHeight = 0;
 }
 

@@ -74,7 +74,11 @@ void pEventReader::readPendingDatagram()
     {
       p.readPixel(evt, index, x, y, height);
       curHitMap.at(index) = height;
-      m_hitMap->fill(x, y, static_cast<double> (height));
+      //zero suppression in the hit map
+      if (height > m_zeroSupThreshold)
+        m_hitMap->fill(x, y, static_cast<double> (height));
+      else
+        m_hitMap->fill(x, y, 0.);      
     }
     m_lastEvent = pEvent(p.xmin(evt), p.xmax(evt), p.ymin(evt), p.ymax(evt),
                          curHitMap, m_zeroSupThreshold);

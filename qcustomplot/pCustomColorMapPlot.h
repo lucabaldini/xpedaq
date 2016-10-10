@@ -19,13 +19,11 @@ class pCustomColorMapPlot : public QCustomPlot
     void setRange (double xmin, double xmax, double ymin, double ymax);
     void rescaleDataRange() {m_colorMap -> rescaleDataRange();}
     void setSize  (unsigned int nXbins, unsigned int nYbins)
-      {m_data -> setSize(nXbins, nYbins);}
+      {m_data->setSize(nXbins, nYbins);}
     void clearMap(); 
   
   public slots:
   
-    virtual void updateData (const std::vector<double> &values);
-    
     // Restore the optimal visualization (change axis range so that
     // all data are visible and set the optimal color scale)
     virtual void resetView();
