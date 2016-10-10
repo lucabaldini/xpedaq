@@ -47,6 +47,10 @@ void pMonitorPreferences::writeToFile(std::string filePath)
   xpolio::kIOManager->write(outputFile, refreshInterval());
   xpolio::kIOManager->write(outputFile, "//Zero Suppression Threshold//");
   xpolio::kIOManager->write(outputFile, zeroSuppressionThreshold());
+  xpolio::kIOManager->write(outputFile, "//Min elongation//");
+  xpolio::kIOManager->write(outputFile, minElongation());
+  xpolio::kIOManager->write(outputFile, "//Max elongation//");
+  xpolio::kIOManager->write(outputFile, maxElongation());
   xpolio::kIOManager->closeOutputFile(outputFile);
 }
 
@@ -64,6 +68,10 @@ void pMonitorPreferences::readFromFile(std::string filePath)
   setRefreshInterval(xpolio::kIOManager->readDouble(inputFile));
   xpolio::kIOManager->skipLine(inputFile);
   setZeroSuppressionThreshold(xpolio::kIOManager->readUnsignedInt(inputFile));
+  xpolio::kIOManager->skipLine(inputFile);
+  setMinElongation(xpolio::kIOManager->readDouble(inputFile));
+  xpolio::kIOManager->skipLine(inputFile);
+  setMaxElongation(xpolio::kIOManager->readDouble(inputFile));
   xpolio::kIOManager->closeInputFile(inputFile);
 }
 
@@ -75,7 +83,9 @@ std::ostream& pMonitorPreferences::fillStream(std::ostream& os) const
   os << xpedaqutils::title("User preferences", true);
   os << "Socket Port: " << socketPort() << std::endl;
   os << "Refresh Interval: " << refreshInterval() << std::endl;
-  os << "Zero Suppression Threshold: " << zeroSuppressionThreshold() << std::endl;
+  os << "Zero Suppression Threshold: " << zeroSuppressionThreshold()
+     << std::endl;
+  os << "Min. elongation: " << minElongation() << std::endl;
   os << xpedaqutils::hline();
   return os;
 }

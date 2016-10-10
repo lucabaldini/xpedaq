@@ -28,7 +28,8 @@ with this program; if not, write to the Free Software Foundation Inc.,
 //                                   pQtGroupBoxWidget(parent)
 pOptionBoxWidget::pOptionBoxWidget(const pMonitorPreferences &preferences,
                                    QWidget *parent):
-                                   pQtGroupBoxWidget(parent)
+                                   pQtGroupBoxWidget(parent),
+                                   m_preferences(preferences)
 {
   m_socketPortLabel = new pQtCustomTextLabel(this, "Socket Port");
   m_socketPortEdit = new QLineEdit();
@@ -37,23 +38,25 @@ pOptionBoxWidget::pOptionBoxWidget(const pMonitorPreferences &preferences,
   m_refreshIntervalEdit = new QLineEdit();
   m_zeroSupThrLabel = new pQtCustomTextLabel(this,"Zero suppression");
   m_zeroSupThrEdit = new QLineEdit();
+  m_minElongationLabel = new pQtCustomTextLabel(this, "Elongation");
+  m_minElongationEdit =  new QLineEdit();
+  m_maxElongationEdit =  new QLineEdit();
   m_drawReconInfoCheckBox = new QCheckBox("Draw recon");
+  
   addWidget(m_socketPortLabel, 0,0);
   addWidget(m_socketPortEdit, 0,1);
   addWidget(m_refreshIntervalLabel, 1,0);
   addWidget(m_refreshIntervalEdit, 1,1);
   addWidget(m_zeroSupThrLabel, 2,0);
   addWidget(m_zeroSupThrEdit, 2,1);
-  addWidget(m_drawReconInfoCheckBox, 3, 0);
+  addWidget(m_minElongationLabel, 3,0);
+  addWidget(m_minElongationEdit, 3,1);
+  addWidget(m_maxElongationEdit, 3,2);
+  addWidget(m_drawReconInfoCheckBox, 4, 0);
   
   // Display the initial values
-  m_socketPortText.setNum(preferences.socketPort());
-  m_refreshIntervalText.setNum(preferences.refreshInterval());
-  m_zeroSupThresholdText.setNum(preferences.zeroSuppressionThreshold());
-  //m_socketPortText.setNum(preferences.socketPort());
-  //m_refreshIntervalText.setNum(refreshInterval());
-  //m_zeroSupThresholdText.setNum(zeroSupThreshold());
   initalizeText();
+  
   connect (m_drawReconInfoCheckBox, SIGNAL(stateChanged(int)),
            this, SLOT(updateReconInfoBoxStatus(int)));
 }
@@ -61,9 +64,15 @@ pOptionBoxWidget::pOptionBoxWidget(const pMonitorPreferences &preferences,
 
 void pOptionBoxWidget::initalizeText()
 {
-  m_socketPortEdit->setText(m_socketPortText);
-  m_refreshIntervalEdit->setText(m_refreshIntervalText);
-  m_zeroSupThrEdit->setText(m_zeroSupThresholdText);
+  m_socketPortEdit->setText(QString::number(m_preferences.socketPort()));  
+  m_refreshIntervalEdit->setText(QString::number(
+                                            m_preferences.refreshInterval()));
+  m_zeroSupThrEdit->setText(QString::number(
+                                  m_preferences.zeroSuppressionThreshold()));
+  m_minElongationEdit->setText(QString::number(
+                                             m_preferences.minElongation()));
+  m_maxElongationEdit->setText(QString::number(
+                                             m_preferences.maxElongation()));
 }
 
 
@@ -71,7 +80,9 @@ void pOptionBoxWidget::activateWidgets()
 {
   m_socketPortEdit->setDisabled(false);
   m_refreshIntervalEdit->setDisabled(false);
-  m_zeroSupThrEdit->setDisabled(false);  
+  m_zeroSupThrEdit->setDisabled(false);
+  m_minElongationEdit->setDisabled(false);
+  m_maxElongationEdit->setDisabled(false);
 }
 
 
@@ -79,7 +90,9 @@ void pOptionBoxWidget::disableWidgets()
 {
   m_socketPortEdit->setDisabled(true);
   m_refreshIntervalEdit->setDisabled(true);
-  m_zeroSupThrEdit->setDisabled(true);  
+  m_zeroSupThrEdit->setDisabled(true);
+  m_minElongationEdit->setDisabled(true);
+  m_maxElongationEdit->setDisabled(true);  
 }
 
 
@@ -87,80 +100,83 @@ void pOptionBoxWidget::options(pMonitorPreferences* preferences)
 { 
   /* Read the options inserted by the user in the option boxes.
      If an option is invalid restore the last valid value inserted */
-  unsigned int socketPort;
-  double refreshInterval;
-  unsigned int zeroSupThreshold;  
-  readSocketPort(socketPort);
-  readRefreshInterval(refreshInterval);
-  readZeroSupThreshold(zeroSupThreshold);
-  preferences->setSocketPort(socketPort);
-  preferences->setRefreshInterval(refreshInterval);
-  preferences->setZeroSuppressionThreshold(zeroSupThreshold);
+  readSocketPort();
+  readRefreshInterval();
+  readZeroSupThreshold();
+  readMinElongation();
+  readMaxElongation();
+  (*preferences) = m_preferences;
 }
 
 
-//void pOptionBoxWidget::options(unsigned int &socketPort,
-//                               double &refreshInterval,
-//                               unsigned int  &zeroSupThreshold)
-//{ 
-//  /* Read the options inserted by the user in the option boxes.
-//     If an option is invalid restore the last valid value inserted */
-//  readSocketPort(socketPort);
-//  readRefreshInterval(refreshInterval);
-//  readZeroSupThreshold(zeroSupThreshold);
-//}
-
-
-void pOptionBoxWidget::readSocketPort(unsigned int &socketPort)
+void pOptionBoxWidget::readSocketPort()
 {
   bool convSuccess;
-  socketPort = (m_socketPortEdit->text()).toUInt(&convSuccess);
-  if (!convSuccess)
+  unsigned int socketPort = (m_socketPortEdit->text()).toUInt(&convSuccess);
+  if (!convSuccess || socketPort > 65535) // maximum value for Udp socket port
   {
-    socketPort = m_socketPortText.toUInt();
-    m_socketPortEdit->setText(m_socketPortText);
+    m_socketPortEdit->setText(QString::number(m_preferences.socketPort()));
     return;
   }
-  if (socketPort > 65535)  // maximum value for Udp socket port
-  {
-    socketPort = m_socketPortText.toUInt();
-    m_socketPortEdit->setText(m_socketPortText);
-    return;
-  }
-  m_socketPortText = m_socketPortEdit->text();
+  m_preferences.setSocketPort(socketPort);
 }
 
 
-void pOptionBoxWidget::readRefreshInterval(double &refreshInterval)
+void pOptionBoxWidget::readRefreshInterval()
 {
   bool convSuccess;
-  refreshInterval = (m_refreshIntervalEdit->text()).toDouble(&convSuccess);
-  if (!convSuccess)
+  double refreshInterval = (m_refreshIntervalEdit->text()).toDouble(
+                                                                &convSuccess);
+  if (!convSuccess || refreshInterval <= 0.)
   {
-    refreshInterval = m_refreshIntervalText.toDouble();
-    m_refreshIntervalEdit->setText(m_refreshIntervalText);
+    m_refreshIntervalEdit->setText(QString::number(
+                                           m_preferences.refreshInterval()));
     return;
   }
-  if (refreshInterval <= 0.)
-  {
-    refreshInterval = m_refreshIntervalText.toDouble();
-    m_refreshIntervalEdit->setText(m_refreshIntervalText);
-    return;
-  }
-  m_refreshIntervalText = m_refreshIntervalEdit->text();
+  m_preferences.setRefreshInterval(refreshInterval);  
 }
 
 
-void pOptionBoxWidget::readZeroSupThreshold(unsigned int &zeroSupThreshold)
+void pOptionBoxWidget::readZeroSupThreshold()
 {
   bool convSuccess;
-  zeroSupThreshold = (m_zeroSupThrEdit->text()).toUInt(&convSuccess);
+  unsigned int zeroSupThreshold = (m_zeroSupThrEdit->text()).toUInt(
+                                                                &convSuccess);
   if (!convSuccess)
   {
-    zeroSupThreshold = m_zeroSupThresholdText.toUInt();;
-    m_zeroSupThrEdit->setText(m_zeroSupThresholdText);
+    m_zeroSupThrEdit->setText(QString::number(
+                                   m_preferences.zeroSuppressionThreshold()));
   }
-  m_zeroSupThresholdText = m_zeroSupThrEdit->text();
+  m_preferences.setZeroSuppressionThreshold(zeroSupThreshold);
+}
+
+
+void pOptionBoxWidget::readMinElongation()
+{
+  bool convSuccess;
+  double minElongation = (m_minElongationEdit->text()).toDouble(&convSuccess);
+  if (!convSuccess || minElongation <= 0. ||
+      minElongation > m_preferences.maxElongation())
+  {
+    m_minElongationEdit->setText(QString::number(
+                                             m_preferences.minElongation()));
+    return;
+  }
+  m_preferences.setMinElongation(minElongation);  
+}
+
+
+void pOptionBoxWidget::readMaxElongation()
+{
+  bool convSuccess;
+  double maxElongation = (m_maxElongationEdit->text()).toDouble(&convSuccess);
+  if (!convSuccess || maxElongation <= m_preferences.minElongation())
+  {
+    m_maxElongationEdit->setText(QString::number(
+                                             m_preferences.maxElongation()));
+    return;
+  }
+  m_preferences.setMaxElongation(maxElongation);  
 }
 
 

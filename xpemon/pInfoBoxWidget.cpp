@@ -33,7 +33,7 @@ pInfoBoxWidget::pInfoBoxWidget(QWidget *parent): pInfoBoxGui(parent)
   m_angleLabelName = "Phi";
   m_mom2TransLabelName = "Mom. trans.";
   m_mom2LongLabelName = "Mom. long.";
-  m_momRatioLabelName = "Mom. ratio";
+  m_momRatioLabelName = "Elongation";
   m_skewnessLabelName = "Skweness";
   
   addField(m_counterLabelName);

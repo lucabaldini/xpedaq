@@ -43,12 +43,6 @@ class pOptionBoxWidget: public pQtGroupBoxWidget
                               QWidget *parent = 0);
     
     void options(pMonitorPreferences* preferences);
-    //pOptionBoxWidget(unsigned int socketPort, double refreshInterval,
-    //                 unsigned int  zeroSupThreshold,
-    //                 QWidget *parent=0);
-    
-    //void options(unsigned int &socketPort, double &refreshInterval, 
-    //             unsigned int  &zeroSupThreshold);
   
   signals:
   
@@ -63,9 +57,11 @@ class pOptionBoxWidget: public pQtGroupBoxWidget
   private:
   
     void initalizeText();
-    void readSocketPort(unsigned int &socketPort);
-    void readRefreshInterval(double &refreshInterval);
-    void readZeroSupThreshold(unsigned int &zeroSupThreshold);
+    void readSocketPort();
+    void readRefreshInterval();
+    void readZeroSupThreshold();
+    void readMinElongation();    
+    void readMaxElongation();
   
     pQtCustomTextLabel *m_socketPortLabel;
     QLineEdit *m_socketPortEdit;
@@ -73,10 +69,12 @@ class pOptionBoxWidget: public pQtGroupBoxWidget
     QLineEdit *m_refreshIntervalEdit;
     pQtCustomTextLabel *m_zeroSupThrLabel;
     QLineEdit *m_zeroSupThrEdit;
+    pQtCustomTextLabel *m_minElongationLabel;
+    QLineEdit *m_minElongationEdit;
+    pQtCustomTextLabel *m_maxElongationLabel;    
+    QLineEdit *m_maxElongationEdit;
     QCheckBox *m_drawReconInfoCheckBox;
-    QString m_socketPortText;
-    QString m_refreshIntervalText;
-    QString m_zeroSupThresholdText;
+    pMonitorPreferences m_preferences;
 };
 
 #endif // OPTIONBOXWIDGET_H

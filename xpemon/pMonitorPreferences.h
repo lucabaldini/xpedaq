@@ -42,6 +42,8 @@ class pMonitorPreferences
   double refreshInterval() const {return m_refreshInterval;}
   unsigned int zeroSuppressionThreshold() const
     {return m_zeroSuppressionThreshold;}
+  double minElongation() const {return m_minElongation;}
+  double maxElongation() const {return m_maxElongation;}
   
   // Set methods.
   void setSocketPort(unsigned int socketPort)
@@ -50,6 +52,10 @@ class pMonitorPreferences
     {m_refreshInterval = refreshInterval;}
   void setZeroSuppressionThreshold(unsigned int zeroSuppressionThreshold)
     {m_zeroSuppressionThreshold = zeroSuppressionThreshold;}
+  void setMinElongation(double elongation)
+    {m_minElongation = elongation;}
+  void setMaxElongation(double elongation)
+    {m_maxElongation = elongation;}
 
   // Read/write to/from file.
   void writeToFile(std::string filePath);
@@ -65,6 +71,8 @@ class pMonitorPreferences
   unsigned int m_socketPort;
   double m_refreshInterval;
   unsigned int m_zeroSuppressionThreshold;
+  double m_minElongation;
+  double m_maxElongation;
 };
 
 #endif //PMONITORPREFERENCES_H
