@@ -40,7 +40,11 @@ class pQtGroupBoxWidget : public pQtGridLayoutWidget
   pQtGroupBoxWidget(QWidget *parent);
   ~pQtGroupBoxWidget() {;}
   void setTitle(QString title);
-  void addWidget(QWidget *widget, int row, int column);
+  void addWidget(QWidget *widget, int row, int column,
+                 Qt::Alignment alignment = 0);
+  void addWidget(QWidget *widget, int row, int column,
+                 int rowSpan, int coloumnSpan, Qt::Alignment alignment = 0);
+  int rowCount() const {return m_groupBoxGridLayout->rowCount();}
 
  protected:
   QGroupBox *m_mainGroupBox;

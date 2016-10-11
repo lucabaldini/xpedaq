@@ -27,9 +27,10 @@ template class pQtCustomLineEdit<int>;
 template class pQtCustomLineEdit<unsigned int>;
 
 
-pQtCustomLineEditBase::pQtCustomLineEditBase(QWidget *parent) :
+pQtCustomLineEditBase::pQtCustomLineEditBase() :
   QLineEdit()
 {
+  setFixedWidth(80);
   connect (this, SIGNAL(editingFinished()),
            this, SLOT(validate()));
 }
@@ -39,8 +40,8 @@ pQtCustomLineEditBase::pQtCustomLineEditBase(QWidget *parent) :
 
 
 template <typename T>
-pQtCustomLineEdit<T>::pQtCustomLineEdit(QWidget *parent, T initalVal) : 
-  pQtCustomLineEditBase(parent)
+pQtCustomLineEdit<T>::pQtCustomLineEdit(T initalVal) : 
+  pQtCustomLineEditBase()
 {
   m_min = std::numeric_limits<T>::lowest(); //NOTE: min() is the positive min!
   m_max = std::numeric_limits<T>::max();

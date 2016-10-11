@@ -35,7 +35,15 @@ void pQtGroupBoxWidget::setTitle(QString title)
   m_mainGroupBox->setTitle(title);
 }
 
-void pQtGroupBoxWidget::addWidget(QWidget *widget, int row, int column)
+void pQtGroupBoxWidget::addWidget(QWidget *widget, int row, int column,
+                                  Qt::Alignment alignment)
 {
-  m_groupBoxGridLayout->addWidget(widget, row, column);
+  m_groupBoxGridLayout->addWidget(widget, row, column, alignment);
+}
+
+void pQtGroupBoxWidget::addWidget(QWidget *widget, int row, int column,
+                 int rowSpan, int coloumnSpan, Qt::Alignment alignment)
+{
+  m_groupBoxGridLayout->addWidget(widget, row, column, rowSpan,
+                                  coloumnSpan, alignment);
 }

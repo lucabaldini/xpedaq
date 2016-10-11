@@ -35,7 +35,6 @@ with this program; if not, write to the Free Software Foundation Inc.,
 
 #include <QString>
 #include <QLineEdit>
-#include <QWidget>
 
 class pQtCustomLineEditBase : public QLineEdit
 {
@@ -43,7 +42,7 @@ class pQtCustomLineEditBase : public QLineEdit
   
   public:
   
-    explicit pQtCustomLineEditBase(QWidget *parent=0);
+    explicit pQtCustomLineEditBase();
 
   signals:
     
@@ -60,7 +59,7 @@ class pQtCustomLineEdit : public pQtCustomLineEditBase
 {
   public:
   
-    explicit pQtCustomLineEdit(QWidget *parent, T initalVal = 0.);
+    explicit pQtCustomLineEdit(T initalVal = 0.);
     T value();
     T rangeMin(){return m_min;}
     T rangeMax(){return m_max;}

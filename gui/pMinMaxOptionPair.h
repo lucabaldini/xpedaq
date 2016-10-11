@@ -39,7 +39,6 @@ with this program; if not, write to the Free Software Foundation Inc.,
 #include <QWidget>
 
 #include "pQtGridLayoutWidget.h"
-#include "pQtCustomTextLabel.h"
 #include "pQtCustomLineEdit.h"
 
 
@@ -66,7 +65,7 @@ class pMinMaxOptionPair : public pMinMaxOptionPairBase
 {
   public:
   
-    pMinMaxOptionPair(QWidget *parent, QString labelName, T min, T max);   
+    pMinMaxOptionPair(QWidget *parent, T min, T max);   
     void readMin(T& min);
     void readMax(T& max);
     void readOptions(T& min, T& max);
@@ -80,7 +79,6 @@ class pMinMaxOptionPair : public pMinMaxOptionPairBase
   
     bool inputValid(T input);
     
-    pQtCustomTextLabel *m_label;
     pQtCustomLineEdit<T> *m_minEdit;
     pQtCustomLineEdit<T> *m_maxEdit;
     T m_min;

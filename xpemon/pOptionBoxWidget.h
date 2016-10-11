@@ -71,8 +71,11 @@ class pOptionBoxWidget: public pQtGroupBoxWidget
     pQtCustomLineEdit<double> *m_refreshIntervalEdit;
     pQtCustomTextLabel *m_zeroSupThrLabel;
     pQtCustomLineEdit<unsigned int> *m_zeroSupThrEdit;
+    pQtCustomTextLabel *m_elongationLabel;
     pMinMaxOptionPair<double> *m_elongationLimits;    
+    pQtCustomTextLabel *m_clusterSizeLabel;
     pMinMaxOptionPair<int> *m_clusterSizeLimits;    
+    pQtCustomTextLabel *m_pulseHeightLabel;
     pMinMaxOptionPair<int> *m_pulseHeightLimits;
     QCheckBox *m_drawReconInfoCheckBox;
     pMonitorPreferences m_preferences;

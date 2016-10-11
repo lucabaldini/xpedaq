@@ -28,46 +28,60 @@ pOptionBoxWidget::pOptionBoxWidget(const pMonitorPreferences &preferences,
 {
   //Socket port option init
   m_socketPortLabel = new pQtCustomTextLabel(this, "Socket Port");
-  m_socketPortEdit = new pQtCustomLineEdit<unsigned int>(this,
-                                                 m_preferences.m_socketPort);
+  m_socketPortEdit = new pQtCustomLineEdit<unsigned int>(
+                                                  m_preferences.m_socketPort);
   m_socketPortEdit->setRangeMax(65535); // maximum value for Udp socket port
-  addWidget(m_socketPortLabel, 0,0);
-  addWidget(m_socketPortEdit, 0,1);
+  addWidget(m_socketPortLabel, rowCount(), 0);
+  addWidget(m_socketPortEdit, rowCount()-1, 1, 1, 2, Qt::AlignHCenter);  
   //Refresh interval option init
   m_refreshIntervalLabel = new pQtCustomTextLabel(this,
-                                             "Refresh interval (ms)");
-  m_refreshIntervalEdit = new pQtCustomLineEdit<double>(this,
+                                                  "Refresh interval (ms)");
+  m_refreshIntervalEdit = new pQtCustomLineEdit<double>(
                                              m_preferences.m_refreshInterval);
-  addWidget(m_refreshIntervalLabel, 1,0);
-  addWidget(m_refreshIntervalEdit, 1,1);
-  m_refreshIntervalEdit->setRangeMin(200.); // would be too fast otherwise
+  addWidget(m_refreshIntervalLabel, rowCount(), 0);
+  addWidget(m_refreshIntervalEdit, rowCount() - 1, 1, 1, 2, Qt::AlignHCenter);
+  m_refreshIntervalEdit->setRangeMin(500.); // would be too fast otherwise
   //Zero suppression option init
   m_zeroSupThrLabel = new pQtCustomTextLabel(this,"Zero suppression");
-  m_zeroSupThrEdit = new pQtCustomLineEdit<unsigned int>(this, 
+  m_zeroSupThrEdit = new pQtCustomLineEdit<unsigned int>(
                                     m_preferences.m_zeroSuppressionThreshold);
   m_zeroSupThrEdit->setRangeMin(0);
-  addWidget(m_zeroSupThrLabel, 2,0);
-  addWidget(m_zeroSupThrEdit, 2,1);
+  addWidget(m_zeroSupThrLabel, rowCount(), 0);
+  addWidget(m_zeroSupThrEdit, rowCount() - 1, 1, 1, 2, Qt::AlignHCenter);
+  //Add the min-max title (skipping a row to leave some space)
+  QLabel* minLabel = new QLabel("min", this);
+  QLabel* maxLabel = new QLabel("max", this);
+  addWidget(minLabel, rowCount() + 1, 1, Qt::AlignHCenter);
+  addWidget(maxLabel, rowCount() - 1, 2, Qt::AlignHCenter);
+  //Setting the blank space amount before the min-max title
+  m_groupBoxGridLayout->setRowMinimumHeight(rowCount()- 2, 10);
   //Elongation limits option init
-  m_elongationLimits = new pMinMaxOptionPair<double>(this, "Elongation",
+  m_elongationLabel = new pQtCustomTextLabel(this, "Elongation");
+  m_elongationLimits = new pMinMaxOptionPair<double>(this,
     m_preferences.m_minElongation, m_preferences.m_maxElongation);
-  m_groupBoxGridLayout->addWidget(m_elongationLimits, 3, 0, 1, 2);
+  addWidget(m_elongationLabel, rowCount(), 0);
+  addWidget(m_elongationLimits, rowCount() - 1, 1, 1, 2);
   //Cluster size limits
-  m_clusterSizeLimits = new pMinMaxOptionPair<int>(this, "Cluster size",
+  m_clusterSizeLabel = new pQtCustomTextLabel(this, "Cluster size");
+  m_clusterSizeLimits = new pMinMaxOptionPair<int>(this,
     m_preferences.m_minClusterSize, m_preferences.m_maxClusterSize);
-  m_groupBoxGridLayout->addWidget(m_clusterSizeLimits, 4, 0, 1, 2);
+  addWidget(m_clusterSizeLabel, rowCount(), 0);
+  addWidget(m_clusterSizeLimits, rowCount() - 1, 1, 1 , 2);
   m_clusterSizeLimits->setBottom(0);
   //Pulse height limits option init
-  m_pulseHeightLimits = new pMinMaxOptionPair<int>(this, "Pulse height",
+  m_pulseHeightLabel = new pQtCustomTextLabel(this, "Pulse height");
+  m_pulseHeightLimits = new pMinMaxOptionPair<int>(this,
     m_preferences.m_minPulseHeight, m_preferences.m_maxPulseHeight);
-  m_groupBoxGridLayout->addWidget(m_pulseHeightLimits, 5, 0, 1, 2);
+  addWidget(m_pulseHeightLabel, rowCount(), 0);
+  addWidget(m_pulseHeightLimits, rowCount() - 1, 1, 1 , 2);
   m_pulseHeightLimits->setBottom(0);
-  //Check box for drawing recon info init
-  m_drawReconInfoCheckBox = new QCheckBox("Draw recon");
-  addWidget(m_drawReconInfoCheckBox, 6, 0);
-  
+  //Check box for drawing recon info init (skipping a row to leave some space)
+  m_drawReconInfoCheckBox = new QCheckBox("Draw reconstruction");
+  addWidget(m_drawReconInfoCheckBox, rowCount() + 1, 0);  
   connect (m_drawReconInfoCheckBox, SIGNAL(stateChanged(int)),
-           this, SLOT(updateReconInfoBoxStatus(int)));
+           this, SLOT(updateReconInfoBoxStatus(int)));  
+  //Setting the blank space amount before the check box
+  m_groupBoxGridLayout->setRowMinimumHeight(rowCount()- 2, 20);
 }
 
 

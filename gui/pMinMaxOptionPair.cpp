@@ -28,16 +28,13 @@ template class pMinMaxOptionPair<unsigned int>;
 
 
 template <typename T>
-pMinMaxOptionPair<T>::pMinMaxOptionPair(QWidget *parent, QString labelName,
-                                     T min, T max) : 
-                                     pMinMaxOptionPairBase(parent)
+pMinMaxOptionPair<T>::pMinMaxOptionPair(QWidget *parent, T min, T max) : 
+  pMinMaxOptionPairBase(parent)
 {
-  m_label = new pQtCustomTextLabel(this, labelName);
-  m_minEdit = new pQtCustomLineEdit<T>(this, min);
-  m_maxEdit = new pQtCustomLineEdit<T>(this, max);
-  addWidget(m_label, 0, 0);
-  addWidget(m_minEdit, 0, 1);
-  addWidget(m_maxEdit, 0, 2);
+  m_minEdit = new pQtCustomLineEdit<T>(min);
+  m_maxEdit = new pQtCustomLineEdit<T>(max);
+  addWidget(m_minEdit, 0, 0);
+  addWidget(m_maxEdit, 0, 1);
   
   connect (m_minEdit, SIGNAL(inputAccepted()),
            this, SLOT(updateMaxRange()));
