@@ -44,13 +44,13 @@ class pEventWindow{
                  {;}
       
     //getters
-    inline int firstCol() const {return m_firstCol;}
-    inline int lastCol() const {return m_lastCol;}
-    inline int firstRow() const {return m_firstRow;}
-    inline int lastRow() const {return m_lastRow;}
-    inline int nColumns() const {return m_lastCol - m_firstCol + 1;}
-    inline int nRows() const {return m_lastRow - m_firstRow + 1;}
-    inline int evtSize() const {return nRows() * nColumns();}    
+    int firstCol() const {return m_firstCol;}
+    int lastCol() const {return m_lastCol;}
+    int firstRow() const {return m_firstRow;}
+    int lastRow() const {return m_lastRow;}
+    int nColumns() const {return m_lastCol - m_firstCol + 1;}
+    int nRows() const {return m_lastRow - m_firstRow + 1;}
+    int evtSize() const {return nRows() * nColumns();}    
     
     // Coordinate transformations
     void pixelToCoord(const OffsetCoordinate &p, double &x, double &y) const;
