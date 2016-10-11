@@ -56,12 +56,11 @@ xpemonWindow::xpemonWindow(std::string preferencesFilePath,
   m_transportBar = new pTransportBar(this, false);
   m_mainGridLayout->addWidget(m_transportBar, 5,0);
   
-  m_eventReader = new pEventReader(m_preferences->m_socketPort,
-                    m_preferences->m_zeroSuppressionThreshold,
-                    m_monitorTab->pulseHeightHist(),
-                    m_monitorTab->windowSizeHist(),
-                    m_monitorTab->modulationHist(),
-                    m_monitorTab->hitMap());
+  m_eventReader = new pEventReader((*m_preferences),
+                                   m_monitorTab->pulseHeightHist(),
+                                   m_monitorTab->windowSizeHist(),
+                                   m_monitorTab->modulationHist(),
+                                   m_monitorTab->hitMap());
   
   m_infoBoxWidget = new pInfoBoxWidget(this);
   m_mainGridLayout->addWidget(m_infoBoxWidget, 1,0);
@@ -149,9 +148,7 @@ void xpemonWindow::startRun()
   {
     readOptions();
     m_preferences->writeToFile(m_preferencesFilePath);
-    m_eventReader->setSocketPortNumber(m_preferences->m_socketPort);
-    m_eventReader->setZeroSupThreshold(m_preferences->
-                                                 m_zeroSuppressionThreshold);  
+    m_eventReader->updatePreferences(*m_preferences);
     m_eventReader->moveToThread(&m_thread);
     m_thread.start();
     emit (startAcquisition());

@@ -32,6 +32,7 @@ with this program; if not, write to the Free Software Foundation Inc.,
 #include "pHistogram.h"
 #include "pMap.h"
 #include "pEvent.h"
+#include "pMonitorPreferences.h"
 
 class pEventReader: public QObject
 {
@@ -40,7 +41,7 @@ class pEventReader: public QObject
   
   public:
   
-    pEventReader(unsigned int socketPortNumber, double zeroSupThreshold,
+    pEventReader(const pMonitorPreferences& preferences,
                  pHistogram* pulseHeightHist, pHistogram* windowSizeHist,
                  pHistogram* modulationHist, pMap* hitMap);
   
@@ -50,8 +51,7 @@ class pEventReader: public QObject
     void readPendingDatagrams();
     void updateRequested();
     void setStopped();
-    void setSocketPortNumber(unsigned int socketPortNumber);
-    void setZeroSupThreshold(double zeroSupThreshold);
+    void updatePreferences(const pMonitorPreferences& preferences);
   
   signals:
   
@@ -76,8 +76,7 @@ class pEventReader: public QObject
     //Current event info:
     pEvent m_lastEvent;
       
-    unsigned int m_socketPortNumber;
-    double m_zeroSupThreshold;
+    pMonitorPreferences m_preferences;
     bool m_stopped;
     bool m_isContentChanged;
     QMutex m_mutex;

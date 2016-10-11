@@ -21,8 +21,7 @@ with this program; if not, write to the Free Software Foundation Inc.,
 
 #include "pEventReader.h"
 
-pEventReader::pEventReader(unsigned int socketPortNumber,
-                           double zeroSupThreshold,
+pEventReader::pEventReader(const pMonitorPreferences& preferences,
                            pHistogram* pulseHeightHist, 
                            pHistogram* windowSizeHist,
                            pHistogram* modulationHist,
@@ -31,8 +30,7 @@ pEventReader::pEventReader(unsigned int socketPortNumber,
                            m_windowSizeHist(windowSizeHist),
                            m_modulationHist(modulationHist),
                            m_hitMap(hitMap),
-                           m_socketPortNumber(socketPortNumber),
-                           m_zeroSupThreshold(zeroSupThreshold)
+                           m_preferences(preferences)
 {
   m_udpSocket = new QUdpSocket (this);
 }
@@ -75,14 +73,14 @@ void pEventReader::readPendingDatagram()
       p.readPixel(evt, index, x, y, height);
       curHitMap.at(index) = height;
       //zero suppression in the hit map
-      if (height > m_zeroSupThreshold)
+      if (height > m_preferences.m_zeroSuppressionThreshold)
         m_hitMap->fill(x, y, static_cast<double> (height));
       else
         m_hitMap->fill(x, y, 0.);      
     }
     m_lastEvent = pEvent(p.xmin(evt), p.xmax(evt), p.ymin(evt), p.ymax(evt),
-                         curHitMap, m_zeroSupThreshold);
-    m_lastEvent.clusterize(m_zeroSupThreshold);
+                         curHitMap, m_preferences.m_zeroSuppressionThreshold);
+    m_lastEvent.clusterize(m_preferences.m_zeroSuppressionThreshold);
     m_lastEvent.doMomentsAnalysis();
     emit eventRead();
     m_windowSizeHist->fill(nPixel);
@@ -123,7 +121,7 @@ void pEventReader::startReading()
   QMutexLocker locker(&m_mutex);
   m_stopped = false;
   m_isContentChanged = false;
-  m_udpSocket->bind(m_socketPortNumber);
+  m_udpSocket->bind(m_preferences.m_socketPort);
   connect(m_udpSocket, SIGNAL(readyRead()), 
           this, SLOT(readPendingDatagrams()));
 }
@@ -138,15 +136,8 @@ void pEventReader::setStopped()
 }
 
 
-void pEventReader::setSocketPortNumber(unsigned int socketPortNumber)
+void pEventReader::updatePreferences(const pMonitorPreferences& preferences)
 {
   QMutexLocker locker(&m_mutex);
-  m_socketPortNumber = socketPortNumber;
-}
-
-
-void pEventReader::setZeroSupThreshold(double zeroSupThreshold)
-{
-  QMutexLocker locker(&m_mutex);
-  m_zeroSupThreshold = zeroSupThreshold;
+  m_preferences = preferences;
 }
