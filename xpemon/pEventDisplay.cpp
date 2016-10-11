@@ -30,10 +30,10 @@ pEventDisplay::pEventDisplay(pColorMapOptions options, bool displayReconInfo)
   //Initialize axes with default range
   axisRect()->setupFullAxesBox(false);
   axisRect()->setAutoMargins(QCP::msNone);
-  QMargins *mapMargins = new QMargins(60, 50, 65, 50);
+  QMargins *mapMargins = new QMargins(75, 50, 65, 50);
   axisRect()->setMargins(*mapMargins);
-  axisRect()->setMinimumSize(725, 700);
-  axisRect()->setMaximumSize(725, 700);
+  axisRect()->setMinimumSize(740, 700);
+  axisRect()->setMaximumSize(740, 700);
   axisRect()->center();
   
   xAxis->setRange(-7.4875, 7.4875);
@@ -128,6 +128,8 @@ void pEventDisplay::updateDataRange()
 
 void pEventDisplay::updateAxesRange()
 {
+  if (m_event.isEmpty())
+    return;
   double padding = 0.1; // Padding in mm.
   double xmin, xmax, ymin, ymax, x0, y0, side;
   pixelToCoord(m_event.firstCol(), m_event.firstRow(), xmin, ymax);
@@ -182,6 +184,8 @@ void pEventDisplay::updateColorScale()
 
 void pEventDisplay::updateMatrixColor()
 {
+  if (m_event.isEmpty())
+    return;
   int nData = m_event.evtSize();
   QRgb* scanLine = new QRgb[nData];
   QCPColorGradient gradient = QCPColorGradient(m_options.m_gradientType);   
@@ -206,6 +210,8 @@ void pEventDisplay::updateMatrixColor()
 
 void pEventDisplay::drawMatrix()
 {
+  if (m_event.isEmpty())
+    return;
   double xmin, xmax, ymin, ymax;
   double padding = 0.;
   pixelToCoord(m_event.firstCol(), m_event.firstRow(), xmin, ymax);
@@ -214,52 +220,59 @@ void pEventDisplay::drawMatrix()
                     m_event.lastCol() - m_event.firstCol() + 1,
                     m_event.lastRow() - m_event.firstRow() + 1,
                     m_event.firstCol() % 2, padding);
-  m_isSyncronized = true;
 }
 
 
 void pEventDisplay::drawReconInfo()
 {
-  //std::cout<<"drawing"<<std::endl;
-  //QCPItemLine* direction = new QCPItemLine();
-  //addPlottable(direction);
-  //direction->SetPen(QPen("blue"));
-  //direction->start->setCoords(m_event.xBarycenter(), m_event.yBarycenter());
-  //double m = tan(m_event.phi());
-  //
-  //direction->end->setCoords();
-  //
+  if (m_event.isEmpty())
+    return;
+  m_event.moma().draw(this);
 }
 
 
 void pEventDisplay::draw()
 {
-  clearPlottables();
   if (!m_isSyncronized){
+    clear();
     updateAxesRange();
     drawMatrix();
     updateMatrixColor();
   }
-  if (m_displayReconInfo)
+  if (m_displayReconInfo){
+    clearItems();
     drawReconInfo();
+  }
   replot();
+  m_isSyncronized = true;
 }
 
 
 void pEventDisplay::resetView()
 {
   // Go back to the optimal view (all data are in axis range)
-  clearPlottables();
+  clear();
   updateAxesRange();
   drawMatrix();
   updateDataRange();
+  if (m_displayReconInfo)
+    drawReconInfo();
 }
 
 
-void pEventDisplay::clearMap()
+
+void pEventDisplay::clear()
+{
+  clearPlottables(); //remove all hexagons
+  clearItems(); //remove recon objects 
+}
+
+
+void pEventDisplay::reset()
 {  
-  clearPlottables();
-  m_hexMatrix->reset();
+  clear();
+  m_event = pEvent(); //reset the current event
+  m_hexMatrix->reset(); //reset the hexagon matrix
   replot();
 }
 

@@ -177,15 +177,16 @@ void xpemonWindow::showLastEvent(const pEvent& evt)
   evt.highestPixelCoordinates(col, row);
   m_infoBoxWidget->updateMaxCoordinates(col, row);
   m_infoBoxWidget->updateClusterSize(evt.clusterSize());
-  m_infoBoxWidget->updateBarycenterCoordinates(evt.xBarycenter(),
-                                               evt.yBarycenter());
+  m_infoBoxWidget->updateBarycenterCoordinates(evt.moma().x0(),
+                                               evt.moma().y0());
   m_infoBoxWidget->updatePulseHeight(evt.clusterPulseHeight());
-  m_infoBoxWidget->updatePhi(evt.phi());
-  m_infoBoxWidget->updateMom2Trans(evt.mom2Trans());
-  m_infoBoxWidget->updateMom2Long(evt.mom2Long());
+  m_infoBoxWidget->updatePhi(evt.moma().phi());
+  m_infoBoxWidget->updateMom2Trans(evt.moma().mom2trans());
+  m_infoBoxWidget->updateMom2Long(evt.moma().mom2long());
   m_eventDisplayTab->updateEventDisplay(evt);  
-  m_infoBoxWidget->updateMomRatio(evt.mom2Long()/evt.mom2Trans());
-  m_infoBoxWidget->updateSkewness(evt.skewness());
+  m_infoBoxWidget->updateMomRatio(evt.moma().mom2long() /
+                                  evt.moma().mom2trans());
+  m_infoBoxWidget->updateSkewness(evt.moma().skewness());
 }
 
 
@@ -193,5 +194,5 @@ void xpemonWindow::showLastEvent(const pEvent& evt)
 void xpemonWindow::reset()
 {
   m_monitorTab->resetPlot();
-  m_eventDisplayTab->resetPlot();  
+  m_eventDisplayTab->resetPlot();
 }

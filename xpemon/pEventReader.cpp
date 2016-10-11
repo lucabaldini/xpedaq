@@ -85,7 +85,7 @@ void pEventReader::readPendingDatagram()
     emit eventRead();
     m_windowSizeHist->fill(nPixel);
     m_pulseHeightHist->fill(m_lastEvent.clusterPulseHeight());
-    m_modulationHist->fill(180 * m_lastEvent.phi() / 3.1415926535897932);
+    m_modulationHist->fill(180 * m_lastEvent.moma().phi() / 3.14159265358979);
   }
   // Here we release the memory. Using the data block
   // after this point will lead to incorect behaviour.

@@ -39,7 +39,7 @@ class pEvent: public pEventWindow
   
   public:
     
-    pEvent() : pEventWindow (){;}
+    pEvent() : pEventWindow (), m_isEmpty(true) {;}
     
     pEvent(int firstCol, int lastCol,
            int firstRow, int lastRow,
@@ -48,7 +48,8 @@ class pEvent: public pEventWindow
   public:
     
     /* Getters */
-    inline const std::vector<event::Hit>& hits() const {return m_hits;}
+    bool isEmpty() const {return m_isEmpty;}
+    const std::vector<event::Hit>& hits() const {return m_hits;}
     //access by index number    
     const event::Hit& operator() (int index) const {return m_hits.at(index);}
     //access by offset coordinates
@@ -58,40 +59,25 @@ class pEvent: public pEventWindow
     const event::Hit& operator() (const CubeCoordinate& p) const
       {return m_hits.at(index(p));} 
     //index of highest Pixel
-    inline int highestPixelAddress() const 
+    int highestPixelAddress() const 
       {return m_highestPixelAddress;}
     //highest Pixel
-    inline const event::Hit& highestPixel() const
+    const event::Hit& highestPixel() const
       {return m_hits.at(highestPixelAddress());}
     //highest Pixel row and column
     void highestPixelCoordinates(int& row, int& col) const;
     //total pulse height
-    inline adc_count_t totalPulseHeight() const
+    adc_count_t totalPulseHeight() const
       {return m_totalPulseHeight;}
     //cluster pulse hieght
-    inline adc_count_t clusterPulseHeight() const
+    adc_count_t clusterPulseHeight() const
       {return m_clusterPulseHeight;}
-    //number of pixels in main cluster   
-    inline int clusterSize() const
+    //number of pixels in main cluster
+    int clusterSize() const
       {return m_clusterSize;}
-    //x coordinate of the barycenter 
-    inline double xBarycenter() const
-      {return m_momentsAnalysis.x0();}
-    //y coordinate of the barycenter      
-    inline double yBarycenter() const
-      {return m_momentsAnalysis.y0();}
-    //emission angle   
-    inline double phi() const
-      {return m_momentsAnalysis.phi();}
-    //longitudinal second moment of the cluster
-    inline double mom2Long() const
-      {return m_momentsAnalysis.mom2long();}
-    //transverse second moment of the cluster
-    inline double mom2Trans() const 
-      {return m_momentsAnalysis.mom2trans();}
-    //skweness
-    inline double skewness() const
-      {return m_momentsAnalysis.skewness();}
+    //moment analysis
+    const pMomentsAnalysis& moma() const
+      {return m_momentsAnalysis;}
     
     //iterator
     typedef std::vector<event::Hit>::const_iterator const_eventIterator;
@@ -123,6 +109,7 @@ class pEvent: public pEventWindow
     int findHighestPixel() const;
     adc_count_t pixelSum(adc_count_t threshold) const;
     int minKey(const std::vector<int> &key) const;
+    bool m_isEmpty;
 };
 
 #endif //PEVENT_H

@@ -50,7 +50,8 @@ class pEventDisplay : public QCustomPlot
     // Restore the optimal visualization (change axis range so that
     // all data are visible and set the optimal color scale)
     virtual void resetView();
-    void clearMap();
+    void clear(); //remove the graphical objects from the plot
+    void reset(); //remove the graphical objects and reset data objects
     void enableReconDisplay() {m_displayReconInfo = true;}
     void disableReconDisplay() {m_displayReconInfo = false;}
   

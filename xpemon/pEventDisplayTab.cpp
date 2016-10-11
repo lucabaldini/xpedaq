@@ -55,7 +55,7 @@ void pEventDisplayTab::updateEventDisplay(const pEvent &evt)
 
 void pEventDisplayTab::resetPlot()
 {
-  m_eventDisplay -> clearMap();
+  m_eventDisplay -> reset();
 }
 
 

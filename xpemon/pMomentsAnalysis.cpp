@@ -33,3 +33,38 @@ pMomentsAnalysis::pMomentsAnalysis() :
 {
   // Do-nothing.
 }
+
+
+void pMomentsAnalysis::draw(QCustomPlot* parentPlot) const
+{
+  drawBarycenter(parentPlot);
+  drawPrincipalAxis(parentPlot);
+  drawEllipse(parentPlot);
+}
+
+
+void pMomentsAnalysis::drawBarycenter(QCustomPlot* parentPlot) const
+{
+}
+
+
+void pMomentsAnalysis::drawPrincipalAxis(QCustomPlot* parentPlot) const
+{
+  QCPItemStraightLine *principalAxis = new  QCPItemStraightLine(parentPlot);
+  parentPlot->addItem(principalAxis);
+  QPen axisPen = QPen();
+  axisPen.setStyle(Qt::DashLine);
+  axisPen.setColor(QColor("blue"));
+  principalAxis->setPen(axisPen);
+  // We need two point to draw the line: the barycenter and another on the 
+  // the direction given by the angle phi
+  double dx = 0.1;
+  double dy = dx * tan(m_phi); 
+  principalAxis->point1->setCoords(m_x0, m_y0);
+  principalAxis->point2->setCoords(m_x0 + dx, m_y0 + dy);
+}
+
+
+void pMomentsAnalysis::drawEllipse(QCustomPlot* parentPlot) const
+{
+}

@@ -27,7 +27,8 @@ pEvent::pEvent(int firstCol, int lastCol,
                const event::Adc_vec_t& adcCounts, 
                adc_count_t threshold):
                pEventWindow(firstCol, lastCol, firstRow, lastRow),
-               m_threshold(threshold), m_clusterSize(0)
+               m_threshold(threshold), m_clusterSize(0),
+               m_isEmpty(false)
 {
   if (adcCounts.size() != nRows() * nColumns()) {
     std::cout << "WARNING: Buffer does not fit window size passed"

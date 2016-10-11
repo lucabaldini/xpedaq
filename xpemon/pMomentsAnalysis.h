@@ -24,6 +24,8 @@ with this program; if not, write to the Free Software Foundation Inc.,
 
 #include <iostream>
 
+#include "qcustomplot.h"
+
 
 /* Class describing the outcome of a moments analysis. */
 
@@ -60,6 +62,12 @@ class pMomentsAnalysis
     friend std::ostream& operator<<(std::ostream& os,
 				    const pMomentsAnalysis& moma)
     {return moma.fillStream(os);}
+    
+    // Draw on the event display
+    void draw(QCustomPlot* parentPlot) const;
+    void drawBarycenter(QCustomPlot* parentPlot) const;
+    void drawPrincipalAxis(QCustomPlot* parentPlot) const;
+    void drawEllipse(QCustomPlot* parentPlot) const;
   
   private:
 
