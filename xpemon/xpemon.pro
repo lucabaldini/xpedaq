@@ -58,6 +58,8 @@ HEADERS += pQtDisplayGui.h
 HEADERS += pQtCustomTab.h
 HEADERS += pQtMainWindowGui.h
 HEADERS += pInfoBoxGui.h
+HEADERS += pMinMaxOptionPair.h
+HEADERS += pQtCustomLineEdit.h
 
 HEADERS += pDataBlock.h
 HEADERS += CQuickUsb.h
@@ -116,6 +118,8 @@ SOURCES += pQtDisplayGui.cpp
 SOURCES += pQtCustomTab.cpp
 SOURCES += pQtMainWindowGui.cpp
 SOURCES += pInfoBoxGui.cpp
+SOURCES += pMinMaxOptionPair.cpp
+SOURCES += pQtCustomLineEdit.cpp
 
 SOURCES += pDataBlock.cpp
 SOURCES += CQuickUsb.cpp

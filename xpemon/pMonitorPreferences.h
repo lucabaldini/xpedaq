@@ -44,6 +44,10 @@ class pMonitorPreferences
   unsigned int m_zeroSuppressionThreshold;
   double m_minElongation;
   double m_maxElongation;
+  int m_minClusterSize;
+  int m_maxClusterSize;
+  int m_minPulseHeight;
+  int m_maxPulseHeight;
   
   // Read/write to/from file.
   void writeToFile(std::string filePath);

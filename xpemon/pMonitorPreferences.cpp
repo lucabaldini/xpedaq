@@ -51,6 +51,14 @@ void pMonitorPreferences::writeToFile(std::string filePath)
   xpolio::kIOManager->write(outputFile, m_minElongation);
   xpolio::kIOManager->write(outputFile, "//Max elongation//");
   xpolio::kIOManager->write(outputFile, m_maxElongation);
+  xpolio::kIOManager->write(outputFile, "//Min cluster size//");
+  xpolio::kIOManager->write(outputFile, m_minClusterSize);
+  xpolio::kIOManager->write(outputFile, "//Max cluster size//");
+  xpolio::kIOManager->write(outputFile, m_maxClusterSize);
+  xpolio::kIOManager->write(outputFile, "//Minimum pulse height//");
+  xpolio::kIOManager->write(outputFile, m_minPulseHeight);
+  xpolio::kIOManager->write(outputFile, "//Maximum pulse height//");
+  xpolio::kIOManager->write(outputFile, m_maxPulseHeight);
   xpolio::kIOManager->closeOutputFile(outputFile);
 }
 
@@ -72,6 +80,14 @@ void pMonitorPreferences::readFromFile(std::string filePath)
   m_minElongation = xpolio::kIOManager->readDouble(inputFile);
   xpolio::kIOManager->skipLine(inputFile);
   m_maxElongation = xpolio::kIOManager->readDouble(inputFile);
+  xpolio::kIOManager->skipLine(inputFile);
+  m_minClusterSize = xpolio::kIOManager->readInteger(inputFile);
+  xpolio::kIOManager->skipLine(inputFile);
+  m_maxClusterSize = xpolio::kIOManager->readInteger(inputFile);
+  xpolio::kIOManager->skipLine(inputFile);
+  m_minPulseHeight = xpolio::kIOManager->readInteger(inputFile);
+  xpolio::kIOManager->skipLine(inputFile);
+  m_maxPulseHeight = xpolio::kIOManager->readInteger(inputFile);
   xpolio::kIOManager->closeInputFile(inputFile);
 }
 
@@ -87,6 +103,10 @@ std::ostream& pMonitorPreferences::fillStream(std::ostream& os) const
      << std::endl;
   os << "Min. elongation: " << m_minElongation << std::endl;
   os << "Max. elongation: " << m_maxElongation << std::endl;
+  os << "Min. cluster size: " << m_minClusterSize << std::endl;
+  os << "Max. cluster size: " << m_maxClusterSize << std::endl;
+  os << "Min. pulse height: " << m_minPulseHeight << std::endl;
+  os << "Max. pulse height: " << m_maxPulseHeight << std::endl;
   os << xpedaqutils::hline();
   return os;
 }

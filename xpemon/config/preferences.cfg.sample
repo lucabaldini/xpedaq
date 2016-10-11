@@ -3,4 +3,16 @@
 //Refresh Interval//
 500
 //Zero Suppression Threshold//
-10
+9
+//Min elongation//
+1
+//Max elongation//
+100
+//Min cluster size//
+6
+//Max cluster size//
+1000
+//Min pulse height//
+0
+//Max pulse height//
+100000

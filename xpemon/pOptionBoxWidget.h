@@ -30,7 +30,9 @@ with this program; if not, write to the Free Software Foundation Inc.,
 
 #include "pMonitorPreferences.h"
 #include "pQtCustomTextLabel.h"
+#include "pQtCustomLineEdit.h"
 #include "pQtGroupBoxWidget.h"
+#include "pMinMaxOptionPair.h"
 
 class pOptionBoxWidget: public pQtGroupBoxWidget
 {
@@ -56,23 +58,22 @@ class pOptionBoxWidget: public pQtGroupBoxWidget
   
   private:
   
-    void initalizeText();
     void readSocketPort();
     void readRefreshInterval();
     void readZeroSupThreshold();
-    void readMinElongation();    
-    void readMaxElongation();
+    void readElongationLimits();
+    void readClusterSizeLimits();
+    void readPulseHeightLimits();
   
     pQtCustomTextLabel *m_socketPortLabel;
-    QLineEdit *m_socketPortEdit;
+    pQtCustomLineEdit<unsigned int> *m_socketPortEdit;
     pQtCustomTextLabel *m_refreshIntervalLabel;
-    QLineEdit *m_refreshIntervalEdit;
+    pQtCustomLineEdit<double> *m_refreshIntervalEdit;
     pQtCustomTextLabel *m_zeroSupThrLabel;
-    QLineEdit *m_zeroSupThrEdit;
-    pQtCustomTextLabel *m_minElongationLabel;
-    QLineEdit *m_minElongationEdit;
-    pQtCustomTextLabel *m_maxElongationLabel;    
-    QLineEdit *m_maxElongationEdit;
+    pQtCustomLineEdit<unsigned int> *m_zeroSupThrEdit;
+    pMinMaxOptionPair<double> *m_elongationLimits;    
+    pMinMaxOptionPair<int> *m_clusterSizeLimits;    
+    pMinMaxOptionPair<int> *m_pulseHeightLimits;
     QCheckBox *m_drawReconInfoCheckBox;
     pMonitorPreferences m_preferences;
 };
