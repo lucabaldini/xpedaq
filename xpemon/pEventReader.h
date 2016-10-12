@@ -79,7 +79,7 @@ class pEventReader: public QObject
       
     pMonitorPreferences m_preferences;
     bool m_stopped;
-    bool m_isContentChanged;
+    bool m_isLastEventChanged;
     QMutex m_mutex;
     QUdpSocket* m_udpSocket;
     

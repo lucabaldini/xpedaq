@@ -46,6 +46,7 @@ HEADERS += pCustomHistogramPlot.h
 HEADERS += pHistogramPlot.h
 HEADERS += pMap.h
 HEADERS += pMapPlot.h
+HEADERS += pRotableEllipse.h
 HEADERS += pCustomColorMapPlot.h
  
 HEADERS += pQtGridLayoutWidget.h
@@ -106,6 +107,7 @@ SOURCES += pCustomHistogramPlot.cpp
 SOURCES += pHistogramPlot.cpp
 SOURCES += pMap.cpp
 SOURCES += pMapPlot.cpp
+SOURCES += pRotableEllipse.cpp
 SOURCES += pCustomColorMapPlot.cpp
 
 SOURCES += pQtGridLayoutWidget.cpp

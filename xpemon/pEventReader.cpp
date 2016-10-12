@@ -61,7 +61,6 @@ void pEventReader::readPendingDatagram()
       std::cout << "Invalid event n. " <<  evt  << " of " << p;
       return;
     }
-    m_isContentChanged = true;    
     int nPixel = p.numPixels(evt);
     event::Adc_vec_t curHitMap;
     curHitMap.resize(nPixel);
@@ -87,6 +86,7 @@ void pEventReader::readPendingDatagram()
     m_pulseHeightHist->fill(tmpEvt.clusterPulseHeight());
     m_modulationHist->fill(tmpEvt.moma().phiDeg());
     if (evtAccepted(tmpEvt)){
+      m_isLastEventChanged = true;    
       m_lastEvent = tmpEvt;
     }
   }
@@ -123,13 +123,13 @@ void pEventReader::readPendingDatagrams()
 void pEventReader::updateRequested()
 {
   QMutexLocker locker(&m_mutex);
-  if (!m_isContentChanged) return; 
-  emit lastEventUpdated(m_lastEvent);
+  if (m_isLastEventChanged) 
+    emit lastEventUpdated(m_lastEvent);
   emit pulseHeightHistUpdated();
   emit windowSizeHistUpdated();
   emit modulationHistUpdated();
   emit hitMapUpdated();
-  m_isContentChanged = false;
+  m_isLastEventChanged = false;
 }
 
 
@@ -137,7 +137,7 @@ void pEventReader::startReading()
 {
   QMutexLocker locker(&m_mutex);
   m_stopped = false;
-  m_isContentChanged = false;
+  m_isLastEventChanged = false;
   m_udpSocket->bind(m_preferences.m_socketPort);
   connect(m_udpSocket, SIGNAL(readyRead()), 
           this, SLOT(readPendingDatagrams()));
