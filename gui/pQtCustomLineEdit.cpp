@@ -21,11 +21,6 @@ with this program; if not, write to the Free Software Foundation Inc.,
 
 #include "pQtCustomLineEdit.h"
 
-// We declare the template class for a set of types (won't work for others)
-template class pQtCustomLineEdit<double>;
-template class pQtCustomLineEdit<int>;
-template class pQtCustomLineEdit<unsigned int>;
-
 
 pQtCustomLineEditBase::pQtCustomLineEditBase() :
   QLineEdit()
@@ -150,3 +145,12 @@ bool convertions::qStrToNumber(const QString& str, unsigned int& result)
     result = tmpResult;
   return success;
 }
+
+
+// We declare the template class for a set of types (won't work for others)
+// Mind that these lines *have to* be at the end of the file for the whole
+// thing to work, see:
+// http://stackoverflow.com/questions/8752837/undefined-reference-to-template-class-constructor
+template class pQtCustomLineEdit<double>;
+template class pQtCustomLineEdit<int>;
+template class pQtCustomLineEdit<unsigned int>;

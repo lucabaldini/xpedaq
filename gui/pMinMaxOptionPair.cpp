@@ -21,11 +21,6 @@ with this program; if not, write to the Free Software Foundation Inc.,
 
 #include "pMinMaxOptionPair.h"
 
-// We declare the template class for a set of types (won't work for others)
-template class pMinMaxOptionPair<double>;
-template class pMinMaxOptionPair<int>;
-template class pMinMaxOptionPair<unsigned int>;
-
 
 template <typename T>
 pMinMaxOptionPair<T>::pMinMaxOptionPair(QWidget *parent, T min, T max) : 
@@ -116,3 +111,12 @@ void pMinMaxOptionPair<T>::setTop(T top)
     m_maxEdit->setRangeMax(top);
   }
 }
+
+
+// We declare the template class for a set of types (won't work for others)
+// Mind that these lines *have to* be at the end of the file for the whole
+// thing to work, see:
+// http://stackoverflow.com/questions/8752837/undefined-reference-to-template-class-constructor
+template class pMinMaxOptionPair<double>;
+template class pMinMaxOptionPair<int>;
+template class pMinMaxOptionPair<unsigned int>;
