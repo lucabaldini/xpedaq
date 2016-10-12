@@ -78,19 +78,36 @@ void pEventReader::readPendingDatagram()
       else
         m_hitMap->fill(x, y, 0.);      
     }
-    m_lastEvent = pEvent(p.xmin(evt), p.xmax(evt), p.ymin(evt), p.ymax(evt),
+    pEvent tmpEvt = pEvent(p.xmin(evt), p.xmax(evt), p.ymin(evt), p.ymax(evt),
                          curHitMap, m_preferences.m_zeroSuppressionThreshold);
-    m_lastEvent.clusterize(m_preferences.m_zeroSuppressionThreshold);
-    m_lastEvent.doMomentsAnalysis();
+    tmpEvt.clusterize(m_preferences.m_zeroSuppressionThreshold);
+    tmpEvt.doMomentsAnalysis();
     emit eventRead();
     m_windowSizeHist->fill(nPixel);
-    m_pulseHeightHist->fill(m_lastEvent.clusterPulseHeight());
-    m_modulationHist->fill(m_lastEvent.moma().phiDeg());
+    m_pulseHeightHist->fill(tmpEvt.clusterPulseHeight());
+    m_modulationHist->fill(tmpEvt.moma().phiDeg());
+    if (evtAccepted(tmpEvt)){
+      m_lastEvent = tmpEvt;
+    }
   }
   // Here we release the memory. Using the data block
   // after this point will lead to incorect behaviour.
   delete [] data; 
-}  
+}
+
+
+bool pEventReader::evtAccepted(const pEvent& evt)
+{
+  int clusterSize = evt.clusterSize();
+  int pulseHeight = evt.clusterPulseHeight();
+  double elongation = evt.moma().mom2long()/evt.moma().mom2trans();
+  return (clusterSize > m_preferences.m_minClusterSize &&
+          clusterSize < m_preferences.m_maxClusterSize &&
+          pulseHeight > m_preferences.m_minPulseHeight &&
+          pulseHeight < m_preferences.m_maxPulseHeight &&
+          elongation > m_preferences.m_minElongation &&
+          elongation < m_preferences.m_maxElongation);
+} 
 
 
 void pEventReader::readPendingDatagrams()

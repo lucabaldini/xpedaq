@@ -66,6 +66,7 @@ class pEventReader: public QObject
   private:
     
     void readPendingDatagram();
+    bool evtAccepted(const pEvent& evt);
   
     //Data structures
     pHistogram *m_pulseHeightHist;
