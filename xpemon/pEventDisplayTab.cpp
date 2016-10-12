@@ -65,6 +65,7 @@ void pEventDisplayTab::changeReconInfoDrawStatus(int state)
     m_eventDisplay->enableReconDisplay();
   else
     m_eventDisplay->disableReconDisplay();
+    m_eventDisplay->clearItems();
   m_eventDisplay->draw();
 }
 

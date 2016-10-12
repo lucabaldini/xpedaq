@@ -26,6 +26,8 @@ with this program; if not, write to the Free Software Foundation Inc.,
 
 #include "qcustomplot.h"
 
+#include <cmath>
+
 
 /* Class describing the outcome of a moments analysis. */
 
@@ -45,6 +47,7 @@ class pMomentsAnalysis
     double x0() const {return m_x0;}
     double y0() const {return m_y0;}
     double phi() const {return m_phi;}
+    double phiDeg() const {return 180. * m_phi / M_PI;}
     double mom2long() const {return m_mom2Long;}        
     double mom2trans() const {return m_mom2Trans;}
     double skewness() const {return m_skewness;}
