@@ -48,6 +48,8 @@ class pMonitorPreferences
   int m_maxClusterSize;
   int m_minPulseHeight;
   int m_maxPulseHeight;
+  int m_minWindowSize;
+  int m_maxWindowSize;
   
   // Read/write to/from file.
   void writeToFile(std::string filePath);

@@ -47,18 +47,22 @@ void pMonitorPreferences::writeToFile(std::string filePath)
   xpolio::kIOManager->write(outputFile, m_refreshInterval);
   xpolio::kIOManager->write(outputFile, "//Zero Suppression Threshold//");
   xpolio::kIOManager->write(outputFile, m_zeroSuppressionThreshold);
-  xpolio::kIOManager->write(outputFile, "//Min elongation//");
+  xpolio::kIOManager->write(outputFile, "//Minimum elongation//");
   xpolio::kIOManager->write(outputFile, m_minElongation);
-  xpolio::kIOManager->write(outputFile, "//Max elongation//");
+  xpolio::kIOManager->write(outputFile, "//Maximum elongation//");
   xpolio::kIOManager->write(outputFile, m_maxElongation);
-  xpolio::kIOManager->write(outputFile, "//Min cluster size//");
+  xpolio::kIOManager->write(outputFile, "//Minimum cluster size//");
   xpolio::kIOManager->write(outputFile, m_minClusterSize);
-  xpolio::kIOManager->write(outputFile, "//Max cluster size//");
+  xpolio::kIOManager->write(outputFile, "//Maximum cluster size//");
   xpolio::kIOManager->write(outputFile, m_maxClusterSize);
   xpolio::kIOManager->write(outputFile, "//Minimum pulse height//");
   xpolio::kIOManager->write(outputFile, m_minPulseHeight);
   xpolio::kIOManager->write(outputFile, "//Maximum pulse height//");
   xpolio::kIOManager->write(outputFile, m_maxPulseHeight);
+  xpolio::kIOManager->write(outputFile, "//Minimum window size//");
+  xpolio::kIOManager->write(outputFile, m_minWindowSize);
+  xpolio::kIOManager->write(outputFile, "//Maximum window size//");
+  xpolio::kIOManager->write(outputFile, m_maxWindowSize);
   xpolio::kIOManager->closeOutputFile(outputFile);
 }
 
@@ -88,6 +92,10 @@ void pMonitorPreferences::readFromFile(std::string filePath)
   m_minPulseHeight = xpolio::kIOManager->readInteger(inputFile);
   xpolio::kIOManager->skipLine(inputFile);
   m_maxPulseHeight = xpolio::kIOManager->readInteger(inputFile);
+  xpolio::kIOManager->skipLine(inputFile);
+  m_minWindowSize = xpolio::kIOManager->readInteger(inputFile);
+  xpolio::kIOManager->skipLine(inputFile);
+  m_maxWindowSize = xpolio::kIOManager->readInteger(inputFile);
   xpolio::kIOManager->closeInputFile(inputFile);
 }
 
@@ -107,6 +115,8 @@ std::ostream& pMonitorPreferences::fillStream(std::ostream& os) const
   os << "Max. cluster size: " << m_maxClusterSize << std::endl;
   os << "Min. pulse height: " << m_minPulseHeight << std::endl;
   os << "Max. pulse height: " << m_maxPulseHeight << std::endl;
+  os << "Min. window size: " << m_minWindowSize << std::endl;
+  os << "Max. window size: " << m_maxWindowSize << std::endl;
   os << xpedaqutils::hline();
   return os;
 }

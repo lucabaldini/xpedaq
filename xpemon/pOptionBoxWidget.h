@@ -64,6 +64,7 @@ class pOptionBoxWidget: public pQtGroupBoxWidget
     void readElongationLimits();
     void readClusterSizeLimits();
     void readPulseHeightLimits();
+    void readWindowSizeLimits();
   
     pQtCustomTextLabel *m_socketPortLabel;
     pQtCustomLineEdit<unsigned int> *m_socketPortEdit;
@@ -77,6 +78,8 @@ class pOptionBoxWidget: public pQtGroupBoxWidget
     pMinMaxOptionPair<int> *m_clusterSizeLimits;    
     pQtCustomTextLabel *m_pulseHeightLabel;
     pMinMaxOptionPair<int> *m_pulseHeightLimits;
+    pQtCustomTextLabel *m_windowSizeLabel;
+    pMinMaxOptionPair<int> *m_windowSizeLimits;
     QCheckBox *m_drawReconInfoCheckBox;
     pMonitorPreferences m_preferences;
 };
