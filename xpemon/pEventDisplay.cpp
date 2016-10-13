@@ -252,6 +252,7 @@ void pEventDisplay::draw()
 void pEventDisplay::resetView()
 {
   // Go back to the optimal view (all data are in axis range)
+  updateDataRange();
   m_isSyncronized = false;
   draw();
 }
