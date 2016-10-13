@@ -75,6 +75,13 @@ pOptionBoxWidget::pOptionBoxWidget(const pMonitorPreferences &preferences,
   addWidget(m_pulseHeightLabel, rowCount(), 0);
   addWidget(m_pulseHeightLimits, rowCount() - 1, 1, 1 , 2);
   m_pulseHeightLimits->setBottom(0);
+  //Window size limits option init
+  m_windowSizeLabel = new pQtCustomTextLabel(this, "Window size");
+  m_windowSizeLimits = new pMinMaxOptionPair<int>(this,
+    m_preferences.m_minWindowSize, m_preferences.m_maxWindowSize);
+  addWidget(m_windowSizeLabel, rowCount(), 0);
+  addWidget(m_windowSizeLimits, rowCount() - 1, 1, 1 , 2);
+  m_pulseHeightLimits->setBottom(0);
   //Check box for drawing recon info init (skipping a row to leave some space)
   m_drawReconInfoCheckBox = new QCheckBox("Draw reconstruction");
   addWidget(m_drawReconInfoCheckBox, rowCount() + 1, 0);  
@@ -93,6 +100,7 @@ void pOptionBoxWidget::activateWidgets()
   m_elongationLimits->setDisabled(false);    
   m_clusterSizeLimits->setDisabled(false);
   m_pulseHeightLimits->setDisabled(false);
+  m_windowSizeLimits->setDisabled(false);
 }
 
 
@@ -104,6 +112,7 @@ void pOptionBoxWidget::disableWidgets()
   m_elongationLimits->setDisabled(true);    
   m_clusterSizeLimits->setDisabled(true);
   m_pulseHeightLimits->setDisabled(true);
+  m_windowSizeLimits->setDisabled(true);
 }
 
 
@@ -116,6 +125,7 @@ void pOptionBoxWidget::options(pMonitorPreferences* preferences)
   readElongationLimits();
   readClusterSizeLimits();
   readPulseHeightLimits();
+  readWindowSizeLimits();
   (*preferences) = m_preferences;
 }
 
@@ -155,12 +165,22 @@ void pOptionBoxWidget::readClusterSizeLimits()
   m_preferences.m_maxClusterSize = max;
 }
 
+
 void pOptionBoxWidget::readPulseHeightLimits()
 {
   int min, max;
   m_pulseHeightLimits->readOptions(min, max);
   m_preferences.m_minPulseHeight = min;
   m_preferences.m_maxPulseHeight = max;
+}
+
+
+void pOptionBoxWidget::readWindowSizeLimits()
+{
+  int min, max;
+  m_windowSizeLimits->readOptions(min, max);
+  m_preferences.m_minWindowSize = min;
+  m_preferences.m_maxWindowSize = max;
 }
 
 

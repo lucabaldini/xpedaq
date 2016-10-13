@@ -27,12 +27,12 @@ xpemonWindow::xpemonWindow(std::string preferencesFilePath,
                            m_preferencesFilePath (preferencesFilePath),
                            m_isStopped(true)
 {
-  const int pixelFromScreenLeft = 20;
-  const int pixelFromScreenTop = 20;
+  const int pixelFromScreenLeft = 10;
+  const int pixelFromScreenTop = 10;
   const int pixelWidth = 1150;
   const int pixelHeight = 750;
   setGeometry(pixelFromScreenLeft, pixelFromScreenTop,
-                    pixelWidth, pixelHeight);
+              pixelWidth, pixelHeight);
   m_centralWidget   = new QWidget();
   setCentralWidget(m_centralWidget);
   m_mainGridLayout  = new QGridLayout(m_centralWidget);
@@ -41,21 +41,18 @@ xpemonWindow::xpemonWindow(std::string preferencesFilePath,
   m_preferences = new pMonitorPreferences(m_preferencesFilePath); 
   //Initialize option box with last used preferences
   m_optionBoxWidget = new pOptionBoxWidget(*m_preferences);
-  const int optBoxRowStart = 0;
-  const int optBoxColStart = 0;
-  m_mainGridLayout->addWidget(m_optionBoxWidget, optBoxRowStart,
-                                                 optBoxColStart);
-  
+  m_mainGridLayout->addWidget(m_optionBoxWidget, 0, 0);
+  //Initialize the tabs
   m_mainTabWidget = new QTabWidget(m_centralWidget);
   m_mainGridLayout->addWidget(m_mainTabWidget, 0, 1, 6, 1);
   m_eventDisplayTab = new pEventDisplayTab();
   m_mainTabWidget->addTab(m_eventDisplayTab, "Event Display");
   m_monitorTab = new pMonitorTab();
   m_mainTabWidget->addTab(m_monitorTab, "Monitor Plots");
- 
+  //Initialize the transport bar
   m_transportBar = new pTransportBar(this, false);
   m_mainGridLayout->addWidget(m_transportBar, 5,0);
-  
+  //Initialize the event reader
   m_eventReader = new pEventReader((*m_preferences),
                                    m_monitorTab->pulseHeightHist(),
                                    m_monitorTab->windowSizeHist(),
