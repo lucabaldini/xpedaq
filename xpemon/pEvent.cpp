@@ -40,21 +40,11 @@ pEvent::pEvent(int firstCol, int lastCol,
     m_hits.push_back(event::Hit{x, y, adcCounts.at(i), -1});
   }
   m_highestPixelAddress = findHighestPixel();
-  m_totalPulseHeight = pixelSum(m_threshold);
-  m_clusterPulseHeight = 0;
+  m_rawPulseHeight = 0;  
+  m_pulseHeight = 0;
+  m_baricenterX = 0.;
+  m_baricenterY = 0.;
 }
-
-
-adc_count_t pEvent::pixelSum(adc_count_t threshold) const
-{
-  adc_count_t sum = 0; 
-  for (const event::Hit& hit : m_hits){
-    if (hit.counts > threshold)
-      sum += hit.counts;
-  }
-  return sum;
-}
-
 
 int pEvent::findHighestPixel() const
 {
@@ -116,7 +106,6 @@ void pEvent::clusterize(int threshold)
     // Else add the picked pixel to the MST Set
     m_hits[minKeyId].clusterId = 0;
     m_clusterSize += 1;
-    m_clusterPulseHeight += m_hits[minKeyId].counts;
     
     /* Update key value and pixel index of the adjacent pixels of
        the picked pixel. Consider only those pixels which are over 
@@ -155,86 +144,83 @@ int pEvent::minKey(const std::vector<int> &key) const
 }
 
 
-int pEvent::doMomentsAnalysis()
+void pEvent::reconstruct(int threshold)
 {
-  if (m_clusterSize < 6)
-    return 0;
-  // Calculate the barycenter of the cluster
-  adc_count_t threshold = m_threshold;
+  int clusterId = 0;
+
+  // Run the clustering.
+  clusterize(threshold);
+
+  // Calculate the pulse height(s) and the coordinates of the baricenter.
+  m_rawPulseHeight = 0;  
+  m_pulseHeight = 0;
+  m_baricenterX = 0.;
+  m_baricenterY = 0.;
+  for (const auto &hit : m_hits){
+    m_rawPulseHeight += hit.counts;
+    if (hit.clusterId == clusterId) {
+      m_pulseHeight += hit.counts;
+      m_baricenterX += hit.x * hit.counts;
+      m_baricenterY += hit.y * hit.counts;
+    }
+  }
+  if (m_pulseHeight > 0) {
+    m_baricenterX /= m_pulseHeight;
+    m_baricenterY /= m_pulseHeight;
+  }
+
+  // Run the first-pass moments analysis.
+  m_momentsAnalysis1.run(m_hits, threshold, m_baricenterX, m_baricenterY);
+
+  // Calculate the seed for the conversion point.
+  double dmin = 1.5 * m_momentsAnalysis1.rmsLong();
+  double dmax = 3.5 * m_momentsAnalysis1.rmsLong();
   double x0 = 0.;
   double y0 = 0.;
-  double pulseHeight = 0.;
+  double wsum = 0.;
+  double dx, dy, xp, d;
+  double cphi = cos(m_momentsAnalysis1.phi());
+  double sphi = sin(m_momentsAnalysis1.phi());
+  for (const auto &hit : m_hits) {
+    if (hit.clusterId == clusterId) {
+      dx = (hit.x - m_baricenterX);
+      dy = (hit.y - m_baricenterY);
+      d = sqrt(pow(dx, 2.) + pow(dy, 2.));
+      if (d > dmin && d < dmax) {
+	xp = cphi * dx + sphi * dy;
+	if (std::signbit(xp) == std::signbit(m_momentsAnalysis1.mom3long())) {
+	  x0 += hit.x * hit.counts;
+	  y0 += hit.y * hit.counts;
+	  wsum += hit.counts;
+	}
+      }
+    }
+  }
+  if (wsum > 0.) {
+    x0 /= wsum;
+    y0 /= wsum;
+  }
+
+  // Now we can assign a direction to the original axis, based on the
+  // sign of the third moment.
+  m_momentsAnalysis1.flip3();
+  
+  // Calculate the weights for the second step of the reconstruction.
+  double weightScale = 0.05;
   std::vector<double> weights;
   weights.resize(m_hits.size());
-  for (double& weight : weights)
-    {weight = 1.;}
-  std::vector<double> w;
-  double wsum = 0.;
-  for (unsigned int index =0; index < m_hits.size(); ++index) {
-    if (m_hits[index].counts > threshold && m_hits[index].clusterId == 0){
-      x0 += m_hits[index].x * m_hits[index].counts;
-      y0 += m_hits[index].y * m_hits[index].counts;
-      pulseHeight += m_hits[index].counts;
-      w.push_back(m_hits[index].counts * weights[index]);
-      wsum += m_hits[index].counts * weights[index];
+  for (unsigned int index = 0; index < m_hits.size(); ++index) {
+    event::Hit hit = m_hits[index];
+    if (hit.clusterId == clusterId) {
+      d = sqrt(pow((hit.x - x0), 2.) + pow((hit.y - y0), 2.));
+      weights[index] = exp(-d/weightScale);
+    } else {
+      weights[index] = 0.;
     }
   }
-  x0 /= pulseHeight;
-  y0 /= pulseHeight;
-  // Calculate the offsets with respect to the barycenter.
-  std::vector<double> dx;
-  std::vector<double> dy;
-  for (const event::Hit& hit : m_hits){
-    if (hit.counts > threshold && hit.clusterId == 0){
-      dx.push_back(hit.x - x0);
-      dy.push_back(hit.y - y0);
-    }
-  }
-  // Solve for the angle of the principal axis (note that at this point
-  // phi is comprised between -pi/2 and pi/2 and might indicate either
-  // the major or the minor axis of the tensor of inertia).
-  double A = 0;
-  double B = 0;
-  for (unsigned int i = 0; i < dx.size(); ++i){
-    A += (dx.at(i) * dy.at(i) * w.at(i));
-    B += ((pow(dy.at(i), 2.) - pow(dx.at(i), 2.)) * w.at(i));
-  }
-  double phi = -0.5 * atan2(2*A, B);
-  // Rotate by an angle phi and calculate the eigenvalues of the tensor
-  // of inertia.
-  std::vector<double> xp;
-  std::vector<double> yp;
-  for (unsigned int i = 0; i < dx.size(); ++i){
-    xp.push_back(cos(phi) * dx.at(i) + sin(phi) * dy.at(i));
-    yp.push_back(-sin(phi) * dx.at(i) + cos(phi) * dy.at(i));
-  }
-  double mom2long = 0.;
-  double mom2trans = 0.;
-  for (unsigned int i = 0; i < xp.size(); ++i){
-    mom2long += (pow(xp.at(i), 2.) * w.at(i));
-    mom2trans += (pow(yp.at(i), 2.) * w.at(i));
-  }
-  mom2long /= wsum;
-  mom2trans /= wsum;
-  // We want mom2long to be the highest eigenvalue, so we need to
-  // check wheteher we have to swap the eigenvalues, here. Note that
-  // at this point phi is still comprised between -pi/2 and pi/2.
-  if (mom2long < mom2trans){
-    double tmp = mom2long;
-    mom2long = mom2trans;
-    mom2trans = tmp;
-    phi -= 0.5 * M_PI * (2 * (phi > 0) -1);  
-  }
-  // Set the class members.
-  m_momentsAnalysis.setX0(x0);
-  m_momentsAnalysis.setY0(y0);
-  m_momentsAnalysis.setPhi(phi);
-  m_momentsAnalysis.setMom2long(mom2long);
-  m_momentsAnalysis.setMom2trans(mom2trans);
-  //std::cout << m_totalPulseHeight << " " << m_clusterPulseHeight << " "
-  //          << m_clusterSize << " " << x0 << " " << y0 << " "
-  //          << phi << " " << mom2long << " " << mom2trans << std::endl;
-  return 0;
+
+  // Finally, run the second-pass moments analysis.
+  m_momentsAnalysis2.run(m_hits, threshold, x0, y0, weights);
 }
 
 

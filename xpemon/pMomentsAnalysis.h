@@ -23,11 +23,13 @@ with this program; if not, write to the Free Software Foundation Inc.,
 #define PMOMENTS_ANALYSIS_H
 
 #include <iostream>
+#include <cmath>
+#include <algorithm>
+
+#include "xpoldetector.h"
 
 #include "qcustomplot.h"
 #include "pRotableEllipse.h"
-
-#include <cmath>
 
 
 /* Class describing the outcome of a moments analysis. */
@@ -38,28 +40,31 @@ class pMomentsAnalysis
   
     pMomentsAnalysis();
 
-    //int run(const pEvent event);
-    //void run(event);
-    //void run(event, threshold);
-    //void run(event, threshold, pivot);
-    //void run(event, threshold, pivot, weights)
+    // Run the moments analysis on a cluster (unweighted version).
+    int run(const std::vector<event::Hit> &hits, double threshold,
+	    double x0, double y0, int clusterId = 0);
+    
+    // Run the moments analysis on a cluster (weighted version).
+    int run(const std::vector<event::Hit> &hits, double threshold,
+	    double x0, double y0, const std::vector<double> &weights,
+	    int clusterId = 0);
     
     // Getters
     double x0() const {return m_x0;}
     double y0() const {return m_y0;}
     double phi() const {return m_phi;}
     double phiDeg() const {return 180. * m_phi / M_PI;}
-    double mom2long() const {return m_mom2Long;}        
-    double mom2trans() const {return m_mom2Trans;}
-    double skewness() const {return m_skewness;}
-    
-    // Setters
-    void setX0(double x0) {m_x0 = x0;}
-    void setY0(double y0) {m_y0 = y0;}
-    void setPhi(double phi) {m_phi = phi;}
-    void setMom2long(double mom2long) {m_mom2Long = mom2long;}
-    void setMom2trans(double mom2trans) {m_mom2Trans = mom2trans;}
-    void setSkewness(double skewness) {m_skewness = skewness;}
+    double mom2long() const {return m_mom2long;}        
+    double mom2trans() const {return m_mom2trans;}
+    double rmsLong() const {return sqrt(m_mom2long);}
+    double rmsTrans() const {return sqrt(m_mom2trans);}
+    double mom3long() const {return m_mom3long;}
+    double skewness() const;
+    double elongation() const;
+
+    //
+    void rotatePhi(double angle) {m_phi += angle;}
+    void flip3();
     
     // Terminal formatting.
     std::ostream& fillStream(std::ostream& os) const;
@@ -68,10 +73,11 @@ class pMomentsAnalysis
     {return moma.fillStream(os);}
     
     // Draw on the event display
-    void draw(QCustomPlot* parentPlot) const;
-    void drawBarycenter(QCustomPlot* parentPlot) const;
-    void drawPrincipalAxis(QCustomPlot* parentPlot) const;
-    void drawEllipse(QCustomPlot* parentPlot) const;
+    void draw(QCustomPlot* parentPlot, const QColor &color = "blue",
+	      bool pivot = true, bool axis = true, bool ellipse = true) const;
+    void drawPivot(QCustomPlot* parentPlot, const QColor &color) const;
+    void drawPrincipalAxis(QCustomPlot* parentPlot, const QColor &color) const;
+    void drawEllipse(QCustomPlot* parentPlot, const QColor &color) const;
   
   private:
 
@@ -87,23 +93,23 @@ class pMomentsAnalysis
      */
     double m_phi;
 
-    /*! \brief The transverse second moment.
-     */
-    double m_mom2Trans;
-
     /*! \brief The longitudinal second moment.
      */
-    double m_mom2Long;
-    
-    /*! \brief The skewness.
+    double m_mom2long;
+
+    /*! \brief The transverse second moment.
      */
-    double m_skewness;
+    double m_mom2trans;
+    
+    /*! \brief
+     */
+    double m_mom3long;
 
     enum StatusCode
     {
       UNDEFINED,
       SUCCESS,
-      FAILURE
+      NOT_ENOUGH_HITS
     };
 
     /*! \brief Internal status code to store the outcome of the moments

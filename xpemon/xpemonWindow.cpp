@@ -177,16 +177,16 @@ void xpemonWindow::showLastEvent(const pEvent& evt)
   evt.highestPixelCoordinates(col, row);
   m_infoBoxWidget->updateMaxCoordinates(col, row);
   m_infoBoxWidget->updateClusterSize(evt.clusterSize());
-  m_infoBoxWidget->updateBarycenterCoordinates(evt.moma().x0(),
-                                               evt.moma().y0());
-  m_infoBoxWidget->updatePulseHeight(evt.clusterPulseHeight());
-  m_infoBoxWidget->updatePhi(evt.moma().phi());
-  m_infoBoxWidget->updateMom2Trans(evt.moma().mom2trans());
-  m_infoBoxWidget->updateMom2Long(evt.moma().mom2long());
+  m_infoBoxWidget->updateBarycenterCoordinates(evt.moma1().x0(),
+                                               evt.moma1().y0());
+  m_infoBoxWidget->updatePulseHeight(evt.pulseHeight());
+  m_infoBoxWidget->updatePhi(evt.moma1().phi());
+  m_infoBoxWidget->updateMom2Trans(evt.moma1().mom2trans());
+  m_infoBoxWidget->updateMom2Long(evt.moma1().mom2long());
   m_eventDisplayTab->updateEventDisplay(evt);  
-  m_infoBoxWidget->updateMomRatio(evt.moma().mom2long() /
-                                  evt.moma().mom2trans());
-  m_infoBoxWidget->updateSkewness(evt.moma().skewness());
+  m_infoBoxWidget->updateMomRatio(evt.moma1().mom2long() /
+                                  evt.moma1().mom2trans());
+  m_infoBoxWidget->updateSkewness(evt.moma1().skewness());
 }
 
 

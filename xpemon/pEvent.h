@@ -67,26 +67,27 @@ class pEvent: public pEventWindow
     //highest Pixel row and column
     void highestPixelCoordinates(int& row, int& col) const;
     //total pulse height
-    adc_count_t totalPulseHeight() const
-      {return m_totalPulseHeight;}
+    int rawPulseHeight() const
+      {return m_rawPulseHeight;}
     //cluster pulse hieght
-    adc_count_t clusterPulseHeight() const
-      {return m_clusterPulseHeight;}
+    int pulseHeight() const
+      {return m_pulseHeight;}
     //number of pixels in main cluster
     int clusterSize() const
       {return m_clusterSize;}
     //moment analysis
-    const pMomentsAnalysis& moma() const
-      {return m_momentsAnalysis;}
+    const pMomentsAnalysis& moma1() const
+      {return m_momentsAnalysis1;}
+    const pMomentsAnalysis& moma2() const
+      {return m_momentsAnalysis2;}
     
     //iterator
     typedef std::vector<event::Hit>::const_iterator const_eventIterator;
     const_eventIterator begin() {return m_hits.begin();}
     const_eventIterator end() {return m_hits.end();}
     
-    void clusterize(int threshold);
-    
-    int doMomentsAnalysis();
+    // Run the event reconstruction.
+    void reconstruct(int threshold);
 
     // Terminal formatting.
     std::ostream& fillStream(std::ostream& os) const;
@@ -94,21 +95,22 @@ class pEvent: public pEventWindow
       {return event.fillStream(os);}
     
     
-  protected:
+  private:
     
     adc_count_t m_threshold; // zero suppression threshold
     int m_highestPixelAddress;  // address of the highest pixel
-    adc_count_t m_totalPulseHeight;  // sum of all pixel counts
-    adc_count_t m_clusterPulseHeight; // sum of all pixel in cluster
+    int m_rawPulseHeight;  // sum of all pixel counts
+    int m_pulseHeight; // sum of all pixel in cluster
+    double m_baricenterX;
+    double m_baricenterY;
     std::vector<event::Hit> m_hits;  // hits vector
     int m_clusterSize;
-    pMomentsAnalysis m_momentsAnalysis;  // moment analysis info
-
-  private:
-
+    pMomentsAnalysis m_momentsAnalysis1;  // moment analysis info
+    pMomentsAnalysis m_momentsAnalysis2;  // moment analysis info
+    
     int findHighestPixel() const;
-    adc_count_t pixelSum(adc_count_t threshold) const;
     int minKey(const std::vector<int> &key) const;
+    void clusterize(int threshold);
     bool m_isEmpty;
 };
 

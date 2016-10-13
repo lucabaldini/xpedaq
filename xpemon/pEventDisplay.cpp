@@ -227,7 +227,8 @@ void pEventDisplay::drawReconInfo()
 {
   if (m_event.isEmpty())
     return;
-  m_event.moma().draw(this);
+  m_event.moma1().draw(this, "blue", true, false, true);
+  m_event.moma2().draw(this, "green", true, true, false);
 }
 
 
