@@ -82,12 +82,12 @@ void pEventReader::readPendingDatagram()
     tmpEvt.reconstruct(m_preferences.m_zeroSuppressionThreshold);
     //tmpEvt.doMomentsAnalysis();
     emit eventRead();
-    m_windowSizeHist->fill(nPixel);
-    m_pulseHeightHist->fill(tmpEvt.pulseHeight());
-    m_modulationHist->fill(tmpEvt.moma1().phiDeg());
     if (evtAccepted(tmpEvt)){
       m_isLastEventChanged = true;    
       m_lastEvent = tmpEvt;
+      m_windowSizeHist->fill(nPixel);
+      m_pulseHeightHist->fill(tmpEvt.pulseHeight());
+      m_modulationHist->fill(tmpEvt.moma1().phiDeg());
     }
   }
   // Here we release the memory. Using the data block
@@ -98,14 +98,14 @@ void pEventReader::readPendingDatagram()
 
 bool pEventReader::evtAccepted(const pEvent& evt)
 {
-  int clusterSize = evt.clusterSize();
-  int pulseHeight = evt.pulseHeight();
-  return (clusterSize > m_preferences.m_minClusterSize &&
-          clusterSize < m_preferences.m_maxClusterSize &&
-          pulseHeight > m_preferences.m_minPulseHeight &&
-          pulseHeight < m_preferences.m_maxPulseHeight &&
+  return (evt.clusterSize() > m_preferences.m_minClusterSize &&
+          evt.clusterSize() < m_preferences.m_maxClusterSize &&
+          evt.pulseHeight() > m_preferences.m_minPulseHeight &&
+          evt.pulseHeight() < m_preferences.m_maxPulseHeight &&
           evt.moma1().elongation() > m_preferences.m_minElongation &&
-          evt.moma1().elongation() < m_preferences.m_maxElongation);
+          evt.moma1().elongation() < m_preferences.m_maxElongation &&
+          evt.evtSize() > m_preferences.m_minWindowSize &&
+          evt.evtSize() < m_preferences.m_maxWindowSize);
 } 
 
 
