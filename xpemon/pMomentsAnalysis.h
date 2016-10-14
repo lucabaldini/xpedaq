@@ -73,11 +73,19 @@ class pMomentsAnalysis
     {return moma.fillStream(os);}
     
     // Draw on the event display
-    void draw(QCustomPlot* parentPlot, const QColor &color = "blue",
-	      bool pivot = true, bool axis = true, bool ellipse = true) const;
+    void draw(QCustomPlot* parentPlot, const QColor &lineColor = "blue",
+	      bool pivot = true, bool axis = true, bool ellipse = true,
+	      int lineWidth = 0,
+	      const Qt::PenStyle axisStyle = Qt::SolidLine,
+	      const Qt::PenStyle ellipseStyle = Qt::SolidLine) const;
+    // Drae the pivot of the moments analtsys.
     void drawPivot(QCustomPlot* parentPlot, const QColor &color) const;
-    void drawPrincipalAxis(QCustomPlot* parentPlot, const QColor &color) const;
-    void drawEllipse(QCustomPlot* parentPlot, const QColor &color) const;
+    // Draw the principal axis.
+    void drawPrincipalAxis(QCustomPlot* parentPlot, const QColor &color,
+			   int lineWidth, const Qt::PenStyle style) const;
+    // Draw the ellipsoid of inertia.
+    void drawEllipse(QCustomPlot* parentPlot, const QColor &color,
+		     int lineWidth, const Qt::PenStyle style) const;
   
   private:
 

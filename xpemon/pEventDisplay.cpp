@@ -225,10 +225,13 @@ void pEventDisplay::drawMatrix()
 
 void pEventDisplay::drawReconInfo()
 {
-  if (m_event.isEmpty())
+  if (m_event.isEmpty()) {
     return;
-  m_event.moma1().draw(this, "blue", true, false, true);
-  m_event.moma2().draw(this, "green", true, true, false);
+  }
+  m_event.moma1().draw(this, "black", true, true, true, 1, Qt::DashLine,
+		       Qt::SolidLine);
+  m_event.moma2().draw(this, "blue", true, true, false, 1, Qt::SolidLine,
+		       Qt::SolidLine);
 }
 
 

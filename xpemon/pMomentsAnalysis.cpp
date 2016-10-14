@@ -153,16 +153,18 @@ void pMomentsAnalysis::flip3()
 
 
 void pMomentsAnalysis::draw(QCustomPlot* parentPlot, const QColor &color,
-			    bool pivot, bool axis, bool ellipse) const
+			    bool pivot, bool axis, bool ellipse,
+			    int lineWidth, const Qt::PenStyle axisStyle,
+			    const Qt::PenStyle ellipseStyle) const
 {
   if (pivot) {
     drawPivot(parentPlot, color);
   }
   if (axis) {
-    drawPrincipalAxis(parentPlot, color);
+    drawPrincipalAxis(parentPlot, color, lineWidth, axisStyle);
   }
   if (ellipse) {
-    drawEllipse(parentPlot, color);
+    drawEllipse(parentPlot, color, lineWidth, ellipseStyle);
   }
 }
 
@@ -192,12 +194,14 @@ void pMomentsAnalysis::drawPivot(QCustomPlot* parentPlot,
 
 
 void pMomentsAnalysis::drawPrincipalAxis(QCustomPlot* parentPlot,
-					 const QColor &color) const
+					 const QColor &color, int lineWidth,
+					 const Qt::PenStyle style) const
 {
   QCPItemStraightLine *principalAxis = new  QCPItemStraightLine(parentPlot);
   QPen axisPen = QPen();
-  axisPen.setStyle(Qt::DashLine);
+  axisPen.setStyle(style);
   axisPen.setColor(color);
+  axisPen.setWidth(lineWidth);
   principalAxis->setPen(axisPen);
   // We need two points to draw the line: the pivot and another on the 
   // the direction given by the angle phi. It doesn't really matter which
@@ -216,16 +220,18 @@ void pMomentsAnalysis::drawPrincipalAxis(QCustomPlot* parentPlot,
 }
 
 
-void pMomentsAnalysis::drawEllipse(QCustomPlot* parentPlot,
-				   const QColor &color) const
+void pMomentsAnalysis::drawEllipse(QCustomPlot* parentPlot, const QColor &color,
+				   int lineWidth,
+				   const Qt::PenStyle style) const
 {
   //Draw an ellipse representing the two moments
   //Since QPainter::rotate works clockwise and our system has anticlockwise
   //angles we pass phi with a minus
   pRotableEllipse *momEllipse = new pRotableEllipse(parentPlot, -phiDeg());
   QPen ellipsePen = QPen();
-  //ellipsePen.setStyle(Qt::DashLine);
+  ellipsePen.setStyle(style);
   ellipsePen.setColor(color);
+  ellipsePen.setWidth(lineWidth);
   momEllipse->setPen(ellipsePen);
   momEllipse->topLeft->setCoords(m_x0 - rmsLong(), m_y0 + rmsTrans());
   momEllipse->bottomRight->setCoords(m_x0 + rmsLong(), m_y0 - rmsTrans());
