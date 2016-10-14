@@ -228,7 +228,7 @@ void pEventDisplay::drawReconInfo()
   if (m_event.isEmpty()) {
     return;
   }
-  m_event.moma1().draw(this, "black", true, true, true, 1, Qt::DashLine,
+  m_event.moma1().draw(this, "green", true, true, true, 1, Qt::DashLine,
 		       Qt::SolidLine);
   m_event.moma2().draw(this, "blue", true, true, false, 1, Qt::SolidLine,
 		       Qt::SolidLine);
