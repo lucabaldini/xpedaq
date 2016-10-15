@@ -23,16 +23,17 @@ with this program; if not, write to the Free Software Foundation Inc.,
 
 pInfoBoxWidget::pInfoBoxWidget(QWidget *parent): pInfoBoxGui(parent)
 {
+  setTitle("Single-event display");
   m_evtCounter = 0;
-  m_counterLabelName = "N. of events";
+  m_counterLabelName = "Event number";
   m_windowSizeLabelName = "Window size";
-  m_maxPosLabelName = "Max position";
+  m_maxPosLabelName = "Max position [px]";
   m_clusterSizeLabelName = "Cluster size";
-  m_barycenterPosLabelName = "Barycenter position";
-  m_pulseHeightLabelName = "Pulse height";
-  m_angleLabelName = "Phi";
-  m_mom2TransLabelName = "Mom. trans.";
-  m_mom2LongLabelName = "Mom. long.";
+  m_barycenterPosLabelName = "Baricenter position [mm]";
+  m_pulseHeightLabelName = "Pulse height [ADC counts]";
+  m_angleLabelName = "Phi [rad]";
+  m_mom2TransLabelName = "Second moment (long.)";
+  m_mom2LongLabelName = "Second moment (trans.)";
   m_momRatioLabelName = "Elongation";
   m_skewnessLabelName = "Skweness";
   

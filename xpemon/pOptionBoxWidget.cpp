@@ -26,6 +26,7 @@ pOptionBoxWidget::pOptionBoxWidget(const pMonitorPreferences &preferences,
                                    pQtGroupBoxWidget(parent),
                                    m_preferences(preferences)
 {
+  setTitle("Monitor configuration");
   //Socket port option init
   m_socketPortLabel = new pQtCustomTextLabel(this, "Socket Port");
   m_socketPortEdit = new pQtCustomLineEdit<unsigned int>(
