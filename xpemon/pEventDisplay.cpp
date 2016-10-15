@@ -77,7 +77,6 @@ pEventDisplay::pEventDisplay(pColorMapOptions options, bool displayReconInfo)
   m_colorScale->setDataRange(m_dataRange);
   m_colorScale->setGradient(m_options.m_gradientType);
   m_colorScale->axis()->setLabel(m_options.m_zTitle);
-  
   //Align things using a margin group:
   m_marginGroup = new QCPMarginGroup(this);
   axisRect()->setMarginGroup(QCP::msBottom|QCP::msTop, m_marginGroup);
@@ -86,10 +85,20 @@ pEventDisplay::pEventDisplay(pColorMapOptions options, bool displayReconInfo)
   //Initialize the matrix
   m_hexMatrix = new pHexagonMatrix(xpoldetector::kColPitch);  
   m_isSyncronized = true;
+
+  // Initialize the search region.
+  m_searchRegion = new pHorseshoe(this, "blue", 1, Qt::DashLine);
+  m_searchRegion->setLayer("legend");
   
   setupInteractions();
 }
 
+
+void pEventDisplay::clearItems()
+{
+  QCustomPlot::clearItems();
+  m_searchRegion->clear();
+}
 
 void pEventDisplay::setDataRange (const QCPRange &dataRange)
 {
@@ -118,7 +127,7 @@ void pEventDisplay::updateDataRange()
 {
   double zmin = 0;
   double zmax = 0;
-  for (const event::Hit& hit : m_event){
+  for (const event::Hit& hit : m_event) {
     if (hit.counts < zmin) zmin = hit.counts;
     if (hit.counts > zmax) zmax = hit.counts;
   }
@@ -147,7 +156,6 @@ void pEventDisplay::updateAxesRange()
   ymax = y0 + side + padding;
   xAxis->setRange(xmin, xmax);
   yAxis->setRange(ymin, ymax);
-  //std::cout << axisRect()->width() << " " << axisRect()->height()  << std::endl;
  
   int colMin, colMax, rowMin, rowMax;
   //Note that y is decreasing with row number, so (0,0) is left uppermost. 
@@ -223,6 +231,17 @@ void pEventDisplay::drawMatrix()
 }
 
 
+void pEventDisplay::setupSearchRegion()
+{
+  double x0 = m_event.moma1().x0();
+  double y0 = m_event.moma1().y0();
+  double rmin = 1.5*m_event.moma1().rmsLong();
+  double rmax = 3.5*m_event.moma1().rmsLong();
+  double phi0 = m_event.moma1().phi() - M_PI/2.;
+  m_searchRegion->setup(x0, y0, rmin, rmax, phi0);
+}
+
+
 void pEventDisplay::drawReconInfo()
 {
   if (m_event.isEmpty()) {
@@ -232,6 +251,7 @@ void pEventDisplay::drawReconInfo()
 		       Qt::SolidLine);
   m_event.moma2().draw(this, "green", true, true, false, 1, Qt::SolidLine,
 		       Qt::SolidLine);
+  setupSearchRegion();
 }
 
 
@@ -274,6 +294,7 @@ void pEventDisplay::reset()
   clear();
   m_event = pEvent(); //reset the current event
   m_hexMatrix->reset(); //reset the hexagon matrix
+  m_searchRegion->clear(); // Clear the search region.
   replot();
 }
 
@@ -285,8 +306,7 @@ void pEventDisplay::pixelToCoord(int col, int row, double &x, double &y)
 }
 
 
-void pEventDisplay::coordToPixel(double x, double y,
-                                 int &col, int &row)
+void pEventDisplay::coordToPixel(double x, double y, int &col, int &row)
 {
   row = std::round(175.5 - y/(m_hexMatrix->rowPitch()));
   col = std::round(x/(m_hexMatrix->columnPitch()) + 0.5 * (298.5 + row%2));

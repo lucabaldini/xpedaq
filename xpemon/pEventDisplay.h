@@ -31,6 +31,7 @@ with this program; if not, write to the Free Software Foundation Inc.,
 #include "pHistogramOptions.h"
 #include "pHexagonMatrix.h"
 #include "pEvent.h"
+#include "pHorseshoe.h"
 
 
 class pEventDisplay : public QCustomPlot
@@ -54,6 +55,7 @@ class pEventDisplay : public QCustomPlot
     void reset(); //remove the graphical objects and reset data objects
     void enableReconDisplay() {m_displayReconInfo = true;}
     void disableReconDisplay() {m_displayReconInfo = false;}
+    void clearItems();
   
   signals:
   
@@ -69,6 +71,7 @@ class pEventDisplay : public QCustomPlot
     void updateColorScale();
     void updateMatrixColor();
     void drawReconInfo();
+    void setupSearchRegion();
     void drawMatrix();
     void mousePress();
     void mouseWheel();
@@ -82,6 +85,8 @@ class pEventDisplay : public QCustomPlot
     void coordToPixel(double x, double y, int &i, int &j);
     
     pHexagonMatrix *m_hexMatrix;
+    //QCPCurve *m_searchRegion;
+    pHorseshoe *m_searchRegion;
     QCPRange m_dataRange;
     pEvent m_event;
     QCPColorScale *m_colorScale;

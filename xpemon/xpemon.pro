@@ -48,7 +48,8 @@ HEADERS += pMap.h
 HEADERS += pMapPlot.h
 HEADERS += pRotableEllipse.h
 HEADERS += pCustomColorMapPlot.h
- 
+HEADERS += pHorseshoe.h
+
 HEADERS += pQtGridLayoutWidget.h
 HEADERS += pQtGroupBoxWidget.h
 HEADERS += pQtCustomPushButton.h
@@ -109,6 +110,7 @@ SOURCES += pMap.cpp
 SOURCES += pMapPlot.cpp
 SOURCES += pRotableEllipse.cpp
 SOURCES += pCustomColorMapPlot.cpp
+SOURCES += pHorseshoe.cpp
 
 SOURCES += pQtGridLayoutWidget.cpp
 SOURCES += pQtGroupBoxWidget.cpp
