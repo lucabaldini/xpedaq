@@ -24,26 +24,44 @@ with this program; if not, write to the Free Software Foundation Inc.,
 pInfoBoxWidget::pInfoBoxWidget(QWidget *parent): pInfoBoxGui(parent)
 {
   setTitle("Single-event display");
+
   m_evtCounter = 0;
+  
+  m_timeLabelName = "Time [s]";
+  m_absorptionPointLabelName = "Position [mm]";
+  m_pulseHeightLabelName = "Energy [ADC counts]";
+  m_phiLabelName = "Photoelectron angle [deg]";
+
+    
+
   m_counterLabelName = "Event number";
   m_windowSizeLabelName = "Window size";
   m_maxPosLabelName = "Max position [px]";
   m_clusterSizeLabelName = "Cluster size";
   m_barycenterPosLabelName = "Baricenter position [mm]";
-  m_pulseHeightLabelName = "Pulse height [ADC counts]";
-  m_angleLabelName = "Phi [rad]";
+  //m_pulseHeightLabelName = "Pulse height [ADC counts]";
+  //m_angleLabelName = "Phi [rad]";
   m_mom2TransLabelName = "Second moment (long.)";
   m_mom2LongLabelName = "Second moment (trans.)";
   m_momRatioLabelName = "Elongation";
   m_skewnessLabelName = "Skweness";
+
+  addField(m_timeLabelName);
+  addField(m_absorptionPointLabelName);
+  addField(m_pulseHeightLabelName);
+  addField(m_phiLabelName);
+
+  int row = m_groupBoxGridLayout->rowCount();
+  m_groupBoxGridLayout->setRowMinimumHeight(row, 30);
+
   
   addField(m_counterLabelName);
   addField(m_windowSizeLabelName);
   addField(m_maxPosLabelName);
   addField(m_clusterSizeLabelName);
   addField(m_barycenterPosLabelName);
-  addField(m_pulseHeightLabelName);
-  addField(m_angleLabelName);
+  //addField(m_pulseHeightLabelName);
+  //addField(m_angleLabelName);
   addField(m_mom2TransLabelName);  
   addField(m_mom2LongLabelName);
   addField(m_momRatioLabelName);
@@ -54,13 +72,18 @@ pInfoBoxWidget::pInfoBoxWidget(QWidget *parent): pInfoBoxGui(parent)
 
 void pInfoBoxWidget::initializeText()
 {
+  setField(m_timeLabelName, 0.);
+  setField(m_absorptionPointLabelName, coordinateStringFormat(0., 0.));
+  setField(m_pulseHeightLabelName, 0.);
+  setField(m_phiLabelName, 0.);
+  
   setField(m_counterLabelName, 0);
   setField(m_windowSizeLabelName, 0);
   setField(m_maxPosLabelName, coordinateStringFormat(0., 0.));
   setField(m_clusterSizeLabelName, 0.);
   setField(m_barycenterPosLabelName, coordinateStringFormat(0., 0.));
-  setField(m_pulseHeightLabelName, 0);
-  setField(m_angleLabelName, 0.);
+  //setField(m_pulseHeightLabelName, 0);
+  //setField(m_angleLabelName, 0.);
   setField(m_mom2TransLabelName, 0.);
   setField(m_mom2LongLabelName, 0.);
   setField(m_momRatioLabelName, 0.);
@@ -111,7 +134,7 @@ void pInfoBoxWidget::updatePulseHeight(int pulseHeight)
 
 void pInfoBoxWidget::updatePhi(double phi)
 {
-  setField(m_angleLabelName, number2String(phi));
+  setField(m_phiLabelName, number2String(phi));
 }
 
 

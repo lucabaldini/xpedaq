@@ -64,14 +64,19 @@ class pInfoBoxWidget: public pInfoBoxGui
     std::string number2String (T x, int precision = 4);
     template<typename T>
     std::string coordinateStringFormat(T x, T y, int precision = 4);
-  
+
+    QString m_timeLabelName;
+    QString m_absorptionPointLabelName;
+    QString m_pulseHeightLabelName;
+    QString m_phiLabelName;
+    
     QString m_counterLabelName;
     QString m_windowSizeLabelName;
     QString m_maxPosLabelName;
     QString m_barycenterPosLabelName;
     QString m_clusterSizeLabelName;
-    QString m_pulseHeightLabelName;
-    QString m_angleLabelName;
+    //QString m_pulseHeightLabelName;
+    //QString m_angleLabelName;
     QString m_mom2LongLabelName;
     QString m_mom2TransLabelName;
     QString m_momRatioLabelName;
