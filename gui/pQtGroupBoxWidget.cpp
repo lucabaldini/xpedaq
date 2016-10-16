@@ -47,3 +47,9 @@ void pQtGroupBoxWidget::addWidget(QWidget *widget, int row, int column,
   m_groupBoxGridLayout->addWidget(widget, row, column, rowSpan,
                                   coloumnSpan, alignment);
 }
+
+
+void pQtGroupBoxWidget::addSpace()
+{
+  m_groupBoxGridLayout->setRowMinimumHeight(rowCount(), 20);
+}

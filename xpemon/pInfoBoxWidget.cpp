@@ -21,7 +21,8 @@ with this program; if not, write to the Free Software Foundation Inc.,
 
 #include "pInfoBoxWidget.h"
 
-pInfoBoxWidget::pInfoBoxWidget(QWidget *parent): pInfoBoxGui(parent)
+pInfoBoxWidget::pInfoBoxWidget(QWidget *parent):
+  pInfoBoxGui(parent)
 {
   setTitle("Single-event display");
 
@@ -30,17 +31,13 @@ pInfoBoxWidget::pInfoBoxWidget(QWidget *parent): pInfoBoxGui(parent)
   m_timeLabelName = "Time [s]";
   m_absorptionPointLabelName = "Position [mm]";
   m_pulseHeightLabelName = "Energy [ADC counts]";
-  m_phiLabelName = "Photoelectron angle [deg]";
-
-    
+  m_phiLabelName = "Polarization angle [deg]";
 
   m_counterLabelName = "Event number";
   m_windowSizeLabelName = "Window size";
   m_maxPosLabelName = "Max position [px]";
   m_clusterSizeLabelName = "Cluster size";
   m_barycenterPosLabelName = "Baricenter position [mm]";
-  //m_pulseHeightLabelName = "Pulse height [ADC counts]";
-  //m_angleLabelName = "Phi [rad]";
   m_mom2TransLabelName = "Second moment (long.)";
   m_mom2LongLabelName = "Second moment (trans.)";
   m_momRatioLabelName = "Elongation";
@@ -51,21 +48,18 @@ pInfoBoxWidget::pInfoBoxWidget(QWidget *parent): pInfoBoxGui(parent)
   addField(m_pulseHeightLabelName);
   addField(m_phiLabelName);
 
-  int row = m_groupBoxGridLayout->rowCount();
-  m_groupBoxGridLayout->setRowMinimumHeight(row, 30);
+  addSpace();
 
-  
   addField(m_counterLabelName);
   addField(m_windowSizeLabelName);
   addField(m_maxPosLabelName);
   addField(m_clusterSizeLabelName);
   addField(m_barycenterPosLabelName);
-  //addField(m_pulseHeightLabelName);
-  //addField(m_angleLabelName);
   addField(m_mom2TransLabelName);  
   addField(m_mom2LongLabelName);
   addField(m_momRatioLabelName);
   addField(m_skewnessLabelName);   
+
   initializeText();
 }
 
@@ -82,8 +76,6 @@ void pInfoBoxWidget::initializeText()
   setField(m_maxPosLabelName, coordinateStringFormat(0., 0.));
   setField(m_clusterSizeLabelName, 0.);
   setField(m_barycenterPosLabelName, coordinateStringFormat(0., 0.));
-  //setField(m_pulseHeightLabelName, 0);
-  //setField(m_angleLabelName, 0.);
   setField(m_mom2TransLabelName, 0.);
   setField(m_mom2LongLabelName, 0.);
   setField(m_momRatioLabelName, 0.);

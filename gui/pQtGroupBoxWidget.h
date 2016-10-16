@@ -44,6 +44,7 @@ class pQtGroupBoxWidget : public pQtGridLayoutWidget
                  Qt::Alignment alignment = 0);
   void addWidget(QWidget *widget, int row, int column,
                  int rowSpan, int coloumnSpan, Qt::Alignment alignment = 0);
+  void addSpace();
   int rowCount() const {return m_groupBoxGridLayout->rowCount();}
 
  protected:
