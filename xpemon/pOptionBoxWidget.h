@@ -43,18 +43,12 @@ class pOptionBoxWidget: public pQtGroupBoxWidget
 
     explicit pOptionBoxWidget(const pMonitorPreferences& preferences,
                               QWidget *parent = 0);
-    
     void options(pMonitorPreferences* preferences);
-  
-  signals:
-  
-    void drawReconInfoCheckBoxStatusChanged(int state);
   
   public slots:
 
     void activateWidgets();
     void disableWidgets();
-    void updateReconInfoBoxStatus(int state);
   
   private:
   
@@ -80,7 +74,6 @@ class pOptionBoxWidget: public pQtGroupBoxWidget
     pMinMaxOptionPair<int> *m_pulseHeightLimits;
     pQtCustomTextLabel *m_windowSizeLabel;
     pMinMaxOptionPair<int> *m_windowSizeLimits;
-    QCheckBox *m_drawReconInfoCheckBox;
     pMonitorPreferences m_preferences;
 };
 

@@ -58,7 +58,17 @@ pInfoBoxWidget::pInfoBoxWidget(QWidget *parent):
   addField(m_mom2TransLabelName);  
   addField(m_mom2LongLabelName);
   addField(m_momRatioLabelName);
-  addField(m_skewnessLabelName);   
+  addField(m_skewnessLabelName);
+
+  addSpace();
+  
+  m_drawFirstPassCheckBox = new QCheckBox("Draw first-pass moments analysis");
+  addWidget(m_drawFirstPassCheckBox, rowCount(), 0);
+  m_drawSearchRegionCheckBox =
+    new QCheckBox("Draw photoabsorption-point search region");
+  addWidget(m_drawSearchRegionCheckBox, rowCount(), 0);
+  m_drawSecondPassCheckBox = new QCheckBox("Draw second-pass moments analysis");
+  addWidget(m_drawSecondPassCheckBox, rowCount(), 0);
 
   initializeText();
 }

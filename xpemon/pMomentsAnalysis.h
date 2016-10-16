@@ -54,6 +54,8 @@ class pMomentsAnalysis
     double y0() const {return m_y0;}
     double phi() const {return m_phi;}
     double phiDeg() const {return 180. * m_phi / M_PI;}
+    double phiFolded() const;
+    double phiFoldedDeg() const {return 180. * phiFolded() / M_PI;}
     double mom2long() const {return m_mom2long;}        
     double mom2trans() const {return m_mom2trans;}
     double rmsLong() const {return sqrt(m_mom2long);}

@@ -126,6 +126,18 @@ int pMomentsAnalysis::run(const std::vector<event::Hit> &hits,
 }
 
 
+double pMomentsAnalysis::phiFolded() const
+{
+  if (m_phi < -M_PI / 2.) {
+    return m_phi + M_PI;
+  }
+  if (m_phi > M_PI / 2.) {
+    return m_phi - M_PI;
+  }
+  return m_phi;
+}
+
+
 double pMomentsAnalysis::skewness() const
 {
   if (m_mom2long > 0) {

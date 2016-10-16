@@ -29,7 +29,6 @@ pEventDisplayTab::pEventDisplayTab()
 {
   // Get as much space as possible, starting from the preferred initial size
   //setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-
   setupEventDisplay();
 }
 
@@ -56,16 +55,5 @@ void pEventDisplayTab::updateEventDisplay(const pEvent &evt)
 void pEventDisplayTab::resetPlot()
 {
   m_eventDisplay -> reset();
-}
-
-
-void pEventDisplayTab::changeReconInfoDrawStatus(int state)
-{
-  if (state)
-    m_eventDisplay->enableReconDisplay();
-  else
-    m_eventDisplay->disableReconDisplay();
-    m_eventDisplay->clearItems();
-    m_eventDisplay->draw();
 }
 

@@ -41,8 +41,7 @@ class pEventDisplay : public QCustomPlot
   
   public:
   
-    pEventDisplay(pColorMapOptions options = pColorMapOptions(),
-                 bool displayReconInfo = false);
+    pEventDisplay(pColorMapOptions options = pColorMapOptions());
   
   public slots:
   
@@ -53,8 +52,11 @@ class pEventDisplay : public QCustomPlot
     virtual void resetView();
     void clear(); //remove the graphical objects from the plot
     void reset(); //remove the graphical objects and reset data objects
-    void enableReconDisplay() {m_displayReconInfo = true;}
-    void disableReconDisplay() {m_displayReconInfo = false;}
+    
+    void setFirstPassDisplayEnabled(int status);
+    void setSearchRegionDisplayEnabled(int status);
+    void setSecondPassDisplayEnabled(int status);
+
     void clearItems();
   
   signals:
@@ -70,7 +72,6 @@ class pEventDisplay : public QCustomPlot
     void updateDataRange();
     void updateColorScale();
     void updateMatrixColor();
-    void drawReconInfo();
     void setupSearchRegion();
     void drawMatrix();
     void mousePress();
@@ -85,7 +86,6 @@ class pEventDisplay : public QCustomPlot
     void coordToPixel(double x, double y, int &i, int &j);
     
     pHexagonMatrix *m_hexMatrix;
-    //QCPCurve *m_searchRegion;
     pHorseshoe *m_searchRegion;
     QCPRange m_dataRange;
     pEvent m_event;
@@ -93,8 +93,9 @@ class pEventDisplay : public QCustomPlot
     QCPMarginGroup *m_marginGroup;
     pColorMapOptions m_options;
     bool m_isSyncronized; //check if the last event has been already drawn
-    bool m_displayReconInfo; //draw some recon info on the plots
-
+    bool m_displayFirstPass;
+    bool m_displaySearchRegion;
+    bool m_displaySecondPass;
 };
 
 #endif  //PEVENTDISPLAY_H

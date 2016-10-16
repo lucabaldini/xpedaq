@@ -82,11 +82,19 @@ void xpemonWindow::setupConnections()
           m_eventReader, SLOT(updateRequested()));
   connect(this, SIGNAL(startAcquisition()),
           m_eventReader, SLOT(startReading()));
-  connect(m_optionBoxWidget, SIGNAL(drawReconInfoCheckBoxStatusChanged(int)),
-          m_eventDisplayTab, SLOT(changeReconInfoDrawStatus(int)));
+  connect(m_infoBoxWidget->drawFirstPassCheckBox(),
+	  SIGNAL(stateChanged(int)),
+	  m_eventDisplayTab->eventDisplay(),
+	  SLOT(setFirstPassDisplayEnabled(int)));
+  connect(m_infoBoxWidget->drawSearchRegionCheckBox(),
+	  SIGNAL(stateChanged(int)),
+	  m_eventDisplayTab->eventDisplay(),
+	  SLOT(setSearchRegionDisplayEnabled(int)));
+  connect(m_infoBoxWidget->drawSecondPassCheckBox(),
+	  SIGNAL(stateChanged(int)),
+	  m_eventDisplayTab->eventDisplay(),
+	  SLOT(setSecondPassDisplayEnabled(int)));
   setupEvtReaderConnections();
-  
-  
 }
 
 
@@ -177,7 +185,7 @@ void xpemonWindow::showLastEvent(const pEvent& evt)
   m_infoBoxWidget->updateBarycenterCoordinates(evt.moma1().x0(),
                                                evt.moma1().y0());
   m_infoBoxWidget->updatePulseHeight(evt.pulseHeight());
-  m_infoBoxWidget->updatePhi(evt.moma1().phi());
+  m_infoBoxWidget->updatePhi(evt.moma1().phiFoldedDeg());
   m_infoBoxWidget->updateMom2Trans(evt.moma1().mom2trans());
   m_infoBoxWidget->updateMom2Long(evt.moma1().mom2long());
   m_eventDisplayTab->updateEventDisplay(evt);  

@@ -41,12 +41,12 @@ class pEventDisplayTab : public pQtCustomTab
 
   pEventDisplayTab();
   ~pEventDisplayTab() {;}
+  pEventDisplay *eventDisplay() {return m_eventDisplay;}
 
  public slots: 
   
   void updateEventDisplay(const pEvent &evt);
   void resetPlot();
-  void changeReconInfoDrawStatus(int state);
   
  private:
 

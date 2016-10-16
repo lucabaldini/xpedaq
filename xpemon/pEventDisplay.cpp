@@ -21,8 +21,11 @@ with this program; if not, write to the Free Software Foundation Inc.,
 
 #include "pEventDisplay.h"
 
-pEventDisplay::pEventDisplay(pColorMapOptions options, bool displayReconInfo)
-  : m_options(options), m_displayReconInfo(displayReconInfo)
+pEventDisplay::pEventDisplay(pColorMapOptions options) :
+  m_options(options),
+  m_displayFirstPass(false),
+  m_displaySearchRegion(false),
+  m_displaySecondPass(false)
 {
   //Initialize with void event
   m_event = pEvent();
@@ -94,6 +97,30 @@ pEventDisplay::pEventDisplay(pColorMapOptions options, bool displayReconInfo)
 }
 
 
+void pEventDisplay::setFirstPassDisplayEnabled(int status)
+{
+  m_displayFirstPass = status;
+  clearItems();
+  draw();
+}
+
+
+void pEventDisplay::setSearchRegionDisplayEnabled(int status)
+{
+  m_displaySearchRegion = status;
+  clearItems();
+  draw();
+}
+
+
+void pEventDisplay::setSecondPassDisplayEnabled(int status)
+{
+  m_displaySecondPass = status;
+  clearItems();
+  draw();
+}
+
+
 void pEventDisplay::clearItems()
 {
   QCustomPlot::clearItems();
@@ -118,8 +145,7 @@ void pEventDisplay::loadEvent (const pEvent& evt)
 {
   m_event = evt;
   m_isSyncronized = false;
-  updateDataRange();  
-  
+  updateDataRange(); 
 }
 
 
@@ -242,30 +268,27 @@ void pEventDisplay::setupSearchRegion()
 }
 
 
-void pEventDisplay::drawReconInfo()
-{
-  if (m_event.isEmpty()) {
-    return;
-  }
-  m_event.moma1().draw(this, "blue", true, true, true, 1, Qt::DashLine,
-		       Qt::SolidLine);
-  m_event.moma2().draw(this, "green", true, true, false, 1, Qt::SolidLine,
-		       Qt::SolidLine);
-  setupSearchRegion();
-}
-
-
 void pEventDisplay::draw()
 {
-  if (!m_isSyncronized){
+  if (!m_isSyncronized) {
     clear();
     updateAxesRange();
     drawMatrix();
     updateMatrixColor();
   }
-  if (m_displayReconInfo){
-    clearItems();
-    drawReconInfo();
+  clearItems();
+  if (!m_event.isEmpty()) {
+    if (m_displayFirstPass) {
+      m_event.moma1().draw(this, "blue", true, true, true, 1, Qt::DashLine,
+			   Qt::SolidLine);
+    }
+    if (m_displaySearchRegion) {
+      setupSearchRegion();
+    }
+    if (m_displaySecondPass) {
+      m_event.moma2().draw(this, "green", true, true, false, 1, Qt::SolidLine,
+			   Qt::SolidLine);
+    }
   }
   replot();
   m_isSyncronized = true;

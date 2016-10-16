@@ -87,7 +87,7 @@ void pEventReader::readPendingDatagram()
       m_lastEvent = tmpEvt;
       m_windowSizeHist->fill(nPixel);
       m_pulseHeightHist->fill(tmpEvt.pulseHeight());
-      m_modulationHist->fill(tmpEvt.moma1().phiDeg());
+      m_modulationHist->fill(tmpEvt.moma1().phiFoldedDeg());
     }
   }
   // Here we release the memory. Using the data block

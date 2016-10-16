@@ -28,6 +28,7 @@ with this program; if not, write to the Free Software Foundation Inc.,
 #include <QLineEdit>
 #include <QGridLayout>
 #include <QWidget>
+#include <QCheckBox>
 
 #include "pQtCustomTextLabel.h"
 #include "pInfoBoxGui.h"
@@ -40,7 +41,12 @@ class pInfoBoxWidget: public pInfoBoxGui
   public:
 
     explicit pInfoBoxWidget(QWidget *parent=0);
-  
+
+    // Getters
+    QCheckBox *drawFirstPassCheckBox() {return m_drawFirstPassCheckBox;}
+    QCheckBox *drawSearchRegionCheckBox() {return m_drawSearchRegionCheckBox;}
+    QCheckBox *drawSecondPassCheckBox() {return m_drawSecondPassCheckBox;}
+
   public slots:
   
     void updateCounter();
@@ -75,14 +81,16 @@ class pInfoBoxWidget: public pInfoBoxGui
     QString m_maxPosLabelName;
     QString m_barycenterPosLabelName;
     QString m_clusterSizeLabelName;
-    //QString m_pulseHeightLabelName;
-    //QString m_angleLabelName;
     QString m_mom2LongLabelName;
     QString m_mom2TransLabelName;
     QString m_momRatioLabelName;
     QString m_skewnessLabelName;
 
     unsigned int m_evtCounter;
+
+    QCheckBox *m_drawFirstPassCheckBox;
+    QCheckBox *m_drawSearchRegionCheckBox;
+    QCheckBox *m_drawSecondPassCheckBox;
 };
 
 

@@ -50,8 +50,8 @@ pOptionBoxWidget::pOptionBoxWidget(const pMonitorPreferences &preferences,
   addWidget(m_zeroSupThrLabel, rowCount(), 0);
   addWidget(m_zeroSupThrEdit, rowCount() - 1, 1, 1, 2, Qt::AlignHCenter);
   //Add the min-max title (skipping a row to leave some space)
-  QLabel* minLabel = new QLabel("min", this);
-  QLabel* maxLabel = new QLabel("max", this);
+  QLabel* minLabel = new QLabel("Minimum", this);
+  QLabel* maxLabel = new QLabel("Maximum", this);
   addWidget(minLabel, rowCount() + 1, 1, Qt::AlignHCenter);
   addWidget(maxLabel, rowCount() - 1, 2, Qt::AlignHCenter);
   //Setting the blank space amount before the min-max title
@@ -83,13 +83,6 @@ pOptionBoxWidget::pOptionBoxWidget(const pMonitorPreferences &preferences,
   addWidget(m_windowSizeLabel, rowCount(), 0);
   addWidget(m_windowSizeLimits, rowCount() - 1, 1, 1 , 2);
   m_pulseHeightLimits->setBottom(0);
-  //Check box for drawing recon info init (skipping a row to leave some space)
-  m_drawReconInfoCheckBox = new QCheckBox("Draw reconstruction");
-  addWidget(m_drawReconInfoCheckBox, rowCount() + 1, 0);  
-  connect (m_drawReconInfoCheckBox, SIGNAL(stateChanged(int)),
-           this, SLOT(updateReconInfoBoxStatus(int)));  
-  //Setting the blank space amount before the check box
-  m_groupBoxGridLayout->setRowMinimumHeight(rowCount()- 2, 20);
 }
 
 
@@ -182,10 +175,4 @@ void pOptionBoxWidget::readWindowSizeLimits()
   m_windowSizeLimits->readOptions(min, max);
   m_preferences.m_minWindowSize = min;
   m_preferences.m_maxWindowSize = max;
-}
-
-
-void pOptionBoxWidget::updateReconInfoBoxStatus(int state)
-{
-  emit drawReconInfoCheckBoxStatusChanged(state);
 }
