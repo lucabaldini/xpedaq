@@ -63,12 +63,12 @@ pInfoBoxWidget::pInfoBoxWidget(QWidget *parent):
   addSpace();
   
   m_drawFirstPassCheckBox = new QCheckBox("Draw first-pass moments analysis");
-  addWidget(m_drawFirstPassCheckBox, rowCount(), 0);
+  addWidget(m_drawFirstPassCheckBox, rowCount(), 0, 1, 2);
   m_drawSearchRegionCheckBox =
     new QCheckBox("Draw photoabsorption-point search region");
-  addWidget(m_drawSearchRegionCheckBox, rowCount(), 0);
+  addWidget(m_drawSearchRegionCheckBox, rowCount(), 0, 1, 2);
   m_drawSecondPassCheckBox = new QCheckBox("Draw second-pass moments analysis");
-  addWidget(m_drawSecondPassCheckBox, rowCount(), 0);
+  addWidget(m_drawSecondPassCheckBox, rowCount(), 0, 1, 2);
 
   initializeText();
 }
