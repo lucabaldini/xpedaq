@@ -45,8 +45,8 @@ const double xpemonPlotOptions::yPixelMax =
 
 // Modulation
 const unsigned int xpemonPlotOptions::modulationNbins = 30;
-const double xpemonPlotOptions::modulationThetaMin = -90.01;
-const double xpemonPlotOptions::modulationThetaMax = 90.01;
+const double xpemonPlotOptions::modulationThetaMin = -180.001;
+const double xpemonPlotOptions::modulationThetaMax = 180.001;
 
 // Event display
 QCPColorGradient xpemonPlotOptions::loadRedToWhiteGradient(){

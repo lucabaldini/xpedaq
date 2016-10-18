@@ -185,7 +185,7 @@ void xpemonWindow::showLastEvent(const pEvent& evt)
   m_infoBoxWidget->updateBarycenterCoordinates(evt.moma1().x0(),
                                                evt.moma1().y0());
   m_infoBoxWidget->updatePulseHeight(evt.pulseHeight());
-  m_infoBoxWidget->updatePhi(evt.moma1().phiFoldedDeg());
+  m_infoBoxWidget->updatePhi(evt.moma1().phiDeg());
   m_infoBoxWidget->updateMom2Trans(evt.moma1().mom2trans());
   m_infoBoxWidget->updateMom2Long(evt.moma1().mom2long());
   m_eventDisplayTab->updateEventDisplay(evt);  
