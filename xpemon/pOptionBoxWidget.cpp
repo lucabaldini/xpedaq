@@ -28,32 +28,32 @@ pOptionBoxWidget::pOptionBoxWidget(const pMonitorPreferences &preferences,
 {
   setTitle("Monitor configuration");
   //Socket port option init
-  m_socketPortLabel = new pQtCustomTextLabel(this, "Socket Port");
+  m_socketPortLabel = new pQtCustomTextLabel(this, "UDP socket Port");
   m_socketPortEdit = new pQtCustomLineEdit<unsigned int>(
                                                   m_preferences.m_socketPort);
   m_socketPortEdit->setRangeMax(65535); // maximum value for Udp socket port
-  addWidget(m_socketPortLabel, rowCount(), 0);
-  addWidget(m_socketPortEdit, rowCount()-1, 1, 1, 2, Qt::AlignHCenter);  
+  addWidget(m_socketPortLabel, rowCount(), 0, 1, 2);
+  addWidget(m_socketPortEdit, rowCount() - 1, 2);  
   //Refresh interval option init
   m_refreshIntervalLabel = new pQtCustomTextLabel(this,
-                                                  "Refresh interval (ms)");
+                                                  "Refresh interval [ms]");
   m_refreshIntervalEdit = new pQtCustomLineEdit<double>(
                                              m_preferences.m_refreshInterval);
-  addWidget(m_refreshIntervalLabel, rowCount(), 0);
-  addWidget(m_refreshIntervalEdit, rowCount() - 1, 1, 1, 2, Qt::AlignHCenter);
+  addWidget(m_refreshIntervalLabel, rowCount(), 0, 1, 2);
+  addWidget(m_refreshIntervalEdit, rowCount() - 1, 2);
   m_refreshIntervalEdit->setRangeMin(500.); // would be too fast otherwise
   //Zero suppression option init
   m_zeroSupThrLabel = new pQtCustomTextLabel(this,"Zero suppression");
   m_zeroSupThrEdit = new pQtCustomLineEdit<unsigned int>(
                                     m_preferences.m_zeroSuppressionThreshold);
   m_zeroSupThrEdit->setRangeMin(0);
-  addWidget(m_zeroSupThrLabel, rowCount(), 0);
-  addWidget(m_zeroSupThrEdit, rowCount() - 1, 1, 1, 2, Qt::AlignHCenter);
+  addWidget(m_zeroSupThrLabel, rowCount(), 0, 1, 2);
+  addWidget(m_zeroSupThrEdit, rowCount() - 1, 2);
   //Add the min-max title (skipping a row to leave some space)
   QLabel* minLabel = new QLabel("Minimum", this);
   QLabel* maxLabel = new QLabel("Maximum", this);
-  addWidget(minLabel, rowCount() + 1, 1, Qt::AlignHCenter);
-  addWidget(maxLabel, rowCount() - 1, 2, Qt::AlignHCenter);
+  addWidget(minLabel, rowCount(), 1);
+  addWidget(maxLabel, rowCount() - 1, 2);
   //Setting the blank space amount before the min-max title
   m_groupBoxGridLayout->setRowMinimumHeight(rowCount()- 2, 10);
   //Elongation limits option init
