@@ -41,9 +41,8 @@ class pEvent: public pEventWindow
     
     pEvent() : pEventWindow (), m_isEmpty(true) {;}
     
-    pEvent(int firstCol, int lastCol,
-           int firstRow, int lastRow,
-           const event::Adc_vec_t &adcCounts,
+    pEvent(int firstCol, int lastCol, int firstRow, int lastRow,
+           const event::Adc_vec_t &adcCounts, int microseconds, 
            adc_count_t threshold);
   public:
     
@@ -57,7 +56,9 @@ class pEvent: public pEventWindow
       {return m_hits.at(index(p));}
     //access by cubic coordinates
     const event::Hit& operator() (const CubeCoordinate& p) const
-      {return m_hits.at(index(p));} 
+      {return m_hits.at(index(p));}
+    //
+    int microseconds() const {return m_microseconds;}
     //index of highest Pixel
     int highestPixelAddress() const 
       {return m_highestPixelAddress;}
@@ -80,6 +81,8 @@ class pEvent: public pEventWindow
       {return m_momentsAnalysis1;}
     const pMomentsAnalysis& moma2() const
       {return m_momentsAnalysis2;}
+    double phi() const {return m_momentsAnalysis2.phi();}
+    double phiDeg() const {return m_momentsAnalysis2.phiDeg();}
     
     //iterator
     typedef std::vector<event::Hit>::const_iterator const_eventIterator;
@@ -96,7 +99,8 @@ class pEvent: public pEventWindow
     
     
   private:
-    
+
+    int m_microseconds;
     adc_count_t m_threshold; // zero suppression threshold
     int m_highestPixelAddress;  // address of the highest pixel
     int m_rawPulseHeight;  // sum of all pixel counts

@@ -50,13 +50,17 @@ class pInfoBoxWidget: public pInfoBoxGui
   public slots:
   
     void updateCounter();
+    
+    void updateTime(int microseconds);
+    void updateAbsorptionPoint(double x, double y);
+    void updatePulseHeight(int pulseHeight);
+    void updatePhi(double phi);
+
     void updateWindowSize(unsigned int colMin, unsigned int colMax,
                           unsigned int rowMin, unsigned int rowMax);
     void updateMaxCoordinates(int col, int row);
-    void updateBarycenterCoordinates(double x, double y);
+    void updateBaricenterCoordinates(double x, double y);
     void updateClusterSize(int size);
-    void updatePulseHeight(int pulseHeight);
-    void updatePhi(double phi);
     void updateMom2Trans(double mom2Trans);
     void updateMom2Long(double mom2Long);
     void updateMomRatio(double momRatio);
@@ -79,7 +83,7 @@ class pInfoBoxWidget: public pInfoBoxGui
     QString m_counterLabelName;
     QString m_windowSizeLabelName;
     QString m_maxPosLabelName;
-    QString m_barycenterPosLabelName;
+    QString m_baricenterPosLabelName;
     QString m_clusterSizeLabelName;
     QString m_mom2LongLabelName;
     QString m_mom2TransLabelName;

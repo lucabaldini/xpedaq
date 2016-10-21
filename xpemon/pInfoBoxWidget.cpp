@@ -29,15 +29,15 @@ pInfoBoxWidget::pInfoBoxWidget(QWidget *parent):
   m_evtCounter = 0;
   
   m_timeLabelName = "Time [s]";
-  m_absorptionPointLabelName = "Position [mm]";
+  m_absorptionPointLabelName = "Absorption point [mm]";
   m_pulseHeightLabelName = "Energy [ADC counts]";
   m_phiLabelName = "Polarization angle [deg]";
 
-  m_counterLabelName = "Event number";
+  //m_counterLabelName = "Event number";
   m_windowSizeLabelName = "Window size";
   m_maxPosLabelName = "Max position [px]";
   m_clusterSizeLabelName = "Cluster size";
-  m_barycenterPosLabelName = "Baricenter position [mm]";
+  m_baricenterPosLabelName = "Baricenter position [mm]";
   m_mom2TransLabelName = "Second moment (long.)";
   m_mom2LongLabelName = "Second moment (trans.)";
   m_momRatioLabelName = "Elongation";
@@ -50,11 +50,11 @@ pInfoBoxWidget::pInfoBoxWidget(QWidget *parent):
 
   addSpace();
 
-  addField(m_counterLabelName);
+  //addField(m_counterLabelName);
   addField(m_windowSizeLabelName);
   addField(m_maxPosLabelName);
   addField(m_clusterSizeLabelName);
-  addField(m_barycenterPosLabelName);
+  addField(m_baricenterPosLabelName);
   addField(m_mom2TransLabelName);  
   addField(m_mom2LongLabelName);
   addField(m_momRatioLabelName);
@@ -65,7 +65,7 @@ pInfoBoxWidget::pInfoBoxWidget(QWidget *parent):
   m_drawFirstPassCheckBox = new QCheckBox("Draw first-pass moments analysis");
   addWidget(m_drawFirstPassCheckBox, rowCount(), 0, 1, 2);
   m_drawSearchRegionCheckBox =
-    new QCheckBox("Draw photoabsorption-point search region");
+    new QCheckBox("Draw absorption-point search region");
   addWidget(m_drawSearchRegionCheckBox, rowCount(), 0, 1, 2);
   m_drawSecondPassCheckBox = new QCheckBox("Draw second-pass moments analysis");
   addWidget(m_drawSecondPassCheckBox, rowCount(), 0, 1, 2);
@@ -81,11 +81,11 @@ void pInfoBoxWidget::initializeText()
   setField(m_pulseHeightLabelName, 0.);
   setField(m_phiLabelName, 0.);
   
-  setField(m_counterLabelName, 0);
+  //setField(m_counterLabelName, 0);
   setField(m_windowSizeLabelName, 0);
   setField(m_maxPosLabelName, coordinateStringFormat(0., 0.));
   setField(m_clusterSizeLabelName, 0.);
-  setField(m_barycenterPosLabelName, coordinateStringFormat(0., 0.));
+  setField(m_baricenterPosLabelName, coordinateStringFormat(0., 0.));
   setField(m_mom2TransLabelName, 0.);
   setField(m_mom2LongLabelName, 0.);
   setField(m_momRatioLabelName, 0.);
@@ -95,8 +95,34 @@ void pInfoBoxWidget::initializeText()
 
 void pInfoBoxWidget::updateCounter()
 {
+  // This is actually not used, at the moment. Need to think about how we
+  // get the actual event number from the event.
   m_evtCounter += 1;
-  setField(m_counterLabelName, (m_evtCounter));
+  //setField(m_counterLabelName, (m_evtCounter));
+}
+
+
+void pInfoBoxWidget::updateTime(int microseconds)
+{
+  setField(m_timeLabelName, microseconds);
+}
+
+
+void pInfoBoxWidget::updateAbsorptionPoint(double x, double y)
+{
+  setField(m_absorptionPointLabelName, coordinateStringFormat(x, y));
+}
+
+
+void pInfoBoxWidget::updatePulseHeight(int pulseHeight)
+{
+  setField(m_pulseHeightLabelName, pulseHeight);
+}
+
+
+void pInfoBoxWidget::updatePhi(double phi)
+{
+  setField(m_phiLabelName, number2String(phi));
 }
 
 
@@ -122,21 +148,9 @@ void pInfoBoxWidget::updateClusterSize(int size)
 }
 
 
-void pInfoBoxWidget::updateBarycenterCoordinates(double x, double y)
+void pInfoBoxWidget::updateBaricenterCoordinates(double x, double y)
 {
-  setField(m_barycenterPosLabelName, coordinateStringFormat(x, y));
-}
-
-
-void pInfoBoxWidget::updatePulseHeight(int pulseHeight)
-{
-  setField(m_pulseHeightLabelName, pulseHeight);
-}
-
-
-void pInfoBoxWidget::updatePhi(double phi)
-{
-  setField(m_phiLabelName, number2String(phi));
+  setField(m_baricenterPosLabelName, coordinateStringFormat(x, y));
 }
 
 

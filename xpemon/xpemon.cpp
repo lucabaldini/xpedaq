@@ -25,6 +25,8 @@ with this program; if not, write to the Free Software Foundation Inc.,
 
 int main( int argc, char **argv )
 {
+  xpedaqutils::startmsg();
+  
   //QApplication::setGraphicsSystem("raster");
   QApplication app(argc, argv);
   std::string cfgFolderPath = xpedaqos::rjoin("xpemon", "config");

@@ -27,6 +27,8 @@ xpemonWindow::xpemonWindow(std::string preferencesFilePath,
                            m_preferencesFilePath (preferencesFilePath),
                            m_isStopped(true)
 {
+  QString title = "xpemon version " + QString(__XPEDAQ_VERSION__);
+  setWindowTitle(title);
   const int pixelFromScreenLeft = 10;
   const int pixelFromScreenTop = 10;
   const int pixelWidth = 1150;
@@ -176,16 +178,19 @@ void xpemonWindow::stopRun()
 void xpemonWindow::showLastEvent(const pEvent& evt)
 {
   // Update event info and send last event to the event diplay
+  m_infoBoxWidget->updateTime(evt.microseconds());
+  m_infoBoxWidget->updateAbsorptionPoint(evt.moma2().x0(), evt.moma2().y0());
+  m_infoBoxWidget->updatePulseHeight(evt.pulseHeight());
+  m_infoBoxWidget->updatePhi(evt.phiDeg());  
+
   m_infoBoxWidget->updateWindowSize(evt.firstCol(), evt.lastCol(),
                                     evt.firstRow(), evt.lastRow());
   int row, col;
   evt.highestPixelCoordinates(col, row);
   m_infoBoxWidget->updateMaxCoordinates(col, row);
   m_infoBoxWidget->updateClusterSize(evt.clusterSize());
-  m_infoBoxWidget->updateBarycenterCoordinates(evt.moma1().x0(),
+  m_infoBoxWidget->updateBaricenterCoordinates(evt.moma1().x0(),
                                                evt.moma1().y0());
-  m_infoBoxWidget->updatePulseHeight(evt.pulseHeight());
-  m_infoBoxWidget->updatePhi(evt.moma1().phiDeg());
   m_infoBoxWidget->updateMom2Trans(evt.moma1().mom2trans());
   m_infoBoxWidget->updateMom2Long(evt.moma1().mom2long());
   m_eventDisplayTab->updateEventDisplay(evt);  

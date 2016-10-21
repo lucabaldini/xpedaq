@@ -200,14 +200,24 @@ unsigned int pDataBlock::numPixels(unsigned int event) const
   return (xmax(event) - xmin(event) + 1)*(ymax(event) - ymin(event) + 1);
 }
 
+
+/*!
+
+ */
+int pDataBlock::microseconds(unsigned int event) const
+{
+  return dataWord(event, Microseconds) +
+    65534*dataWord(event, Microseconds + 2);
+}
+
+
 /*!
 
  */
 double pDataBlock::timestamp(unsigned int event) const
 {
   return dataWord(event, Seconds + 2) + 65536*dataWord(event, Seconds) +
-    0.8e-6*(dataWord(event, Microseconds) + 
-	    65534*dataWord(event, Microseconds + 2));
+    0.8e-6*microseconds(event);
 }
 
 

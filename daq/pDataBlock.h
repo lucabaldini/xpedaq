@@ -76,6 +76,7 @@ class pDataBlock
   unsigned int ymax(unsigned int event) const;
   unsigned int bufferId(unsigned int event) const;
   unsigned int numPixels(unsigned int event) const;
+  int microseconds(unsigned int event) const;
   double timestamp(unsigned int event) const;
 
   // Random access to the content of single pixels in an event

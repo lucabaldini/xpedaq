@@ -22,13 +22,14 @@ with this program; if not, write to the Free Software Foundation Inc.,
 #include "pEvent.h"
 
 
-pEvent::pEvent(int firstCol, int lastCol,
-               int firstRow, int lastRow,
-               const event::Adc_vec_t& adcCounts, 
+pEvent::pEvent(int firstCol, int lastCol, int firstRow, int lastRow,
+               const event::Adc_vec_t& adcCounts, int microseconds, 
                adc_count_t threshold):
-               pEventWindow(firstCol, lastCol, firstRow, lastRow),
-               m_threshold(threshold), m_clusterSize(0),
-               m_isEmpty(false)
+  pEventWindow(firstCol, lastCol, firstRow, lastRow),
+  m_microseconds(microseconds),
+  m_threshold(threshold),
+  m_clusterSize(0),
+  m_isEmpty(false)
 {
   if (adcCounts.size() != nRows() * nColumns()) {
     std::cout << "WARNING: Buffer does not fit window size passed"

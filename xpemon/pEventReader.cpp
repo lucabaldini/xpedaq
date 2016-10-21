@@ -78,16 +78,16 @@ void pEventReader::readPendingDatagram()
         m_hitMap->fill(x, y, 0.);      
     }
     pEvent tmpEvt = pEvent(p.xmin(evt), p.xmax(evt), p.ymin(evt), p.ymax(evt),
-                         curHitMap, m_preferences.m_zeroSuppressionThreshold);
+			   curHitMap, p.microseconds(evt),
+			   m_preferences.m_zeroSuppressionThreshold);
     tmpEvt.reconstruct(m_preferences.m_zeroSuppressionThreshold);
-    //tmpEvt.doMomentsAnalysis();
     emit eventRead();
     if (evtAccepted(tmpEvt)){
       m_isLastEventChanged = true;    
       m_lastEvent = tmpEvt;
       m_windowSizeHist->fill(nPixel);
       m_pulseHeightHist->fill(tmpEvt.pulseHeight());
-      m_modulationHist->fill(tmpEvt.moma1().phiDeg());
+      m_modulationHist->fill(tmpEvt.phiDeg());
     }
   }
   // Here we release the memory. Using the data block
