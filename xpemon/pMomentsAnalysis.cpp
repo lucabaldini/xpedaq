@@ -156,10 +156,16 @@ double pMomentsAnalysis::elongation() const
 }
 
 
+void pMomentsAnalysis::flip()
+{
+  m_phi -= std::copysign(M_PI, m_phi);
+}
+
+
 void pMomentsAnalysis::flip3()
 {
   if (m_mom3long > 0.) {
-    m_phi -= std::copysign(M_PI, m_phi);
+    flip();
   }
 }
 

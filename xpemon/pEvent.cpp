@@ -47,6 +47,7 @@ pEvent::pEvent(int firstCol, int lastCol, int firstRow, int lastRow,
   m_baricenterY = 0.;
 }
 
+
 int pEvent::findHighestPixel() const
 {
   int maxPos = -1;
@@ -222,6 +223,11 @@ void pEvent::reconstruct(int threshold)
 
   // Finally, run the second-pass moments analysis.
   m_momentsAnalysis2.run(m_hits, threshold, x0, y0, weights);
+
+  // And the last flip sign for the angle, if needed.
+  if (fabs(m_momentsAnalysis2.phi() - m_momentsAnalysis1.phi()) > 0.5*M_PI) {
+    m_momentsAnalysis2.flip();
+  }
 }
 
 

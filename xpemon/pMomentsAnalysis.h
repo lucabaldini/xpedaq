@@ -66,6 +66,7 @@ class pMomentsAnalysis
 
     //
     void rotatePhi(double angle) {m_phi += angle;}
+    void flip();
     void flip3();
     
     // Terminal formatting.
