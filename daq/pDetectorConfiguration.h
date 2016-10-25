@@ -63,6 +63,7 @@ class pDetectorConfiguration
   // Set functions.
   void setReadoutMode(unsigned short mode);
   void setThresholdDac(int clusterId, unsigned short dacSetting);
+  void setThresholdDac(unsigned short dacSetting);
   void setCalibrationDac(unsigned short dacSetting);
   void setPixelAddressX(unsigned short address) {m_pixelAddressX = address;}
   void setPixelAddressY(unsigned short address) {m_pixelAddressY = address;}

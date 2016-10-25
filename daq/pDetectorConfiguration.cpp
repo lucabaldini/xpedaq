@@ -70,6 +70,14 @@ void pDetectorConfiguration::setThresholdDac(int clusterId,
 }
 
 
+void pDetectorConfiguration::setThresholdDac(unsigned short int dacSetting)
+{
+  for (int i = 0; i < xpoldetector::kNumThresholdClusters; i ++) {
+    setThresholdDac(i, dacSetting);
+  }
+}
+
+
 /*!
  */
 void pDetectorConfiguration::setCalibrationDac(unsigned short int dacSetting)

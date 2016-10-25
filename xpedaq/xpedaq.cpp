@@ -36,7 +36,9 @@ int main(int argn, char *argv[])
   parser.addOption<int>("y-pixel-address", 'y',
                         "Charge injection pixel coordinate y");
   parser.addOption<int>("calibration-dac", 'C',
-                  "Calibration DAC signal for charge injection mode");
+			"Calibration DAC signal for charge injection mode");
+  parser.addOption<int>("threshold-dac", 'T',
+			"Threshold DAC setting (the same for all clusters)");
   parser.addOption<std::string>("comment", 'm', "A user comment");
 
   std::string cfgFolderPath = xpedaqos::rjoin("xpedaq", "config");
@@ -77,6 +79,10 @@ int main(int argn, char *argv[])
   if (parser.optionSet("nped-subtracted")){
     const int nped_subtracted = parser.value<int>("nped-subtracted");
     configuration->setNumPedSamples(nped_subtracted);
+  }
+  if (parser.optionSet("threshold-dac")){
+    const int threshold_dac = parser.value<int>("threshold-dac");
+    configuration->setThresholdDac(threshold_dac);
   }
   if (parser.optionSet("charge-injection")){
     const bool charge_injection = parser.value<bool>("charge-injection");
