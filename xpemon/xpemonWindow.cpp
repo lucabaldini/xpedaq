@@ -68,8 +68,9 @@ xpemonWindow::xpemonWindow(std::string preferencesFilePath,
   m_mainGridLayout->addWidget(m_infoBoxWidget, 1,0);
   
   m_mainGridLayout->setColumnStretch(1, 12);
-
   setupConnections();
+  // Enable the recon check boxes (this might go in the configuration file).
+  m_infoBoxWidget->checkCheckBoxes(true);
 }
 
 

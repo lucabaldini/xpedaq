@@ -92,7 +92,6 @@ pEventDisplay::pEventDisplay(pColorMapOptions options) :
   // Initialize the search region.
   m_searchRegion = new pHorseshoe(this, "blue", 1, Qt::DashLine);
   m_searchRegion->setLayer("legend");
-  
   setupInteractions();
 }
 

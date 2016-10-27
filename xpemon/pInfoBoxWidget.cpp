@@ -69,10 +69,17 @@ pInfoBoxWidget::pInfoBoxWidget(QWidget *parent):
   addWidget(m_drawSearchRegionCheckBox, rowCount(), 0, 1, 2);
   m_drawSecondPassCheckBox = new QCheckBox("Draw second-pass moments analysis");
   addWidget(m_drawSecondPassCheckBox, rowCount(), 0, 1, 2);
-
   initializeText();
 }
 
+
+void pInfoBoxWidget::checkCheckBoxes(bool checked)
+{
+  m_drawFirstPassCheckBox->setChecked(checked);
+  m_drawSearchRegionCheckBox->setChecked(checked);
+  m_drawSecondPassCheckBox->setChecked(checked);
+}
+ 
 
 void pInfoBoxWidget::initializeText()
 {

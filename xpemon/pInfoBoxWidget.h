@@ -47,6 +47,8 @@ class pInfoBoxWidget: public pInfoBoxGui
     QCheckBox *drawSearchRegionCheckBox() {return m_drawSearchRegionCheckBox;}
     QCheckBox *drawSecondPassCheckBox() {return m_drawSecondPassCheckBox;}
 
+    void checkCheckBoxes(bool checked);
+
   public slots:
   
     void updateCounter();
