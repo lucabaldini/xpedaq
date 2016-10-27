@@ -26,13 +26,13 @@ template <typename T>
 pMinMaxOptionPair<T>::pMinMaxOptionPair(QWidget *parent, T min, T max) : 
   pMinMaxOptionPairBase(parent)
 {
-  m_mainGridLayout->setSpacing(0);
-  m_mainGridLayout->setContentsMargins(0, 0, 0, 0);
+  //m_mainGridLayout->setSpacing(0);
+  //m_mainGridLayout->setContentsMargins(0, 0, 0, 0);
   
   m_minEdit = new pQtCustomLineEdit<T>(min);
   m_maxEdit = new pQtCustomLineEdit<T>(max);
-  addWidget(m_minEdit, 0, 0);
-  addWidget(m_maxEdit, 0, 1);
+  //addWidget(m_minEdit, 0, 0);
+  //addWidget(m_maxEdit, 0, 1);
   
   connect (m_minEdit, SIGNAL(inputAccepted()),
            this, SLOT(updateMaxRange()));
@@ -77,6 +77,14 @@ template <typename T>
 void pMinMaxOptionPair<T>::updateMaxRange()
 {
   m_maxEdit->setRangeMin(m_minEdit->value());
+}
+
+
+template <typename T>
+void pMinMaxOptionPair<T>::setEnabled(bool enabled)
+{
+  m_minEdit->setEnabled(enabled);
+  m_maxEdit->setEnabled(enabled);
 }
 
 

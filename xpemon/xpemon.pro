@@ -78,6 +78,7 @@ HEADERS += pUdpSender.h
 
 HEADERS += xpemonWindow.h
 HEADERS += pOptionBoxWidget.h
+HEADERS += pCutBoxWidget.h
 HEADERS += pEventReader.h
 HEADERS += pInfoBoxWidget.h
 HEADERS += pMonitorPreferences.h
@@ -141,6 +142,7 @@ SOURCES += pUdpSender.cpp
 
 SOURCES += xpemonWindow.cpp
 SOURCES += pOptionBoxWidget.cpp
+SOURCES += pCutBoxWidget.cpp
 SOURCES += pEventReader.cpp
 SOURCES += pInfoBoxWidget.cpp
 SOURCES += pMonitorPreferences.cpp

@@ -22,11 +22,6 @@ with this program; if not, write to the Free Software Foundation Inc.,
 #ifndef OPTIONBOXWIDGET_H
 #define OPTIONBOXWIDGET_H
 
-#include <QLineEdit>
-#include <QGridLayout>
-#include <QWidget>
-#include <QString>
-#include <QCheckBox>
 
 #include "pMonitorPreferences.h"
 #include "pQtCustomTextLabel.h"
@@ -47,33 +42,21 @@ class pOptionBoxWidget: public pQtGroupBoxWidget
   
   public slots:
 
-    void activateWidgets();
-    void disableWidgets();
+    void enable();
+    void disable();
   
   private:
   
     void readSocketPort();
     void readRefreshInterval();
     void readZeroSupThreshold();
-    void readElongationLimits();
-    void readClusterSizeLimits();
-    void readPulseHeightLimits();
-    void readWindowSizeLimits();
-  
+ 
     pQtCustomTextLabel *m_socketPortLabel;
     pQtCustomLineEdit<unsigned int> *m_socketPortEdit;
     pQtCustomTextLabel *m_refreshIntervalLabel;
     pQtCustomLineEdit<double> *m_refreshIntervalEdit;
     pQtCustomTextLabel *m_zeroSupThrLabel;
     pQtCustomLineEdit<unsigned int> *m_zeroSupThrEdit;
-    pQtCustomTextLabel *m_elongationLabel;
-    pMinMaxOptionPair<double> *m_elongationLimits;    
-    pQtCustomTextLabel *m_clusterSizeLabel;
-    pMinMaxOptionPair<int> *m_clusterSizeLimits;    
-    pQtCustomTextLabel *m_pulseHeightLabel;
-    pMinMaxOptionPair<int> *m_pulseHeightLimits;
-    pQtCustomTextLabel *m_windowSizeLabel;
-    pMinMaxOptionPair<int> *m_windowSizeLimits;
     pMonitorPreferences m_preferences;
 };
 

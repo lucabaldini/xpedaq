@@ -22,9 +22,9 @@ with this program; if not, write to the Free Software Foundation Inc.,
 #include "pOptionBoxWidget.h"
 
 pOptionBoxWidget::pOptionBoxWidget(const pMonitorPreferences &preferences,
-                                   QWidget *parent):
-                                   pQtGroupBoxWidget(parent),
-                                   m_preferences(preferences)
+                                   QWidget *parent) :
+  pQtGroupBoxWidget(parent),
+  m_preferences(preferences)
 {
   setTitle("Monitor configuration");
   //Socket port option init
@@ -49,64 +49,22 @@ pOptionBoxWidget::pOptionBoxWidget(const pMonitorPreferences &preferences,
   m_zeroSupThrEdit->setRangeMin(0);
   addWidget(m_zeroSupThrLabel, rowCount(), 0, 1, 2);
   addWidget(m_zeroSupThrEdit, rowCount() - 1, 2);
-  //Add the min-max title (skipping a row to leave some space)
-  QLabel* minLabel = new QLabel("Minimum", this);
-  QLabel* maxLabel = new QLabel("Maximum", this);
-  addWidget(minLabel, rowCount(), 1);
-  addWidget(maxLabel, rowCount() - 1, 2);
-  //Setting the blank space amount before the min-max title
-  m_groupBoxGridLayout->setRowMinimumHeight(rowCount()- 2, 10);
-  //Elongation limits option init
-  m_elongationLabel = new pQtCustomTextLabel(this, "Elongation");
-  m_elongationLimits = new pMinMaxOptionPair<double>(this,
-    m_preferences.m_minElongation, m_preferences.m_maxElongation);
-  addWidget(m_elongationLabel, rowCount(), 0);
-  addWidget(m_elongationLimits, rowCount() - 1, 1, 1, 2);
-  //Cluster size limits
-  m_clusterSizeLabel = new pQtCustomTextLabel(this, "Cluster size");
-  m_clusterSizeLimits = new pMinMaxOptionPair<int>(this,
-    m_preferences.m_minClusterSize, m_preferences.m_maxClusterSize);
-  addWidget(m_clusterSizeLabel, rowCount(), 0);
-  addWidget(m_clusterSizeLimits, rowCount() - 1, 1, 1 , 2);
-  m_clusterSizeLimits->setBottom(0);
-  //Pulse height limits option init
-  m_pulseHeightLabel = new pQtCustomTextLabel(this, "Pulse height");
-  m_pulseHeightLimits = new pMinMaxOptionPair<int>(this,
-    m_preferences.m_minPulseHeight, m_preferences.m_maxPulseHeight);
-  addWidget(m_pulseHeightLabel, rowCount(), 0);
-  addWidget(m_pulseHeightLimits, rowCount() - 1, 1, 1 , 2);
-  m_pulseHeightLimits->setBottom(0);
-  //Window size limits option init
-  m_windowSizeLabel = new pQtCustomTextLabel(this, "Window size");
-  m_windowSizeLimits = new pMinMaxOptionPair<int>(this,
-    m_preferences.m_minWindowSize, m_preferences.m_maxWindowSize);
-  addWidget(m_windowSizeLabel, rowCount(), 0);
-  addWidget(m_windowSizeLimits, rowCount() - 1, 1, 1 , 2);
-  m_pulseHeightLimits->setBottom(0);
 }
 
 
-void pOptionBoxWidget::activateWidgets()
+void pOptionBoxWidget::enable()
 {
-  m_socketPortEdit->setDisabled(false);
-  m_refreshIntervalEdit->setDisabled(false);
-  m_zeroSupThrEdit->setDisabled(false);
-  m_elongationLimits->setDisabled(false);    
-  m_clusterSizeLimits->setDisabled(false);
-  m_pulseHeightLimits->setDisabled(false);
-  m_windowSizeLimits->setDisabled(false);
+  m_socketPortEdit->setEnabled(true);
+  m_refreshIntervalEdit->setEnabled(true);
+  m_zeroSupThrEdit->setEnabled(true);
 }
 
 
-void pOptionBoxWidget::disableWidgets()
+void pOptionBoxWidget::disable()
 {
   m_socketPortEdit->setDisabled(true);
   m_refreshIntervalEdit->setDisabled(true);
   m_zeroSupThrEdit->setDisabled(true);
-  m_elongationLimits->setDisabled(true);    
-  m_clusterSizeLimits->setDisabled(true);
-  m_pulseHeightLimits->setDisabled(true);
-  m_windowSizeLimits->setDisabled(true);
 }
 
 
@@ -116,10 +74,6 @@ void pOptionBoxWidget::options(pMonitorPreferences* preferences)
   readSocketPort();
   readRefreshInterval();
   readZeroSupThreshold();
-  readElongationLimits();
-  readClusterSizeLimits();
-  readPulseHeightLimits();
-  readWindowSizeLimits();
   (*preferences) = m_preferences;
 }
 
@@ -139,40 +93,4 @@ void pOptionBoxWidget::readRefreshInterval()
 void pOptionBoxWidget::readZeroSupThreshold()
 {
   m_preferences.m_zeroSuppressionThreshold = m_zeroSupThrEdit->value();
-}
-
-
-void pOptionBoxWidget::readElongationLimits()
-{
-  double min, max;
-  m_elongationLimits->readOptions(min, max);
-  m_preferences.m_minElongation = min;
-  m_preferences.m_maxElongation = max;
-}
-
-
-void pOptionBoxWidget::readClusterSizeLimits()
-{
-  int min, max;
-  m_clusterSizeLimits->readOptions(min, max);
-  m_preferences.m_minClusterSize = min;
-  m_preferences.m_maxClusterSize = max;
-}
-
-
-void pOptionBoxWidget::readPulseHeightLimits()
-{
-  int min, max;
-  m_pulseHeightLimits->readOptions(min, max);
-  m_preferences.m_minPulseHeight = min;
-  m_preferences.m_maxPulseHeight = max;
-}
-
-
-void pOptionBoxWidget::readWindowSizeLimits()
-{
-  int min, max;
-  m_windowSizeLimits->readOptions(min, max);
-  m_preferences.m_minWindowSize = min;
-  m_preferences.m_maxWindowSize = max;
 }

@@ -33,6 +33,7 @@ with this program; if not, write to the Free Software Foundation Inc.,
 #include <QMetaType>
 
 #include "pOptionBoxWidget.h"
+#include "pCutBoxWidget.h"
 #include "pEventDisplayTab.h"
 #include "pMonitorTab.h"
 #include "pHitmapTab.h"
@@ -83,8 +84,10 @@ class xpemonWindow : public QMainWindow
     pHitmapTab* m_hitmapTab;
     /* Transport bar */
     pTransportBar* m_transportBar;  
-    /* Widget showing the options that can be setted by the user */ 
+    /* Widget showing the options that can be set by the user */ 
     pOptionBoxWidget* m_optionBoxWidget;
+    /* Widget showing the cuts that can be set by the user */ 
+    pCutBoxWidget* m_cutBoxWidget;
     /* Widget showing some event info */  
     pInfoBoxWidget* m_infoBoxWidget;
 

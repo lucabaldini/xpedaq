@@ -23,9 +23,9 @@ with this program; if not, write to the Free Software Foundation Inc.,
 
 xpemonWindow::xpemonWindow(std::string preferencesFilePath,
                            QWidget *parent) :
-                           QMainWindow(parent),
-                           m_preferencesFilePath (preferencesFilePath),
-                           m_isStopped(true)
+  QMainWindow(parent),
+  m_preferencesFilePath (preferencesFilePath),
+  m_isStopped(true)
 {
   QString title = "xpemon version " + QString(__XPEDAQ_VERSION__);
   setWindowTitle(title);
@@ -44,6 +44,12 @@ xpemonWindow::xpemonWindow(std::string preferencesFilePath,
   //Initialize option box with last used preferences
   m_optionBoxWidget = new pOptionBoxWidget(*m_preferences);
   m_mainGridLayout->addWidget(m_optionBoxWidget, 0, 0);
+  //Cuts
+  m_cutBoxWidget = new pCutBoxWidget(*m_preferences);
+  m_mainGridLayout->addWidget(m_cutBoxWidget, 1, 0);
+  //Info
+  m_infoBoxWidget = new pInfoBoxWidget(this);
+  m_mainGridLayout->addWidget(m_infoBoxWidget, 2, 0);
   //Initialize the tabs
   m_mainTabWidget = new QTabWidget(m_centralWidget);
   m_mainGridLayout->addWidget(m_mainTabWidget, 0, 1, 6, 1);
@@ -64,9 +70,6 @@ xpemonWindow::xpemonWindow(std::string preferencesFilePath,
                                    m_monitorTab->modulationHist(),
                                    m_hitmapTab->hitmap());
   
-  m_infoBoxWidget = new pInfoBoxWidget(this);
-  m_mainGridLayout->addWidget(m_infoBoxWidget, 1,0);
-  
   m_mainGridLayout->setColumnStretch(1, 12);
   setupConnections();
   // Enable the recon check boxes (this might go in the configuration file).
@@ -78,6 +81,7 @@ void xpemonWindow::readOptions()
 {
   // Read options from the option boxes
   m_optionBoxWidget->options(m_preferences);
+  m_cutBoxWidget->options(m_preferences);
 }
 
 
@@ -107,8 +111,8 @@ void xpemonWindow::setupConnections()
 void xpemonWindow::setupTransportBarConnections()
 {
   connect(m_transportBar, SIGNAL(start()), this, SLOT(startRun()));
-  connect(m_transportBar, SIGNAL(start()),
-          m_optionBoxWidget, SLOT(disableWidgets()));
+  connect(m_transportBar, SIGNAL(start()), m_optionBoxWidget, SLOT(disable()));
+  connect(m_transportBar, SIGNAL(start()), m_cutBoxWidget, SLOT(disable()));
   
   connect(m_transportBar, SIGNAL(reset()), this, SLOT(reset()));
   connect(m_transportBar, SIGNAL(reset()), m_infoBoxWidget, SLOT(reset()));
@@ -118,10 +122,10 @@ void xpemonWindow::setupTransportBarConnections()
      synchronized with the data on the socket thread. */
   connect(m_transportBar, SIGNAL(stop()), &m_refreshTimer, SLOT(stop())); 
   connect(m_transportBar, SIGNAL(stop()),
-          m_eventReader, SLOT(updateRequested()));
+	  m_eventReader, SLOT(updateRequested()));
   connect(m_transportBar, SIGNAL(stop()), m_eventReader, SLOT(setStopped()));
-  connect(m_transportBar, SIGNAL(stop()),
-          m_optionBoxWidget, SLOT(activateWidgets()));
+  connect(m_transportBar, SIGNAL(stop()), m_optionBoxWidget, SLOT(enable()));
+  connect(m_transportBar, SIGNAL(stop()), m_cutBoxWidget, SLOT(enable()));
 
   /* The pause button suspends the refresh of the plots, but continue the
      acquisition of data */

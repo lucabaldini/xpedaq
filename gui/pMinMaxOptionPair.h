@@ -49,12 +49,13 @@ class pMinMaxOptionPairBase : public pQtGridLayoutWidget
   
   public:
   
-    pMinMaxOptionPairBase(QWidget *parent) : pQtGridLayoutWidget(parent) {;}
+  pMinMaxOptionPairBase(QWidget *parent) : pQtGridLayoutWidget(parent) {;}
     
   public slots:
   
     virtual void updateMinRange() = 0;
     virtual void updateMaxRange() = 0;
+    virtual void setEnabled(bool enabled) = 0;
     virtual void setDisabled(bool disabled) = 0;
   
 };
@@ -62,7 +63,7 @@ class pMinMaxOptionPairBase : public pQtGridLayoutWidget
 
 template <typename T>
 class pMinMaxOptionPair : public pMinMaxOptionPairBase
-{
+{  
   public:
   
     pMinMaxOptionPair(QWidget *parent, T min, T max);   
@@ -71,9 +72,14 @@ class pMinMaxOptionPair : public pMinMaxOptionPairBase
     void readOptions(T& min, T& max);
     virtual void updateMinRange();
     virtual void updateMaxRange();
+    virtual void setEnabled(bool enabled);
     virtual void setDisabled(bool disabled);
     void setBottom(T bottom);
     void setTop(T top);
+
+    //Getters.
+    pQtCustomLineEdit<T> *minEdit() {return m_minEdit;}
+    pQtCustomLineEdit<T> *maxEdit() {return m_maxEdit;}
     
   protected:
   
