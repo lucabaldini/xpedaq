@@ -29,12 +29,15 @@ namespace xpemonPlotOptions
 {
   extern const QBrush defaultBrush;
   extern const QPen defaultPen;
-  extern const unsigned int pulseHeightNbins;
-  extern const double pulseHeightXmin;
-  extern const double pulseHeightXmax;
   extern const unsigned int windowSizeNbins;
   extern const double windowSizeXmin;
   extern const double windowSizeXmax;
+  extern const unsigned int clusterSizeNbins;
+  extern const double clusterSizeXmin;
+  extern const double clusterSizeXmax;
+  extern const unsigned int pulseHeightNbins;
+  extern const double pulseHeightXmin;
+  extern const double pulseHeightXmax;
   extern const unsigned int modulationNbins;  
   extern const double modulationThetaMin;
   extern const double modulationThetaMax;

@@ -22,15 +22,17 @@ with this program; if not, write to the Free Software Foundation Inc.,
 #include "pEventReader.h"
 
 pEventReader::pEventReader(const pMonitorPreferences& preferences,
+			   pHistogram* windowSizeHist,
+			   pHistogram* clusterSizeHist,
                            pHistogram* pulseHeightHist, 
-                           pHistogram* windowSizeHist,
                            pHistogram* modulationHist,
                            pMap* hitMap) :
-                           m_pulseHeightHist(pulseHeightHist),
-                           m_windowSizeHist(windowSizeHist),
-                           m_modulationHist(modulationHist),
-                           m_hitMap(hitMap),
-                           m_preferences(preferences)
+  m_windowSizeHist(windowSizeHist),
+  m_clusterSizeHist(clusterSizeHist),
+  m_pulseHeightHist(pulseHeightHist),
+  m_modulationHist(modulationHist),
+  m_hitMap(hitMap),
+  m_preferences(preferences)
 {
   m_udpSocket = new QUdpSocket (this);
 }
@@ -86,6 +88,7 @@ void pEventReader::readPendingDatagram()
       m_isLastEventChanged = true;    
       m_lastEvent = tmpEvt;
       m_windowSizeHist->fill(nPixel);
+      m_clusterSizeHist->fill(tmpEvt.clusterSize());
       m_pulseHeightHist->fill(tmpEvt.pulseHeight());
       m_modulationHist->fill(tmpEvt.phiDeg());
     }
@@ -124,10 +127,7 @@ void pEventReader::updateRequested()
   QMutexLocker locker(&m_mutex);
   if (m_isLastEventChanged) 
     emit lastEventUpdated(m_lastEvent);
-  emit pulseHeightHistUpdated();
-  emit windowSizeHistUpdated();
-  emit modulationHistUpdated();
-  emit hitMapUpdated();
+  emit histogramsUpdated();
   m_isLastEventChanged = false;
 }
 

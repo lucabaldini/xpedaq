@@ -25,15 +25,38 @@ using namespace xpemonPlotOptions;
 
 /*!
  */
-pMonitorTab::pMonitorTab(): pQtCustomTab("Monitor Plots")
+pMonitorTab::pMonitorTab() :
+  pQtCustomTab("Monitor Plots")
 {
   // Get as much space as possible, starting from the preferred initial size
   setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-  
-  setupPulseHeightPlot(); 
+
   setupWindowSizePlot();
+  setupClusterSizePlot();
+  setupPulseHeightPlot(); 
   setupModulationPlot();
-  setupHitMap();
+}
+
+
+void pMonitorTab::setupWindowSizePlot()
+{
+  pBasicPlotOptions windowSizeOptions = pBasicPlotOptions("Window size",
+    "Window size [pixel]", "Events/bin", defaultPen, defaultBrush);
+  m_windowSizeHist = new pHistogram(windowSizeNbins, windowSizeXmin,
+                                    windowSizeXmax);
+  m_windowSizePlot = new pHistogramPlot(m_windowSizeHist, windowSizeOptions);
+  m_groupBoxGridLayout -> addWidget(m_windowSizePlot, 0, 0);
+}
+
+
+void pMonitorTab::setupClusterSizePlot()
+{
+  pBasicPlotOptions clusterSizeOptions = pBasicPlotOptions("Cluster size",
+    "Cluster size [pixel]", "Events/bin", defaultPen, defaultBrush);
+  m_clusterSizeHist = new pHistogram(clusterSizeNbins, clusterSizeXmin,
+				     clusterSizeXmax);
+  m_clusterSizePlot = new pHistogramPlot(m_clusterSizeHist, clusterSizeOptions);
+  m_groupBoxGridLayout -> addWidget(m_clusterSizePlot, 0, 1);
 }
 
 
@@ -45,18 +68,7 @@ void pMonitorTab::setupPulseHeightPlot()
                                      pulseHeightXmax);
   m_pulseHeightPlot = new pHistogramPlot(m_pulseHeightHist,
                                          pulseHeightOptions);
-  m_groupBoxGridLayout -> addWidget(m_pulseHeightPlot, 0, 0);  
-}
-
-
-void pMonitorTab::setupWindowSizePlot()
-{
-  pBasicPlotOptions windowSizeOptions = pBasicPlotOptions("Window size",
-    "Window size [pixel]", "Events/bin", defaultPen, defaultBrush);
-  m_windowSizeHist = new pHistogram(windowSizeNbins, windowSizeXmin,
-                                    windowSizeXmax);
-  m_windowSizePlot = new pHistogramPlot(m_windowSizeHist, windowSizeOptions);
-  m_groupBoxGridLayout -> addWidget(m_windowSizePlot, 0, 1);
+  m_groupBoxGridLayout -> addWidget(m_pulseHeightPlot, 1, 0);  
 }
 
 
@@ -71,61 +83,28 @@ void pMonitorTab::setupModulationPlot()
 }
 
 
-void pMonitorTab::setupHitMap()
-{
-  pColorMapOptions hitMapOptions ("Hit map", "Column", "Row", "ADC counts",
-                                  QCPColorGradient::gpThermal);
-  /* We want the bins to be centered at their coordinate value so that,
-     for example, the bins corresponding to column 0 have -0.5 < x < 0.5
-  */
-  unsigned int nXbins = xpoldetector::kNumPixelsX;
-  unsigned int nYbins = xpoldetector::kNumPixelsY;
-  double halfBinWidth = 0.5*xPixelMax/nXbins;
-  double halfBinHeight = 0.5*yPixelMax/nYbins;
-  m_hitMap = new pMap(nXbins, - halfBinWidth, xPixelMax - halfBinWidth,
-                      nYbins, - halfBinHeight, yPixelMax - halfBinHeight);
-  m_hitMapPlot = new pMapPlot(m_hitMap, hitMapOptions);
-  m_groupBoxGridLayout -> addWidget(m_hitMapPlot, 1, 0);
-}
-
-
-void pMonitorTab::updatePulseHeightPlot()
-{
-  m_pulseHeightPlot -> updateDisplay();
-  m_pulseHeightPlot -> replot();
-}
-
-
-void pMonitorTab::updateWindowSizePlot()
+void pMonitorTab::update()
 {
   m_windowSizePlot -> updateDisplay();
   m_windowSizePlot -> replot();
-}
-
-
-void pMonitorTab::updateModulationPlot()
-{
+  m_clusterSizePlot -> updateDisplay();
+  m_clusterSizePlot -> replot();
+  m_pulseHeightPlot -> updateDisplay();
+  m_pulseHeightPlot -> replot();
   m_modulationPlot -> updateDisplay();
   m_modulationPlot -> replot();
 }
 
 
-void pMonitorTab::updateHitMapPlot()
+void pMonitorTab::reset()
 {
-  m_hitMapPlot -> updateDisplay();
-  m_hitMapPlot -> replot();
-}
-
-
-void pMonitorTab::resetPlot()
-{
-  m_pulseHeightHist -> reset();
-  m_pulseHeightPlot -> updateDisplay();
   m_windowSizeHist -> reset();
   m_windowSizePlot -> updateDisplay();
+  m_clusterSizeHist -> reset();
+  m_clusterSizePlot -> updateDisplay();
+  m_pulseHeightHist -> reset();
+  m_pulseHeightPlot -> updateDisplay();
   m_modulationHist -> reset();
   m_modulationPlot -> updateDisplay();
-  m_hitMap -> reset();
-  m_hitMapPlot -> updateDisplay();
 }
 

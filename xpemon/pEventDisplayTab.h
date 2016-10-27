@@ -45,12 +45,12 @@ class pEventDisplayTab : public pQtCustomTab
 
  public slots: 
   
-  void updateEventDisplay(const pEvent &evt);
-  void resetPlot();
+  void update(const pEvent &evt);
+  void reset();
   
  private:
 
-  void setupEventDisplay();  
+  void setup();  
   
   pEventDisplay *m_eventDisplay;
 };

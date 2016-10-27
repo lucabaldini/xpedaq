@@ -27,15 +27,20 @@ const QPen xpemonPlotOptions::defaultPen = QPen(Qt::NoPen);
 const QBrush xpemonPlotOptions::defaultBrush =
                                             QBrush(QColor(0, 10, 255, 180));
 
-// Pulse height
-const unsigned int xpemonPlotOptions::pulseHeightNbins = 100;
-const double xpemonPlotOptions::pulseHeightXmin = 0.;
-const double xpemonPlotOptions::pulseHeightXmax = 10000.;
-
 // Window size
 const unsigned int xpemonPlotOptions::windowSizeNbins = 50;
 const double xpemonPlotOptions::windowSizeXmin = 0.;
 const double xpemonPlotOptions::windowSizeXmax = 2000.;
+
+// Cluster size
+const unsigned int xpemonPlotOptions::clusterSizeNbins = 100;
+const double xpemonPlotOptions::clusterSizeXmin = 0.;
+const double xpemonPlotOptions::clusterSizeXmax = 200.;
+
+// Pulse height
+const unsigned int xpemonPlotOptions::pulseHeightNbins = 100;
+const double xpemonPlotOptions::pulseHeightXmin = 0.;
+const double xpemonPlotOptions::pulseHeightXmax = 10000.;
 
 // Hit map
 const double xpemonPlotOptions::xPixelMax =

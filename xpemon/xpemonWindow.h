@@ -35,6 +35,7 @@ with this program; if not, write to the Free Software Foundation Inc.,
 #include "pOptionBoxWidget.h"
 #include "pEventDisplayTab.h"
 #include "pMonitorTab.h"
+#include "pHitmapTab.h"
 #include "pInfoBoxWidget.h"
 #include "pTransportBar.h"
 #include "pEventReader.h"
@@ -78,6 +79,8 @@ class xpemonWindow : public QMainWindow
     pEventDisplayTab *m_eventDisplayTab;
     /* Tab containing the incremental plots */
     pMonitorTab* m_monitorTab;
+    /* Tab containing the hit map */
+    pHitmapTab* m_hitmapTab;
     /* Transport bar */
     pTransportBar* m_transportBar;  
     /* Widget showing the options that can be setted by the user */ 

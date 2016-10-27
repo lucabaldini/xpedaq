@@ -1,8 +1,7 @@
 #include "pCustomColorMapPlot.h"
 
 pCustomColorMapPlot::pCustomColorMapPlot(pColorMapOptions options) : 
-                                   m_options(options), m_isLogScaleZ (false)
-                                                          
+  m_options(options), m_isLogScaleZ (false)				   
 {
   axisRect()->setupFullAxesBox(true);
   xAxis->setLabel(m_options.m_xTitle);
@@ -37,6 +36,11 @@ pCustomColorMapPlot::pCustomColorMapPlot(pColorMapOptions options) :
 
   rescaleAxes();
   setupInteractions();
+}
+
+void pCustomColorMapPlot::setInterpolate(bool interpolate)
+{
+  m_colorMap->setInterpolate(interpolate);
 }
 
 

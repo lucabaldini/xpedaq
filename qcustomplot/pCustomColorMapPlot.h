@@ -14,13 +14,14 @@ class pCustomColorMapPlot : public QCustomPlot
   public:
   
     pCustomColorMapPlot(pColorMapOptions options = pColorMapOptions());    
-    void setCellContent(unsigned int xCell, unsigned int yCell, double value);     
+    void setCellContent(unsigned int xCell, unsigned int yCell, double value);
     void setDataContent(double x, double y, double value);    
     void setRange (double xmin, double xmax, double ymin, double ymax);
     void rescaleDataRange() {m_colorMap -> rescaleDataRange();}
     void setSize  (unsigned int nXbins, unsigned int nYbins)
       {m_data->setSize(nXbins, nYbins);}
-    void clearMap(); 
+    void clearMap();
+    void setInterpolate(bool interpolate);
   
   public slots:
   

@@ -51,15 +51,18 @@ xpemonWindow::xpemonWindow(std::string preferencesFilePath,
   m_mainTabWidget->addTab(m_eventDisplayTab, "Event Display");
   m_monitorTab = new pMonitorTab();
   m_mainTabWidget->addTab(m_monitorTab, "Monitor Plots");
+  m_hitmapTab = new pHitmapTab();
+  m_mainTabWidget->addTab(m_hitmapTab, "Hit Map");
   //Initialize the transport bar
   m_transportBar = new pTransportBar(this, false);
   m_mainGridLayout->addWidget(m_transportBar, 5,0);
   //Initialize the event reader
   m_eventReader = new pEventReader((*m_preferences),
+				   m_monitorTab->windowSizeHist(),
+				   m_monitorTab->clusterSizeHist(),
                                    m_monitorTab->pulseHeightHist(),
-                                   m_monitorTab->windowSizeHist(),
                                    m_monitorTab->modulationHist(),
-                                   m_monitorTab->hitMap());
+                                   m_hitmapTab->hitmap());
   
   m_infoBoxWidget = new pInfoBoxWidget(this);
   m_mainGridLayout->addWidget(m_infoBoxWidget, 1,0);
@@ -127,7 +130,7 @@ void xpemonWindow::setupTransportBarConnections()
 
 void xpemonWindow::setupEvtReaderConnections()
 {
-  connect(m_eventReader, SIGNAL(stopped()), this, SLOT(stopRun()));                                         
+  connect(m_eventReader, SIGNAL(stopped()), this, SLOT(stopRun()));
   // Update the event counter when an event is read 
   connect(m_eventReader, SIGNAL(eventRead()),
           m_infoBoxWidget, SLOT(updateCounter()));
@@ -137,14 +140,10 @@ void xpemonWindow::setupEvtReaderConnections()
   connect(m_eventReader, SIGNAL(lastEventUpdated(const pEvent&)),
           this, SLOT(showLastEvent(const pEvent&)));  
   // Update the other plots
-  connect (m_eventReader, SIGNAL(pulseHeightHistUpdated()),
-           m_monitorTab, SLOT(updatePulseHeightPlot()));
-  connect (m_eventReader, SIGNAL(windowSizeHistUpdated()),
-           m_monitorTab, SLOT(updateWindowSizePlot()));
-  connect (m_eventReader, SIGNAL(modulationHistUpdated()),
-           m_monitorTab, SLOT(updateModulationPlot()));           
-  connect (m_eventReader, SIGNAL(hitMapUpdated()),
-           m_monitorTab, SLOT(updateHitMapPlot()));                                                             
+  connect (m_eventReader, SIGNAL(histogramsUpdated()),
+           m_monitorTab, SLOT(update()));
+  connect (m_eventReader, SIGNAL(histogramsUpdated()),
+           m_hitmapTab, SLOT(update()));
 }
 
 
@@ -193,7 +192,7 @@ void xpemonWindow::showLastEvent(const pEvent& evt)
                                                evt.moma1().y0());
   m_infoBoxWidget->updateMom2Trans(evt.moma1().mom2trans());
   m_infoBoxWidget->updateMom2Long(evt.moma1().mom2long());
-  m_eventDisplayTab->updateEventDisplay(evt);  
+  m_eventDisplayTab->update(evt);  
   m_infoBoxWidget->updateMomRatio(evt.moma1().mom2long() /
                                   evt.moma1().mom2trans());
   m_infoBoxWidget->updateSkewness(evt.moma1().skewness());
@@ -203,6 +202,7 @@ void xpemonWindow::showLastEvent(const pEvent& evt)
 
 void xpemonWindow::reset()
 {
-  m_monitorTab->resetPlot();
-  m_eventDisplayTab->resetPlot();
+  m_eventDisplayTab->reset();
+  m_monitorTab->reset();
+  m_hitmapTab->reset();
 }

@@ -42,8 +42,9 @@ class pEventReader: public QObject
   public:
   
     pEventReader(const pMonitorPreferences& preferences,
-                 pHistogram* pulseHeightHist, pHistogram* windowSizeHist,
-                 pHistogram* modulationHist, pMap* hitMap);
+		 pHistogram* windowSizeHist, pHistogram* clusterSizeHist,
+                 pHistogram* pulseHeightHist, pHistogram* modulationHist,
+		 pMap* hitMap);
   
   public slots:
   
@@ -58,10 +59,7 @@ class pEventReader: public QObject
     void stopped();
     void eventRead();
     void lastEventUpdated(const pEvent& evt);
-    void pulseHeightHistUpdated();
-    void windowSizeHistUpdated();
-    void modulationHistUpdated();
-    void hitMapUpdated();
+    void histogramsUpdated();
   
   private:
     
@@ -69,8 +67,9 @@ class pEventReader: public QObject
     bool evtAccepted(const pEvent& evt);
   
     //Data structures
-    pHistogram *m_pulseHeightHist;
     pHistogram *m_windowSizeHist;
+    pHistogram *m_clusterSizeHist;
+    pHistogram *m_pulseHeightHist;
     pHistogram *m_modulationHist;
     pMap *m_hitMap;
     

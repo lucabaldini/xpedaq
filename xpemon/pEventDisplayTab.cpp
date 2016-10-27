@@ -29,30 +29,29 @@ pEventDisplayTab::pEventDisplayTab()
 {
   // Get as much space as possible, starting from the preferred initial size
   //setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-  setupEventDisplay();
+  setup();
 }
 
 
-void pEventDisplayTab::setupEventDisplay()
+void pEventDisplayTab::setup()
 {
   using namespace xpemonPlotOptions;
   QCPColorGradient colorGrad = loadRedToWhiteGradient();
-  pColorMapOptions eventDisplayOptions ("Event display", "x[mm]",
-                                        "y[mm]", "Adc counts",
-                                        colorGrad.inverted());
+  pColorMapOptions eventDisplayOptions ("Event display", "x[mm]", "y[mm]",
+					"Adc counts", colorGrad.inverted());
   m_eventDisplay = new pEventDisplay(eventDisplayOptions);
   m_groupBoxGridLayout->addWidget(m_eventDisplay, 1, 1);
 }
 
 
-void pEventDisplayTab::updateEventDisplay(const pEvent &evt)
+void pEventDisplayTab::update(const pEvent &evt)
 {
   m_eventDisplay -> loadEvent(evt);
   m_eventDisplay -> draw();
 }
 
 
-void pEventDisplayTab::resetPlot()
+void pEventDisplayTab::reset()
 {
   m_eventDisplay -> reset();
 }

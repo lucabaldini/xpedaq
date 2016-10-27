@@ -26,8 +26,6 @@ with this program; if not, write to the Free Software Foundation Inc.,
 #include <QString>
 #include "pHistogram.h"
 #include "pHistogramPlot.h"
-#include "pMap.h"
-#include "pMapPlot.h"
 #include "pHistogramOptions.h"
 #include "xpemonPlotOptions.h"
 #include "pQtCustomTab.h"
@@ -47,35 +45,33 @@ class pMonitorTab : public pQtCustomTab
     //QSize sizeHint() const {return QSize(800, 800);}
     
   public:
-  
-    pHistogram* pulseHeightHist() {return m_pulseHeightHist;}
+
     pHistogram* windowSizeHist() {return m_windowSizeHist;}
+    pHistogram* clusterSizeHist() {return m_clusterSizeHist;}
+    pHistogram* pulseHeightHist() {return m_pulseHeightHist;}
     pHistogram* modulationHist() {return m_modulationHist;}
-    pMap* hitMap() {return m_hitMap;}
   
   public slots:
-    
-    void updatePulseHeightPlot();
-    void updateWindowSizePlot();
-    void updateModulationPlot();
-    void updateHitMapPlot();
-    void resetPlot();
+
+    void update();
+    void reset();
      
   private:
-    
-    void setupPulseHeightPlot();
+
     void setupWindowSizePlot();
+    void setupClusterSizePlot();
+    void setupPulseHeightPlot();
     void setupModulationPlot();
-    void setupHitMap();
-    
-    pHistogram* m_pulseHeightHist;
+
     pHistogram* m_windowSizeHist;
+    pHistogram* m_clusterSizeHist;
+    pHistogram* m_pulseHeightHist;    
     pHistogram* m_modulationHist;
-    pMap* m_hitMap;
-    pHistogramPlot *m_pulseHeightPlot;
+
     pHistogramPlot *m_windowSizePlot;
+    pHistogramPlot *m_clusterSizePlot;
+    pHistogramPlot *m_pulseHeightPlot;
     pHistogramPlot *m_modulationPlot;
-    pMapPlot *m_hitMapPlot;
 };
 
 #endif //PMONITORTAB_H
