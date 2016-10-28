@@ -23,6 +23,7 @@ with this program; if not, write to the Free Software Foundation Inc.,
 
 pEventDisplay::pEventDisplay(pColorMapOptions options) :
   m_options(options),
+  m_minDisplaySurfaceSize(600),
   m_displayFirstPass(false),
   m_displaySearchRegion(false),
   m_displaySecondPass(false)
@@ -30,28 +31,26 @@ pEventDisplay::pEventDisplay(pColorMapOptions options) :
   //Initialize with void event
   m_event = pEvent();
   
-  //Initialize axes with default range
+  //Initialize axisRect
   axisRect()->setupFullAxesBox(false);
   axisRect()->setAutoMargins(QCP::msNone);
-  QMargins *mapMargins = new QMargins(75, 50, 65, 50);
-  axisRect()->setMargins(*mapMargins);
-  axisRect()->setMinimumSize(740, 700);
-  axisRect()->setMaximumSize(740, 700);
+  m_mapMargins = new QMargins(75, 50, 65, 50);
+  axisRect()->setMargins(*m_mapMargins);
+  axisRect()->setMinimumSize(minAxisRectSize());
+  axisRect()->setMaximumSize(minAxisRectSize());
   axisRect()->center();
-  
+
+  //Initialize axes with default range
   xAxis->setRange(-7.4875, 7.4875);
-  xAxis->setLabel(m_options.m_xTitle);
-  
+  xAxis->setLabel(m_options.m_xTitle);  
   yAxis->setRange(-7.5991, 7.5991); 
   yAxis->setLabel(m_options.m_yTitle);
-    
   xAxis2->setRange(0, 300);
   xAxis2->setLabel("column number");
   xAxis2->setNumberFormat("f");
   xAxis2->setNumberPrecision(0); // no decimal digits for integer index
   xAxis2->setVisible(true);
   xAxis2->setTickLabels(true);
-  
   yAxis2->setRange(0, 352);
   yAxis2->setLabel("row number");
   yAxis2->setNumberFormat("f");
@@ -63,8 +62,6 @@ pEventDisplay::pEventDisplay(pColorMapOptions options) :
   //Do not show the grid
   xAxis->grid()->setVisible(false);
   yAxis->grid()->setVisible(false);
-  xAxis->grid()->setSubGridVisible(false);
-  yAxis->grid()->setSubGridVisible(false);
   
   //Initialize the color scale: 
   m_dataRange = QCPRange(0., 1.);
@@ -80,6 +77,7 @@ pEventDisplay::pEventDisplay(pColorMapOptions options) :
   m_colorScale->setDataRange(m_dataRange);
   m_colorScale->setGradient(m_options.m_gradientType);
   m_colorScale->axis()->setLabel(m_options.m_zTitle);
+  
   //Align things using a margin group:
   m_marginGroup = new QCPMarginGroup(this);
   axisRect()->setMarginGroup(QCP::msBottom|QCP::msTop, m_marginGroup);
@@ -93,6 +91,32 @@ pEventDisplay::pEventDisplay(pColorMapOptions options) :
   m_searchRegion = new pHorseshoe(this, "blue", 1, Qt::DashLine);
   m_searchRegion->setLayer("legend");
   setupInteractions();
+}
+
+
+int pEventDisplay::minAxisRectWidth()
+{
+  if (!m_mapMargins)
+    return m_minDisplaySurfaceSize;
+  else
+    return m_minDisplaySurfaceSize + m_mapMargins->right() +
+           m_mapMargins->left();
+}
+
+
+int pEventDisplay::minAxisRectHeight()
+{
+  if (!m_mapMargins)
+    return m_minDisplaySurfaceSize;
+  else
+    return m_minDisplaySurfaceSize + m_mapMargins->top()
+           + m_mapMargins->bottom();
+}
+
+
+QSize pEventDisplay::minAxisRectSize()
+{
+  return QSize(minAxisRectWidth(), minAxisRectHeight());
 }
 
 
@@ -461,4 +485,10 @@ void pEventDisplay::contextMenuRequest(QPoint pos)
   menu->setAttribute(Qt::WA_DeleteOnClose);
   menu->addAction("Restore initial view", this, SLOT(resetView()));
   menu->popup(mapToGlobal(pos));
+}
+
+
+void pEventDisplay::resizeEvent (QResizeEvent* event)
+{
+  QCustomPlot::resizeEvent(event);
 }

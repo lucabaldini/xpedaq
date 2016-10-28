@@ -50,18 +50,20 @@ xpemonWindow::xpemonWindow(std::string preferencesFilePath,
   //Info
   m_infoBoxWidget = new pInfoBoxWidget(this);
   m_mainGridLayout->addWidget(m_infoBoxWidget, 2, 0);
+  //Initialize the transport bar
+  m_transportBar = new pTransportBar(this, false);
+  m_mainGridLayout->addWidget(m_transportBar, 3,0);
   //Initialize the tabs
   m_mainTabWidget = new QTabWidget(m_centralWidget);
-  m_mainGridLayout->addWidget(m_mainTabWidget, 0, 1, 6, 1);
+  m_mainGridLayout->addWidget(m_mainTabWidget, 0, 1, 
+                                            m_mainGridLayout->rowCount(), 1);
   m_eventDisplayTab = new pEventDisplayTab();
   m_mainTabWidget->addTab(m_eventDisplayTab, "Event Display");
   m_monitorTab = new pMonitorTab();
   m_mainTabWidget->addTab(m_monitorTab, "Monitor Plots");
   m_hitmapTab = new pHitmapTab();
   m_mainTabWidget->addTab(m_hitmapTab, "Hit Map");
-  //Initialize the transport bar
-  m_transportBar = new pTransportBar(this, false);
-  m_mainGridLayout->addWidget(m_transportBar, 5,0);
+  m_mainGridLayout->setColumnStretch(1, 12);
   //Initialize the event reader
   m_eventReader = new pEventReader((*m_preferences),
 				   m_monitorTab->windowSizeHist(),
@@ -70,7 +72,6 @@ xpemonWindow::xpemonWindow(std::string preferencesFilePath,
                                    m_monitorTab->modulationHist(),
                                    m_hitmapTab->hitmap());
   
-  m_mainGridLayout->setColumnStretch(1, 12);
   setupConnections();
   // Enable the recon check boxes (this might go in the configuration file).
   m_infoBoxWidget->checkCheckBoxes(true);

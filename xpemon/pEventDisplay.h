@@ -78,24 +78,31 @@ class pEventDisplay : public QCustomPlot
     void mouseWheel();
     void selectionChanged();
     void contextMenuRequest(QPoint pos);
+    virtual void resizeEvent (QResizeEvent* event);    
       
   protected:
     
     void setupInteractions();
     void pixelToCoord(int i, int j, double &x, double &y);
     void coordToPixel(double x, double y, int &i, int &j);
+    int minAxisRectWidth();
+    int minAxisRectHeight();
+    QSize minAxisRectSize();
     
+    pColorMapOptions m_options;
     pHexagonMatrix *m_hexMatrix;
     pHorseshoe *m_searchRegion;
     QCPRange m_dataRange;
     pEvent m_event;
     QCPColorScale *m_colorScale;
-    QCPMarginGroup *m_marginGroup;
-    pColorMapOptions m_options;
+    QCPMarginGroup *m_marginGroup; //keep margins of plot and color scale aligned
+    QMargins *m_mapMargins; //plot area margins
+    int m_minDisplaySurfaceSize; //minimum size of the plot area
     bool m_isSyncronized; //check if the last event has been already drawn
     bool m_displayFirstPass;
     bool m_displaySearchRegion;
-    bool m_displaySecondPass;
+    bool m_displaySecondPass;   
+    
 };
 
 #endif  //PEVENTDISPLAY_H

@@ -40,7 +40,7 @@ void pEventDisplayTab::setup()
   pColorMapOptions eventDisplayOptions ("Event display", "x[mm]", "y[mm]",
 					"Adc counts", colorGrad.inverted());
   m_eventDisplay = new pEventDisplay(eventDisplayOptions);
-  m_groupBoxGridLayout->addWidget(m_eventDisplay, 1, 1);
+  m_groupBoxGridLayout->addWidget(m_eventDisplay, 0, 0);
 }
 
 
