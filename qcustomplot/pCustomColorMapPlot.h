@@ -14,7 +14,7 @@ class pCustomColorMapPlot : public QCustomPlot
   public:
   
     pCustomColorMapPlot(pColorMapOptions options = pColorMapOptions(),
-                       int minAreaSize = 600);    
+                       int minAreaSize = 300);    
     void setCellContent(unsigned int xCell, unsigned int yCell, double value);
     void setDataContent(double x, double y, double value);    
     void setRange (double xmin, double xmax, double ymin, double ymax);
@@ -51,7 +51,6 @@ class pCustomColorMapPlot : public QCustomPlot
    
     QCPColorMap *m_colorMap;
     QCPColorScale *m_colorScale;
-    QCPMarginGroup *m_marginGroup;
     QCPColorMapData *m_data;  
     QMargins *m_mapMargins;
     pColorMapOptions m_options;

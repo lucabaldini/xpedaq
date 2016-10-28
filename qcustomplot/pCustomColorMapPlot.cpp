@@ -37,7 +37,7 @@ pCustomColorMapPlot::pCustomColorMapPlot(pColorMapOptions options,
   // Initialize the color scale
   m_colorScale = new QCPColorScale(this);
   colorScaleLayout->addElement(0, 0, m_colorScale);
-  //m_colorScale->setType(QCPAxis::atRight);
+  m_colorScale->setType(QCPAxis::atRight);
   m_colorScale->setAutoMargins(QCP::msNone);
   QMargins *subMargins = new QMargins(0, 15, 0, 50);
   colorScaleLayout->setMargins(*subMargins);
@@ -47,15 +47,11 @@ pCustomColorMapPlot::pCustomColorMapPlot(pColorMapOptions options,
   m_colorMap->rescaleDataRange(true);
   
   // Create a space under the plot for displaying pointer
-  //plotLayout()->insertRow(1); //Add a row below the plot
-  //QCPLayoutGrid *bottomLayout = new QCPLayoutGrid;
+  plotLayout()->insertRow(1); //Add a row below the plot
+  plotLayout()->setRowStretchFactor(1, 0.01);
+  QCPLayoutGrid *bottomLayout = new QCPLayoutGrid;
   //plotLayout()->addElement(1, 0, bottomLayout);
   
-  //Align things using a margin group
-  m_marginGroup = new QCPMarginGroup(this);
-  axisRect()->setMarginGroup(QCP::msBottom|QCP::msTop, m_marginGroup);
-  colorScaleLayout->setMarginGroup(QCP::msBottom|QCP::msTop, m_marginGroup);
-
   rescaleAxes();
   setupInteractions();
 }
