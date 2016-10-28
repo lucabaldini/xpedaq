@@ -46,13 +46,17 @@ xpemonWindow::xpemonWindow(std::string preferencesFilePath,
   m_mainGridLayout->addWidget(m_optionBoxWidget, 0, 0);
   //Cuts
   m_cutBoxWidget = new pCutBoxWidget(*m_preferences);
-  m_mainGridLayout->addWidget(m_cutBoxWidget, 1, 0);
+  if (m_preferences->m_showCuts) {
+    m_mainGridLayout->addWidget(m_cutBoxWidget,
+				m_mainGridLayout->rowCount(), 0);
+  }
   //Info
   m_infoBoxWidget = new pInfoBoxWidget(this);
-  m_mainGridLayout->addWidget(m_infoBoxWidget, 2, 0);
+  m_mainGridLayout->addWidget(m_infoBoxWidget, m_mainGridLayout->rowCount(), 0);
   //Initialize the transport bar
   m_transportBar = new pTransportBar(this, false);
-  m_mainGridLayout->addWidget(m_transportBar, 3,0);
+  m_mainGridLayout->addWidget(m_transportBar,
+			      m_mainGridLayout->rowCount() + 1, 0);
   //Initialize the tabs
   m_mainTabWidget = new QTabWidget(m_centralWidget);
   m_mainGridLayout->addWidget(m_mainTabWidget, 0, 1, 

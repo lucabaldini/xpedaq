@@ -45,6 +45,7 @@ class pIOManager
   unsigned int readUnsignedInt(std::ifstream *inputFile, bool endline = true);
   double readDouble(std::ifstream *inputFile, bool endline = true);
   std::string readLine(std::ifstream *inputFile, bool endline = true);
+  bool readBool(std::ifstream *inputFile, bool endline = true);
   void skipLine(std::ifstream *inputFile);
   unsigned short int getUnsignedShort(std::string filePath);
   int getInteger(std::string filePath);

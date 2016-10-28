@@ -111,6 +111,17 @@ std::string pIOManager::readLine(std::ifstream *inputFile, bool endline)
   return item;
 }
 
+bool pIOManager::readBool(std::ifstream *inputFile, bool endline)
+{
+  bool item;
+  *inputFile >> item;
+  if (endline){
+    inputFile->ignore(1, '\n');
+  }
+  return item;
+}
+
+
 void pIOManager::skipLine(std::ifstream *inputFile)
 {
   inputFile->ignore(1000, '\n');

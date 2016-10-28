@@ -63,6 +63,8 @@ void pMonitorPreferences::writeToFile(std::string filePath)
   xpolio::kIOManager->write(outputFile, m_minWindowSize);
   xpolio::kIOManager->write(outputFile, "//Maximum window size//");
   xpolio::kIOManager->write(outputFile, m_maxWindowSize);
+  xpolio::kIOManager->write(outputFile, "//Display the box with the cuts//");
+  xpolio::kIOManager->write(outputFile, m_showCuts);
   xpolio::kIOManager->closeOutputFile(outputFile);
 }
 
@@ -96,6 +98,8 @@ void pMonitorPreferences::readFromFile(std::string filePath)
   m_minWindowSize = xpolio::kIOManager->readInteger(inputFile);
   xpolio::kIOManager->skipLine(inputFile);
   m_maxWindowSize = xpolio::kIOManager->readInteger(inputFile);
+  xpolio::kIOManager->skipLine(inputFile);
+  m_showCuts = xpolio::kIOManager->readBool(inputFile);
   xpolio::kIOManager->closeInputFile(inputFile);
 }
 

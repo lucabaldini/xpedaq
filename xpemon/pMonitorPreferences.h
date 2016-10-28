@@ -50,6 +50,7 @@ class pMonitorPreferences
   int m_maxPulseHeight;
   int m_minWindowSize;
   int m_maxWindowSize;
+  bool m_showCuts;
   
   // Read/write to/from file.
   void writeToFile(std::string filePath);
