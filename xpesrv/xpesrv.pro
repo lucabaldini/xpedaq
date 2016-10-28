@@ -30,34 +30,58 @@ windows {
 }
 
 HEADERS += __version__.h
-HEADERS += xServer.h
-HEADERS += xServerGui.h
-HEADERS += pUdpSender.h
-HEADERS += pDataBlock.h
+HEADERS += xpolgui.h
 HEADERS += xpollog.h
 HEADERS += xpolio.h
 HEADERS += xpedaqos.h
 HEADERS += xpedaqutils.h
+HEADERS += xpoldetector.h
+
+HEADERS += xServer.h
+HEADERS += xServerGui.h
+HEADERS += xpesrvWindow.h
+
+HEADERS += pQtMainWindowGui.h
+HEADERS += pQtGridLayoutWidget.h
+HEADERS += pQtGroupBoxWidget.h
+HEADERS += pQtCustomPushButton.h
+HEADERS += pQtTransportBarGui.h
+HEADERS += pTransportBar.h
+
+HEADERS += pUdpSender.h
+HEADERS += pDataBlock.h
 HEADERS += pLoggerChannel.h
 HEADERS += pLogger.h
 HEADERS += pIOManager.h
 HEADERS += pQtCustomTextLabel.h
-HEADERS += xpoldetector.h
 
-SOURCES += xServer.cpp
-SOURCES += xServerGui.cpp
-SOURCES += pUdpSender.cpp
-SOURCES += pDataBlock.cpp
+
+SOURCES += xpolgui.cpp
 SOURCES += xpollog.cpp
 SOURCES += xpolio.cpp
 SOURCES += xpedaqos.cpp
 SOURCES += xpedaqutils.cpp
+SOURCES += xpoldetector.cpp
+
+SOURCES += xServer.cpp
+SOURCES += xServerGui.cpp
+SOURCES += xpesrvWindow.cpp
+
+SOURCES += pQtMainWindowGui.cpp
+SOURCES += pQtGridLayoutWidget.cpp
+SOURCES += pQtCustomPushButton.cpp
+SOURCES += pQtGroupBoxWidget.cpp
+SOURCES += pQtTransportBarGui.cpp
+SOURCES += pTransportBar.cpp
+SOURCES += pUdpSender.cpp
+SOURCES += pDataBlock.cpp
+
 SOURCES += pLoggerChannel.cpp
 SOURCES += pLogger.cpp
 SOURCES += pIOManager.cpp
 SOURCES += pQtCustomTextLabel.cpp
 SOURCES += xpesrv.cpp
-SOURCES += xpoldetector.cpp
+
 
 OBJECTS_DIR = ../build
 MOC_DIR = ../moc
