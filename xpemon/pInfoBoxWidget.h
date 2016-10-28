@@ -53,7 +53,7 @@ class pInfoBoxWidget: public pInfoBoxGui
   
     void updateCounter();
     
-    void updateTime(int microseconds);
+    void updateTime(long int microseconds);
     void updateAbsorptionPoint(double x, double y);
     void updatePulseHeight(int pulseHeight);
     void updatePhi(double phi);

@@ -28,7 +28,9 @@ pInfoBoxWidget::pInfoBoxWidget(QWidget *parent):
 
   m_evtCounter = 0;
   
-  m_timeLabelName = "Time [s]";
+  const QChar MathSymbolmu(0x03BC);
+  m_timeLabelName = QString("Time [") + QString(MathSymbolmu) + QString("s]");
+  //m_timeLabelName = "Time [s]";
   m_absorptionPointLabelName = "Absorption point [mm]";
   m_pulseHeightLabelName = "Energy [ADC counts]";
   m_phiLabelName = "Polarization angle [deg]";
@@ -83,7 +85,7 @@ void pInfoBoxWidget::checkCheckBoxes(bool checked)
 
 void pInfoBoxWidget::initializeText()
 {
-  setField(m_timeLabelName, 0.);
+  setField(m_timeLabelName, 0);
   setField(m_absorptionPointLabelName, coordinateStringFormat(0., 0.));
   setField(m_pulseHeightLabelName, 0.);
   setField(m_phiLabelName, 0.);
@@ -109,8 +111,9 @@ void pInfoBoxWidget::updateCounter()
 }
 
 
-void pInfoBoxWidget::updateTime(int microseconds)
+void pInfoBoxWidget::updateTime(long int microseconds)
 {
+  // microseconds is of microsecond_t (a.k.a. unint64_t) type
   setField(m_timeLabelName, microseconds);
 }
 

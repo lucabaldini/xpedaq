@@ -23,7 +23,7 @@ with this program; if not, write to the Free Software Foundation Inc.,
 
 
 pEvent::pEvent(int firstCol, int lastCol, int firstRow, int lastRow,
-               const event::Adc_vec_t& adcCounts, int microseconds, 
+               const event::Adc_vec_t& adcCounts, microsecond_t microseconds, 
                adc_count_t threshold):
   pEventWindow(firstCol, lastCol, firstRow, lastRow),
   m_microseconds(microseconds),

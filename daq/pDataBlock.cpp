@@ -204,7 +204,7 @@ unsigned int pDataBlock::numPixels(unsigned int event) const
 /*!
 
  */
-int pDataBlock::microseconds(unsigned int event) const
+microsecond_t pDataBlock::microseconds(unsigned int event) const
 {
   return dataWord(event, Microseconds) +
     65534*dataWord(event, Microseconds + 2);
