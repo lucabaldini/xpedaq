@@ -1,17 +1,32 @@
+/***********************************************************************
+Copyright (C) 2007--2016 the X-ray Polarimetry Explorer (XPE) team.
+
+For the license terms see the file LICENSE, distributed along with this
+software.
+
+This program is free software; you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by the
+Free Software Foundation; either version 2 of the License, or (at your
+option) any later version.
+
+This program is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+General Public License for more details.
+
+You should have received a copy of the GNU General Public License along
+with this program; if not, write to the Free Software Foundation Inc.,
+51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+***********************************************************************/
+
 #include "pCustomColorMapPlot.h"
 
-pCustomColorMapPlot::pCustomColorMapPlot(pColorMapOptions options,
-                                         int minAreaSize) : 
-  m_options(options), m_isLogScaleZ (false),
-  m_minDisplaySurfaceSize (minAreaSize)				   
+pCustomColorMapPlot::pCustomColorMapPlot(pColorMapOptions options) : 
+  m_options(options),
+  m_isLogScaleZ (false)
 {
   //Initialize axes
   axisRect()->setupFullAxesBox(true);
-  axisRect()->setAutoMargins(QCP::msNone);
-  m_mapMargins = new QMargins(75, 15, 15, 50);
-  axisRect()->setMargins(*m_mapMargins);
-  axisRect()->setMinimumSize(minAxisRectSize());
-  axisRect()->center();
   xAxis->setLabel(m_options.m_xTitle);
   yAxis->setLabel(m_options.m_yTitle);
   
@@ -29,32 +44,28 @@ pCustomColorMapPlot::pCustomColorMapPlot(pColorMapOptions options,
   m_data = new QCPColorMapData(1, 1, QCPRange(0., 1.), QCPRange(0., 1.)); 
   m_colorMap->setData(m_data);
 
-  // Create a sublayout hosting the color scale
-  QCPLayoutGrid *colorScaleLayout = new QCPLayoutGrid;
-  plotLayout()->addElement(0, 1, colorScaleLayout);
-  colorScaleLayout->setMinimumSize(100, 10);   // minimum width=100
+  // Leave some space under the plot for displaying cursor information
+  QMargins bottomMargins = QMargins(75, 10, 10, 90);
+  axisRect()->setMinimumMargins(bottomMargins);
 
   // Initialize the color scale
   m_colorScale = new QCPColorScale(this);
-  colorScaleLayout->addElement(0, 0, m_colorScale);
+  plotLayout() -> addElement(0, 1, m_colorScale);
   m_colorScale->setType(QCPAxis::atRight);
-  m_colorScale->setAutoMargins(QCP::msNone);
-  QMargins *subMargins = new QMargins(0, 15, 0, 50);
-  colorScaleLayout->setMargins(*subMargins);
   m_colorScale->axis()->setLabel(m_options.m_zTitle);
   m_colorMap->setColorScale(m_colorScale);
   m_colorMap->setGradient(m_options.m_gradientType);  
   m_colorMap->rescaleDataRange(true);
   
-  // Create a space under the plot for displaying pointer
-  plotLayout()->insertRow(1); //Add a row below the plot
-  plotLayout()->setRowStretchFactor(1, 0.01);
-  QCPLayoutGrid *bottomLayout = new QCPLayoutGrid;
-  //plotLayout()->addElement(1, 0, bottomLayout);
+  //Align thing using a margin group
+  m_marginGroup = new QCPMarginGroup(this);
+  axisRect() -> setMarginGroup(QCP::msBottom|QCP::msTop, m_marginGroup);
+  m_colorScale -> setMarginGroup(QCP::msBottom|QCP::msTop, m_marginGroup);
   
   rescaleAxes();
   setupInteractions();
 }
+
 
 void pCustomColorMapPlot::setInterpolate(bool interpolate)
 {
@@ -115,7 +126,7 @@ void pCustomColorMapPlot::clearMap()
 void pCustomColorMapPlot::mouseMoveEvent(QMouseEvent * event)
 {
   m_cursorPos = event->pos();
-  //replot();
+  replot();
   QCustomPlot::mouseMoveEvent(event);
 }
 
@@ -124,7 +135,7 @@ void pCustomColorMapPlot::paintEvent(QPaintEvent *event)
 {
   QCustomPlot::paintEvent(event);
   if (m_colorMap->selectTest(m_cursorPos, false) > 0.){
-    //paintCoordinate();
+    paintCoordinate();
   }
 }
 
@@ -133,49 +144,20 @@ void pCustomColorMapPlot::paintCoordinate()
 {  
   double x = xAxis->pixelToCoord(m_cursorPos.x());
   double y = yAxis->pixelToCoord(m_cursorPos.y());
-  int fontSize = 12;
-  QFont font("times", fontSize);
-  QFontMetrics fm(font);
+  int i, j;
+  m_data->coordToCell(x, y, &j, &i);
+  double cellContent = m_data->cell(j,i);
   QPainter painter(this);
-  painter.setFont(font);
-  painter.setPen(QPen(Qt::black));
-  painter.drawText(m_cursorPos, QString::number(x));
-  int shift = fm.width(QString::number(x));
-  painter.drawText(QPoint(m_cursorPos.x() + shift, m_cursorPos.y()),
-                   ", ");
-  painter.drawText(QPoint(m_cursorPos.x() + shift + 10,
-                   m_cursorPos.y()), QString::number(y));
-  
-  //QCPTextElement *cursorPositionLabel = new QCPTextElement(this);
-  //cursorPositionLabel->setText(QString::number(x));
-  //cursorPositionLabel->setFont(font);
-  
-}
-
-
-int pCustomColorMapPlot::minAxisRectWidth()
-{
-  if (!m_mapMargins)
-    return m_minDisplaySurfaceSize;
-  else
-    return m_minDisplaySurfaceSize + m_mapMargins->right() +
-           m_mapMargins->left();
-}
-
-
-int pCustomColorMapPlot::minAxisRectHeight()
-{
-  if (!m_mapMargins)
-    return m_minDisplaySurfaceSize;
-  else
-    return m_minDisplaySurfaceSize + m_mapMargins->top()
-           + m_mapMargins->bottom();
-}
-
-
-QSize pCustomColorMapPlot::minAxisRectSize()
-{
-  return QSize(minAxisRectWidth(), minAxisRectHeight());
+  const int fontSize = 12;
+  painter.setFont(QFont("times", fontSize));
+  painter.setPen(QPen(Qt::black));  
+  //Display the info 70 pixels below the bottom-left corner
+  QPoint textPos = axisRect()->bottomLeft();
+  textPos += QPoint(0, 70);
+  QString cursorText = QString("j=") + QString::number(j) + QString(" , i=")
+                       + QString::number(i) + QString(" , bin content=")
+                       + QString::number(cellContent);
+  painter.drawText(textPos, cursorText);  
 }
 
 
