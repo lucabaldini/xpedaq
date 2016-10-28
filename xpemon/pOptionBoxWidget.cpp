@@ -74,7 +74,10 @@ void pOptionBoxWidget::options(pMonitorPreferences* preferences)
   readSocketPort();
   readRefreshInterval();
   readZeroSupThreshold();
-  (*preferences) = m_preferences;
+  preferences->m_socketPort = m_preferences.m_socketPort;
+  preferences->m_refreshInterval = m_preferences.m_refreshInterval;
+  preferences->m_zeroSuppressionThreshold =
+                                    m_preferences.m_zeroSuppressionThreshold;
 }
 
 

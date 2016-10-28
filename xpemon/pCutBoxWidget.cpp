@@ -92,7 +92,14 @@ void pCutBoxWidget::options(pMonitorPreferences* preferences)
   readClusterSizeLimits();
   readPulseHeightLimits();
   readWindowSizeLimits();
-  (*preferences) = m_preferences;
+  preferences->m_minElongation = m_preferences.m_minElongation;
+  preferences->m_maxElongation = m_preferences.m_maxElongation;
+  preferences->m_minClusterSize = m_preferences.m_minClusterSize;
+  preferences->m_maxClusterSize = m_preferences.m_maxClusterSize;
+  preferences->m_minPulseHeight = m_preferences.m_minPulseHeight;
+  preferences->m_maxPulseHeight = m_preferences.m_maxPulseHeight;
+  preferences->m_minWindowSize = m_preferences.m_minWindowSize;
+  preferences->m_maxWindowSize = m_preferences.m_maxWindowSize;
 }
 
 

@@ -59,6 +59,8 @@ class pHexagonMatrix
     int nRow(){return m_nRow;}
     int nColumn(){return m_nCol;}
     bool border(int index) const; 
+    virtual double selectTest (const QPointF &pos, bool onlySelectable,
+                               QVariant* details=0) const;
     
     //iterator
     typedef std::vector<pHexagon*>::iterator matrixIterator;

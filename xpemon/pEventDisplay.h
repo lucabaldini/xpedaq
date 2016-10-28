@@ -78,7 +78,10 @@ class pEventDisplay : public QCustomPlot
     void mouseWheel();
     void selectionChanged();
     void contextMenuRequest(QPoint pos);
-    virtual void resizeEvent (QResizeEvent* event);    
+    void mouseMoveEvent(QMouseEvent *event);
+    void paintEvent(QPaintEvent *event);
+    void paintCoordinate();
+    virtual void resizeEvent (QResizeEvent* event);
       
   protected:
     
@@ -97,6 +100,7 @@ class pEventDisplay : public QCustomPlot
     QCPColorScale *m_colorScale;
     QCPMarginGroup *m_marginGroup; //keep margins of plot and color scale aligned
     QMargins *m_mapMargins; //plot area margins
+    QPoint m_cursorPos;
     int m_minDisplaySurfaceSize; //minimum size of the plot area
     bool m_isSyncronized; //check if the last event has been already drawn
     bool m_displayFirstPass;

@@ -27,8 +27,6 @@ with this program; if not, write to the Free Software Foundation Inc.,
 
 #include "qcustomplot.h"
 
-#define PI 3.1415926535
-
 /* Class describing a hexagon */
 
 class pHexagon : public QCPCurve
@@ -38,6 +36,10 @@ class pHexagon : public QCPCurve
   
     //Draw a regular hexagon at position (posX, posY) with edge 'size'
     pHexagon(double posX, double posY, double size, QCustomPlot *parentPlot);
+    
+    //Check if the mouse is inside the hexagon
+    //virtual double selectTest (const QPointF &pos, bool onlySelectable,
+    //                           QVariant* details=0) const;
 
 };
 

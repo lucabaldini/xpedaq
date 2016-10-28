@@ -123,44 +123,6 @@ void pCustomColorMapPlot::clearMap()
 }
 
 
-void pCustomColorMapPlot::mouseMoveEvent(QMouseEvent * event)
-{
-  m_cursorPos = event->pos();
-  replot();
-  QCustomPlot::mouseMoveEvent(event);
-}
-
-
-void pCustomColorMapPlot::paintEvent(QPaintEvent *event)
-{
-  QCustomPlot::paintEvent(event);
-  if (m_colorMap->selectTest(m_cursorPos, false) > 0.){
-    paintCoordinate();
-  }
-}
-
-
-void pCustomColorMapPlot::paintCoordinate()
-{  
-  double x = xAxis->pixelToCoord(m_cursorPos.x());
-  double y = yAxis->pixelToCoord(m_cursorPos.y());
-  int i, j;
-  m_data->coordToCell(x, y, &j, &i);
-  double cellContent = m_data->cell(j,i);
-  QPainter painter(this);
-  const int fontSize = 12;
-  painter.setFont(QFont("times", fontSize));
-  painter.setPen(QPen(Qt::black));  
-  //Display the info 70 pixels below the bottom-left corner
-  QPoint textPos = axisRect()->bottomLeft();
-  textPos += QPoint(0, 70);
-  QString cursorText = QString("j=") + QString::number(j) + QString(" , i=")
-                       + QString::number(i) + QString(" , bin content=")
-                       + QString::number(cellContent);
-  painter.drawText(textPos, cursorText);  
-}
-
-
 void pCustomColorMapPlot::setupInteractions()
 {
   /* Activate interactions for axis:
@@ -273,4 +235,42 @@ void pCustomColorMapPlot::setLinScaleZ()
   m_colorMap->setDataScaleType(QCPAxis::stLinear);
   m_isLogScaleZ = false;
   replot();
+}
+
+
+void pCustomColorMapPlot::mouseMoveEvent(QMouseEvent * event)
+{
+  m_cursorPos = event->pos();
+  replot();
+  QCustomPlot::mouseMoveEvent(event);
+}
+
+
+void pCustomColorMapPlot::paintEvent(QPaintEvent *event)
+{
+  QCustomPlot::paintEvent(event);
+  if (m_colorMap->selectTest(m_cursorPos, false) > 0.){
+    paintCoordinate();
+  }
+}
+
+
+void pCustomColorMapPlot::paintCoordinate()
+{  
+  double x = xAxis->pixelToCoord(m_cursorPos.x());
+  double y = yAxis->pixelToCoord(m_cursorPos.y());
+  int i, j;
+  m_data->coordToCell(x, y, &j, &i);
+  double cellContent = m_data->cell(j,i);
+  QPainter painter(this);
+  const int fontSize = 12;
+  painter.setFont(QFont("times", fontSize));
+  painter.setPen(QPen(Qt::black));  
+  //Display the info 80 pixels below the bottom-left corner
+  QPoint textPos = axisRect()->bottomLeft();
+  textPos += QPoint(0, 80);
+  QString cursorText = QString("j=") + QString::number(j) + QString(" , i=")
+                       + QString::number(i) + QString(" , bin content=")
+                       + QString::number(cellContent);
+  painter.drawText(textPos, cursorText);  
 }

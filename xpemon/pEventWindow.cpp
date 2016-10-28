@@ -24,13 +24,14 @@ with this program; if not, write to the Free Software Foundation Inc.,
 // pixel coordinates to order index
 int pEventWindow::index(const OffsetCoordinate &p) const
 {
-  return p.col() - m_firstCol + (p.row() - m_firstRow) * nColumns();
+  if (isInWindow(p))
+    return p.col() - m_firstCol + (p.row() - m_firstRow) * nColumns();
+  else return -1;
 }
 
 // order index to pixel coordinates
 OffsetCoordinate pEventWindow::pixelCoord(int index) const
 {
-  //return OffsetCoordinate(index % nColumns(), index / nColumns());
   return OffsetCoordinate(index % nColumns() + m_firstCol,
                           index / nColumns() + m_firstRow);
 }
@@ -38,7 +39,9 @@ OffsetCoordinate pEventWindow::pixelCoord(int index) const
 // cube coordinates to order index
 int pEventWindow::index(const CubeCoordinate &p) const
 {
-  return index(cube2Offset(p));
+  if (isInWindow(p))
+    return index(cube2Offset(p));
+  else return -1;
 }
 
 // order index to cube coordinates
@@ -65,9 +68,14 @@ OffsetCoordinate pEventWindow::coordToPixel(double x, double y) const
 }
 
 
+bool pEventWindow::isInWindow(const OffsetCoordinate& point) const
+{
+  return (point.row() >= m_firstRow && point.row() <= m_lastRow &&
+          point.col() >= m_firstCol && point.col() <= m_lastCol);
+}
+
+
 bool pEventWindow::isInWindow(const CubeCoordinate& point) const
 {
-  OffsetCoordinate offc = cube2Offset(point);
-  return (offc.row() >= m_firstRow && offc.row() <= m_lastRow &&
-          offc.col() >= m_firstCol && offc.col() <= m_lastCol);
+  return isInWindow(cube2Offset(point)); 
 }

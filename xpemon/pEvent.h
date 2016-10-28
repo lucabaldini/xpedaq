@@ -50,14 +50,12 @@ class pEvent: public pEventWindow
     bool isEmpty() const {return m_isEmpty;}
     const std::vector<event::Hit>& hits() const {return m_hits;}
     //access by index number    
-    const event::Hit& operator() (int index) const {return m_hits.at(index);}
+    const event::Hit& operator() (int index) const;
     //access by offset coordinates
-    const event::Hit& operator() (const OffsetCoordinate& p) const
-      {return m_hits.at(index(p));}
+    const event::Hit& operator() (const OffsetCoordinate& p) const;
     //access by cubic coordinates
-    const event::Hit& operator() (const CubeCoordinate& p) const
-      {return m_hits.at(index(p));}
-    //
+    const event::Hit& operator() (const CubeCoordinate& p) const;
+    //timestamp of the event
     microsecond_t microseconds() const {return m_microseconds;}
     //index of highest Pixel
     int highestPixelAddress() const 

@@ -48,11 +48,29 @@ pEvent::pEvent(int firstCol, int lastCol, int firstRow, int lastRow,
 }
 
 
+const event::Hit& pEvent::operator() (int index) const{
+    if (index<0 || index > evtSize())
+      return m_hits.at(0);
+    else
+      return m_hits.at(index);
+}
+
+
+const event::Hit& pEvent::operator() (const OffsetCoordinate& p) const{
+  return m_hits.at(index(p));
+}
+
+
+const event::Hit& pEvent::operator() (const CubeCoordinate& p) const{
+  return m_hits.at(index(p));
+}
+
+
 int pEvent::findHighestPixel() const
 {
   int maxPos = -1;
   int maxVal = 0;
-  for (int i =0; i < evtSize(); ++i){
+  for (int i = 0; i < evtSize(); ++i){
     if (m_hits.at(i).counts > maxVal){
       maxVal = m_hits.at(i).counts;
       maxPos = i;

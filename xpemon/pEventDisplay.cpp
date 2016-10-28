@@ -406,8 +406,7 @@ void pEventDisplay::setupInteractions()
   //        this, SLOT(setGradient(QCPColorGradient)));
 }
   
-
-
+  
 void pEventDisplay::selectionChanged()
 {
   /* Normally, axis base line and axis tick labels are selectable separately,
@@ -485,6 +484,48 @@ void pEventDisplay::contextMenuRequest(QPoint pos)
   menu->setAttribute(Qt::WA_DeleteOnClose);
   menu->addAction("Restore initial view", this, SLOT(resetView()));
   menu->popup(mapToGlobal(pos));
+}
+
+
+void pEventDisplay::mouseMoveEvent(QMouseEvent * event)
+{
+  m_cursorPos = event->pos();
+  replot();
+  QCustomPlot::mouseMoveEvent(event);
+}
+
+
+void pEventDisplay::paintEvent(QPaintEvent *event)
+{
+  QCustomPlot::paintEvent(event);
+  if (!m_event.isEmpty()){
+    if (m_hexMatrix->selectTest(m_cursorPos, false) > 0.){
+      paintCoordinate();
+    }
+  }
+}
+
+
+void pEventDisplay::paintCoordinate()
+{  
+  double x = xAxis->pixelToCoord(m_cursorPos.x());
+  double y = yAxis->pixelToCoord(m_cursorPos.y());
+  int col, row;
+  coordToPixel(x, y, col, row);
+  //adc_count_t pixelContent = m_event(OffsetCoordinate(col, row)).counts;
+  QPainter painter(this);
+  const int fontSize = 12;
+  painter.setFont(QFont("times", fontSize));
+  painter.setPen(QPen(Qt::black));  
+  //Display the info 80 pixels below the bottom-left corner
+  QPoint textPos = axisRect()->bottomLeft();
+  textPos += QPoint(0, 80);
+  QString cursorText = QString("col=") + QString::number(col)
+                       + QString(", row=") + QString::number(row)
+                       + QString(", x=") + QString::number(x)
+                       + QString(", y=") + QString::number(y);
+                       //+ QString(", counts=") + QString::number(pixelContent);
+  painter.drawText(textPos, cursorText);  
 }
 
 

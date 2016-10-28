@@ -33,7 +33,7 @@ pHexagon::pHexagon(double posX, double posY, double size,
   QVector<double> yCoord(nPoints);
   for (int i =0; i < nPoints; ++i){
       double angleDeg = 60. * i   + 30.;
-      double angleRad = (PI / 180.) * angleDeg;
+      double angleRad = (M_PI / 180.) * angleDeg;
       vertexIndex[i] = i;
       xCoord[i] = posX + size * cos(angleRad);
       yCoord[i] = posY + size * sin(angleRad);

@@ -60,6 +60,7 @@ class pEventWindow{
     int index(const CubeCoordinate &p) const;  
     CubeCoordinate cubeCoord(int index) const;
     
+    bool isInWindow(const OffsetCoordinate& point) const;
     bool isInWindow(const CubeCoordinate& point) const;
     
   protected:

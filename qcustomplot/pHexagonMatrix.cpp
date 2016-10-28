@@ -80,3 +80,15 @@ void pHexagonMatrix::reset()
 {
   m_hexArray.resize(0);
 }
+
+
+double pHexagonMatrix::selectTest(const QPointF &pos, bool onlySelectable,
+                                  QVariant* details) const
+{
+  double result = 0.;
+  for (auto const &hex: m_hexArray){
+    double _test =  hex->selectTest(pos, onlySelectable, details);
+    if (_test > result) result = _test; //any non zero will do
+  }
+  return result;
+}
