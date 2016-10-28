@@ -13,7 +13,8 @@ class pCustomColorMapPlot : public QCustomPlot
   
   public:
   
-    pCustomColorMapPlot(pColorMapOptions options = pColorMapOptions());    
+    pCustomColorMapPlot(pColorMapOptions options = pColorMapOptions(),
+                       int minAreaSize = 600);    
     void setCellContent(unsigned int xCell, unsigned int yCell, double value);
     void setDataContent(double x, double y, double value);    
     void setRange (double xmin, double xmax, double ymin, double ymax);
@@ -40,7 +41,10 @@ class pCustomColorMapPlot : public QCustomPlot
     void contextMenuRequest(QPoint pos);
     void setLogScaleZ();
     void setLinScaleZ();
-      
+    int minAxisRectWidth();
+    int minAxisRectHeight();
+    QSize minAxisRectSize();
+     
   protected:
     
     void setupInteractions();
@@ -49,9 +53,11 @@ class pCustomColorMapPlot : public QCustomPlot
     QCPColorScale *m_colorScale;
     QCPMarginGroup *m_marginGroup;
     QCPColorMapData *m_data;  
+    QMargins *m_mapMargins;
     pColorMapOptions m_options;
     bool m_isLogScaleZ;
     QPoint m_cursorPos;
+    int m_minDisplaySurfaceSize;
 };
 
 #endif  //CUSTOMCOLORMAPPLOT_H

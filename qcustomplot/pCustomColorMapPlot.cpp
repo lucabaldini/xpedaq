@@ -1,38 +1,60 @@
 #include "pCustomColorMapPlot.h"
 
-pCustomColorMapPlot::pCustomColorMapPlot(pColorMapOptions options) : 
-  m_options(options), m_isLogScaleZ (false)				   
+pCustomColorMapPlot::pCustomColorMapPlot(pColorMapOptions options,
+                                         int minAreaSize) : 
+  m_options(options), m_isLogScaleZ (false),
+  m_minDisplaySurfaceSize (minAreaSize)				   
 {
+  //Initialize axes
   axisRect()->setupFullAxesBox(true);
+  axisRect()->setAutoMargins(QCP::msNone);
+  m_mapMargins = new QMargins(75, 15, 15, 50);
+  axisRect()->setMargins(*m_mapMargins);
+  axisRect()->setMinimumSize(minAxisRectSize());
+  axisRect()->center();
   xAxis->setLabel(m_options.m_xTitle);
   yAxis->setLabel(m_options.m_yTitle);
-  m_colorMap = new QCPColorMap(xAxis, yAxis);
-  addPlottable(m_colorMap);
-  
-  // Initializing the QCPColorMapData with default values
-  m_data = new QCPColorMapData(1, 1, QCPRange(0., 1.), QCPRange(0., 1.));
-  
-  m_colorMap->setData(m_data);
-  m_colorMap->setTightBoundary(false); //display full cell at the boundaries
-  m_colorMap->setInterpolate(false); //disable graphical smoothing
   
   // Do not show the grid
   xAxis->grid()->setVisible(false);
-  yAxis->grid()->setVisible(false);
+  yAxis->grid()->setVisible(false);  
+  
+  //Intialize color map
+  m_colorMap = new QCPColorMap(xAxis, yAxis);
+  addPlottable(m_colorMap);
+  m_colorMap->setTightBoundary(false); //display full cell at the boundaries
+  m_colorMap->setInterpolate(false); //disable graphical smoothing  
+  
+  // Initializing the QCPColorMapData with default values
+  m_data = new QCPColorMapData(1, 1, QCPRange(0., 1.), QCPRange(0., 1.)); 
+  m_colorMap->setData(m_data);
+
+  // Create a sublayout hosting the color scale
+  QCPLayoutGrid *colorScaleLayout = new QCPLayoutGrid;
+  plotLayout()->addElement(0, 1, colorScaleLayout);
+  colorScaleLayout->setMinimumSize(100, 10);   // minimum width=100
 
   // Initialize the color scale
   m_colorScale = new QCPColorScale(this);
-  plotLayout()->addElement(0, 1, m_colorScale);
-  m_colorScale->setType(QCPAxis::atRight);
-  m_colorMap->setColorScale(m_colorScale);
+  colorScaleLayout->addElement(0, 0, m_colorScale);
+  //m_colorScale->setType(QCPAxis::atRight);
+  m_colorScale->setAutoMargins(QCP::msNone);
+  QMargins *subMargins = new QMargins(0, 15, 0, 50);
+  colorScaleLayout->setMargins(*subMargins);
   m_colorScale->axis()->setLabel(m_options.m_zTitle);
-  m_colorMap->setGradient(m_options.m_gradientType);
+  m_colorMap->setColorScale(m_colorScale);
+  m_colorMap->setGradient(m_options.m_gradientType);  
   m_colorMap->rescaleDataRange(true);
+  
+  // Create a space under the plot for displaying pointer
+  //plotLayout()->insertRow(1); //Add a row below the plot
+  //QCPLayoutGrid *bottomLayout = new QCPLayoutGrid;
+  //plotLayout()->addElement(1, 0, bottomLayout);
   
   //Align things using a margin group
   m_marginGroup = new QCPMarginGroup(this);
   axisRect()->setMarginGroup(QCP::msBottom|QCP::msTop, m_marginGroup);
-  m_colorScale->setMarginGroup(QCP::msBottom|QCP::msTop, m_marginGroup);
+  colorScaleLayout->setMarginGroup(QCP::msBottom|QCP::msTop, m_marginGroup);
 
   rescaleAxes();
   setupInteractions();
@@ -127,6 +149,37 @@ void pCustomColorMapPlot::paintCoordinate()
                    ", ");
   painter.drawText(QPoint(m_cursorPos.x() + shift + 10,
                    m_cursorPos.y()), QString::number(y));
+  
+  //QCPTextElement *cursorPositionLabel = new QCPTextElement(this);
+  //cursorPositionLabel->setText(QString::number(x));
+  //cursorPositionLabel->setFont(font);
+  
+}
+
+
+int pCustomColorMapPlot::minAxisRectWidth()
+{
+  if (!m_mapMargins)
+    return m_minDisplaySurfaceSize;
+  else
+    return m_minDisplaySurfaceSize + m_mapMargins->right() +
+           m_mapMargins->left();
+}
+
+
+int pCustomColorMapPlot::minAxisRectHeight()
+{
+  if (!m_mapMargins)
+    return m_minDisplaySurfaceSize;
+  else
+    return m_minDisplaySurfaceSize + m_mapMargins->top()
+           + m_mapMargins->bottom();
+}
+
+
+QSize pCustomColorMapPlot::minAxisRectSize()
+{
+  return QSize(minAxisRectWidth(), minAxisRectHeight());
 }
 
 

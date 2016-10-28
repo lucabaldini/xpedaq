@@ -62,8 +62,8 @@ void pHitmapTab::setup()
                       nYbins, - halfBinHeight, yPixelMax - halfBinHeight);
   m_hitmapPlot = new pMapPlot(m_hitmap, hitmapOptions);
   m_hitmapPlot->setInterpolate(true);
-  m_hitmapPlot->axisRect()->setMinimumSize(740, 700);
-  m_hitmapPlot->axisRect()->setMaximumSize(740, 700);
+  //m_hitmapPlot->axisRect()->setMinimumSize(740, 700);
+  //m_hitmapPlot->axisRect()->setMaximumSize(740, 700);
   m_groupBoxGridLayout->addWidget(m_hitmapPlot, 1, 0);
 }
 

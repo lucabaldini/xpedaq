@@ -49,8 +49,7 @@ class pCustomHistogramPlot : public QCustomPlot
    
     QCPBars *m_bars;
     pBasicPlotOptions m_options;    
-    // Needed to properly remove key in QCPBars data
-    double m_centerPosTolerance;
+    double m_centerPosTolerance; // Needed to properly remove key in QCPBars data
     bool m_isLogScaleY;
     QPoint m_cursorPos;
 
