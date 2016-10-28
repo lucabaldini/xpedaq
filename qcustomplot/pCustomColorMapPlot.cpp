@@ -45,7 +45,7 @@ pCustomColorMapPlot::pCustomColorMapPlot(pColorMapOptions options) :
   m_colorMap->setData(m_data);
 
   // Leave some space under the plot for displaying cursor information
-  QMargins bottomMargins = QMargins(75, 10, 10, 90);
+  QMargins bottomMargins = QMargins(75, 10, 10, 70);
   axisRect()->setMinimumMargins(bottomMargins);
 
   // Initialize the color scale
@@ -263,14 +263,14 @@ void pCustomColorMapPlot::paintCoordinate()
   m_data->coordToCell(x, y, &j, &i);
   double cellContent = m_data->cell(j,i);
   QPainter painter(this);
-  const int fontSize = 12;
+  const int fontSize = 11;
   painter.setFont(QFont("times", fontSize));
   painter.setPen(QPen(Qt::black));  
-  //Display the info 80 pixels below the bottom-left corner
+  //Display the info 60 pixels below the bottom-left corner
   QPoint textPos = axisRect()->bottomLeft();
-  textPos += QPoint(0, 80);
-  QString cursorText = QString("j=") + QString::number(j) + QString(" , i=")
-                       + QString::number(i) + QString(" , bin content=")
+  textPos += QPoint(0, 60);
+  QString cursorText = QString("row=") + QString::number(j) + QString(", col=")
+                       + QString::number(i) + QString(", bin content=")
                        + QString::number(cellContent);
   painter.drawText(textPos, cursorText);  
 }
