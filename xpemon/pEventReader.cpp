@@ -72,12 +72,11 @@ void pEventReader::readPendingDatagram()
     for (int index = 0; index < nPixel; ++index)
     {
       p.readPixel(evt, index, x, y, height);
-      curHitMap.at(index) = height;
-      //zero suppression in the hit map
+      //zero suppression
       if (height > m_preferences.m_zeroSuppressionThreshold)
-        m_hitMap->fill(x, y, static_cast<double> (height));
+        curHitMap.at(index) = height;
       else
-        m_hitMap->fill(x, y, 0.);      
+        curHitMap.at(index) = 0;
     }
     pEvent tmpEvt = pEvent(p.xmin(evt), p.xmax(evt), p.ymin(evt), p.ymax(evt),
 			   curHitMap, p.microseconds(evt),
@@ -87,6 +86,11 @@ void pEventReader::readPendingDatagram()
     if (evtAccepted(tmpEvt)){
       m_isLastEventChanged = true;    
       m_lastEvent = tmpEvt;
+      for (auto const& it : tmpEvt){
+        OffsetCoordinate coord = tmpEvt.coordToPixel(it.x, it.y);
+        m_hitMap->fill(coord.col(), coord.row(),
+                       static_cast<double> (it.counts));      
+      }
       m_windowSizeHist->fill(nPixel);
       m_clusterSizeHist->fill(tmpEvt.clusterSize());
       m_pulseHeightHist->fill(tmpEvt.pulseHeight());
