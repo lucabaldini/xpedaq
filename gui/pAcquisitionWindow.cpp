@@ -217,6 +217,8 @@ void pAcquisitionWindow::displayTriggerMask(pTriggerMask *triggerMask)
 void pAcquisitionWindow::displayReference(unsigned short reference)
 {
   m_thresholdSettingTab->displayReference(reference, visualizationMode());
+  QString msg = "Last vref readout: " + QString::number(reference);
+  showMessage(msg);
 }
 
 /*!

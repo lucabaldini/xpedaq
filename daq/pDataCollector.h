@@ -31,6 +31,7 @@ with this program; if not, write to the Free Software Foundation Inc.,
 #include "pDataFIFO.h"
 #include "pUserPreferences.h"
 #include "pDetectorConfiguration.h"
+#include "pXpolFpga.h"
 
 
 /*! \brief Class implementing the data collection loop.

@@ -101,6 +101,16 @@ void pDataCollector::run()
 	m_dataFIFO->flush();
       }
       delete curDataBlock;
+      // Fist attempt at correcting for the vref drift as a function of time,
+      // see https://github.com/lucabaldini/xpedaq/issues/137
+      // (note that vref is read and accounted for in the function call to
+      // pXpolFpga::setDacThreshold().)
+      // We're creating a pointer to a pXpolFpga object, here, while in
+      // principle we could pass downstream the one in the run controlerr.
+      // If we end up keeping this we might want to cleanup things.
+      pXpolFpga xpol(m_usbController);
+      xpol.setDacThreshold(m_detectorConfiguration);
+      // Done with the hack.
     }
   }
   m_usbController->stopSequencer();
