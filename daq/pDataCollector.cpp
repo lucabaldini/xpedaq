@@ -108,8 +108,11 @@ void pDataCollector::run()
       // We're creating a pointer to a pXpolFpga object, here, while in
       // principle we could pass downstream the one in the run controlerr.
       // If we end up keeping this we might want to cleanup things.
-      pXpolFpga xpol(m_usbController);
-      xpol.setDacThreshold(m_detectorConfiguration);
+      // Also note that we only want to do this when operating in window mode.
+      if (!m_fullFrame) {
+	pXpolFpga xpol(m_usbController);
+	xpol.setDacThreshold(m_detectorConfiguration);
+      }
       // Done with the hack.
     }
   }
