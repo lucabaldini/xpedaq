@@ -37,7 +37,7 @@ pEventDisplay::pEventDisplay(pColorMapOptions options) :
   m_mapMargins = new QMargins(75, 50, 65, 50);
   axisRect()->setMargins(*m_mapMargins);
   axisRect()->setMinimumSize(minAxisRectSize());
-  axisRect()->setMaximumSize(minAxisRectSize());
+  //axisRect()->setMaximumSize(minAxisRectSize());
   axisRect()->center();
 
   //Initialize axes with default range
