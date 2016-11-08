@@ -50,13 +50,15 @@ pCustomColorMapPlot::pCustomColorMapPlot(pColorMapOptions options) :
 
   // Initialize the color scale
   m_colorScale = new QCPColorScale(this);
-  plotLayout() -> addElement(0, 1, m_colorScale);
-  m_colorScale->setType(QCPAxis::atRight);
-  m_colorScale->axis()->setLabel(m_options.m_zTitle);
+  if (m_options.m_colorScale){
+    plotLayout() -> addElement(0, 1, m_colorScale);
+    m_colorScale->setType(QCPAxis::atRight);
+    m_colorScale->axis()->setLabel(m_options.m_zTitle);
+  }
   m_colorMap->setColorScale(m_colorScale);
   m_colorMap->setGradient(m_options.m_gradientType);  
   m_colorMap->rescaleDataRange(true);
-  
+
   //Align thing using a margin group
   m_marginGroup = new QCPMarginGroup(this);
   axisRect() -> setMarginGroup(QCP::msBottom|QCP::msTop, m_marginGroup);
@@ -263,8 +265,6 @@ void pCustomColorMapPlot::paintCoordinate()
   m_data->coordToCell(x, y, &j, &i);
   double cellContent = m_data->cell(j,i);
   QPainter painter(this);
-  const int fontSize = 11;
-  painter.setFont(QFont("times", fontSize));
   painter.setPen(QPen(Qt::black));  
   //Display the info 60 pixels below the bottom-left corner
   QPoint textPos = axisRect()->bottomLeft();

@@ -38,12 +38,15 @@ public:
   pColorMapOptions (QString plotName = "", QString xtitle = "x",
                     QString ytitle = "y", QString ztitle = "z", 
                     QCPColorGradient colGradient =
-                                                QCPColorGradient::gpThermal) :
+                                               QCPColorGradient::gpThermal,
+                    bool colorScale = true) :
                     pBasicPlotOptions(plotName, xtitle, ytitle),
-                    m_zTitle(ztitle), m_gradientType(colGradient) {};
+                    m_zTitle(ztitle), m_gradientType(colGradient),
+                    m_colorScale (colorScale) {};
 
   QString m_zTitle;
   QCPColorGradient m_gradientType;
+  bool m_colorScale; // show the color scale on the right
   
 };
 

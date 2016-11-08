@@ -65,8 +65,8 @@ xpemonWindow::xpemonWindow(std::string preferencesFilePath,
   m_mainTabWidget->addTab(m_eventDisplayTab, "Event Display");
   m_monitorTab = new pMonitorTab();
   m_mainTabWidget->addTab(m_monitorTab, "Monitor Plots");
-  m_hitmapTab = new pHitmapTab();
-  m_mainTabWidget->addTab(m_hitmapTab, "Hit Map");
+  //m_hitmapTab = new pHitmapTab();
+  //m_mainTabWidget->addTab(m_hitmapTab, "Hit Map");
   m_mainGridLayout->setColumnStretch(1, 12);
   //Initialize the event reader
   m_eventReader = new pEventReader((*m_preferences),
@@ -74,7 +74,7 @@ xpemonWindow::xpemonWindow(std::string preferencesFilePath,
 				   m_monitorTab->clusterSizeHist(),
                                    m_monitorTab->pulseHeightHist(),
                                    m_monitorTab->modulationHist(),
-                                   m_hitmapTab->hitmap());
+                                   m_monitorTab->hitmap());
   
   setupConnections();
   // Enable the recon check boxes (this might go in the configuration file).
@@ -152,8 +152,8 @@ void xpemonWindow::setupEvtReaderConnections()
   // Update the other plots
   connect (m_eventReader, SIGNAL(histogramsUpdated()),
            m_monitorTab, SLOT(update()));
-  connect (m_eventReader, SIGNAL(histogramsUpdated()),
-           m_hitmapTab, SLOT(update()));
+  //connect (m_eventReader, SIGNAL(histogramsUpdated()),
+  //         m_hitmapTab, SLOT(update()));
 }
 
 
@@ -214,5 +214,5 @@ void xpemonWindow::reset()
 {
   m_eventDisplayTab->reset();
   m_monitorTab->reset();
-  m_hitmapTab->reset();
+  //m_hitmapTab->reset();
 }

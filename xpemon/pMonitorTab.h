@@ -26,6 +26,8 @@ with this program; if not, write to the Free Software Foundation Inc.,
 #include <QString>
 #include "pHistogram.h"
 #include "pHistogramPlot.h"
+#include "pMap.h"
+#include "pMapPlot.h"
 #include "pHistogramOptions.h"
 #include "xpemonPlotOptions.h"
 #include "pQtCustomTab.h"
@@ -50,6 +52,8 @@ class pMonitorTab : public pQtCustomTab
     pHistogram* clusterSizeHist() {return m_clusterSizeHist;}
     pHistogram* pulseHeightHist() {return m_pulseHeightHist;}
     pHistogram* modulationHist() {return m_modulationHist;}
+    pMap* hitmap() {return m_hitmap;}
+
   
   public slots:
 
@@ -59,19 +63,22 @@ class pMonitorTab : public pQtCustomTab
   private:
 
     void setupWindowSizePlot();
-    void setupClusterSizePlot();
+    //void setupClusterSizePlot();
     void setupPulseHeightPlot();
     void setupModulationPlot();
+    void setupHitmapPlot();
 
     pHistogram* m_windowSizeHist;
     pHistogram* m_clusterSizeHist;
     pHistogram* m_pulseHeightHist;    
     pHistogram* m_modulationHist;
+    pMap* m_hitmap;
 
     pHistogramPlot *m_windowSizePlot;
     pHistogramPlot *m_clusterSizePlot;
     pHistogramPlot *m_pulseHeightPlot;
     pHistogramPlot *m_modulationPlot;
+    pMapPlot *m_hitmapPlot;
 };
 
 #endif //PMONITORTAB_H

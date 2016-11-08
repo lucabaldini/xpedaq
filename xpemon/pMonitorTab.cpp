@@ -32,9 +32,10 @@ pMonitorTab::pMonitorTab() :
   setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
   setupWindowSizePlot();
-  setupClusterSizePlot();
+  //setupClusterSizePlot();
   setupPulseHeightPlot(); 
   setupModulationPlot();
+  setupHitmapPlot();
 }
 
 
@@ -49,15 +50,15 @@ void pMonitorTab::setupWindowSizePlot()
 }
 
 
-void pMonitorTab::setupClusterSizePlot()
-{
-  pBasicPlotOptions clusterSizeOptions = pBasicPlotOptions("Cluster size",
-    "Cluster size [pixel]", "Events/bin", defaultPen, defaultBrush);
-  m_clusterSizeHist = new pHistogram(clusterSizeNbins, clusterSizeXmin,
-				     clusterSizeXmax);
-  m_clusterSizePlot = new pHistogramPlot(m_clusterSizeHist, clusterSizeOptions);
-  m_groupBoxGridLayout -> addWidget(m_clusterSizePlot, 0, 1);
-}
+//void pMonitorTab::setupClusterSizePlot()
+//{
+//  pBasicPlotOptions clusterSizeOptions = pBasicPlotOptions("Cluster size",
+//    "Cluster size [pixel]", "Events/bin", defaultPen, defaultBrush);
+//  m_clusterSizeHist = new pHistogram(clusterSizeNbins, clusterSizeXmin,
+//				     clusterSizeXmax);
+//  m_clusterSizePlot = new pHistogramPlot(m_clusterSizeHist, clusterSizeOptions);
+//  m_groupBoxGridLayout -> addWidget(m_clusterSizePlot, 0, 1);
+//}
 
 
 void pMonitorTab::setupPulseHeightPlot()
@@ -68,7 +69,7 @@ void pMonitorTab::setupPulseHeightPlot()
                                      pulseHeightXmax);
   m_pulseHeightPlot = new pHistogramPlot(m_pulseHeightHist,
                                          pulseHeightOptions);
-  m_groupBoxGridLayout -> addWidget(m_pulseHeightPlot, 1, 0);  
+  m_groupBoxGridLayout -> addWidget(m_pulseHeightPlot, 0, 1);  
 }
 
 
@@ -83,16 +84,42 @@ void pMonitorTab::setupModulationPlot()
 }
 
 
+void pMonitorTab::setupHitmapPlot()
+{
+  pColorMapOptions hitmapOptions ("Hit map", "Column", "Row", "ADC counts",
+                                  QCPColorGradient::gpThermal, false);
+  /* We want the bins to be centered at their coordinate value so that,
+     for example, the bins corresponding to column 0 have -0.5 < x < 0.5
+  */
+  unsigned int nXbins = xpoldetector::kNumPixelsX;
+  unsigned int nYbins = xpoldetector::kNumPixelsY;
+  double halfBinWidth = 0.5*xPixelMax/nXbins;
+  double halfBinHeight = 0.5*yPixelMax/nYbins;
+  m_hitmap = new pMap(nXbins, - halfBinWidth, xPixelMax - halfBinWidth,
+                      nYbins, - halfBinHeight, yPixelMax - halfBinHeight);
+  m_hitmapPlot = new pMapPlot(m_hitmap, hitmapOptions);
+  //Revert y axis so that it matches the XPOL coordinate system
+  m_hitmapPlot->yAxis->setRangeReversed(true);
+  //Apply a smoothing to the events
+  //m_hitmapPlot->setInterpolate(true);
+  m_hitmapPlot->axisRect()->setMinimumSize(205, 240);
+  //m_hitmapPlot->axisRect()->setMaximumSize(705, 740);
+  m_groupBoxGridLayout->addWidget(m_hitmapPlot, 1, 0);
+}
+
+
 void pMonitorTab::update()
 {
   m_windowSizePlot -> updateDisplay();
   m_windowSizePlot -> replot();
-  m_clusterSizePlot -> updateDisplay();
-  m_clusterSizePlot -> replot();
+  //m_clusterSizePlot -> updateDisplay();
+  //m_clusterSizePlot -> replot();
   m_pulseHeightPlot -> updateDisplay();
   m_pulseHeightPlot -> replot();
   m_modulationPlot -> updateDisplay();
   m_modulationPlot -> replot();
+  m_hitmapPlot -> updateDisplay();
+  m_hitmapPlot -> replot();
 }
 
 
@@ -100,11 +127,13 @@ void pMonitorTab::reset()
 {
   m_windowSizeHist -> reset();
   m_windowSizePlot -> updateDisplay();
-  m_clusterSizeHist -> reset();
-  m_clusterSizePlot -> updateDisplay();
+  //m_clusterSizeHist -> reset();
+  //m_clusterSizePlot -> updateDisplay();
   m_pulseHeightHist -> reset();
   m_pulseHeightPlot -> updateDisplay();
   m_modulationHist -> reset();
   m_modulationPlot -> updateDisplay();
+  m_hitmap -> reset();
+  m_hitmapPlot -> updateDisplay();
 }
 
