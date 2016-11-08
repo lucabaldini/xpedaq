@@ -84,8 +84,8 @@ class pEvent: public pEventWindow
     
     //iterator
     typedef std::vector<event::Hit>::const_iterator const_eventIterator;
-    const_eventIterator begin() {return m_hits.begin();}
-    const_eventIterator end() {return m_hits.end();}
+    const_eventIterator begin() const {return m_hits.begin();}
+    const_eventIterator end() const {return m_hits.end();}
     
     // Run the event reconstruction.
     void reconstruct(int threshold);
