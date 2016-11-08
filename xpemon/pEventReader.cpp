@@ -87,9 +87,11 @@ void pEventReader::readPendingDatagram()
       m_isLastEventChanged = true;    
       m_lastEvent = tmpEvt;
       for (auto const& it : tmpEvt){
-        OffsetCoordinate coord = tmpEvt.coordToPixel(it.x, it.y);
-        m_hitMap->fill(coord.col(), coord.row(),
+        if (it.clusterId == 0){
+          OffsetCoordinate coord = tmpEvt.coordToPixel(it.x, it.y);
+          m_hitMap->fill(coord.col(), coord.row(),
                        static_cast<double> (it.counts));      
+        }
       }
       m_windowSizeHist->fill(nPixel);
       m_clusterSizeHist->fill(tmpEvt.clusterSize());

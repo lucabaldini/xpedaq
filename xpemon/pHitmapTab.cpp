@@ -61,7 +61,10 @@ void pHitmapTab::setup()
   m_hitmap = new pMap(nXbins, - halfBinWidth, xPixelMax - halfBinWidth,
                       nYbins, - halfBinHeight, yPixelMax - halfBinHeight);
   m_hitmapPlot = new pMapPlot(m_hitmap, hitmapOptions);
-  m_hitmapPlot->setInterpolate(true);
+  //Revert y axis so that it matches the XPOL coordinate system
+  m_hitmapPlot->yAxis->setRangeReversed(true);
+  //Apply a smoothing to the events
+  //m_hitmapPlot->setInterpolate(true);
   m_hitmapPlot->axisRect()->setMinimumSize(705, 740);
   m_hitmapPlot->axisRect()->setMaximumSize(705, 740);
   m_groupBoxGridLayout->addWidget(m_hitmapPlot, 1, 0);
