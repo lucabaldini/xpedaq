@@ -26,6 +26,7 @@ with this program; if not, write to the Free Software Foundation Inc.,
 #include <ctime>
 
 #include <QThread>
+#include <QTimer>
 
 #include "xpollog.h"
 #include "pDataFIFO.h"
@@ -86,6 +87,8 @@ class pDataCollector : public QThread
   bool m_running;
   pUsbController *m_usbController;
   pDataFIFO *m_dataFIFO;
+  /// \brief QTimer object for updating vref.
+  QTimer *m_timer;
   std::string m_outputFilePath;
   pUserPreferences *m_userPreferences;
   pDetectorConfiguration *m_detectorConfiguration;

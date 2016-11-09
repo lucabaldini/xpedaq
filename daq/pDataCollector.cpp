@@ -30,6 +30,10 @@ pDataCollector::pDataCollector(pUsbController *usbController, bool emitBlocks):
 { 
   //Register pDataBlock as object that can be emitted as signals
   qRegisterMetaType<pDataBlock>("pDataBlock");
+  // Setup the timer to update the vref.
+  m_timer = new QTimer();
+  m_timer->setInterval(10000);
+  m_timer->setSingleShot(true);
 }
 
 /*! Called by the run controller in pRunController::init() and
@@ -47,11 +51,13 @@ pDataCollector::pDataCollector(pUsbController *usbController, bool emitBlocks):
 void pDataCollector::reset()
 {
   m_running = false;
+  m_timer->stop();
 }
 
 void pDataCollector::stop()
 {
   m_running = false;
+  m_timer->stop();
 }
 
 /*!
@@ -63,12 +69,14 @@ void pDataCollector::run()
   m_dataFIFO = new pDataFIFO(m_outputFilePath, m_userPreferences);
   m_numMalformedBlocks = 0;
   m_running = true;
+  m_timer->start();
   unsigned long dataBufferDimension = SRAM_DIM*2;  
   unsigned char* dataBuffer = new (std::nothrow) unsigned char[dataBufferDimension];
   if (dataBuffer == nullptr)
   {
     std::cout << "allocation failed" << std::endl;
-    m_running = false;    
+    m_running = false;
+    m_timer->stop();
   }  
   int maxSize = m_detectorConfiguration->maxBufferSize();
   pDataBlock *curDataBlock;
@@ -79,6 +87,7 @@ void pDataCollector::run()
     errorCode = m_usbController->readData(dataBuffer, &dataBufferDimension);
     if (errorCode) {
       m_running = false;
+      m_timer->stop();
     } else {
       if (m_fullFrame) {
 	curDataBlock = new pDataBlock(dataBuffer);
@@ -109,9 +118,10 @@ void pDataCollector::run()
       // principle we could pass downstream the one in the run controlerr.
       // If we end up keeping this we might want to cleanup things.
       // Also note that we only want to do this when operating in window mode.
-      if (!m_fullFrame) {
+      if (!m_fullFrame && !m_timer->isActive()) {
 	pXpolFpga xpol(m_usbController);
 	xpol.setDacThreshold(m_detectorConfiguration);
+	m_timer->start();
       }
       // Done with the hack.
     }
