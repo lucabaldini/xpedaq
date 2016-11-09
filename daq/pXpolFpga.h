@@ -27,6 +27,7 @@ with this program; if not, write to the Free Software Foundation Inc.,
 #include "xpoldetector.h"
 #include "pUsbController.h"
 #include "pDetectorConfiguration.h"
+#include "pTriggerMask.h"
 
 class pXpolFpga : public QObject
 {
@@ -47,7 +48,12 @@ class pXpolFpga : public QObject
 
   void setDacThreshold(pDetectorConfiguration *configuration);
   void setDacConfig();
-  void configDAC(pDetectorConfiguration *configuration); 
+  void configDAC(pDetectorConfiguration *configuration);
+
+  // Trigger mask-related functions.
+  void enableAllPixels();
+  void maskPixel(unsigned short x, unsigned short y);
+  void applyTriggerMask(pTriggerMask *trgMask);
 
   int resetSequencer(); // Currently Not used : Low level FPGA sequencer
  
@@ -57,6 +63,7 @@ class pXpolFpga : public QObject
 
    void serialWrite(unsigned short REG_ADD,unsigned short regdata);
    void mainSerialWrite(unsigned short REG_ADD,unsigned short regdata);
+   void setupToDisablePixels();
    unsigned short mainSiRead(unsigned short reg_address);
    pUsbController *m_usbController;
 

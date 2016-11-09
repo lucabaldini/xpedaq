@@ -81,6 +81,51 @@ void pXpolFpga::mainSerialWrite(unsigned short REG_ADD,unsigned short regdata)
 }
 
 
+void pXpolFpga::enableAllPixels()
+{
+  setupToDisablePixels();
+  serialWrite(XPOL_SIGNAL_REG, 0x4);
+  serialWrite(XPOL_SIGNAL_REG, 0x0);
+}
+
+
+void pXpolFpga::maskPixel(unsigned short x, unsigned short y)
+{
+  setupToDisablePixels();
+  writeAddress(x, y);
+  serialWrite(XPOL_DISPIX_REG, 0x1); //disable pixel
+  serialWrite(XPOL_DISPIX_REG, 0x0);
+}
+
+
+void pXpolFpga::applyTriggerMask(pTriggerMask *trgMask)
+{
+  enableAllPixels();
+  setupToDisablePixels();
+  for (const auto& pixel : trgMask->mask()){
+    writeAddress(pixel.first, pixel.second);
+    serialWrite(XPOL_DISPIX_REG, 0x1); //disable pixel
+    serialWrite(XPOL_DISPIX_REG, 0x0);
+  }
+}
+
+
+/* In order to mask a pixel to the trigger XPOL must be configured in 
+   READMODE 0 and WRITEMODE 0.
+ */
+void pXpolFpga::setupToDisablePixels()
+{
+  serialWrite(15, 0x0); // To send configuration to XPOL SIMODE must be 0.
+  serialWrite(TOXPOL_MSB_REG,((0x0&0x3f)>>4)&0x03);
+  serialWrite(TOXPOL_MID_REG,((0x0&0x3f)<<4)&0xf0);
+  serialWrite(XPOL_SI_CNT_REG,reset_XPOLSI);
+  serialWrite(XPOL_SI_CNT_REG,0);
+  serialWrite(XPOL_SI_CNT_REG,WSEL);//WSEL=1 CONFIGURATION mode
+  serialWrite(XPOL_SI_CNT_REG,SEND|WSEL);//WSEL=1 CONFIGURATION mode
+  serialWrite(XPOL_SI_CNT_REG,0);
+}
+
+
 //read a 16-bit word from fpga serial interface B
 //PE[3] is SCLK, PE[7] is SO_EN, PE[6] is datain (output from fpga)
 //MSb first!!!!!!
