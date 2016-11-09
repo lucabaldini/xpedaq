@@ -1,5 +1,10 @@
 
 * Cuts factored out the option box in the monitor.
+* A whole bunch of tweaks to the monitor.
+* Only pixels belonging to the first cluster included in the single-event
+  display.
+* First functional implementation of the trigger mask.
+* Trigger threshold updated during the run to compensate for the vref drift.
 
 -------------------------------------------------------------------------------
 xpedaq (0.15.0) - Thu, 27 Oct 2016 15:11:44 +0200
