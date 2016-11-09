@@ -24,7 +24,7 @@ with this program; if not, write to the Free Software Foundation Inc.,
 /*!
  */
 pTriggerSettingTab::pTriggerSettingTab()
-  : pQtCustomTab("Trigger mask (not functional yet)")
+  : pQtCustomTab("Trigger mask")
 {
   int row = 0;
   m_tableWidget = new QTableWidget(0, 2);
@@ -65,13 +65,12 @@ void pTriggerSettingTab::showContextMenu(const QPoint& pos)
  */
 void pTriggerSettingTab::displayTriggerMask(pTriggerMask *triggerMask)
 {
-  TriggerMask_t::iterator chan;
   TriggerMask_t *mask = triggerMask->mask();
   m_tableWidget->setRowCount(triggerMask->size());
   int row = 0;
-  for (chan = mask->begin(); chan != mask->end(); chan++) {
-    unsigned short x = (*chan).first;
-    unsigned short y = (*chan).second;
+  for (const auto &chan : *mask) {
+    unsigned short x = chan.first;
+    unsigned short y = chan.second;
     m_tableWidget->setItem(row, 0, new QTableWidgetItem(QString::number(x)));
     m_tableWidget->setItem(row, 1, new QTableWidgetItem(QString::number(y)));
     m_tableWidget->item(row, 0)->setTextAlignment(Qt::AlignRight);
@@ -88,7 +87,7 @@ pTriggerMask *pTriggerSettingTab::triggerMask() const
   pTriggerMask *triggerMask = new pTriggerMask();
   for (int row = 0; row < m_tableWidget->rowCount(); row++) {
     unsigned short x = m_tableWidget->item(row, 0)->text().toInt();
-    unsigned short y = m_tableWidget->item(row, 0)->text().toInt();
+    unsigned short y = m_tableWidget->item(row, 1)->text().toInt();
     if ((x <= xpoldetector::kNumPixelsX) & (y <= xpoldetector::kNumPixelsY)) {
       triggerMask->add(x, y);
     } else {

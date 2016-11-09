@@ -81,14 +81,20 @@ void pXpolFpga::mainSerialWrite(unsigned short REG_ADD,unsigned short regdata)
 }
 
 
+/* Enable all the pixels to trigger.
+ */
 void pXpolFpga::enableAllPixels()
 {
+  *xpollog::kInfo << "Enabling all pixels to trigger... ";
   setupToDisablePixels();
   serialWrite(XPOL_SIGNAL_REG, 0x4);
   serialWrite(XPOL_SIGNAL_REG, 0x0);
+  *xpollog::kInfo << "Done." << endline;
 }
 
 
+/* Mask a single pixel.
+ */
 void pXpolFpga::maskPixel(unsigned short x, unsigned short y)
 {
   setupToDisablePixels();
@@ -98,14 +104,20 @@ void pXpolFpga::maskPixel(unsigned short x, unsigned short y)
 }
 
 
+/* Apply a trigger mask.
+ */
 void pXpolFpga::applyTriggerMask(pTriggerMask *trgMask)
 {
-  enableAllPixels();
-  setupToDisablePixels();
-  for (const auto& pixel : trgMask->mask()){
-    writeAddress(pixel.first, pixel.second);
-    serialWrite(XPOL_DISPIX_REG, 0x1); //disable pixel
-    serialWrite(XPOL_DISPIX_REG, 0x0);
+  if (trgMask->size()) {
+    enableAllPixels();
+    //setupToDisablePixels();
+    for (const auto &chan : *(trgMask->mask())) {
+      *xpollog::kInfo << "Masking pixel <" << chan.first << ", " 
+		      << chan.second << ">... " << endline;
+      writeAddress(chan.first, chan.second);
+      serialWrite(XPOL_DISPIX_REG, 0x1); //disable pixel
+      serialWrite(XPOL_DISPIX_REG, 0x0);
+    }
   }
 }
 
@@ -347,9 +359,9 @@ void pXpolFpga::configXPMWindowed(pDetectorConfiguration *configuration)
   // It has to be done here b/c this
   writeAddress(configuration->pixelAddressX(), configuration->pixelAddressY());
   
-  *xpollog::kDebug << "Pixel (" << configuration->pixelAddressX() <<
+  *xpollog::kDebug << "Pixel <" << configuration->pixelAddressX() <<
     ", " << configuration->pixelAddressY() <<
-    ") selected for charge injection." << endline;
+    "> selected for charge injection." << endline;
 }
 
 

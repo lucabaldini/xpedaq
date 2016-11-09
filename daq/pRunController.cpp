@@ -333,6 +333,7 @@ void pRunController::fsmStartRun()
   m_dataCollector->reset();
   if (m_usbController->IsOpened()) {
     m_usbController->setTimeout(m_userPreferences->usbTimeout());
+    m_xpolFpga->applyTriggerMask(m_triggerMask);
     m_xpolFpga->setup(m_detectorConfiguration);
     m_dataCollector->setupRun(dataFilePath(), m_startSeconds, m_userPreferences,
 			      m_detectorConfiguration);

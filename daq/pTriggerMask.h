@@ -62,7 +62,7 @@ class pTriggerMask
   int size() const {return m_mask->size();}
 
   ///\brief Write the mask to file.
-  void writeToFile(std::string filePath);
+  void writeToFile(std::string filePath) const;
 
   ///\brief Read the mask from file.
   void readFromFile(std::string filePath);

@@ -44,9 +44,8 @@ pTriggerMask::pTriggerMask(std::string filePath)
 void pTriggerMask::add(unsigned short x, unsigned short y)
 {
   bool insertError = false;
-  TriggerMask_t::iterator chan;
-  for (chan = m_mask->begin(); chan != m_mask->end(); chan++) {
-    if (((*chan).first == x) & ((*chan).second == y)) {
+  for (const auto &chan : *m_mask) {
+    if ((chan.first == x) & (chan.second == y)) {
       *xpollog::kError << "Duplicate trigger mask entry (" << x << ", " << y
 		       << "), skipping..." << endline;
       insertError = true;
@@ -75,15 +74,14 @@ void pTriggerMask::remove(unsigned short x, unsigned short y)
 
 /*!
  */
-void pTriggerMask::writeToFile(std::string filePath)
+void pTriggerMask::writeToFile(std::string filePath) const
 {
   *xpollog::kInfo << "Writing trigger mask to " << filePath <<
     "... " << endline;
   std::ofstream *outputFile = xpolio::kIOManager->openOutputFile(filePath);
-  TriggerMask_t::iterator chan;
-  for (chan = m_mask->begin(); chan != m_mask->end(); chan++) {
-    unsigned short x = (*chan).first;
-    unsigned short y = (*chan).second;
+  for (const auto &chan : *m_mask) {
+    unsigned short x = chan.first;
+    unsigned short y = chan.second;
     xpolio::kIOManager->write(outputFile, x, false);
     xpolio::kIOManager->write(outputFile, " ", false);
     xpolio::kIOManager->write(outputFile, y);
@@ -115,10 +113,9 @@ void pTriggerMask::readFromFile(std::string filePath)
 std::ostream& pTriggerMask::fillStream(std::ostream& os) const
 {
   os << xpedaqutils::title("Trigger mask", true);
-  TriggerMask_t::iterator chan;
-  for (chan = m_mask->begin(); chan != m_mask->end(); chan++) {
-    unsigned short x = (*chan).first;
-    unsigned short y = (*chan).second;
+  for (const auto &chan : *m_mask) {
+    unsigned short x = chan.first;
+    unsigned short y = chan.second;
     os << std::setw(3) << x << "   " << y << std::endl;
   }
   os << xpedaqutils::hline();
