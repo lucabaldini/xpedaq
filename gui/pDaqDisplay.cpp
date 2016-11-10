@@ -32,5 +32,5 @@ pDaqDisplay::pDaqDisplay(QWidget *parent)
   m_numEventsLabel = addField("Number of events acquired");
   m_elapsedTimeLabel = addField("Elapsed time [s]");
   m_averageDaqEventRateLabel = addField("Average DAQ event rate [Hz]");
-  m_instantDaqEventRateLabel = addField("Instant DAQ event rate [Hz]");
+  //m_instantDaqEventRateLabel = addField("Instant DAQ event rate [Hz]");
 }

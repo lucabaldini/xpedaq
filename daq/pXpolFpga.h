@@ -72,8 +72,8 @@ class pXpolFpga : public QObject
 
 
  signals:
-   void thresholdRefRead(unsigned short vref);
-   
+   void vrefRead(unsigned short dac, double vref);
+
 };
 
 #endif /*PXPOLFPGA_H_*/

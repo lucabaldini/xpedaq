@@ -62,9 +62,8 @@ class pDaqDisplay : public pQtDisplayGui
     {m_elapsedTimeLabel->setText(elapsedSeconds);}
   void updateAverageDaqRate(double rate)
     {m_averageDaqEventRateLabel->setText(rate);}
-  void updateInstantDaqRate(double rate)
-    {m_instantDaqEventRateLabel->setText(rate);}
-
+  //void updateInstantDaqRate(double rate)
+  //  {m_instantDaqEventRateLabel->setText(rate);}
   
  private:
   
@@ -75,7 +74,7 @@ class pDaqDisplay : public pQtDisplayGui
   pQtCustomTextLabel *m_numEventsLabel;
   pQtCustomTextLabel *m_elapsedTimeLabel;
   pQtCustomTextLabel *m_averageDaqEventRateLabel;
-  pQtCustomTextLabel *m_instantDaqEventRateLabel;
+  //pQtCustomTextLabel *m_instantDaqEventRateLabel;
 };
 
 #endif //PDAQDISPLAY_H

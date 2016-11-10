@@ -375,9 +375,9 @@ void pXpolFpga::setDacThreshold(pDetectorConfiguration *configuration)
   unsigned short calibrationSignal = configuration->calibrationDac();
   
   // Reads the reference voltage in DAC and sum it to the thresholds - To Be Fixed later
-  unsigned short vref_dac = readVrefDac();
+  unsigned short dac = readVrefDac();
   for(int i=0;i<15;i++)
-      copythreshold[i] = trh_buffer[i]+ (unsigned short)(vref_dac*AD2_LSB/DAC_LSB);
+      copythreshold[i] = trh_buffer[i]+ (unsigned short)(dac*AD2_LSB/DAC_LSB);
 
   us_tempbuffer[0]  = 0x0000|copythreshold[0];
   us_tempbuffer[1]  = 0x1000|copythreshold[1];
@@ -443,34 +443,30 @@ void pXpolFpga::setDacConfig()
 
 unsigned short pXpolFpga::readVrefDac()
 {
-  // Ask the ADC to start the conversion !!! AIUTO!!???
-  mainSerialWrite((unsigned short) XPM_STATUS_REG,(unsigned short) AD2_RUN);
-  // Read the register
-  unsigned short vref_dac = mainSiRead((unsigned short)XPM_AD2_DATA);
-  *xpollog::kDebug << "Reading reference voltage... " << vref_dac
-		   << " DAC" << endline;	
-  // Emit a signal to update the main GUI
-  emit thresholdRefRead(vref_dac); 
-  return vref_dac;
+  // Ask the ADC to start the conversion
+  mainSerialWrite((unsigned short)XPM_STATUS_REG, (unsigned short)AD2_RUN);
+  // Read the reference voltage in ADC counts.
+  unsigned short dac = mainSiRead((unsigned short)XPM_AD2_DATA);
+  // Convert in physical units (V).
+  double vref = AD2_LSB*dac;
+  // Print out the reading.
+  *xpollog::kDebug << "Reading reference voltage... " << dac
+		   << " ADC counts (" << vref << " V)" << endline;
+  // Emit a signal with the relevant value(s).
+  emit vrefRead(dac, vref);
+  return dac;
 }
 
 void pXpolFpga::configDAC(pDetectorConfiguration *configuration) 
 {	
   // Ask the ADC to start the conversion
-  mainSerialWrite((unsigned short) XPM_STATUS_REG,(unsigned short) AD2_RUN);
-
-  // Reads the reference voltage in DAC
-  unsigned short vref_dac = readVrefDac();
-  // Convert the reference voltage in Volts
-  float m_vref = AD2_LSB * vref_dac;
-  // Print the reference voltage value in the log
-  *xpollog::kInfo << "Reading reference voltage... " << m_vref << endline;
+  mainSerialWrite((unsigned short)XPM_STATUS_REG, (unsigned short)AD2_RUN);
   // Configure DAC registers
   setDacConfig();
-  // Set DAC thresholds - 
+  // Set DAC thresholds
   setDacThreshold(configuration);
   // Stop the ADC conversion
-  mainSerialWrite((unsigned short) XPM_STATUS_REG,(unsigned short) 0);
+  mainSerialWrite((unsigned short)XPM_STATUS_REG, 0);
 }
 
 void pXpolFpga::setup(pDetectorConfiguration *configuration) 

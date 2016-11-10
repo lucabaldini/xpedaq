@@ -212,12 +212,13 @@ void pAcquisitionWindow::displayTriggerMask(pTriggerMask *triggerMask)
   m_triggerSettingTab->displayTriggerMask(triggerMask);
 }
 
-/*!
+/*! Disply the last vref value in the bottom bar of the GUI.
  */
-void pAcquisitionWindow::displayReference(unsigned short reference)
+void pAcquisitionWindow::displayReference(unsigned short dac, double vref)
 {
-  m_thresholdSettingTab->displayReference(reference, visualizationMode());
-  QString msg = "Last vref readout: " + QString::number(reference);
+  m_thresholdSettingTab->displayReference(dac, visualizationMode());
+  QString msg = "Last reference voltage readout: " + QString::number(dac) +
+    " ADC counts (" +  QString::number(vref) + " V)";
   showMessage(msg);
 }
 
@@ -275,11 +276,11 @@ void pAcquisitionWindow::setupConnections()
 	  m_daqDisplay, SLOT(updateElapsedSeconds(int)));
   connect(m_runController, SIGNAL(averageEventRateChanged(double)),
 	  m_daqDisplay, SLOT(updateAverageDaqRate(double)));
-  connect(m_runController, SIGNAL(instantEventRateChanged(double)),
-	  m_daqDisplay, SLOT(updateInstantDaqRate(double)));
+  //connect(m_runController, SIGNAL(instantEventRateChanged(double)),
+  //m_daqDisplay, SLOT(updateInstantDaqRate(double)));
   connect(m_runController->xpolFpga(),
-	  SIGNAL(thresholdRefRead(unsigned short)),
-	  this, SLOT(displayReference(unsigned short)));
+	  SIGNAL(vrefRead(unsigned short, double)),
+	  this, SLOT(displayReference(unsigned short, double)));
   connect(m_thresholdSettingTab->getRefreshRefButton(), SIGNAL(clicked()),
   	  m_runController->xpolFpga(), SLOT(readVrefDac()));
   connect(m_userPreferencesTab, SIGNAL(visualizetionModeChanged(int)),

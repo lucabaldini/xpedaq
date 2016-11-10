@@ -81,7 +81,7 @@ class pAcquisitionWindow : public pQtMainWindowGui
   virtual void disableTabs();
   virtual void enableTabs();
   void changeVisualizationMode(int mode);
-  void displayReference(unsigned short reference);
+  void displayReference(unsigned short dac, double vref);
   void start();
   void stop();
   void startRun();
