@@ -167,8 +167,6 @@ void pEventDisplay::setOptimalExternalMargins()
   }
   adjustExternalMargins(smallestSize);
   replot();
-  std::cout << axisRect()->height() << " "
-            << axisRect()->width() << std::endl;
 }
 
 
