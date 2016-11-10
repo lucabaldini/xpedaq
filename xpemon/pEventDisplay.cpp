@@ -34,10 +34,10 @@ pEventDisplay::pEventDisplay(pColorMapOptions options) :
   //Initialize axisRect
   axisRect()->setupFullAxesBox(false);
   axisRect()->setAutoMargins(QCP::msNone);
-  m_mapMargins = new QMargins(75, 50, 65, 50);
-  axisRect()->setMargins(*m_mapMargins);
+  //Leave some space at the borders
+  QMargins mapMargins = QMargins(75, 50, 65, 100);
+  axisRect()->setMargins(mapMargins);
   axisRect()->setMinimumSize(minAxisRectSize());
-  //axisRect()->setMaximumSize(minAxisRectSize());
   axisRect()->center();
 
   //Initialize axes with default range
@@ -67,22 +67,21 @@ pEventDisplay::pEventDisplay(pColorMapOptions options) :
   m_dataRange = QCPRange(0., 1.);
   m_colorScale = new QCPColorScale(this);
   m_colorScale->setAutoMargins(QCP::msNone);
-  QCPLayoutGrid *subLayout = new QCPLayoutGrid;
-  plotLayout()->addElement(0, 1, subLayout);
-  subLayout->addElement(0, 0, m_colorScale);
-  subLayout->setMinimumSize(100, 10);   // minimum width=100
-  QMargins *subMargins = new QMargins(0, 50, 0, 50);
-  subLayout->setMargins(*subMargins);
+  m_colorScaleSubLayout = new QCPLayoutGrid;
+  plotLayout()->addElement(0, 1, m_colorScaleSubLayout);
+  m_colorScaleSubLayout->addElement(0, 0, m_colorScale);
+  m_colorScaleSubLayout->setMinimumSize(100, 0); // min. 100 pixel wide
+  QMargins colorScaleMargins = QMargins(0, axisRect()->margins().top(),
+                                        0, axisRect()->margins().bottom());
+  m_colorScaleSubLayout->setMargins(colorScaleMargins);
   m_colorScale->axis()->setLabel(m_options.m_zTitle);
   m_colorScale->setDataRange(m_dataRange);
   m_colorScale->setGradient(m_options.m_gradientType);
   m_colorScale->axis()->setLabel(m_options.m_zTitle);
   
-  //Align things using a margin group:
-  m_marginGroup = new QCPMarginGroup(this);
-  axisRect()->setMarginGroup(QCP::msBottom|QCP::msTop, m_marginGroup);
-  subLayout->setMarginGroup(QCP::msBottom|QCP::msTop, m_marginGroup);  
-  
+  //Optimize the margins to ensure the display area is a square
+  setOptimalExternalMargins();
+
   //Initialize the matrix
   m_hexMatrix = new pHexagonMatrix(xpoldetector::kColPitch);  
   m_isSyncronized = true;
@@ -94,29 +93,82 @@ pEventDisplay::pEventDisplay(pColorMapOptions options) :
 }
 
 
-int pEventDisplay::minAxisRectWidth()
+int pEventDisplay::minAxisRectWidth() const
 {
-  if (!m_mapMargins)
-    return m_minDisplaySurfaceSize;
-  else
-    return m_minDisplaySurfaceSize + m_mapMargins->right() +
-           m_mapMargins->left();
+  return m_minDisplaySurfaceSize + axisRect()->margins().right() +
+         axisRect()->margins().left();
 }
 
 
-int pEventDisplay::minAxisRectHeight()
+int pEventDisplay::minAxisRectHeight() const
 {
-  if (!m_mapMargins)
-    return m_minDisplaySurfaceSize;
-  else
-    return m_minDisplaySurfaceSize + m_mapMargins->top()
-           + m_mapMargins->bottom();
+  return m_minDisplaySurfaceSize + axisRect()->margins().top()
+         + axisRect()->margins().bottom();
 }
 
 
-QSize pEventDisplay::minAxisRectSize()
+QSize pEventDisplay::minAxisRectSize() const
 {
   return QSize(minAxisRectWidth(), minAxisRectHeight());
+}
+
+
+int pEventDisplay::colorScaleLayoutWidth() const
+{
+  return m_colorScaleSubLayout->outerRect().width();
+}
+
+
+int pEventDisplay::colorScaleLayoutHeight() const
+{
+  return m_colorScaleSubLayout->outerRect().height();
+}
+
+
+QSize pEventDisplay::colorScaleLayoutSize() const
+{
+  return QSize(colorScaleLayoutWidth(), colorScaleLayoutHeight());
+}
+
+
+void pEventDisplay::adjustExternalMargins(int size)
+{
+  //Adjust external margins so that the display area is a square size x size
+  int bottomMargin = plotLayout()->outerRect().height() - size +
+                     - axisRect()->margins().top() +
+                     - axisRect()->margins().bottom();
+  int rightMargin = plotLayout()->outerRect().width() - size +
+                    - axisRect()->margins().left() +
+                    - axisRect()->margins().right() +
+                    - colorScaleLayoutWidth() +
+                    - plotLayout()->columnSpacing();
+  plotLayout()->setMargins(QMargins(0, 0, rightMargin, bottomMargin));
+}
+
+
+void pEventDisplay::setOptimalExternalMargins()
+{
+  // Adjust external margins so that the display area is a square
+  // with the maximum extension available
+  int maxPlotWidth = plotLayout()->outerRect().width() + 
+                     - axisRect()->margins().left() +
+                     - axisRect()->margins().right() + 
+                     - colorScaleLayoutWidth() + 
+                     - plotLayout()->columnSpacing();
+  int maxPlotHeight = plotLayout()->outerRect().height() +
+                      - axisRect()->margins().top() +
+                      - axisRect()->margins().bottom();
+  //Pick the smallest dimension (height or width)
+  int smallestSize;
+  if (maxPlotHeight < maxPlotWidth){
+    smallestSize = maxPlotHeight;
+  } else {
+    smallestSize = maxPlotWidth;
+  }
+  adjustExternalMargins(smallestSize);
+  replot();
+  std::cout << axisRect()->height() << " "
+            << axisRect()->width() << std::endl;
 }
 
 
@@ -514,16 +566,15 @@ void pEventDisplay::paintCoordinate()
   coordToPixel(x, y, col, row);
   //adc_count_t pixelContent = m_event(OffsetCoordinate(col, row)).counts;
   QPainter painter(this);
-  const int fontSize = 12;
-  painter.setFont(QFont("times", fontSize));
   painter.setPen(QPen(Qt::black));  
   //Display the info 80 pixels below the bottom-left corner
+  const int pixelPitch = 80;
   QPoint textPos = axisRect()->bottomLeft();
-  textPos += QPoint(0, 80);
+  textPos += QPoint(0, pixelPitch);
   QString cursorText = QString("col=") + QString::number(col)
-                       + QString(", row=") + QString::number(row)
-                       + QString(", x=") + QString::number(x)
-                       + QString(", y=") + QString::number(y);
+                       + QString(",  row=") + QString::number(row)
+                       + QString(",  x=") + QString::number(x)
+                       + QString(",  y=") + QString::number(y);
                        //+ QString(", counts=") + QString::number(pixelContent);
   painter.drawText(textPos, cursorText);  
 }
@@ -532,4 +583,5 @@ void pEventDisplay::paintCoordinate()
 void pEventDisplay::resizeEvent (QResizeEvent* event)
 {
   QCustomPlot::resizeEvent(event);
+  setOptimalExternalMargins();
 }
