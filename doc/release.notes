@@ -1,4 +1,7 @@
 
+-------------------------------------------------------------------------------
+xpedaq (0.16.0) - Thu, 10 Nov 2016 15:17:17 +0100
+-------------------------------------------------------------------------------
 * Cuts factored out the option box in the monitor.
 * A whole bunch of tweaks to the monitor.
 * Only pixels belonging to the first cluster included in the single-event
