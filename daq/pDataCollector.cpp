@@ -32,7 +32,7 @@ pDataCollector::pDataCollector(pXpolFpga *xpolFpga, bool emitBlocks):
   qRegisterMetaType<pDataBlock>("pDataBlock");
   // Setup the timer to update the vref.
   m_timer = new QTimer();
-  m_timer->setInterval(1000);
+  m_timer->setInterval(10000);
   m_timer->setSingleShot(true);
   connect(this, SIGNAL(thresholdUpdated()), m_timer, SLOT(start()));
 }
@@ -52,13 +52,11 @@ pDataCollector::pDataCollector(pXpolFpga *xpolFpga, bool emitBlocks):
 void pDataCollector::reset()
 {
   m_running = false;
-  m_timer->stop();
 }
 
 void pDataCollector::stop()
 {
   m_running = false;
-  m_timer->stop();
 }
 
 /*!
@@ -70,6 +68,7 @@ void pDataCollector::run()
   m_dataFIFO = new pDataFIFO(m_outputFilePath, m_userPreferences);
   m_numMalformedBlocks = 0;
   m_running = true;
+  m_timer->moveToThread(this);
   m_timer->start();
   unsigned long dataBufferDimension = SRAM_DIM*2;  
   unsigned char* dataBuffer = new (std::nothrow) unsigned char[dataBufferDimension];
@@ -128,6 +127,7 @@ void pDataCollector::run()
   m_xpolFpga->usbController()->readUsbSettings();
   m_xpolFpga->usbController()->writeUsbSettings();
   m_xpolFpga->usbController()->readUsbSettings();
+  m_timer->stop();
   delete m_dataFIFO;
   delete [] dataBuffer;
 }
