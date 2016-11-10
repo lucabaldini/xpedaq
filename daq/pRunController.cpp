@@ -66,7 +66,7 @@ pRunController::pRunController(std::string configFilePath,
   connect(m_timer, SIGNAL(timeout()), this, SLOT(updateRunInfo()));
   m_usbController = new pUsbController();
   m_xpolFpga = new pXpolFpga(m_usbController);
-  m_dataCollector = new pDataCollector(m_usbController, m_emitBlocks);
+  m_dataCollector = new pDataCollector(m_xpolFpga, m_emitBlocks);
   // This ensures that when the data collection thread is finished, the
   // run control is stopped.
   connect(m_dataCollector, SIGNAL(finished()), this, SLOT(setStopped()));

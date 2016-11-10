@@ -58,7 +58,7 @@ class pDataCollector : public QThread
   
  public:
 
-  pDataCollector(pUsbController *usbController, bool emitBlocks=false);
+  pDataCollector(pXpolFpga *xpolFpga, bool emitBlocks=false);
   ~pDataCollector() {;}
   void reset();
   void setupRun(std::string outputFilePath, long int startSeconds,
@@ -86,7 +86,7 @@ class pDataCollector : public QThread
  private:
 
   bool m_running;
-  pUsbController *m_usbController;
+  pXpolFpga *m_xpolFpga;
   pDataFIFO *m_dataFIFO;
   /// \brief QTimer object for updating vref.
   QTimer *m_timer;

@@ -45,6 +45,7 @@ class pXpolFpga : public QObject
   void configXPMWindowed(pDetectorConfiguration *configuration);
   void writeAddress(unsigned short X, unsigned short Y);
   
+  pUsbController *usbController() const {return m_usbController;}
 
   void setDacThreshold(pDetectorConfiguration *configuration);
   void setDacConfig();

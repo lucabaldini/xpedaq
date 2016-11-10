@@ -23,8 +23,8 @@ with this program; if not, write to the Free Software Foundation Inc.,
 #include "pDataCollector.h"
 
 
-pDataCollector::pDataCollector(pUsbController *usbController, bool emitBlocks):
-  m_usbController(usbController),
+pDataCollector::pDataCollector(pXpolFpga *xpolFpga, bool emitBlocks):
+  m_xpolFpga(xpolFpga),
   m_numMalformedBlocks(0),
   m_emitBlocks(emitBlocks)
 { 
@@ -32,7 +32,7 @@ pDataCollector::pDataCollector(pUsbController *usbController, bool emitBlocks):
   qRegisterMetaType<pDataBlock>("pDataBlock");
   // Setup the timer to update the vref.
   m_timer = new QTimer();
-  m_timer->setInterval(60000);
+  m_timer->setInterval(1000);
   m_timer->setSingleShot(true);
   connect(this, SIGNAL(thresholdUpdated()), m_timer, SLOT(start()));
 }
@@ -81,11 +81,12 @@ void pDataCollector::run()
   }  
   int maxSize = m_detectorConfiguration->maxBufferSize();
   pDataBlock *curDataBlock;
-  m_usbController->resetSequencer();
-  m_usbController->startSequencer();
+  m_xpolFpga->usbController()->resetSequencer();
+  m_xpolFpga->usbController()->startSequencer();
   int errorCode = 0;
   while (m_running) {
-    errorCode = m_usbController->readData(dataBuffer, &dataBufferDimension);
+    errorCode = m_xpolFpga->usbController()->readData(dataBuffer,
+						      &dataBufferDimension);
     if (errorCode) {
       m_running = false;
       m_timer->stop();
@@ -115,23 +116,18 @@ void pDataCollector::run()
       // see https://github.com/lucabaldini/xpedaq/issues/137
       // (note that vref is read and accounted for in the function call to
       // pXpolFpga::setDacThreshold().)
-      // We're creating a pointer to a pXpolFpga object, here, while in
-      // principle we could pass downstream the one in the run controlerr.
-      // If we end up keeping this we might want to cleanup things.
-      // Also note that we only want to do this when operating in window mode.
       if (!m_fullFrame && !m_timer->isActive()) {
-	pXpolFpga xpol(m_usbController);
-	xpol.setDacThreshold(m_detectorConfiguration);
+	m_xpolFpga->setDacThreshold(m_detectorConfiguration);
 	emit thresholdUpdated();
       }
     }
   }
-  m_usbController->stopSequencer();
-  m_usbController->flushQUsbFIFO();
-  m_usbController->resetSequencer();
-  m_usbController->readUsbSettings();
-  m_usbController->writeUsbSettings();
-  m_usbController->readUsbSettings();
+  m_xpolFpga->usbController()->stopSequencer();
+  m_xpolFpga->usbController()->flushQUsbFIFO();
+  m_xpolFpga->usbController()->resetSequencer();
+  m_xpolFpga->usbController()->readUsbSettings();
+  m_xpolFpga->usbController()->writeUsbSettings();
+  m_xpolFpga->usbController()->readUsbSettings();
   delete m_dataFIFO;
   delete [] dataBuffer;
 }
