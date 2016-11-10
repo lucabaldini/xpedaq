@@ -32,7 +32,7 @@ pDataCollector::pDataCollector(pUsbController *usbController, bool emitBlocks):
   qRegisterMetaType<pDataBlock>("pDataBlock");
   // Setup the timer to update the vref.
   m_timer = new QTimer();
-  m_timer->setInterval(10000);
+  m_timer->setInterval(60000);
   m_timer->setSingleShot(true);
   connect(this, SIGNAL(thresholdUpdated()), m_timer, SLOT(start()));
 }
