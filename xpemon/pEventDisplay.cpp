@@ -134,15 +134,17 @@ QSize pEventDisplay::colorScaleLayoutSize() const
 void pEventDisplay::adjustExternalMargins(int size)
 {
   //Adjust external margins so that the display area is a square size x size
-  int bottomMargin = plotLayout()->outerRect().height() - size +
-                     - axisRect()->margins().top() +
-                     - axisRect()->margins().bottom();
-  int rightMargin = plotLayout()->outerRect().width() - size +
+  int verticalMargin = plotLayout()->outerRect().height() - size +
+                       - axisRect()->margins().top() +
+                       - axisRect()->margins().bottom();
+  int horizMargin = plotLayout()->outerRect().width() - size +
                     - axisRect()->margins().left() +
                     - axisRect()->margins().right() +
                     - colorScaleLayoutWidth() +
                     - plotLayout()->columnSpacing();
-  plotLayout()->setMargins(QMargins(0, 0, rightMargin, bottomMargin));
+  int leftMargin = horizMargin/2;
+  plotLayout()->setMargins(QMargins(leftMargin, 0,
+                                   horizMargin - leftMargin, verticalMargin));
 }
 
 
