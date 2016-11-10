@@ -69,7 +69,8 @@ class pDataCollector : public QThread
 
  signals:
  
-  void blockRead(const pDataBlock& passedDataBlock);  
+  void blockRead(const pDataBlock& passedDataBlock);
+  void thresholdUpdated();
 
  public slots:
 

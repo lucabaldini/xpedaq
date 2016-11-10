@@ -34,6 +34,7 @@ pDataCollector::pDataCollector(pUsbController *usbController, bool emitBlocks):
   m_timer = new QTimer();
   m_timer->setInterval(10000);
   m_timer->setSingleShot(true);
+  connect(this, SIGNAL(thresholdUpdated()), m_timer, SLOT(start()));
 }
 
 /*! Called by the run controller in pRunController::init() and
@@ -121,9 +122,8 @@ void pDataCollector::run()
       if (!m_fullFrame && !m_timer->isActive()) {
 	pXpolFpga xpol(m_usbController);
 	xpol.setDacThreshold(m_detectorConfiguration);
-	m_timer->start();
+	emit thresholdUpdated();
       }
-      // Done with the hack.
     }
   }
   m_usbController->stopSequencer();
