@@ -58,7 +58,8 @@ class pDataCollector : public QThread
   
  public:
 
-  pDataCollector(pXpolFpga *xpolFpga, bool emitBlocks=false);
+  pDataCollector(pXpolFpga *xpolFpga, bool emitBlocks=false,
+		 int thresholdUpdateInterval = 10);
   ~pDataCollector() {;}
   void reset();
   void setupRun(std::string outputFilePath, long int startSeconds,
@@ -66,6 +67,8 @@ class pDataCollector : public QThread
 		pDetectorConfiguration *configuration);
   int numDataBlocks() const {return m_dataFIFO->getNumAcquiredDataBlocks();}
   int numEvents() const {return m_dataFIFO->getNumAcquiredEvents();}
+  long int currentSeconds() const;
+  long int secondsSinceLastThresholdUpdate() const;
 
  signals:
  
@@ -75,8 +78,6 @@ class pDataCollector : public QThread
  public slots:
 
   void stop();
-
-
   
  protected:
 
@@ -88,8 +89,9 @@ class pDataCollector : public QThread
   bool m_running;
   pXpolFpga *m_xpolFpga;
   pDataFIFO *m_dataFIFO;
-  /// \brief QTimer object for updating vref.
-  QTimer *m_timer;
+  /// \brief The interval for the vref update in seconds.
+  int m_thresholdUpdateInterval;
+  long int m_lastThresholdUpdate;
   std::string m_outputFilePath;
   pUserPreferences *m_userPreferences;
   pDetectorConfiguration *m_detectorConfiguration;

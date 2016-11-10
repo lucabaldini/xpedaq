@@ -23,19 +23,26 @@ with this program; if not, write to the Free Software Foundation Inc.,
 #include "pDataCollector.h"
 
 
-pDataCollector::pDataCollector(pXpolFpga *xpolFpga, bool emitBlocks):
+pDataCollector::pDataCollector(pXpolFpga *xpolFpga, bool emitBlocks,
+			       int thresholdUpdateInterval):
   m_xpolFpga(xpolFpga),
+  m_thresholdUpdateInterval(thresholdUpdateInterval),
   m_numMalformedBlocks(0),
   m_emitBlocks(emitBlocks)
 { 
   //Register pDataBlock as object that can be emitted as signals
   qRegisterMetaType<pDataBlock>("pDataBlock");
-  // Setup the timer to update the vref.
-  m_timer = new QTimer();
-  m_timer->setInterval(10000);
-  m_timer->setSingleShot(true);
-  connect(this, SIGNAL(thresholdUpdated()), m_timer, SLOT(start()));
+  m_lastThresholdUpdate = 0;
 }
+
+
+/*! Return the current system time in seconds.
+ */
+long int pDataCollector::currentSeconds() const
+{
+  return static_cast<long int> (time(NULL));
+}
+
 
 /*! Called by the run controller in pRunController::init() and
   pRunController::fsmStartRun(); namely at beginning and each time the
@@ -65,18 +72,17 @@ void pDataCollector::stop()
 
 void pDataCollector::run()
 {
+  // Force a threshold update upon start run.
+  m_lastThresholdUpdate = 0;
   m_dataFIFO = new pDataFIFO(m_outputFilePath, m_userPreferences);
   m_numMalformedBlocks = 0;
   m_running = true;
-  m_timer->moveToThread(this);
-  m_timer->start();
   unsigned long dataBufferDimension = SRAM_DIM*2;  
   unsigned char* dataBuffer = new (std::nothrow) unsigned char[dataBufferDimension];
   if (dataBuffer == nullptr)
   {
     std::cout << "allocation failed" << std::endl;
     m_running = false;
-    m_timer->stop();
   }  
   int maxSize = m_detectorConfiguration->maxBufferSize();
   pDataBlock *curDataBlock;
@@ -88,7 +94,6 @@ void pDataCollector::run()
 						      &dataBufferDimension);
     if (errorCode) {
       m_running = false;
-      m_timer->stop();
     } else {
       if (m_fullFrame) {
 	curDataBlock = new pDataBlock(dataBuffer);
@@ -115,9 +120,11 @@ void pDataCollector::run()
       // see https://github.com/lucabaldini/xpedaq/issues/137
       // (note that vref is read and accounted for in the function call to
       // pXpolFpga::setDacThreshold().)
-      if (!m_fullFrame && !m_timer->isActive()) {
+      long int seconds = currentSeconds();
+      if (!m_fullFrame && 
+	  seconds - m_lastThresholdUpdate >= m_thresholdUpdateInterval) {
 	m_xpolFpga->setDacThreshold(m_detectorConfiguration);
-	emit thresholdUpdated();
+	m_lastThresholdUpdate = seconds;
       }
     }
   }
@@ -127,7 +134,6 @@ void pDataCollector::run()
   m_xpolFpga->usbController()->readUsbSettings();
   m_xpolFpga->usbController()->writeUsbSettings();
   m_xpolFpga->usbController()->readUsbSettings();
-  m_timer->stop();
   delete m_dataFIFO;
   delete [] dataBuffer;
 }
