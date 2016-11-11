@@ -23,7 +23,7 @@ with this program; if not, write to the Free Software Foundation Inc.,
 
 pEventDisplay::pEventDisplay(pColorMapOptions options) :
   m_options(options),
-  m_minDisplaySurfaceSize(600),
+  m_minDisplaySurfaceSize(400),
   m_displayFirstPass(false),
   m_displaySearchRegion(false),
   m_displaySecondPass(false)
