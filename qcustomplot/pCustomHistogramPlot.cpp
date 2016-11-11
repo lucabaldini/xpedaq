@@ -1,4 +1,5 @@
 #include "pCustomHistogramPlot.h"
+#include <iostream>
 
 pCustomHistogramPlot::pCustomHistogramPlot(pBasicPlotOptions options,
                                            bool logScaleY):
@@ -12,19 +13,13 @@ pCustomHistogramPlot::pCustomHistogramPlot(pBasicPlotOptions options,
   yAxis->setLabel(m_options.m_yTitle);
   m_bars->setPen(m_options.m_pen);
   m_bars->setBrush(m_options.m_brush);
-
-  // Initializing range, binWidth and tolerance with default values
+  
+  // Initializing range, bars width and tolerance with default values
   m_centerPosTolerance = 1.e-5;
   m_bars->keyAxis()->setRange(0., 1.);
   m_bars->setWidth(0.1);
-  if (m_isLogScaleY) setLogScaleY();
-   
-  // Some graphical stuff
-  legend->setVisible(false);
-  QFont legendFont = font();
-  legendFont.setPointSize(10);
-  legend->setFont(legendFont);
-  legend->setSelectedFont(legendFont);
+  if (m_isLogScaleY) setLogScaleY(); 
+  
   setupInteractions();
 }
 
@@ -97,8 +92,7 @@ void pCustomHistogramPlot::paintCoordinate()
 {  
   double x = xAxis->pixelToCoord(m_cursorPos.x());
   double y = yAxis->pixelToCoord(m_cursorPos.y());
-  int fontSize = 12;
-  QFont font("times", fontSize);
+  QFont font;
   QFontMetrics fm(font);
   QPainter painter(this);
   painter.setFont(font);

@@ -44,6 +44,7 @@ namespace xpemonPlotOptions
   extern const double xPixelMax;
   extern const double yPixelMax;
   QCPColorGradient loadRedToWhiteGradient();
+  extern const QMargins defaultMargins;
 }
 
 #endif // XPEMONPLOTOPTIONS_H

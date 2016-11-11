@@ -21,7 +21,6 @@ with this program; if not, write to the Free Software Foundation Inc.,
 
 #include "pMonitorTab.h"
 
-using namespace xpemonPlotOptions;
 
 /*!
  */
@@ -41,11 +40,14 @@ pMonitorTab::pMonitorTab() :
 
 void pMonitorTab::setupWindowSizePlot()
 {
+  using namespace xpemonPlotOptions;
   pBasicPlotOptions windowSizeOptions = pBasicPlotOptions("Window size",
     "Window size [pixel]", "Events/bin", defaultPen, defaultBrush);
   m_windowSizeHist = new pHistogram(windowSizeNbins, windowSizeXmin,
                                     windowSizeXmax);
   m_windowSizePlot = new pHistogramPlot(m_windowSizeHist, windowSizeOptions);
+  m_windowSizePlot->axisRect()->setAutoMargins(QCP::msNone);
+  m_windowSizePlot->axisRect()->setMargins(defaultMargins);
   m_groupBoxGridLayout -> addWidget(m_windowSizePlot, 0, 0);
 }
 
@@ -63,29 +65,36 @@ void pMonitorTab::setupWindowSizePlot()
 
 void pMonitorTab::setupPulseHeightPlot()
 {
+  using namespace xpemonPlotOptions;
   pBasicPlotOptions pulseHeightOptions = pBasicPlotOptions("ADC sum",
     "Pulse height [ADC counts]", "Events/bin", defaultPen, defaultBrush);
   m_pulseHeightHist = new pHistogram(pulseHeightNbins, pulseHeightXmin,
                                      pulseHeightXmax);
   m_pulseHeightPlot = new pHistogramPlot(m_pulseHeightHist,
                                          pulseHeightOptions);
+  m_pulseHeightPlot->axisRect()->setAutoMargins(QCP::msNone);
+  m_pulseHeightPlot->axisRect()->setMargins(defaultMargins);
   m_groupBoxGridLayout -> addWidget(m_pulseHeightPlot, 0, 1);  
 }
 
 
 void pMonitorTab::setupModulationPlot()
 {
+  using namespace xpemonPlotOptions;
   pBasicPlotOptions modulationOptions = pBasicPlotOptions("Modulation",
     "Phi [deg]", "Events/bin", defaultPen, defaultBrush);
   m_modulationHist = new pHistogram(modulationNbins, modulationThetaMin,
                                     modulationThetaMax);
   m_modulationPlot = new pHistogramPlot(m_modulationHist, modulationOptions);
+  m_modulationPlot->axisRect()->setAutoMargins(QCP::msNone);
+  m_modulationPlot->axisRect()->setMargins(defaultMargins);
   m_groupBoxGridLayout -> addWidget(m_modulationPlot, 1, 1);
 }
 
 
 void pMonitorTab::setupHitmapPlot()
 {
+  using namespace xpemonPlotOptions;
   pColorMapOptions hitmapOptions ("Hit map", "Column", "Row", "ADC counts",
                                   QCPColorGradient::gpThermal, false);
   /* We want the bins to be centered at their coordinate value so that,
