@@ -64,6 +64,7 @@ pCutBoxWidget::pCutBoxWidget(const pMonitorPreferences &preferences,
   addWidget(m_windowSizeLimits->minEdit(), 4, 1);
   addWidget(m_windowSizeLimits->maxEdit(), 4, 2);
   m_pulseHeightLimits->setBottom(0);
+  freezeHeight();
 }
 
 

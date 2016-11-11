@@ -53,3 +53,10 @@ void pQtGroupBoxWidget::addSpace()
 {
   m_groupBoxGridLayout->setRowMinimumHeight(rowCount(), 20);
 }
+
+
+void pQtGroupBoxWidget::freezeHeight()
+{
+  adjustSize();
+  setFixedHeight(height());
+}

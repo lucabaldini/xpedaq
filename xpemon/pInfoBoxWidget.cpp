@@ -72,6 +72,7 @@ pInfoBoxWidget::pInfoBoxWidget(QWidget *parent):
   m_drawSecondPassCheckBox = new QCheckBox("Draw second-pass moments analysis");
   addWidget(m_drawSecondPassCheckBox, rowCount(), 0, 1, 2);
   initializeText();
+  freezeHeight();
 }
 
 

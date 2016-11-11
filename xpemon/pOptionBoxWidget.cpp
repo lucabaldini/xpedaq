@@ -32,23 +32,24 @@ pOptionBoxWidget::pOptionBoxWidget(const pMonitorPreferences &preferences,
   m_socketPortEdit = new pQtCustomLineEdit<unsigned int>(
                                                   m_preferences.m_socketPort);
   m_socketPortEdit->setRangeMax(65535); // maximum value for Udp socket port
-  addWidget(m_socketPortLabel, rowCount(), 0, 1, 2);
-  addWidget(m_socketPortEdit, rowCount() - 1, 2);  
+  addWidget(m_socketPortLabel, 0, 0);
+  addWidget(m_socketPortEdit, 0, 1);  
   //Refresh interval option init
   m_refreshIntervalLabel = new pQtCustomTextLabel(this,
                                                   "Refresh interval [ms]");
   m_refreshIntervalEdit = new pQtCustomLineEdit<double>(
                                              m_preferences.m_refreshInterval);
-  addWidget(m_refreshIntervalLabel, rowCount(), 0, 1, 2);
-  addWidget(m_refreshIntervalEdit, rowCount() - 1, 2);
+  addWidget(m_refreshIntervalLabel, 1, 0);
+  addWidget(m_refreshIntervalEdit, 1, 1);
   m_refreshIntervalEdit->setRangeMin(500.); // would be too fast otherwise
   //Zero suppression option init
   m_zeroSupThrLabel = new pQtCustomTextLabel(this,"Zero suppression");
   m_zeroSupThrEdit = new pQtCustomLineEdit<unsigned int>(
                                     m_preferences.m_zeroSuppressionThreshold);
   m_zeroSupThrEdit->setRangeMin(0);
-  addWidget(m_zeroSupThrLabel, rowCount(), 0, 1, 2);
-  addWidget(m_zeroSupThrEdit, rowCount() - 1, 2);
+  addWidget(m_zeroSupThrLabel, 2, 0);
+  addWidget(m_zeroSupThrEdit, 2, 1);
+  freezeHeight();
 }
 
 
