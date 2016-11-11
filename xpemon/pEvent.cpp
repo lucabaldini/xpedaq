@@ -50,19 +50,24 @@ pEvent::pEvent(int firstCol, int lastCol, int firstRow, int lastRow,
 
 const event::Hit& pEvent::operator() (int index) const{
     if (index<0 || index > evtSize())
-      return m_hits.at(0);
-    else
-      return m_hits.at(index);
+      throw -1;
+    return m_hits.at(index);
 }
 
 
 const event::Hit& pEvent::operator() (const OffsetCoordinate& p) const{
-  return m_hits.at(index(p));
+  int id = index(p);
+  if (id<0 || id > evtSize())
+    throw -1;
+  return m_hits.at(id);
 }
 
 
 const event::Hit& pEvent::operator() (const CubeCoordinate& p) const{
-  return m_hits.at(index(p));
+  int id = index(p);
+  if (id<0 || id > evtSize())
+    throw -1;
+  return m_hits.at(id);
 }
 
 

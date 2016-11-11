@@ -564,7 +564,12 @@ void pEventDisplay::paintCoordinate()
   double y = yAxis->pixelToCoord(m_cursorPos.y());
   int col, row;
   coordToPixel(x, y, col, row);
-  //adc_count_t pixelContent = m_event(OffsetCoordinate(col, row)).counts;
+  adc_count_t pixelContent;
+  try {
+    pixelContent = m_event(OffsetCoordinate(col, row)).counts;
+  } catch (int errId) {
+    pixelContent = 0;
+  }
   QPainter painter(this);
   painter.setPen(QPen(Qt::black));  
   //Display the info 80 pixels below the bottom-left corner
@@ -572,10 +577,10 @@ void pEventDisplay::paintCoordinate()
   QPoint textPos = axisRect()->bottomLeft();
   textPos += QPoint(0, pixelPitch);
   QString cursorText = QString("col=") + QString::number(col)
-                       + QString(",  row=") + QString::number(row)
-                       + QString(",  x=") + QString::number(x)
-                       + QString(",  y=") + QString::number(y);
-                       //+ QString(", counts=") + QString::number(pixelContent);
+                       + QString(",   row=") + QString::number(row)
+                       + QString(",   x=") + QString::number(x)
+                       + QString(",   y=") + QString::number(y)
+                       + QString(",  counts=") +QString::number(pixelContent);
   painter.drawText(textPos, cursorText);  
 }
 
