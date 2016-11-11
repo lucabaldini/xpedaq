@@ -573,7 +573,7 @@ void pEventDisplay::paintCoordinate()
   QPainter painter(this);
   painter.setPen(QPen(Qt::black));  
   //Display the info 80 pixels below the bottom-left corner
-  const int pixelPitch = 80;
+  const int pixelPitch = axisRect()->margins().bottom()-20;
   QPoint textPos = axisRect()->bottomLeft();
   textPos += QPoint(0, pixelPitch);
   QString cursorText = QString("col=") + QString::number(col)
