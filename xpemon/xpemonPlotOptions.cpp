@@ -26,7 +26,7 @@ with this program; if not, write to the Free Software Foundation Inc.,
 const QPen xpemonPlotOptions::defaultPen = QPen(Qt::NoPen);
 const QBrush xpemonPlotOptions::defaultBrush =
                                             QBrush(QColor(0, 10, 255, 180));
-const QMargins xpemonPlotOptions::defaultMargins = QMargins(100, 8, 2, 80);
+const QMargins xpemonPlotOptions::defaultMargins = QMargins(82, 8, 2, 60);
 
 // Window size
 const unsigned int xpemonPlotOptions::windowSizeNbins = 50;

@@ -35,7 +35,7 @@ pEventDisplay::pEventDisplay(pColorMapOptions options) :
   axisRect()->setupFullAxesBox(false);
   axisRect()->setAutoMargins(QCP::msNone);
   //Leave some space at the borders
-  QMargins mapMargins = QMargins(95, 70, 95, 120);
+  QMargins mapMargins = QMargins(70, 50, 75, 100);
   axisRect()->setMargins(mapMargins);
   axisRect()->setMinimumSize(minAxisRectSize());
   axisRect()->center();
@@ -573,7 +573,7 @@ void pEventDisplay::paintCoordinate()
   QPainter painter(this);
   painter.setPen(QPen(Qt::black));  
   //Display the info 80 pixels below the bottom-left corner
-  const int pixelPitch = axisRect()->margins().bottom()-20;
+  const int pixelPitch = axisRect()->margins().bottom()-10;
   QPoint textPos = axisRect()->bottomLeft();
   textPos += QPoint(0, pixelPitch);
   QString cursorText = QString("col=") + QString::number(col)
