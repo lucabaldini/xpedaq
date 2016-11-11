@@ -23,7 +23,7 @@ with this program; if not, write to the Free Software Foundation Inc.,
 
 pEventDisplay::pEventDisplay(pColorMapOptions options) :
   m_options(options),
-  m_minDisplaySurfaceSize(400),
+  m_minDisplayEdge(400),
   m_displayFirstPass(false),
   m_displaySearchRegion(false),
   m_displaySecondPass(false)
@@ -35,7 +35,7 @@ pEventDisplay::pEventDisplay(pColorMapOptions options) :
   axisRect()->setupFullAxesBox(false);
   axisRect()->setAutoMargins(QCP::msNone);
   //Leave some space at the borders
-  QMargins mapMargins = QMargins(75, 50, 65, 100);
+  QMargins mapMargins = QMargins(95, 70, 85, 120);
   axisRect()->setMargins(mapMargins);
   axisRect()->setMinimumSize(minAxisRectSize());
   axisRect()->center();
@@ -95,14 +95,14 @@ pEventDisplay::pEventDisplay(pColorMapOptions options) :
 
 int pEventDisplay::minAxisRectWidth() const
 {
-  return m_minDisplaySurfaceSize + axisRect()->margins().right() +
+  return m_minDisplayEdge + axisRect()->margins().right() +
          axisRect()->margins().left();
 }
 
 
 int pEventDisplay::minAxisRectHeight() const
 {
-  return m_minDisplaySurfaceSize + axisRect()->margins().top()
+  return m_minDisplayEdge + axisRect()->margins().top()
          + axisRect()->margins().bottom();
 }
 
@@ -133,7 +133,7 @@ QSize pEventDisplay::colorScaleLayoutSize() const
 
 void pEventDisplay::adjustExternalMargins(int size)
 {
-  //Adjust external margins so that the display area is a square size x size
+  //Adjust external margins so that the display area is a size x size square
   int verticalMargin = plotLayout()->outerRect().height() - size +
                        - axisRect()->margins().top() +
                        - axisRect()->margins().bottom();
