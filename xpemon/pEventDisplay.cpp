@@ -35,7 +35,7 @@ pEventDisplay::pEventDisplay(pColorMapOptions options) :
   axisRect()->setupFullAxesBox(false);
   axisRect()->setAutoMargins(QCP::msNone);
   //Leave some space at the borders
-  QMargins mapMargins = QMargins(95, 70, 85, 120);
+  QMargins mapMargins = QMargins(95, 70, 95, 120);
   axisRect()->setMargins(mapMargins);
   axisRect()->setMinimumSize(minAxisRectSize());
   axisRect()->center();
