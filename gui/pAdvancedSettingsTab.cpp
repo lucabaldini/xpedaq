@@ -27,10 +27,10 @@ with this program; if not, write to the Free Software Foundation Inc.,
 pAdvancedSettingsTab::pAdvancedSettingsTab()
   : pQtCustomTab("Advanced settings")
 {
-  m_clockFasterLabel = "10 MHz";
-  m_clockFastLabel = "5 MHz";
-  m_clockSlowLabel = "2.5 MHz";
-  m_clockSlowerLabel = "1.25 MHz";
+  m_clockFasterLabel = "10";
+  m_clockFastLabel = "5";
+  m_clockSlowLabel = "2.5";
+  m_clockSlowerLabel = "1.25";
   m_subSamplesZeroLabel = "0";
   m_subSamplesSmallerLabel = "1";
   m_subSamplesSmallLabel = "2";
@@ -56,6 +56,8 @@ void pAdvancedSettingsTab::setupTimingWidgets()
   m_clockFrequencyComboBox->insertItem(1, m_clockFastLabel);
   m_clockFrequencyComboBox->insertItem(2, m_clockSlowLabel);
   m_clockFrequencyComboBox->insertItem(3, m_clockSlowerLabel);
+  // Force the combo box to be large enough.
+  m_clockFrequencyComboBox->setFixedWidth(xpolgui::kTabSpinBoxesWidth);
   m_clockFrequencyUnitsLabel = new pQtCustomTextLabel(this,
 						      xpolgui::kMHzUnitsLabel);
   m_groupBoxGridLayout->addWidget(m_clockFrequencyLabel, row, 0);

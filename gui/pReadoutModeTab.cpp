@@ -48,6 +48,7 @@ void pReadoutModeTab::setupBufferModeWidgets()
   int row = m_groupBoxGridLayout->rowCount();
   m_bufferModeLabel = new pQtCustomTextLabel(this, "Buffer size");
   m_bufferModeComboBox = new QComboBox(this);
+  m_bufferModeComboBox->setFixedWidth(xpolgui::kTabSpinBoxesWidth);
   m_bufferModeComboBox->insertItem(0, m_smallBufferLabel);
   m_bufferModeComboBox->insertItem(1, m_largeBufferLabel);
   m_groupBoxGridLayout->addWidget(m_bufferModeLabel, row, 0);
