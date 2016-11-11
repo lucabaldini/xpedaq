@@ -99,6 +99,7 @@ class pAdvancedSettingsTab : public pQtCustomTab
   void setupTimingWidgets();
   void setupPedSubWidgets();
   void setupWindowWidgets();
+  void disableSpinBoxLineEdits();
 };
 
 #endif

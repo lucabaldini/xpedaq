@@ -20,6 +20,7 @@ with this program; if not, write to the Free Software Foundation Inc.,
 ***********************************************************************/
 
 #include "pAdvancedSettingsTab.h"
+#include <QLineEdit>
 
 
 /*!
@@ -41,7 +42,21 @@ pAdvancedSettingsTab::pAdvancedSettingsTab()
   setupPedSubWidgets();
   addVerticalSpacer();
   setupWindowWidgets();
+  disableSpinBoxLineEdits();
   freezeSize(xpolgui::kTabGroupBoxWidth);
+}
+
+
+/*! Disable the underlying line edit to avoid setting forbidden values
+  by hand (see issue #132).
+ */
+void pAdvancedSettingsTab::disableSpinBoxLineEdits()
+{
+  m_clockShiftSpinBox->findChild<QLineEdit*>()->setReadOnly(true);
+  m_pedSubDelaySpinBox->findChild<QLineEdit*>()->setReadOnly(true);
+  m_trgEnableDelaySpinBox->findChild<QLineEdit*>()->setReadOnly(true);
+  m_trgEnableDelaySpinBox->findChild<QLineEdit*>()->setReadOnly(true);
+  m_minWindowSizeSpinBox->findChild<QLineEdit*>()->setReadOnly(true);
 }
 
 
