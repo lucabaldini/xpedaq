@@ -156,6 +156,15 @@ void pAdvancedSettingsTab::setupWindowWidgets()
   m_maxWindowSizeSpinBox->setSingleStep(xpoldetector::kMaxWindowSizeStep);
   m_groupBoxGridLayout->addWidget(m_maxWindowSizeLabel, row, 0);
   m_groupBoxGridLayout->addWidget(m_maxWindowSizeSpinBox, row, 1);
+  row ++;
+  m_windowMarginHighLabel =
+    new pQtCustomTextLabel(this, "Window padding");
+  m_windowMarginHighComboBox = new QComboBox(this);
+  m_windowMarginHighComboBox->insertItem(0, "Small");
+  m_windowMarginHighComboBox->insertItem(0, "Large");
+  m_groupBoxGridLayout->addWidget(m_windowMarginHighLabel, row, 0);
+  m_groupBoxGridLayout->addWidget(m_windowMarginHighComboBox, row, 1);
+  m_windowMarginHighComboBox->setDisabled(true);
 }
 
 

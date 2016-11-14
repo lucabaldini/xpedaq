@@ -51,6 +51,7 @@ class pAdvancedSettingsTab : public pQtCustomTab
   unsigned short trgEnableDelay() const;
   unsigned short minWindowSize() const;
   unsigned short maxWindowSize() const;
+  //bool windowMarginHigh() const;
 
   // Display functions.
   void displayClockFrequency(unsigned short frequency);
@@ -60,9 +61,11 @@ class pAdvancedSettingsTab : public pQtCustomTab
   void displayTrgEnableDelay(unsigned short delay);
   void displayMinWindowSize(unsigned short size);
   void displayMaxWindowSize(unsigned short size);
+  //void displayWindowMarginHigh(bool marginHigh);
   void displayConfiguration(pDetectorConfiguration *configuration);
 
- public slots: 
+ public slots:
+   
   void disableNumPedSamplesComboBox(bool disable = true);
   void disableMinWindowSizeSpinBox(bool disable = true);
   void disableMaxWindowSizeSpinBox(bool disable = true);
@@ -96,6 +99,8 @@ class pAdvancedSettingsTab : public pQtCustomTab
   QSpinBox *m_minWindowSizeSpinBox;
   pQtCustomTextLabel *m_maxWindowSizeLabel;
   QSpinBox *m_maxWindowSizeSpinBox;
+  QComboBox *m_windowMarginHighComboBox;
+  pQtCustomTextLabel *m_windowMarginHighLabel;
   void setupTimingWidgets();
   void setupPedSubWidgets();
   void setupWindowWidgets();
