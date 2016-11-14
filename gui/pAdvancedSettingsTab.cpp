@@ -37,6 +37,8 @@ pAdvancedSettingsTab::pAdvancedSettingsTab()
   m_subSamplesSmallLabel = "2";
   m_subSamplesLargeLabel = "4";
   m_subSamplesLargerLabel = "8";
+  m_windowMarginHighTrueLabel = "Large";
+  m_windowMarginHighFalseLabel = "Small";
   setupTimingWidgets();
   addVerticalSpacer();
   setupPedSubWidgets();
@@ -160,11 +162,10 @@ void pAdvancedSettingsTab::setupWindowWidgets()
   m_windowMarginHighLabel =
     new pQtCustomTextLabel(this, "Window padding");
   m_windowMarginHighComboBox = new QComboBox(this);
-  m_windowMarginHighComboBox->insertItem(0, "Small");
-  m_windowMarginHighComboBox->insertItem(0, "Large");
+  m_windowMarginHighComboBox->insertItem(0, m_windowMarginHighTrueLabel);
+  m_windowMarginHighComboBox->insertItem(1, m_windowMarginHighFalseLabel);
   m_groupBoxGridLayout->addWidget(m_windowMarginHighLabel, row, 0);
   m_groupBoxGridLayout->addWidget(m_windowMarginHighComboBox, row, 1);
-  m_windowMarginHighComboBox->setDisabled(true);
 }
 
 
@@ -250,6 +251,21 @@ unsigned short pAdvancedSettingsTab::maxWindowSize() const
 
 /*!
  */
+bool pAdvancedSettingsTab::windowMarginHigh() const
+{
+  QString marginHigh = m_windowMarginHighComboBox->currentText();
+  if (marginHigh == m_windowMarginHighFalseLabel){
+    return false;
+  } else if (marginHigh == m_windowMarginHighTrueLabel){
+    return true;
+  } else {
+    return false;
+  }
+}
+
+
+/*!
+ */
 void pAdvancedSettingsTab::displayClockFrequency(unsigned short frequency)
 {
   if (frequency == xpoldetector::kClockFasterFreqCode){
@@ -329,6 +345,18 @@ void pAdvancedSettingsTab::displayMaxWindowSize(unsigned short size)
 
 /*!
  */
+void pAdvancedSettingsTab::displayWindowMarginHigh(bool marginHigh)
+{
+  if (marginHigh == true){
+    m_windowMarginHighComboBox->setCurrentIndex(0);
+  } else {
+    m_windowMarginHighComboBox->setCurrentIndex(1);
+  }
+}
+
+
+/*!
+ */
 void pAdvancedSettingsTab::displayConfiguration(pDetectorConfiguration
 						*configuration)
 {
@@ -339,6 +367,7 @@ void pAdvancedSettingsTab::displayConfiguration(pDetectorConfiguration
   displayTrgEnableDelay(configuration->trgEnableDelay());
   displayMinWindowSize(configuration->minWindowSize());
   displayMaxWindowSize(configuration->maxWindowSize());
+  displayWindowMarginHigh(configuration->windowMarginHigh());
 }
 
 

@@ -51,7 +51,7 @@ class pAdvancedSettingsTab : public pQtCustomTab
   unsigned short trgEnableDelay() const;
   unsigned short minWindowSize() const;
   unsigned short maxWindowSize() const;
-  //bool windowMarginHigh() const;
+  bool windowMarginHigh() const;
 
   // Display functions.
   void displayClockFrequency(unsigned short frequency);
@@ -61,7 +61,7 @@ class pAdvancedSettingsTab : public pQtCustomTab
   void displayTrgEnableDelay(unsigned short delay);
   void displayMinWindowSize(unsigned short size);
   void displayMaxWindowSize(unsigned short size);
-  //void displayWindowMarginHigh(bool marginHigh);
+  void displayWindowMarginHigh(bool marginHigh);
   void displayConfiguration(pDetectorConfiguration *configuration);
 
  public slots:
@@ -81,6 +81,8 @@ class pAdvancedSettingsTab : public pQtCustomTab
   QString m_subSamplesSmallLabel;
   QString m_subSamplesLargeLabel;
   QString m_subSamplesLargerLabel;
+  QString m_windowMarginHighTrueLabel;
+  QString m_windowMarginHighFalseLabel;
   pQtCustomTextLabel *m_clockFrequencyLabel;
   QComboBox *m_clockFrequencyComboBox;
   pQtCustomTextLabel *m_clockFrequencyUnitsLabel;

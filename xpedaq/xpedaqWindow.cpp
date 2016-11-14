@@ -106,6 +106,7 @@ pDetectorConfiguration* xpedaqWindow::detectorConfiguration(int mode)
   configuration->setTrgEnableDelay(m_advancedSettingsTab->trgEnableDelay());
   configuration->setMinWindowSize(m_advancedSettingsTab->minWindowSize());
   configuration->setMaxWindowSize(m_advancedSettingsTab->maxWindowSize());
+  configuration->setWindowMarginHigh(m_advancedSettingsTab->windowMarginHigh());
   return configuration;
 }
 
