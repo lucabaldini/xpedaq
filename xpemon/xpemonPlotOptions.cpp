@@ -29,9 +29,9 @@ const QBrush xpemonPlotOptions::defaultBrush =
 const QMargins xpemonPlotOptions::defaultMargins = QMargins(82, 8, 2, 60);
 
 // Window size
-const unsigned int xpemonPlotOptions::windowSizeNbins = 50;
+const unsigned int xpemonPlotOptions::windowSizeNbins = 45;
 const double xpemonPlotOptions::windowSizeXmin = 0.;
-const double xpemonPlotOptions::windowSizeXmax = 2000.;
+const double xpemonPlotOptions::windowSizeXmax = 1600.;
 
 // Cluster size
 const unsigned int xpemonPlotOptions::clusterSizeNbins = 100;
