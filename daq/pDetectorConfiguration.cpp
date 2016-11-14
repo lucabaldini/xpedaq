@@ -133,8 +133,6 @@ void pDetectorConfiguration::writeToFile(std::string filePath)
   for (int i = 0; i <  NUM_READOUT_CLUSTERS; i++) {
     xpolio::kIOManager->write(outputFile, thresholdDac(i));
   }
-  //xpolio::kIOManager->write(outputFile, "//Timing code//");
-  //xpolio::kIOManager->write(outputFile, timingCode());
   xpolio::kIOManager->write(outputFile, "//Clock frequency code//");
   xpolio::kIOManager->write(outputFile, clockFrequency());
   xpolio::kIOManager->write(outputFile, "//Clock shift//");
@@ -149,6 +147,8 @@ void pDetectorConfiguration::writeToFile(std::string filePath)
   xpolio::kIOManager->write(outputFile, minWindowSize());
   xpolio::kIOManager->write(outputFile, "//Maximum window size//");
   xpolio::kIOManager->write(outputFile, maxWindowSize());
+  xpolio::kIOManager->write(outputFile, "//Large window padding//");
+  xpolio::kIOManager->write(outputFile, windowMarginHigh());
   xpolio::kIOManager->closeOutputFile(outputFile);
 }
 
@@ -189,6 +189,8 @@ void pDetectorConfiguration::readFromFile(std::string filePath)
   setMinWindowSize(xpolio::kIOManager->readUnsignedShort(inputFile));
   xpolio::kIOManager->skipLine(inputFile);
   setMaxWindowSize(xpolio::kIOManager->readUnsignedShort(inputFile));
+  xpolio::kIOManager->skipLine(inputFile);
+  setWindowMarginHigh(xpolio::kIOManager->readBool(inputFile));
   xpolio::kIOManager->closeInputFile(inputFile);
 }
 
@@ -215,6 +217,7 @@ std::ostream& pDetectorConfiguration::fillStream(std::ostream& os) const
   os << "Trigger enable delay: " << trgEnableDelay() << std::endl;
   os << "Minimum window size: " << minWindowSize() << std::endl;
   os << "Maximum window size: " << maxWindowSize() << std::endl;
+  os << "Large window padding: " << windowMarginHigh() << std::endl;
   os << xpedaqutils::hline();
   return os;
 }

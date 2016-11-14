@@ -277,6 +277,10 @@ void pXpolFpga::configWindowedMode(pDetectorConfiguration *configuration)
   // 0xf means : the ASIC works in windowed mode				
   serialWrite((unsigned short)15,0x0); //to send configuration to XPOL SIMODE must be at 0
   serialWrite((unsigned short)TOXPOL_MSB_REG,((conf&0x3f)>>4)&0x03); //ASIC configuration
+
+  // In order to set the large margin for the window we should set the LSB
+  // of this group of 4 to 1---instead of 0.
+  //serialWrite(TOXPOL_MID_REG, ((((conf & 0x3f) << 4) | (configuration->windowMarginHigh() & 0x1)) & 0xf0)); 
   serialWrite((unsigned short)TOXPOL_MID_REG,((conf&0x3f)<<4)&0xf0); //ASIC configuration
 
   //FPGA Sends the content of the register to the ASIC

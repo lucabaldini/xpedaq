@@ -1,34 +1,34 @@
 //Readout mode//
 2
 //Buffer mode//
-65534
+1
 //Calibration dac//
-310
+434
 //Pixel address x//
-50
+68
 //Pixel address y//
 50
 //Threshold dacs//
-360
-360
-360
-360
-360
-360
-360
-360
-360
-360
-360
-360
-360
-360
-360
-360
+199
+199
+199
+199
+199
+199
+199
+199
+199
+199
+199
+199
+199
+199
+199
+199
 //Clock frequency code//
-32
+64
 //Clock shift//
-23
+22
 //# pedestal samples//
 2
 //Pedestal sample delay//
@@ -36,6 +36,8 @@
 //Trigger enable delay//
 5
 //Minimum window size//
-8
+13
 //Maximum window size//
-5
+3
+//Large window padding//
+0

@@ -53,6 +53,7 @@ class pDetectorConfiguration
   unsigned short trgEnableDelay() const {return m_trgEnableDelay;}
   unsigned short minWindowSize() const {return m_minWindowSize;}
   unsigned short maxWindowSize() const {return m_maxWindowSize;}
+  bool windowMarginHigh() const {return m_windowMarginHigh;}
   unsigned short probeAddressA() const {return m_probeAddressA;}
   unsigned short probeAddressB() const {return m_probeAddressB;}
   unsigned short probeAddressC() const {return m_probeAddressC;}
@@ -74,6 +75,7 @@ class pDetectorConfiguration
   void setTrgEnableDelay(unsigned short delay) {m_trgEnableDelay = delay;}
   void setMinWindowSize(unsigned short size) {m_minWindowSize = size;}
   void setMaxWindowSize(unsigned short size) {m_maxWindowSize = size;}
+  void setWindowMarginHigh(bool high) {m_windowMarginHigh = high;}
   void setProbeAddressA(unsigned short address) {m_probeAddressA = address;}
   void setProbeAddressB(unsigned short address) {m_probeAddressB = address;}
   void setProbeAddressC(unsigned short address) {m_probeAddressC = address;}
@@ -108,6 +110,7 @@ class pDetectorConfiguration
   unsigned short m_trgEnableDelay;
   unsigned short m_minWindowSize;
   unsigned short m_maxWindowSize;
+  bool m_windowMarginHigh;
   unsigned short m_probeAddressA;
   unsigned short m_probeAddressB;
   unsigned short m_probeAddressC;
