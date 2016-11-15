@@ -38,12 +38,13 @@ class pHitmap : public pMapPlot
 
     void xAxis2Update(QCPRange range);
     void yAxis2Update(QCPRange range);
+    virtual void paintCoordinate();
   
   protected:
   
     void synchronizeAxes();
-    void pixelToCoord(int col, int row, double &x, double &y) const;
-    void coordToPixel(double x, double y, int &col, int &row) const;
+    void offsetToPhysical(int col, int row, double &x, double &y) const;
+    void phyisicalToOffset(double x, double y, int &col, int &row) const;
     void adjustExternalMarginsForSize(int size);
     void forceSquaredAspectRatio();
     const int m_minPlotEdge; //minimum size of the map edge (in pixels)

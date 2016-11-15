@@ -57,7 +57,7 @@ class pCustomColorMapPlot : public QCustomPlot
     void selectionChanged();
     void mouseMoveEvent(QMouseEvent *event);
     void paintEvent(QPaintEvent *event);
-    void paintCoordinate();
+    virtual void paintCoordinate();
     void contextMenuRequest(QPoint pos);
     void setLogScaleZ();
     void setLinScaleZ();

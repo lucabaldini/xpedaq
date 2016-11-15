@@ -26,15 +26,22 @@ pHitmap::pHitmap(const pMap* map, pColorMapOptions options) :
   pMapPlot(map, options),
   m_minPlotEdge(400)
 {
-  //Initialize coordinate axes with default range
+  //Initialize axes
+  xAxis->setNumberFormat("f");
+  xAxis->setNumberPrecision(0); // no decimal digits for integer index
+  yAxis->setNumberFormat("f");
+  yAxis->setNumberPrecision(0);  // no decimal digits for integer index
+    
   xAxis2->setRange(-7.4875, 7.4875);
   xAxis2->setLabel("x[mm]");
   xAxis2->setVisible(true);
   xAxis2->setTickLabels(true);
+  
   yAxis2->setRange(-7.5991, 7.599);
   yAxis2->setLabel("y[mm]");
   yAxis2->setVisible(true);
   yAxis2->setTickLabels(true);
+  
   synchronizeAxes();
 }
 
@@ -50,14 +57,14 @@ void pHitmap::forceSquaredAspectRatio()
 }
 
 
-void pHitmap::pixelToCoord(int col, int row, double &x, double &y) const
+void pHitmap::offsetToPhysical(int col, int row, double &x, double &y) const
 {
   x = (col - 0.5 * (298.5 + row%2 )) * (xpoldetector::kColPitch);
   y = (175.5 - row) * (xpoldetector::kRowPitch);
 }
 
 
-void pHitmap::coordToPixel(double x, double y, int &col, int &row) const
+void pHitmap::phyisicalToOffset(double x, double y, int &col, int &row) const
 {
   row = std::round(175.5 - y/(xpoldetector::kRowPitch));
   col = std::round(x/(xpoldetector::kColPitch) + 0.5 * (298.5 + row%2));
@@ -67,8 +74,8 @@ void pHitmap::coordToPixel(double x, double y, int &col, int &row) const
 void pHitmap::xAxis2Update(QCPRange range)
 {
   double xMin, xMax, y;
-  pixelToCoord(range.lower, 0., xMin, y);
-  pixelToCoord(range.upper, 0., xMax, y);
+  offsetToPhysical(range.lower, 0., xMin, y);
+  offsetToPhysical(range.upper, 0., xMax, y);
   xAxis2->setRange(xMin, xMax);
 }
 
@@ -76,8 +83,8 @@ void pHitmap::xAxis2Update(QCPRange range)
 void pHitmap::yAxis2Update(QCPRange range)
 {
   double yMin, yMax, x;
-  pixelToCoord(0., range.lower, x, yMin);
-  pixelToCoord(0., range.upper, x, yMax);
+  offsetToPhysical(0., range.lower, x, yMin);
+  offsetToPhysical(0., range.upper, x, yMax);
   yAxis2->setRange(yMin, yMax);
 }
 
@@ -89,4 +96,33 @@ void pHitmap::synchronizeAxes()
           this, SLOT(xAxis2Update(QCPRange)));
   connect(yAxis, SIGNAL(rangeChanged(QCPRange)),
           this, SLOT(yAxis2Update(QCPRange)));
+}
+
+
+void pHitmap::paintCoordinate()
+{  
+  // Find offset and physical coordinates corresponding to cursor position
+  // by calling the function of the inherent axis
+  double xCoord = xAxis->pixelToCoord(m_cursorPos.x());
+  double yCoord = yAxis->pixelToCoord(m_cursorPos.y());
+  int col = static_cast<int>(xCoord+0.5); //+0.5 avoid truncating like 53.9->53
+  int row = static_cast<int>(yCoord+0.5);
+  double x = xAxis2->pixelToCoord(m_cursorPos.x());
+  double y = yAxis2->pixelToCoord(m_cursorPos.y());
+   // Find histogram cell
+  int i, j;
+  m_data->coordToCell(col, row, &j, &i);
+  double cellContent = m_data->cell(j,i);
+  // Print on the screen
+  QPainter painter(this);
+  painter.setPen(QPen(Qt::black));  
+  //Display the info 60 pixels below the bottom-left corner
+  QPoint textPos = axisRect()->bottomLeft();
+  textPos += QPoint(0, 60);
+  QString cursorText = QString("col=") + QString::number(col)
+                       + QString(", row=") + QString::number(row)
+                       + QString(", x=") + QString::number(x, 'f', 2)
+                       + QString(", y=") + QString::number(y, 'f', 2)
+                       + QString(", counts=") +QString::number(cellContent);
+  painter.drawText(textPos, cursorText);  
 }

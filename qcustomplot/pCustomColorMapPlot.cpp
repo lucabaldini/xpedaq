@@ -269,7 +269,7 @@ void pCustomColorMapPlot::paintCoordinate()
   //Display the info 60 pixels below the bottom-left corner
   QPoint textPos = axisRect()->bottomLeft();
   textPos += QPoint(0, 60);
-  QString cursorText = QString("row=") + QString::number(j) + QString(", col=")
+  QString cursorText = QString("x=") + QString::number(j) + QString(", y=")
                        + QString::number(i) + QString(", bin content=")
                        + QString::number(cellContent);
   painter.drawText(textPos, cursorText);  
