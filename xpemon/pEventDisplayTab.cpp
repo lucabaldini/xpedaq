@@ -38,7 +38,7 @@ void pEventDisplayTab::setup()
   using namespace xpemonPlotOptions;
   QCPColorGradient colorGrad = loadRedToWhiteGradient();
   pColorMapOptions eventDisplayOptions ("Event display", "x[mm]", "y[mm]",
-					"Adc counts", colorGrad.inverted());
+					"ADC counts", colorGrad.inverted());
   m_eventDisplay = new pEventDisplay(eventDisplayOptions);
   m_groupBoxGridLayout->addWidget(m_eventDisplay, 0, 0);
 }
