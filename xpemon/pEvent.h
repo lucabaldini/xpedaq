@@ -57,6 +57,7 @@ class pEvent: public pEventWindow
     const event::Hit& operator() (const CubeCoordinate& p) const;
     //timestamp of the event
     microsecond_t microseconds() const {return m_microseconds;}
+    double seconds() const {return 1.e-6*m_microseconds;}
     //index of highest Pixel
     int highestPixelAddress() const 
       {return m_highestPixelAddress;}

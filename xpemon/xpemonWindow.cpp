@@ -144,9 +144,6 @@ void xpemonWindow::setupTransportBarConnections()
 void xpemonWindow::setupEvtReaderConnections()
 {
   connect(m_eventReader, SIGNAL(stopped()), this, SLOT(stopRun()));
-  // Update the event counter when an event is read 
-  connect(m_eventReader, SIGNAL(eventRead()),
-          m_infoBoxWidget, SLOT(updateCounter()));
   // Allow to pass events through signal/slot connection
   qRegisterMetaType< pEvent >("pEvent"); 
   // When the eventReader is ready, get the last event from it
@@ -190,7 +187,7 @@ void xpemonWindow::stopRun()
 void xpemonWindow::showLastEvent(const pEvent& evt)
 {
   // Update event info and send last event to the event diplay
-  m_infoBoxWidget->updateTime(evt.microseconds());
+  m_infoBoxWidget->updateTime(evt.seconds());
   m_infoBoxWidget->updateAbsorptionPoint(evt.moma2().x0(), evt.moma2().y0());
   m_infoBoxWidget->updatePulseHeight(evt.pulseHeight());
   m_infoBoxWidget->updatePhi(evt.phiDeg());  
