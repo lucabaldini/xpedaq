@@ -148,8 +148,9 @@ void pHitmap::paintCoordinate()
   QPainter painter(this);
   painter.setPen(QPen(Qt::black));  
   //Display the info 60 pixels below the bottom-left corner
+  const int pixelPicth = 60;
   QPoint textPos = axisRect()->bottomLeft();
-  textPos += QPoint(0, 60);
+  textPos += QPoint(0, pixelPicth);
   QString cursorText = QString("col=") + QString::number(col)
                        + QString(", row=") + QString::number(row)
                        + QString(", x=") + QString::number(x, 'f', 3)
