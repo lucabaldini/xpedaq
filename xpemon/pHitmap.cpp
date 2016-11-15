@@ -30,11 +30,13 @@ pHitmap::pHitmap(const pMap* map, pColorMapOptions options) :
   //Initialize axes
   xAxis->setNumberFormat("f");
   xAxis->setNumberPrecision(0); // no decimal digits for integer index
-  //xAxis->setAutoTickStep(false);
+  xAxis->setAutoTickStep(false);
+  setXaxisTickStep(xAxis->range());
     
   yAxis->setNumberFormat("f");
   yAxis->setNumberPrecision(0);  // no decimal digits for integer index
-  //yAxis->setAutoTickStep(false);
+  yAxis->setAutoTickStep(false);
+  setYaxisTickStep(yAxis->range());  
   
   xAxis2->setRange(-7.4875, 7.4875);
   xAxis2->setLabel("x[mm]");
@@ -47,6 +49,7 @@ pHitmap::pHitmap(const pMap* map, pColorMapOptions options) :
   yAxis2->setTickLabels(true);
   
   setupAxesConnections();
+  replot();
 }
 
 void pHitmap::adjustExternalMarginsForSize(int size)
