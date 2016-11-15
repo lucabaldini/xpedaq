@@ -1,4 +1,7 @@
 
+-------------------------------------------------------------------------------
+xpedaq (0.17.1) - Tue, 15 Nov 2016 17:06:34 +0100
+-------------------------------------------------------------------------------
 * Aspect ratio of the hitmap in the monitor frozen.
 * Time field in the monitor changed from microseconds to seconds.
 * A few tweaks to the number formatting in the monitor info box.
