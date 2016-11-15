@@ -24,7 +24,7 @@ with this program; if not, write to the Free Software Foundation Inc.,
 
 pHitmap::pHitmap(const pMap* map, pColorMapOptions options) :
   pMapPlot(map, options),
-  m_minPlotEdge(400)
+  m_minPlotEdge(400) // Warning: not used at the moment
 {
   //Initialize axes
   xAxis->setNumberFormat("f");
@@ -47,13 +47,40 @@ pHitmap::pHitmap(const pMap* map, pColorMapOptions options) :
 
 void pHitmap::adjustExternalMarginsForSize(int size)
 {
-  return;
+  //Adjust external margins so that the display area is a size x size square
+  int verticalMargin = plotLayout()->outerRect().height() - size +
+                       - axisRect()->margins().top() +
+                       - axisRect()->margins().bottom();
+  int horizMargin = plotLayout()->outerRect().width() - size +
+                    - axisRect()->margins().left() +
+                    - axisRect()->margins().right() +
+                    - plotLayout()->columnSpacing();
+  int leftMargin = horizMargin/2;
+  plotLayout()->setMargins(QMargins(leftMargin, 0, horizMargin - leftMargin,
+                                    verticalMargin));
 }
 
 
 void pHitmap::forceSquaredAspectRatio()
 {
-  return;
+  // Adjust external margins so that the display area is a square
+  // with the maximum extension available
+  int maxPlotWidth = plotLayout()->outerRect().width() + 
+                     - axisRect()->margins().left() +
+                     - axisRect()->margins().right() + 
+                     - plotLayout()->columnSpacing();
+  int maxPlotHeight = plotLayout()->outerRect().height() +
+                      - axisRect()->margins().top() +
+                      - axisRect()->margins().bottom();
+  //Pick the smallest dimension (height or width)
+  int smallestSize;
+  if (maxPlotHeight < maxPlotWidth){
+    smallestSize = maxPlotHeight;
+  } else {
+    smallestSize = maxPlotWidth;
+  }
+  adjustExternalMarginsForSize(smallestSize);
+  replot();
 }
 
 
@@ -121,8 +148,15 @@ void pHitmap::paintCoordinate()
   textPos += QPoint(0, 60);
   QString cursorText = QString("col=") + QString::number(col)
                        + QString(", row=") + QString::number(row)
-                       + QString(", x=") + QString::number(x, 'f', 2)
-                       + QString(", y=") + QString::number(y, 'f', 2)
+                       + QString(", x=") + QString::number(x, 'f', 3)
+                       + QString(", y=") + QString::number(y, 'f', 3)
                        + QString(", counts=") +QString::number(cellContent);
   painter.drawText(textPos, cursorText);  
+}
+
+
+void pHitmap::resizeEvent (QResizeEvent* event)
+{
+  pMapPlot::resizeEvent(event);
+  forceSquaredAspectRatio();
 }

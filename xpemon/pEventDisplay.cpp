@@ -578,8 +578,8 @@ void pEventDisplay::paintCoordinate()
   textPos += QPoint(0, pixelPitch);
   QString cursorText = QString("col=") + QString::number(col)
                        + QString(",   row=") + QString::number(row)
-                       + QString(",   x=") + QString::number(x)
-                       + QString(",   y=") + QString::number(y)
+                       + QString(",   x=") + QString::number(x, 'f', 4)
+                       + QString(",   y=") + QString::number(y, 'f', 4)
                        + QString(",  counts=") +QString::number(pixelContent);
   painter.drawText(textPos, cursorText);  
 }

@@ -39,6 +39,7 @@ class pHitmap : public pMapPlot
     void xAxis2Update(QCPRange range);
     void yAxis2Update(QCPRange range);
     virtual void paintCoordinate();
+    virtual void resizeEvent (QResizeEvent* event);
   
   protected:
   
