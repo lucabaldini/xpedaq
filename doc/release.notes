@@ -1,4 +1,7 @@
 
+-------------------------------------------------------------------------------
+xpedaq (0.17.0) - Tue, 15 Nov 2016 13:44:18 +0100
+-------------------------------------------------------------------------------
 * Machinery for selecting the window padding in place.
 * Bug fix (hopefully) in the microseconds field of the monitor info box.
 * Stat facilities (numer of events read and accepted by the cuts, running time)
