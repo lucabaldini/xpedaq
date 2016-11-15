@@ -33,8 +33,8 @@ pInfoBoxWidget::pInfoBoxWidget(QWidget *parent):
   m_maxPosLabelName = "Max position [px]";
   m_clusterSizeLabelName = "Cluster size";
   m_baricenterPosLabelName = "Baricenter position [mm]";
-  m_mom2TransLabelName = "Second moment (long.)";
-  m_mom2LongLabelName = "Second moment (trans.)";
+  m_mom2TransLabelName = "Second moment (trans.)";
+  m_mom2LongLabelName = "Second moment (long.)";
   m_momRatioLabelName = "Elongation";
   m_skewnessLabelName = "Skweness";
 
@@ -49,8 +49,8 @@ pInfoBoxWidget::pInfoBoxWidget(QWidget *parent):
   addField(m_maxPosLabelName);
   addField(m_clusterSizeLabelName);
   addField(m_baricenterPosLabelName);
-  addField(m_mom2TransLabelName);  
   addField(m_mom2LongLabelName);
+  addField(m_mom2TransLabelName);
   addField(m_momRatioLabelName);
   addField(m_skewnessLabelName);
 
