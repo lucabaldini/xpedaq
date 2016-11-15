@@ -166,6 +166,7 @@ void pAdvancedSettingsTab::setupWindowWidgets()
   m_windowMarginHighComboBox->insertItem(1, m_windowMarginHighFalseLabel);
   m_groupBoxGridLayout->addWidget(m_windowMarginHighLabel, row, 0);
   m_groupBoxGridLayout->addWidget(m_windowMarginHighComboBox, row, 1);
+  m_windowMarginHighComboBox->setDisabled(true);
 }
 
 

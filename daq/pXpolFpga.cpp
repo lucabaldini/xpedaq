@@ -280,8 +280,8 @@ void pXpolFpga::configWindowedMode(pDetectorConfiguration *configuration)
 
   // In order to set the large margin for the window we should set the LSB
   // of this group of 4 to 1---instead of 0.
-  //serialWrite(TOXPOL_MID_REG, ((((conf & 0x3f) << 4) | (configuration->windowMarginHigh() & 0x1)) & 0xf0)); 
-  serialWrite((unsigned short)TOXPOL_MID_REG,((conf&0x3f)<<4)&0xf0); //ASIC configuration
+  //serialWrite(TOXPOL_MID_REG, ((((conf & 0x3f) | (configuration->windowMarginHigh() & 0x1)) << 4) & 0xf0));
+  serialWrite((unsigned short)TOXPOL_MID_REG,((conf&0x3f)<<4)&0xf0);
 
   //FPGA Sends the content of the register to the ASIC
   serialWrite((unsigned short)XPOL_SI_CNT_REG,reset_XPOLSI);  
