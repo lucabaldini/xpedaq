@@ -32,9 +32,18 @@ pEventReader::pEventReader(const pMonitorPreferences& preferences,
   m_pulseHeightHist(pulseHeightHist),
   m_modulationHist(modulationHist),
   m_hitMap(hitMap),
-  m_preferences(preferences)
+  m_preferences(preferences),
+  m_numEventsRead(-1),
+  m_numEventsAccepted(-1),
+  m_startSeconds(-1)
 {
   m_udpSocket = new QUdpSocket (this);
+}
+
+
+long int pEventReader::currentSeconds() const
+{
+  return static_cast<long int> (time(NULL));
 }
 
 
@@ -83,7 +92,9 @@ void pEventReader::readPendingDatagram()
 			   m_preferences.m_zeroSuppressionThreshold);
     tmpEvt.reconstruct(m_preferences.m_zeroSuppressionThreshold);
     emit eventRead();
-    if (evtAccepted(tmpEvt)){
+    m_numEventsRead += 1;
+    if (evtAccepted(tmpEvt)) {
+      m_numEventsAccepted += 1;
       m_isLastEventChanged = true;    
       m_lastEvent = tmpEvt;
       for (auto const& it : tmpEvt){
@@ -140,6 +151,10 @@ void pEventReader::updateRequested()
 
 void pEventReader::startReading()
 {
+  // Reset the stats.
+  m_numEventsRead = 0;
+  m_numEventsAccepted = 0;
+  m_startSeconds = 0;
   QMutexLocker locker(&m_mutex);
   m_stopped = false;
   m_isLastEventChanged = false;

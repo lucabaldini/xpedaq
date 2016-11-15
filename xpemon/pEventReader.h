@@ -45,7 +45,12 @@ class pEventReader: public QObject
 		 pHistogram* windowSizeHist, pHistogram* clusterSizeHist,
                  pHistogram* pulseHeightHist, pHistogram* modulationHist,
 		 pMap* hitMap);
-  
+    int numEventsRead() const {return m_numEventsRead;}
+    int numEventsAccepted() const {return m_numEventsAccepted;}
+    long int currentSeconds() const;
+    long int startSeconds() const {return m_startSeconds;}
+    long int elapsedSeconds() const {return currentSeconds() - m_startSeconds;}
+    
   public slots:
   
     void startReading();
@@ -81,7 +86,11 @@ class pEventReader: public QObject
     bool m_isLastEventChanged;
     QMutex m_mutex;
     QUdpSocket* m_udpSocket;
-    
+
+    //Basic stats:
+    int m_numEventsRead;
+    int m_numEventsAccepted;
+    long int m_startSeconds;
 };
 
 #endif //PEVENTREADER_H

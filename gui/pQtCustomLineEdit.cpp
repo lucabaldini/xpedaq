@@ -26,6 +26,7 @@ pQtCustomLineEditBase::pQtCustomLineEditBase() :
   QLineEdit()
 {
   setFixedWidth(80);
+  setFixedHeight(24);
   connect (this, SIGNAL(editingFinished()),
            this, SLOT(validate()));
 }
