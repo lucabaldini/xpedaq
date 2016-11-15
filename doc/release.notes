@@ -2,7 +2,8 @@
 * Machinery for selecting the window padding in place.
 * Bug fix (hopefully) in the microseconds field of the monitor info box.
 * Stat facilities (numer of events read and accepted by the cuts, running time)
-  added to the pEventReader class.
+  added to the pEventReader class, and basic info added in the monitor status
+  bar.
 * Tweaks to cumulative the hitmap in the monitor (fixed aspect ratio, double
   axes in pixels and mm).
 
