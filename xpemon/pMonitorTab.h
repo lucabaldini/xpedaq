@@ -27,7 +27,7 @@ with this program; if not, write to the Free Software Foundation Inc.,
 #include "pHistogram.h"
 #include "pHistogramPlot.h"
 #include "pMap.h"
-#include "pMapPlot.h"
+#include "pHitmap.h"
 #include "pHistogramOptions.h"
 #include "xpemonPlotOptions.h"
 #include "pQtCustomTab.h"
@@ -78,7 +78,7 @@ class pMonitorTab : public pQtCustomTab
     pHistogramPlot *m_clusterSizePlot;
     pHistogramPlot *m_pulseHeightPlot;
     pHistogramPlot *m_modulationPlot;
-    pMapPlot *m_hitmapPlot;
+    pHitmap *m_hitmapPlot;
 };
 
 #endif //PMONITORTAB_H

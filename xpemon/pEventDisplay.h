@@ -105,7 +105,7 @@ class pEventDisplay : public QCustomPlot
     QCPLayoutGrid *m_colorScaleSubLayout; //sublayout hosting the color scale
     QCPColorScale *m_colorScale;
     QPoint m_cursorPos; //position of the cursor
-    const int m_minDisplayEdge; //minimum size of the display
+    const int m_minDisplayEdge; //minimum size of the display edge (in pixels)
     bool m_isSyncronized; //check if the last event has been already drawn
     bool m_displayFirstPass;
     bool m_displaySearchRegion;

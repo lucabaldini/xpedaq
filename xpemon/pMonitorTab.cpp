@@ -96,7 +96,7 @@ void pMonitorTab::setupHitmapPlot()
 {
   using namespace xpemonPlotOptions;
   pColorMapOptions hitmapOptions ("Hit map", "Column", "Row", "ADC counts",
-                                  QCPColorGradient::gpThermal, false);
+                                  QCPColorGradient::gpThermal, false, false);
   /* We want the bins to be centered at their coordinate value so that,
      for example, the bins corresponding to column 0 have -0.5 < x < 0.5
   */
@@ -106,7 +106,7 @@ void pMonitorTab::setupHitmapPlot()
   double halfBinHeight = 0.5*yPixelMax/nYbins;
   m_hitmap = new pMap(nXbins, - halfBinWidth, xPixelMax - halfBinWidth,
                       nYbins, - halfBinHeight, yPixelMax - halfBinHeight);
-  m_hitmapPlot = new pMapPlot(m_hitmap, hitmapOptions);
+  m_hitmapPlot = new pHitmap(m_hitmap, hitmapOptions);
   //Revert y axis so that it matches the XPOL coordinate system
   m_hitmapPlot->yAxis->setRangeReversed(true);
   //Apply a smoothing to the events

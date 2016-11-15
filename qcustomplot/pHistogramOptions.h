@@ -4,7 +4,7 @@
 #include <QString>
 #include "qcustomplot.h"
 
-/* Base class for passing draw options to plots */
+/* Base class for passing draw options to the plots */
 
 class pBasicPlotOptions
 {
@@ -39,15 +39,17 @@ public:
                     QString ytitle = "y", QString ztitle = "z", 
                     QCPColorGradient colGradient =
                                                QCPColorGradient::gpThermal,
-                    bool colorScale = true) :
+                    bool colorScale = true,
+                    bool drawFullAxesBox = true) :
                     pBasicPlotOptions(plotName, xtitle, ytitle),
                     m_zTitle(ztitle), m_gradientType(colGradient),
-                    m_colorScale (colorScale) {};
+                    m_colorScale (colorScale),
+                    m_drawFullAxesBox (drawFullAxesBox) {};
 
   QString m_zTitle;
   QCPColorGradient m_gradientType;
   bool m_colorScale; // show the color scale on the right
-  
+  bool m_drawFullAxesBox; // allow automatic set-up of all the axes around the plot
 };
 
 #endif // PHISTOGRAMOPTIONS_H

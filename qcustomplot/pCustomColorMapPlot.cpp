@@ -26,7 +26,7 @@ pCustomColorMapPlot::pCustomColorMapPlot(pColorMapOptions options) :
   m_isLogScaleZ (false)
 {
   //Initialize axes
-  axisRect()->setupFullAxesBox(true);
+  axisRect()->setupFullAxesBox(m_options.m_drawFullAxesBox);
   xAxis->setLabel(m_options.m_xTitle);
   yAxis->setLabel(m_options.m_yTitle);
   
