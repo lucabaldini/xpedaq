@@ -48,6 +48,8 @@ pHitmap::pHitmap(const pMap* map, pColorMapOptions options) :
 void pHitmap::adjustExternalMarginsForSize(int size)
 {
   //Adjust external margins so that the display area is a size x size square
+  //Se http://www.qcustomplot.com/documentation/classQCPAxisRect.html and
+  //http://www.qcustomplot.com/documentation/thelayoutsystem.html for info
   int verticalMargin = plotLayout()->outerRect().height() - size +
                        - axisRect()->margins().top() +
                        - axisRect()->margins().bottom();
@@ -65,6 +67,8 @@ void pHitmap::forceSquaredAspectRatio()
 {
   // Adjust external margins so that the display area is a square
   // with the maximum extension available
+  //Se http://www.qcustomplot.com/documentation/classQCPAxisRect.html and
+  //http://www.qcustomplot.com/documentation/thelayoutsystem.html for info
   int maxPlotWidth = plotLayout()->outerRect().width() + 
                      - axisRect()->margins().left() +
                      - axisRect()->margins().right() + 
