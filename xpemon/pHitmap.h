@@ -40,10 +40,12 @@ class pHitmap : public pMapPlot
     void yAxis2Update(QCPRange range);
     virtual void paintCoordinate();
     virtual void resizeEvent (QResizeEvent* event);
+    void setXaxisTickStep(QCPRange range);
+    void setYaxisTickStep(QCPRange range);
   
   protected:
   
-    void synchronizeAxes();
+    void setupAxesConnections();
     void offsetToPhysical(int col, int row, double &x, double &y) const;
     void phyisicalToOffset(double x, double y, int &col, int &row) const;
     void adjustExternalMarginsForSize(int size);

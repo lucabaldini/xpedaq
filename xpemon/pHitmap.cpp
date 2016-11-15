@@ -21,6 +21,7 @@ with this program; if not, write to the Free Software Foundation Inc.,
 
 #include "pHitmap.h"
 #include "xpoldetector.h"
+#include "qcustomplot.h"
 
 pHitmap::pHitmap(const pMap* map, pColorMapOptions options) :
   pMapPlot(map, options),
@@ -29,9 +30,12 @@ pHitmap::pHitmap(const pMap* map, pColorMapOptions options) :
   //Initialize axes
   xAxis->setNumberFormat("f");
   xAxis->setNumberPrecision(0); // no decimal digits for integer index
+  xAxis->setAutoTickStep(false);
+    
   yAxis->setNumberFormat("f");
   yAxis->setNumberPrecision(0);  // no decimal digits for integer index
-    
+  yAxis->setAutoTickStep(false);
+  
   xAxis2->setRange(-7.4875, 7.4875);
   xAxis2->setLabel("x[mm]");
   xAxis2->setVisible(true);
@@ -42,7 +46,7 @@ pHitmap::pHitmap(const pMap* map, pColorMapOptions options) :
   yAxis2->setVisible(true);
   yAxis2->setTickLabels(true);
   
-  synchronizeAxes();
+  setupAxesConnections();
 }
 
 void pHitmap::adjustExternalMarginsForSize(int size)
@@ -120,13 +124,34 @@ void pHitmap::yAxis2Update(QCPRange range)
 }
 
 
-void pHitmap::synchronizeAxes()
+void pHitmap::setXaxisTickStep(QCPRange range)
+{
+  double interval = range.upper - range.lower;
+  xAxis->setTickStep(std::max(1., interval/5.));
+  replot();
+}
+
+
+void pHitmap::setYaxisTickStep(QCPRange range)
+{
+  double interval = range.upper - range.lower;
+  yAxis->setTickStep(std::max(1., interval/5.));
+  replot();
+}
+
+
+void pHitmap::setupAxesConnections()
 {
   // Keep axes synchronized
   connect(xAxis, SIGNAL(rangeChanged(QCPRange)),
           this, SLOT(xAxis2Update(QCPRange)));
   connect(yAxis, SIGNAL(rangeChanged(QCPRange)),
           this, SLOT(yAxis2Update(QCPRange)));
+  // Avoid duplicated tick labels
+  connect(xAxis, SIGNAL(rangeChanged(QCPRange)),
+          this, SLOT(setXaxisTickStep(QCPRange)));
+  connect(yAxis, SIGNAL(rangeChanged(QCPRange)),
+          this, SLOT(setYaxisTickStep(QCPRange)));
 }
 
 
