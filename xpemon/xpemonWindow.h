@@ -31,6 +31,7 @@ with this program; if not, write to the Free Software Foundation Inc.,
 #include <QWidget>
 #include <QTimer>
 #include <QMetaType>
+#include <QStatusBar>
 
 #include "pOptionBoxWidget.h"
 #include "pCutBoxWidget.h"
@@ -63,6 +64,7 @@ class xpemonWindow : public QMainWindow
     void setupConnections();
     void readOptions();
     void showLastEvent(const pEvent& evt);
+    void showReaderStatMessage();
     void reset();
   
   private:

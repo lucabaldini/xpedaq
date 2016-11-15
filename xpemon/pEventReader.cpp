@@ -154,7 +154,7 @@ void pEventReader::startReading()
   // Reset the stats.
   m_numEventsRead = 0;
   m_numEventsAccepted = 0;
-  m_startSeconds = 0;
+  m_startSeconds = currentSeconds();
   QMutexLocker locker(&m_mutex);
   m_stopped = false;
   m_isLastEventChanged = false;

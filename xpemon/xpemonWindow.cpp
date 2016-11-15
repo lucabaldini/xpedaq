@@ -79,6 +79,7 @@ xpemonWindow::xpemonWindow(std::string preferencesFilePath,
   setupConnections();
   // Enable the recon check boxes (this might go in the configuration file).
   m_infoBoxWidget->checkCheckBoxes(true);
+  statusBar()->showMessage("Monitor system ready", 2000);
 }
 
 
@@ -95,6 +96,8 @@ void xpemonWindow::setupConnections()
   setupTransportBarConnections();
   connect(&m_refreshTimer, SIGNAL(timeout()),
           m_eventReader, SLOT(updateRequested()));
+  connect(&m_refreshTimer, SIGNAL(timeout()),
+          this, SLOT(showReaderStatMessage()));
   connect(this, SIGNAL(startAcquisition()),
           m_eventReader, SLOT(startReading()));
   connect(m_infoBoxWidget->drawFirstPassCheckBox(),
@@ -209,10 +212,35 @@ void xpemonWindow::showLastEvent(const pEvent& evt)
 }
 
 
+/*! Refresh the event reader statistics on the status bar.
+ */
+void xpemonWindow::showReaderStatMessage()
+{
+  int numEventsAccepted = m_eventReader->numEventsAccepted();
+  int numEventsRead = m_eventReader->numEventsRead();
+  long int runningSeconds = m_eventReader->runningSeconds();
+  if (runningSeconds > 0 && numEventsRead > 0) {
+    double averageRate = numEventsRead/(double)runningSeconds;
+    
+    QString msg = QString::number(numEventsRead) + " event(s) read in " +
+      QString::number(runningSeconds) + "s (" +
+      QString::number(averageRate, 'f', 2) + " Hz)";
+    // If the preferences are setup to display the group box with the cuts, then
+    // show the cut efficiency as well.
+    if (m_preferences->m_showCuts) {
+      double cutEfficiency = (100.*numEventsAccepted)/numEventsRead;
+      msg += ", " + QString::number(numEventsAccepted) + " events accepted (" +
+	QString::number(cutEfficiency, 'f', 1) + " % cut efficiency)";
+    }
+    statusBar()->showMessage(msg);
+  }
+}
+
 
 void xpemonWindow::reset()
 {
   m_eventDisplayTab->reset();
   m_monitorTab->reset();
   //m_hitmapTab->reset();
+  statusBar()->showMessage("");
 }

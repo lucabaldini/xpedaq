@@ -49,7 +49,7 @@ class pEventReader: public QObject
     int numEventsAccepted() const {return m_numEventsAccepted;}
     long int currentSeconds() const;
     long int startSeconds() const {return m_startSeconds;}
-    long int elapsedSeconds() const {return currentSeconds() - m_startSeconds;}
+    long int runningSeconds() const {return currentSeconds() - m_startSeconds;}
     
   public slots:
   
