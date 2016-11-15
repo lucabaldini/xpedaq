@@ -25,23 +25,16 @@ pInfoBoxWidget::pInfoBoxWidget(QWidget *parent):
   pInfoBoxGui(parent)
 {
   setTitle("Single-event display");
-
-  m_evtCounter = 0;
-  
-  const QChar MathSymbolmu(0x03BC);
-  m_timeLabelName = QString("Time [") + QString(MathSymbolmu) + QString("s]");
-  //m_timeLabelName = "Time [s]";
+  m_timeLabelName = "Time [s]";
   m_absorptionPointLabelName = "Absorption point [mm]";
   m_pulseHeightLabelName = "Energy [ADC counts]";
   m_phiLabelName = "Polarization angle [deg]";
-
-  //m_counterLabelName = "Event number";
   m_windowSizeLabelName = "Window size";
   m_maxPosLabelName = "Max position [px]";
   m_clusterSizeLabelName = "Cluster size";
   m_baricenterPosLabelName = "Baricenter position [mm]";
-  m_mom2TransLabelName = "Second moment (long.)";
-  m_mom2LongLabelName = "Second moment (trans.)";
+  m_mom2TransLabelName = "Second moment (trans.)";
+  m_mom2LongLabelName = "Second moment (long.)";
   m_momRatioLabelName = "Elongation";
   m_skewnessLabelName = "Skweness";
 
@@ -52,13 +45,12 @@ pInfoBoxWidget::pInfoBoxWidget(QWidget *parent):
 
   addSpace();
 
-  //addField(m_counterLabelName);
   addField(m_windowSizeLabelName);
   addField(m_maxPosLabelName);
   addField(m_clusterSizeLabelName);
   addField(m_baricenterPosLabelName);
-  addField(m_mom2TransLabelName);  
   addField(m_mom2LongLabelName);
+  addField(m_mom2TransLabelName);
   addField(m_momRatioLabelName);
   addField(m_skewnessLabelName);
 
@@ -86,41 +78,31 @@ void pInfoBoxWidget::checkCheckBoxes(bool checked)
 
 void pInfoBoxWidget::initializeText()
 {
-  setField(m_timeLabelName, 0);
-  setField(m_absorptionPointLabelName, coordinateStringFormat(0., 0.));
-  setField(m_pulseHeightLabelName, 0.);
-  setField(m_phiLabelName, 0.);
-  
-  //setField(m_counterLabelName, 0);
+  updateTime(0.);
+  updateAbsorptionPoint(0., 0.);
+  updatePulseHeight(0);
+  updatePhi(0.);
   setField(m_windowSizeLabelName, 0);
   setField(m_maxPosLabelName, coordinateStringFormat(0., 0.));
-  setField(m_clusterSizeLabelName, 0.);
-  setField(m_baricenterPosLabelName, coordinateStringFormat(0., 0.));
-  setField(m_mom2TransLabelName, 0.);
-  setField(m_mom2LongLabelName, 0.);
-  setField(m_momRatioLabelName, 0.);
-  setField(m_skewnessLabelName, 0.);
+  updateClusterSize(0);
+  updateBaricenterCoordinates(0., 0.);
+  updateMom2Trans(0.);
+  updateMom2Long(0.);
+  updateMomRatio(0.);
+  updateSkewness(0.);
 }
 
 
-void pInfoBoxWidget::updateCounter()
+void pInfoBoxWidget::updateTime(double seconds)
 {
-  // This is actually not used, at the moment. Need to think about how we
-  // get the actual event number from the event.
-  m_evtCounter += 1;
-  //setField(m_counterLabelName, (m_evtCounter));
-}
-
-
-void pInfoBoxWidget::updateTime(microsecond_t microseconds)
-{
-  setField(m_timeLabelName, microseconds);
+  setField(m_timeLabelName, QString::number(seconds, 'f', 6));
 }
 
 
 void pInfoBoxWidget::updateAbsorptionPoint(double x, double y)
 {
-  setField(m_absorptionPointLabelName, coordinateStringFormat(x, y));
+  QString text = QString::number(x, 'f', 3) + ", " + QString::number(y, 'f', 3);
+  setField(m_absorptionPointLabelName, text);
 }
 
 
@@ -132,7 +114,7 @@ void pInfoBoxWidget::updatePulseHeight(int pulseHeight)
 
 void pInfoBoxWidget::updatePhi(double phi)
 {
-  setField(m_phiLabelName, number2String(phi));
+  setField(m_phiLabelName, QString::number(phi, 'f', 2));
 }
 
 
@@ -160,36 +142,36 @@ void pInfoBoxWidget::updateClusterSize(int size)
 
 void pInfoBoxWidget::updateBaricenterCoordinates(double x, double y)
 {
-  setField(m_baricenterPosLabelName, coordinateStringFormat(x, y));
+  QString text = QString::number(x, 'f', 3) + ", " + QString::number(y, 'f', 3);
+  setField(m_baricenterPosLabelName, text);
 }
 
 
 void pInfoBoxWidget::updateMom2Trans(double mom2Trans)
 {
-  setField(m_mom2TransLabelName, number2String(mom2Trans));
+  setField(m_mom2TransLabelName, QString::number(mom2Trans, 'f', 6));
 }
 
 
 void pInfoBoxWidget::updateMom2Long(double mom2Long)
 {
-  setField(m_mom2LongLabelName, number2String(mom2Long));
+  setField(m_mom2LongLabelName, QString::number(mom2Long, 'f', 6));
 }
 
 
 void pInfoBoxWidget::updateMomRatio(double momRatio)
 {
-  setField(m_momRatioLabelName, number2String(momRatio));
+  setField(m_momRatioLabelName, QString::number(momRatio, 'f', 3));
 }
 
 
 void pInfoBoxWidget::updateSkewness(double skewness)
 {
-  setField(m_skewnessLabelName, number2String(skewness));
+  setField(m_skewnessLabelName, QString::number(skewness, 'f', 3));
 }
 
 
 void pInfoBoxWidget::reset()
 {
-  m_evtCounter = 0;
   initializeText();
 }

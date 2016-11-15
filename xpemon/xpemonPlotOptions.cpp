@@ -29,7 +29,7 @@ const QBrush xpemonPlotOptions::defaultBrush =
 const QMargins xpemonPlotOptions::defaultMargins = QMargins(82, 8, 2, 60);
 
 // Window size
-const unsigned int xpemonPlotOptions::windowSizeNbins = 45;
+const unsigned int xpemonPlotOptions::windowSizeNbins = 100;
 const double xpemonPlotOptions::windowSizeXmin = 0.;
 const double xpemonPlotOptions::windowSizeXmax = 1600.;
 
@@ -50,7 +50,7 @@ const double xpemonPlotOptions::yPixelMax =
                               static_cast<double> (xpoldetector::kNumPixelsY);
 
 // Modulation
-const unsigned int xpemonPlotOptions::modulationNbins = 30;
+const unsigned int xpemonPlotOptions::modulationNbins = 40;
 const double xpemonPlotOptions::modulationThetaMin = -180.001;
 const double xpemonPlotOptions::modulationThetaMax = 180.001;
 

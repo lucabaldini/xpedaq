@@ -32,7 +32,7 @@ with this program; if not, write to the Free Software Foundation Inc.,
 
 #include "pQtCustomTextLabel.h"
 #include "pInfoBoxGui.h"
-#include "xpoldetector.h"
+
 
 class pInfoBoxWidget: public pInfoBoxGui
 {
@@ -51,10 +51,8 @@ class pInfoBoxWidget: public pInfoBoxGui
     void checkCheckBoxes(bool checked);
 
   public slots:
-  
-    void updateCounter();
-    
-    void updateTime(microsecond_t microseconds);
+      
+    void updateTime(double seconds);
     void updateAbsorptionPoint(double x, double y);
     void updatePulseHeight(int pulseHeight);
     void updatePhi(double phi);
@@ -83,7 +81,6 @@ class pInfoBoxWidget: public pInfoBoxGui
     QString m_pulseHeightLabelName;
     QString m_phiLabelName;
     
-    QString m_counterLabelName;
     QString m_windowSizeLabelName;
     QString m_maxPosLabelName;
     QString m_baricenterPosLabelName;
@@ -92,8 +89,6 @@ class pInfoBoxWidget: public pInfoBoxGui
     QString m_mom2TransLabelName;
     QString m_momRatioLabelName;
     QString m_skewnessLabelName;
-
-    unsigned int m_evtCounter;
 
     QCheckBox *m_drawFirstPassCheckBox;
     QCheckBox *m_drawSearchRegionCheckBox;
