@@ -1,5 +1,6 @@
 
 * Machinery for selecting the window padding in place.
+* Bug fix in the microseconds field of the monitor info box.
 
 -------------------------------------------------------------------------------
 xpedaq (0.16.2) - Fri, 11 Nov 2016 15:49:37 +0100

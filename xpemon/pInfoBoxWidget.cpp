@@ -112,9 +112,8 @@ void pInfoBoxWidget::updateCounter()
 }
 
 
-void pInfoBoxWidget::updateTime(long int microseconds)
+void pInfoBoxWidget::updateTime(microsecond_t microseconds)
 {
-  // microseconds is of microsecond_t (a.k.a. unint64_t) type
   setField(m_timeLabelName, microseconds);
 }
 

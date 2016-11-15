@@ -32,6 +32,7 @@ with this program; if not, write to the Free Software Foundation Inc.,
 
 #include "pQtCustomTextLabel.h"
 #include "pInfoBoxGui.h"
+#include "xpoldetector.h"
 
 class pInfoBoxWidget: public pInfoBoxGui
 {
@@ -53,7 +54,7 @@ class pInfoBoxWidget: public pInfoBoxGui
   
     void updateCounter();
     
-    void updateTime(long int microseconds);
+    void updateTime(microsecond_t microseconds);
     void updateAbsorptionPoint(double x, double y);
     void updatePulseHeight(int pulseHeight);
     void updatePhi(double phi);
