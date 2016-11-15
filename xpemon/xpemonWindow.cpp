@@ -218,10 +218,8 @@ void xpemonWindow::showReaderStatMessage()
   long int runningSeconds = m_eventReader->runningSeconds();
   if (runningSeconds > 0 && numEventsRead > 0) {
     double averageRate = numEventsRead/(double)runningSeconds;
-    
-    QString msg = QString::number(numEventsRead) + " event(s) read in " +
-      QString::number(runningSeconds) + "s (" +
-      QString::number(averageRate, 'f', 2) + " Hz)";
+    QString msg = QString::number(numEventsRead) + " event(s) read @ " +
+      QString::number(averageRate, 'f', 2) + " Hz average rate";
     // If the preferences are setup to display the group box with the cuts, then
     // show the cut efficiency as well.
     if (m_preferences->m_showCuts) {
