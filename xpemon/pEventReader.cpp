@@ -38,6 +38,7 @@ pEventReader::pEventReader(const pMonitorPreferences& preferences,
   m_startSeconds(-1)
 {
   m_udpSocket = new QUdpSocket (this);
+  m_stokesAccumulator = new pStokesAccumulator();
 }
 
 
@@ -87,27 +88,28 @@ void pEventReader::readPendingDatagram()
       else
         curHitMap.at(index) = 0;
     }
-    pEvent tmpEvt = pEvent(p.xmin(evt), p.xmax(evt), p.ymin(evt), p.ymax(evt),
+    pEvent event = pEvent(p.xmin(evt), p.xmax(evt), p.ymin(evt), p.ymax(evt),
 			   curHitMap, p.microseconds(evt),
 			   m_preferences.m_zeroSuppressionThreshold);
-    tmpEvt.reconstruct(m_preferences.m_zeroSuppressionThreshold);
+    event.reconstruct(m_preferences.m_zeroSuppressionThreshold);
     emit eventRead();
     m_numEventsRead += 1;
-    if (evtAccepted(tmpEvt)) {
+    if (evtAccepted(event)) {
       m_numEventsAccepted += 1;
+      m_stokesAccumulator->fill(event.phi());
       m_isLastEventChanged = true;    
-      m_lastEvent = tmpEvt;
-      for (auto const& it : tmpEvt){
+      m_lastEvent = event;
+      for (auto const& it : event){
         if (it.clusterId == 0){
-          OffsetCoordinate coord = tmpEvt.coordToPixel(it.x, it.y);
+          OffsetCoordinate coord = event.coordToPixel(it.x, it.y);
           m_hitMap->fill(coord.col(), coord.row(),
                        static_cast<double> (it.counts));      
         }
       }
       m_windowSizeHist->fill(nPixel);
-      //m_clusterSizeHist->fill(tmpEvt.clusterSize());
-      m_pulseHeightHist->fill(tmpEvt.pulseHeight());
-      m_modulationHist->fill(tmpEvt.phiDeg());
+      //m_clusterSizeHist->fill(event.clusterSize());
+      m_pulseHeightHist->fill(event.pulseHeight());
+      m_modulationHist->fill(event.phiDeg());
     }
   }
   // Here we release the memory. Using the data block
@@ -155,6 +157,7 @@ void pEventReader::startReading()
   m_numEventsRead = 0;
   m_numEventsAccepted = 0;
   m_startSeconds = currentSeconds();
+  m_stokesAccumulator->reset();
   QMutexLocker locker(&m_mutex);
   m_stopped = false;
   m_isLastEventChanged = false;

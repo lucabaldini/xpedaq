@@ -51,6 +51,7 @@ class pStokesAccumulator
     // Actual interesting quantities.
     std::pair<double, double> visibility() const;
     std::pair<double, double> phase() const;
+    std::pair<double, double> phaseDeg() const;
     
     // Terminal formatting.
     std::ostream& fillStream(std::ostream& os) const;

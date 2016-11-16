@@ -92,6 +92,13 @@ std::pair<double, double> pStokesAccumulator::phase() const
 }
 
 
+std::pair<double, double> pStokesAccumulator::phaseDeg() const
+{
+  std::pair<double, double> phi = phase();
+  return std::make_pair(180.*phi.first/M_PI, 180.*phi.second/M_PI);
+}
+
+
 std::ostream& pStokesAccumulator::fillStream(std::ostream& os) const
 {
   //os << 

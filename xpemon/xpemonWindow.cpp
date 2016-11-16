@@ -216,6 +216,10 @@ void xpemonWindow::showReaderStatMessage()
   int numEventsAccepted = m_eventReader->numEventsAccepted();
   int numEventsRead = m_eventReader->numEventsRead();
   long int runningSeconds = m_eventReader->runningSeconds();
+  std::pair<double, double> visibility =
+    m_eventReader->stokesAccumulator()->visibility();
+  std::pair<double, double> phase =
+    m_eventReader->stokesAccumulator()->phaseDeg();
   if (runningSeconds > 0 && numEventsRead > 0) {
     double averageRate = numEventsRead/(double)runningSeconds;
     QString msg = QString::number(numEventsRead) + " event(s) read @ " +
@@ -227,6 +231,11 @@ void xpemonWindow::showReaderStatMessage()
       msg += ", " + QString::number(numEventsAccepted) + " events accepted (" +
 	QString::number(cutEfficiency, 'f', 1) + " % cut efficiency)";
     }
+    // And, finally, the modulation.
+    msg += ". Modulation = " + QString::number(visibility.first, 'f', 4) +
+      " +/- " + QString::number(visibility.second, 'f', 4) + ", phase = " +
+      QString::number(phase.first, 'f', 1) + " +/- " +
+      QString::number(phase.second, 'f', 1);
     statusBar()->showMessage(msg);
   }
 }
