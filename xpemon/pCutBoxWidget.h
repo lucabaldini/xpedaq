@@ -52,6 +52,7 @@ class pCutBoxWidget: public pQtGroupBoxWidget
     void readClusterSizeLimits();
     void readPulseHeightLimits();
     void readWindowSizeLimits();
+    void readSkewnessLimits();
   
     pQtCustomTextLabel *m_elongationLabel;
     pMinMaxOptionPair<double> *m_elongationLimits;    
@@ -61,6 +62,9 @@ class pCutBoxWidget: public pQtGroupBoxWidget
     pMinMaxOptionPair<int> *m_pulseHeightLimits;
     pQtCustomTextLabel *m_windowSizeLabel;
     pMinMaxOptionPair<int> *m_windowSizeLimits;
+    pQtCustomTextLabel *m_skewnessLabel;
+    pMinMaxOptionPair<double> *m_skewnessLimits;
+ 
     pMonitorPreferences m_preferences;
 };
 

@@ -20,5 +20,9 @@
 200
 //Maximum window size//
 10000
+//Minimum skewness//
+0
+//Maximum skewness//
+100
 //Display the box with the cuts//
 1

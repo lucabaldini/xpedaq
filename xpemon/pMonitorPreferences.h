@@ -50,6 +50,8 @@ class pMonitorPreferences
   int m_maxPulseHeight;
   int m_minWindowSize;
   int m_maxWindowSize;
+  double m_minSkewness;
+  double m_maxSkewness;
   bool m_showCuts;
   
   // Read/write to/from file.

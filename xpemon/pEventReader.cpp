@@ -94,7 +94,7 @@ void pEventReader::readPendingDatagram()
     event.reconstruct(m_preferences.m_zeroSuppressionThreshold);
     emit eventRead();
     m_numEventsRead += 1;
-    if (evtAccepted(event)) {
+    if (eventAccepted(event)) {
       m_numEventsAccepted += 1;
       m_stokesAccumulator->fill(event.phi());
       m_isLastEventChanged = true;    
@@ -118,16 +118,18 @@ void pEventReader::readPendingDatagram()
 }
 
 
-bool pEventReader::evtAccepted(const pEvent& evt)
+bool pEventReader::eventAccepted(const pEvent& event)
 {
-  return (evt.clusterSize() > m_preferences.m_minClusterSize &&
-          evt.clusterSize() < m_preferences.m_maxClusterSize &&
-          evt.pulseHeight() > m_preferences.m_minPulseHeight &&
-          evt.pulseHeight() < m_preferences.m_maxPulseHeight &&
-          evt.moma1().elongation() > m_preferences.m_minElongation &&
-          evt.moma1().elongation() < m_preferences.m_maxElongation &&
-          evt.evtSize() > m_preferences.m_minWindowSize &&
-          evt.evtSize() < m_preferences.m_maxWindowSize);
+  return (event.clusterSize() > m_preferences.m_minClusterSize &&
+          event.clusterSize() < m_preferences.m_maxClusterSize &&
+          event.pulseHeight() > m_preferences.m_minPulseHeight &&
+          event.pulseHeight() < m_preferences.m_maxPulseHeight &&
+          event.moma1().elongation() > m_preferences.m_minElongation &&
+          event.moma1().elongation() < m_preferences.m_maxElongation &&
+          event.evtSize() > m_preferences.m_minWindowSize &&
+          event.evtSize() < m_preferences.m_maxWindowSize &&
+	  fabs(event.skewness()) > m_preferences.m_minSkewness &&
+	  fabs(event.skewness()) < m_preferences.m_maxSkewness);
 } 
 
 

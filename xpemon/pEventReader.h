@@ -66,13 +66,13 @@ class pEventReader: public QObject
   
     void stopped();
     void eventRead();
-    void lastEventUpdated(const pEvent& evt);
+    void lastEventUpdated(const pEvent& event);
     void histogramsUpdated();
   
   private:
     
     void readPendingDatagram();
-    bool evtAccepted(const pEvent& evt);
+    bool eventAccepted(const pEvent& event);
   
     //Data structures
     pHistogram *m_windowSizeHist;

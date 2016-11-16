@@ -82,6 +82,7 @@ class pEvent: public pEventWindow
       {return m_momentsAnalysis2;}
     double phi() const {return m_momentsAnalysis2.phi();}
     double phiDeg() const {return m_momentsAnalysis2.phiDeg();}
+    double skewness() const {return m_momentsAnalysis1.skewness();}
     
     //iterator
     typedef std::vector<event::Hit>::const_iterator const_eventIterator;

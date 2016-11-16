@@ -63,7 +63,16 @@ pCutBoxWidget::pCutBoxWidget(const pMonitorPreferences &preferences,
   addWidget(m_windowSizeLabel, 4, 0);
   addWidget(m_windowSizeLimits->minEdit(), 4, 1);
   addWidget(m_windowSizeLimits->maxEdit(), 4, 2);
-  m_pulseHeightLimits->setBottom(0);
+  m_windowSizeLimits->setBottom(0);
+  //Skewness limits option init
+  m_skewnessLabel = new pQtCustomTextLabel(this, "Skewness (abs)");
+  m_skewnessLimits = new pMinMaxOptionPair<double>(this,
+    m_preferences.m_minSkewness, m_preferences.m_maxSkewness);
+  addWidget(m_skewnessLabel, 5, 0);
+  addWidget(m_skewnessLimits->minEdit(), 5, 1);
+  addWidget(m_skewnessLimits->maxEdit(), 5, 2);
+  m_skewnessLimits->setBottom(0);
+
   freezeHeight();
 }
 
@@ -74,6 +83,7 @@ void pCutBoxWidget::enable()
   m_clusterSizeLimits->setEnabled(true);
   m_pulseHeightLimits->setEnabled(true);
   m_windowSizeLimits->setEnabled(true);
+  m_skewnessLimits->setEnabled(true);
 }
 
 
@@ -83,6 +93,7 @@ void pCutBoxWidget::disable()
   m_clusterSizeLimits->setDisabled(true);
   m_pulseHeightLimits->setDisabled(true);
   m_windowSizeLimits->setDisabled(true);
+  m_skewnessLimits->setDisabled(true);
 }
 
 
@@ -93,6 +104,7 @@ void pCutBoxWidget::options(pMonitorPreferences* preferences)
   readClusterSizeLimits();
   readPulseHeightLimits();
   readWindowSizeLimits();
+  readSkewnessLimits();
   preferences->m_minElongation = m_preferences.m_minElongation;
   preferences->m_maxElongation = m_preferences.m_maxElongation;
   preferences->m_minClusterSize = m_preferences.m_minClusterSize;
@@ -101,6 +113,8 @@ void pCutBoxWidget::options(pMonitorPreferences* preferences)
   preferences->m_maxPulseHeight = m_preferences.m_maxPulseHeight;
   preferences->m_minWindowSize = m_preferences.m_minWindowSize;
   preferences->m_maxWindowSize = m_preferences.m_maxWindowSize;
+  preferences->m_minSkewness = m_preferences.m_minSkewness;
+  preferences->m_maxSkewness = m_preferences.m_maxSkewness;
 }
 
 
@@ -137,4 +151,13 @@ void pCutBoxWidget::readWindowSizeLimits()
   m_windowSizeLimits->readOptions(min, max);
   m_preferences.m_minWindowSize = min;
   m_preferences.m_maxWindowSize = max;
+}
+
+
+void pCutBoxWidget::readSkewnessLimits()
+{
+  double min, max;
+  m_skewnessLimits->readOptions(min, max);
+  m_preferences.m_minSkewness = min;
+  m_preferences.m_maxSkewness = max;
 }
