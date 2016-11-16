@@ -232,10 +232,11 @@ void xpemonWindow::showReaderStatMessage()
 	QString::number(cutEfficiency, 'f', 1) + " % cut efficiency)";
     }
     // And, finally, the modulation.
-    msg += ". Modulation = " + QString::number(100*(visibility.first), 'f', 2) +
+    msg += ". Modulation = (" +
+      QString::number(100*(visibility.first), 'f', 2) +
       " +/- " + QString::number(100*(visibility.second), 'f', 2) +
-      " %, phase = " + QString::number(phase.first, 'f', 1) + " +/- " +
-      QString::number(phase.second, 'f', 1);
+      ") %, phase = (" + QString::number(phase.first, 'f', 1) + " +/- " +
+      QString::number(phase.second, 'f', 1) + ") degrees";
     statusBar()->showMessage(msg);
   }
 }

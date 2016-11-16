@@ -25,6 +25,10 @@ with this program; if not, write to the Free Software Foundation Inc.,
 #include <iostream>
 #include <cmath>
 
+#ifndef M_PI
+#define M_PI (3.14159265358979323846)
+#endif
+
 
 /* Class describing a "Stokes accumulator" for an event-by-event polarization
    analysis as described in https://arxiv.org/abs/1409.6214.
