@@ -94,6 +94,7 @@ HEADERS += pEventDisplay.h
 HEADERS += pEvent.h
 HEADERS += pEventWindow.h
 HEADERS += pMomentsAnalysis.h
+HEADERS += pStokesAccumulator.h
 
 SOURCES += xpolgui.cpp
 SOURCES += xpoldetector.cpp
@@ -154,6 +155,8 @@ SOURCES += pEventDisplayTab.cpp
 SOURCES += pHitmapTab.cpp
 SOURCES += pHexagonCoordinates.cpp
 SOURCES += pMomentsAnalysis.cpp
+SOURCES += pStokesAccumulator.cpp
+
 SOURCES += pEvent.cpp
 SOURCES += pEventWindow.cpp
 SOURCES += pHexagon.cpp
