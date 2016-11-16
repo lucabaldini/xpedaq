@@ -34,6 +34,7 @@ with this program; if not, write to the Free Software Foundation Inc.,
 #include "xpolgui.h"
 #include "xpoldetector.h"
 
+
 class pMonitorTab : public pQtCustomTab
 {
 
@@ -53,11 +54,12 @@ class pMonitorTab : public pQtCustomTab
     pHistogram* pulseHeightHist() {return m_pulseHeightHist;}
     pHistogram* modulationHist() {return m_modulationHist;}
     pMap* hitmap() {return m_hitmap;}
-
+    void updateModulationFit(double visibility, double phase);
+    void resetModulationFit();
   
   public slots:
 
-    void update();
+    void update(double visibility, double phase);
     void reset();
      
   private:

@@ -150,8 +150,8 @@ void xpemonWindow::setupEvtReaderConnections()
   connect(m_eventReader, SIGNAL(lastEventUpdated(const pEvent&)),
           this, SLOT(showLastEvent(const pEvent&)));  
   // Update the other plots
-  connect (m_eventReader, SIGNAL(histogramsUpdated()),
-           m_monitorTab, SLOT(update()));
+  connect (m_eventReader, SIGNAL(histogramsUpdated(double, double)),
+           m_monitorTab, SLOT(update(double, double)));
   //connect (m_eventReader, SIGNAL(histogramsUpdated()),
   //         m_hitmapTab, SLOT(update()));
 }

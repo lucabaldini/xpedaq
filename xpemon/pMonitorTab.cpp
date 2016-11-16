@@ -88,7 +88,32 @@ void pMonitorTab::setupModulationPlot()
   m_modulationPlot = new pHistogramPlot(m_modulationHist, modulationOptions);
   m_modulationPlot->axisRect()->setAutoMargins(QCP::msNone);
   m_modulationPlot->axisRect()->setMargins(defaultMargins);
+  // Add a graph for the cosine square fit.
+  m_modulationPlot->addGraph();
+  m_modulationPlot->graph(0)->setPen(QPen(Qt::red));
+  // Movins on...
   m_groupBoxGridLayout -> addWidget(m_modulationPlot, 1, 1);
+}
+
+
+void pMonitorTab::updateModulationFit(double visibility, double phase)
+{
+  const int numPoints = 100;
+  double norm = m_modulationHist->entries()/(double)m_modulationHist->nbins();
+  QVector<double> x(numPoints), y(numPoints);
+  for (int i = 0; i < numPoints; ++i) {
+    x[i] = -180. + i/float(numPoints)*360;
+    double cosPhi = cos(x[i]/180*3.1415 - phase);
+    y[i] = norm*((1 - visibility) + 2*visibility*pow(cosPhi, 2.));
+  }
+  m_modulationPlot->graph(0)->setData(x, y);
+}
+
+
+void pMonitorTab::resetModulationFit()
+{
+  QVector<double> x(0), y(0);
+  m_modulationPlot->graph(0)->setData(x, y);
 }
 
 
@@ -117,7 +142,7 @@ void pMonitorTab::setupHitmapPlot()
 }
 
 
-void pMonitorTab::update()
+void pMonitorTab::update(double visibility, double phase)
 {
   m_windowSizePlot -> updateDisplay();
   m_windowSizePlot -> replot();
@@ -125,6 +150,7 @@ void pMonitorTab::update()
   //m_clusterSizePlot -> replot();
   m_pulseHeightPlot -> updateDisplay();
   m_pulseHeightPlot -> replot();
+  updateModulationFit(visibility, phase);
   m_modulationPlot -> updateDisplay();
   m_modulationPlot -> replot();
   m_hitmapPlot -> updateDisplay();
@@ -140,6 +166,7 @@ void pMonitorTab::reset()
   //m_clusterSizePlot -> updateDisplay();
   m_pulseHeightHist -> reset();
   m_pulseHeightPlot -> updateDisplay();
+  resetModulationFit();
   m_modulationHist -> reset();
   m_modulationPlot -> updateDisplay();
   m_hitmap -> reset();

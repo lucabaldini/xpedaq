@@ -67,7 +67,7 @@ class pEventReader: public QObject
     void stopped();
     void eventRead();
     void lastEventUpdated(const pEvent& event);
-    void histogramsUpdated();
+    void histogramsUpdated(double visibility, double phase);
   
   private:
     

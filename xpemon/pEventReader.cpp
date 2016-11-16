@@ -148,7 +148,9 @@ void pEventReader::updateRequested()
   QMutexLocker locker(&m_mutex);
   if (m_isLastEventChanged) 
     emit lastEventUpdated(m_lastEvent);
-  emit histogramsUpdated();
+  double visibility = stokesAccumulator()->visibility().first;
+  double phase = stokesAccumulator()->phase().first;
+  emit histogramsUpdated(visibility, phase);
   m_isLastEventChanged = false;
 }
 
