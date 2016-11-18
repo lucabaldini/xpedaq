@@ -33,6 +33,7 @@ with this program; if not, write to the Free Software Foundation Inc.,
 #include "pQtCustomTab.h"
 #include "xpolgui.h"
 #include "xpoldetector.h"
+#include "pStatBox.h"
 
 
 class pMonitorTab : public pQtCustomTab
@@ -56,6 +57,8 @@ class pMonitorTab : public pQtCustomTab
     pMap* hitmap() {return m_hitmap;}
     void updateModulationFit(double visibility, double phase);
     void resetModulationFit();
+    void updatePulseHeightInfo();
+    void resetPulseHeightInfo();
   
   public slots:
 
@@ -81,6 +84,10 @@ class pMonitorTab : public pQtCustomTab
     pHistogramPlot *m_pulseHeightPlot;
     pHistogramPlot *m_modulationPlot;
     pHitmap *m_hitmapPlot;
+
+    //QCPItemText *m_pulseHeightPeakLabel;
+    //QCPItemText *m_pulseHeightFwhmLabel;
+    pStatBox *m_pulseHeightStatBox;
 };
 
 #endif //PMONITORTAB_H

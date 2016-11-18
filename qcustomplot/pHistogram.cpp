@@ -1,10 +1,38 @@
+/***********************************************************************
+Copyright (C) 2007--2016 the X-ray Polarimetry Explorer (XPE) team.
+
+For the license terms see the file LICENSE, distributed along with this
+software.
+
+This program is free software; you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by the
+Free Software Foundation; either version 2 of the License, or (at your
+option) any later version.
+
+This program is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+General Public License for more details.
+
+You should have received a copy of the GNU General Public License along
+with this program; if not, write to the Free Software Foundation Inc.,
+51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+***********************************************************************/
+
+
 #include "pHistogram.h"
 
 
-pHistogram::pHistogram (unsigned int nBins, double xmin, double xmax):
-                        m_nBins(nBins), m_xmin(xmin), m_xmax(xmax),
-                        m_isLinear (true), m_minVal(0.), m_maxVal(0.),
-                        m_sum (0), m_underflow (0), m_overflow(0)
+pHistogram::pHistogram (unsigned int nBins, double xmin, double xmax) :
+  m_nBins(nBins),
+  m_xmin(xmin),
+  m_xmax(xmax),
+  m_isLinear(true),
+  m_minVal(0.),
+  m_maxVal(0.),
+  m_sum (0),
+  m_underflow (0),
+  m_overflow(0)
 {
   if (m_nBins < 1) throw HistogramError::INVALID_NUMBER_OF_BINS;
   if (m_xmin > xmax) throw HistogramError::INVALID_BOUNDARIES;
@@ -183,24 +211,24 @@ double pHistogram::rms() const
 
 /*!
  */
-std::pair<double, double> pHistogram::gaussianMeanFwhm() const
+std::pair<double, double> pHistogram::gaussianPeakFwhm() const
 {
-  double mean = 0.;
+  double peak = 0.;
   double fwhm = 0.;
   double sum = 0.;
-  bool meanSet = false;
+  bool peakSet = false;
   for (unsigned int bin = 0; bin < m_nBins; ++bin) {
     sum += binContent(bin)/m_sum;
-    if (!meanSet && sum >= 0.5) {
-      mean = binCenter(bin);
-      meanSet = true;
+    if (!peakSet && sum >= 0.5) {
+      peak = binCenter(bin);
+      peakSet = true;
     }
     if (sum >= 0.8805) {
-      fwhm = 2*(binCenter(bin) - mean);
+      fwhm = 2*(binCenter(bin) - peak);
       break;
     }
   }
-  return std::make_pair(mean, fwhm);
+  return std::make_pair(peak, fwhm);
 }
 
 

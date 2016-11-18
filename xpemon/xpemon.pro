@@ -50,6 +50,7 @@ HEADERS += pRotableEllipse.h
 HEADERS += pCustomColorMapPlot.h
 HEADERS += pHorseshoe.h
 HEADERS += pHitmap.h
+HEADERS += pStatBox.h
 
 HEADERS += pQtGridLayoutWidget.h
 HEADERS += pQtGroupBoxWidget.h
@@ -116,6 +117,7 @@ SOURCES += pRotableEllipse.cpp
 SOURCES += pCustomColorMapPlot.cpp
 SOURCES += pHorseshoe.cpp
 SOURCES += pHitmap.cpp
+SOURCES += pStatBox.cpp
 
 SOURCES += pQtGridLayoutWidget.cpp
 SOURCES += pQtGroupBoxWidget.cpp
