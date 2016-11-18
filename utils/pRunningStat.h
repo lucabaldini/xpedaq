@@ -17,8 +17,8 @@ class pRunningStat
     double variance() const;
     double rms() const;  
     friend std::ostream& operator<< (std::ostream &out,
-                                     const pRunningStat &stat);
-	void reset();
+				     const pRunningStat &stat);
+    void reset();
 
 
   private:
