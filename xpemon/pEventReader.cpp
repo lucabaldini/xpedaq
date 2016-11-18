@@ -152,6 +152,14 @@ void pEventReader::updateRequested()
   double phase = stokesAccumulator()->phase().first;
   emit histogramsUpdated(visibility, phase);
   m_isLastEventChanged = false;
+  /*
+  std::cout << m_pulseHeightHist->mean() << " "
+	    << m_pulseHeightHist->rms() << " "
+	    << m_pulseHeightHist->gaussianMeanFwhm().first << " "
+	    << m_pulseHeightHist->gaussianMeanFwhm().second << " "
+	    << m_pulseHeightHist->gaussianMeanFwhm().second/m_pulseHeightHist->gaussianMeanFwhm().first 
+	    << std::endl;
+  */
 }
 
 

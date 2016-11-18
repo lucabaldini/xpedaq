@@ -1,5 +1,6 @@
 #include "pHistogram.h"
 
+
 pHistogram::pHistogram (unsigned int nBins, double xmin, double xmax):
                         m_nBins(nBins), m_xmin(xmin), m_xmax(xmax),
                         m_isLinear (true), m_minVal(0.), m_maxVal(0.),
@@ -9,8 +10,9 @@ pHistogram::pHistogram (unsigned int nBins, double xmin, double xmax):
   if (m_xmin > xmax) throw HistogramError::INVALID_BOUNDARIES;
   
   m_binWidth = (m_xmax - m_xmin) / nBins;
-  for (unsigned int ibin = 0; ibin <= m_nBins; ++ibin)
-    {m_binEdges.push_back(m_xmin + ibin * m_binWidth);}
+  for (unsigned int bin = 0; bin <= m_nBins; ++bin) {
+    m_binEdges.push_back(m_xmin + bin * m_binWidth);
+  }
   initialize();
 }
 
@@ -21,11 +23,12 @@ pHistogram::pHistogram(std::vector<double> binning):
                                                      
 {
   // A meaningful binning requires at least two entries
-  if (m_binEdges.size() < 2)
-    {throw HistogramError::INVALID_BINNING;}
-  if (!isOrdered(m_binEdges))
-    {throw HistogramError::INVALID_BINNING;}
-  
+  if (m_binEdges.size() < 2) {
+    throw HistogramError::INVALID_BINNING;
+  }
+  if (!isOrdered(m_binEdges)) {
+    throw HistogramError::INVALID_BINNING;
+  }
   m_isLinear = false;
   m_binWidth = -1.;
   m_nBins = m_binEdges.size() - 1;
@@ -37,8 +40,7 @@ pHistogram::pHistogram(std::vector<double> binning):
 
 void pHistogram::initialize()
 {
-  for (unsigned int ibin = 0; ibin < m_nBins; ++ibin)
-  {
+  for (unsigned int bin = 0; bin < m_nBins; ++bin) {
     m_values.push_back(0.);
     m_entries.push_back(0);
   }
@@ -50,8 +52,7 @@ unsigned int pHistogram::entries() const
   unsigned int nEntries =  0.;
   for(std::vector<unsigned int>::const_iterator it = m_entries.begin();
       it != m_entries.end();
-      ++it)
-  {
+      ++it) {
     nEntries += (*it);
   }
   return nEntries;
@@ -67,15 +68,18 @@ double pHistogram::sum() const
 std::vector<double> pHistogram::centers() const
 {
   std::vector<double> centerVec(m_nBins);
-  for (unsigned int i =0; i < m_nBins; ++i)
-    {centerVec[i] = binCenter(i);}
+  for (unsigned int i = 0; i < m_nBins; ++i) {
+    centerVec[i] = binCenter(i);
+  }
   return centerVec;
 }
 
 
 bool pHistogram::isBinInRange(unsigned int binNumber) const
 {  
-  if (binNumber > m_nBins) return false;
+  if (binNumber > m_nBins) {
+    return false;
+  }
   return true;
 }
 
@@ -92,42 +96,128 @@ unsigned int pHistogram::findBin (double x) const
 
 double pHistogram::binContent(unsigned int binNumber) const
 {
-  if (! isBinInRange(binNumber)) throw HistogramError::BIN_OUT_OF_RANGE;
+  if (! isBinInRange(binNumber)) {
+    throw HistogramError::BIN_OUT_OF_RANGE;
+  }
   return m_values.at(binNumber);
 }
 
 
 unsigned int pHistogram::binEntries(unsigned int binNumber) const
 {
-  if (! isBinInRange(binNumber)) throw HistogramError::BIN_OUT_OF_RANGE;
+  if (! isBinInRange(binNumber)) {
+    throw HistogramError::BIN_OUT_OF_RANGE;
+  }
   return m_entries.at(binNumber);
 }
 
 
 double pHistogram::binWidth(unsigned int binNumber) const
 {
-  if (! isBinInRange(binNumber)) throw HistogramError::BIN_OUT_OF_RANGE;
-  if (m_isLinear) return m_binWidth;
+  if (! isBinInRange(binNumber)) {
+    throw HistogramError::BIN_OUT_OF_RANGE;
+  }
+  if (m_isLinear) {
+    return m_binWidth;
+  }
   return (m_binEdges.at(binNumber+1) - m_binEdges.at(binNumber));
 }
 
 
 double pHistogram::binCenter(unsigned int binNumber) const
 {
-  if (! isBinInRange(binNumber)) throw HistogramError::BIN_OUT_OF_RANGE;
+  if (! isBinInRange(binNumber)) {
+    throw HistogramError::BIN_OUT_OF_RANGE;
+  }
   return 0.5*(m_binEdges.at(binNumber+1) + m_binEdges.at(binNumber));
+}
+
+
+/*! Return the mean value of the histogram.
+  
+  We might have done this in an unbinned fashion using a pRunningStat object,
+  but since the histogram class is setup to handle weights, we should do the
+  same in the running stat class.
+*/
+double pHistogram::mean() const
+{
+  double mean = 0.;
+  if (m_sum > 0) {
+    for (unsigned int bin = 0; bin < m_nBins; ++bin) {
+      mean += binCenter(bin) * binContent(bin);
+    }
+    mean /= m_sum;
+  }
+  return mean;
+}
+
+
+/*! Return the second moment around a generic value x0. (And yes, I am not
+  trying to be clever here---this is actually pretty dumb.)
+  
+  We provide this convenience function that can be called to calculate the
+  variance so that we can take advantage of it when we need the mean and the
+  variance---in that case we can cache the mean and don't have to calculate
+  it twice.
+ */
+double pHistogram::mom2(double x0) const
+{
+  double mom2 = 0.;
+  if (m_sum > 0) {
+    for (unsigned int bin = 0; bin < m_nBins; ++bin) {
+      mom2 += pow((binCenter(bin) - x0), 2.) * binContent(bin);
+    }
+    mom2 /= m_sum;
+  }
+  return mom2;
+}
+
+
+/*! Return the rms of the histogram.
+ */
+double pHistogram::rms() const
+{
+  return sqrt(mom2(mean()));
+}
+
+
+/*!
+ */
+std::pair<double, double> pHistogram::gaussianMeanFwhm() const
+{
+  double mean = 0.;
+  double fwhm = 0.;
+  double sum = 0.;
+  bool meanSet = false;
+  for (unsigned int bin = 0; bin < m_nBins; ++bin) {
+    sum += binContent(bin)/m_sum;
+    if (!meanSet && sum >= 0.5) {
+      mean = binCenter(bin);
+      meanSet = true;
+    }
+    if (sum >= 0.8805) {
+      fwhm = 2*(binCenter(bin) - mean);
+      break;
+    }
+  }
+  return std::make_pair(mean, fwhm);
 }
 
 
 void pHistogram::fillBin(unsigned int binNumber, double value)
 {
-  if (! isBinInRange(binNumber)) throw HistogramError::BIN_OUT_OF_RANGE;
-
+  if (! isBinInRange(binNumber)) {
+    throw HistogramError::BIN_OUT_OF_RANGE;
+  }
   m_values.at(binNumber) += value;
   m_entries.at(binNumber) += 1;
   m_sum += value;
-  if (m_values.at(binNumber) > maxValue()) {m_maxVal = m_values.at(binNumber);}
-  if (m_values.at(binNumber) < minValue()) {m_minVal = m_values.at(binNumber);} 
+  if (m_values.at(binNumber) > maxValue()) {
+    m_maxVal = m_values.at(binNumber);
+  }
+  if (m_values.at(binNumber) < minValue()) {
+    m_minVal = m_values.at(binNumber);
+  } 
 }
 
 
@@ -170,10 +260,9 @@ void pHistogram::fill(double x)
 
 void pHistogram::reset()
 {
-  for (unsigned int ibin = 0; ibin < m_nBins; ++ibin)
-  {
-    m_values.at(ibin) = 0.;
-    m_entries.at(ibin) = 0;
+  for (unsigned int bin = 0; bin < m_nBins; ++bin) {
+    m_values.at(bin) = 0.;
+    m_entries.at(bin) = 0;
   }
   m_minVal = 0.;
   m_maxVal = 0.;

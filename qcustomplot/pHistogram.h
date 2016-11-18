@@ -9,6 +9,7 @@
 
 #include "histogramUtils.h"
 
+
 class pHistogram
 {
   
@@ -36,6 +37,10 @@ class pHistogram
     unsigned int binEntries(unsigned int binNumber) const;
     double binWidth(unsigned int binNumber = 0) const;
     double binCenter (unsigned int binNumber) const;
+    double mean() const;
+    double mom2(double x0) const;
+    double rms() const;
+    std::pair<double, double> gaussianMeanFwhm() const;
     
     void fill(double x);
     void fill(double x, double value);
