@@ -54,13 +54,13 @@ void pTransportBar::setupConnections()
 
 void pTransportBar::setupToolTips()
 {
-  m_startButton->setToolTip("Start the data acquisition");
-  m_stopButton->setToolTip("Stop the data acquisition");
+  m_startButton->setToolTip("Start");
+  m_stopButton->setToolTip("Stop");
   if (m_pauseButton != NULL) {
-    m_pauseButton->setToolTip("Pause the data acquisition");
+    m_pauseButton->setToolTip("Pause");
   }
   if (m_resetButton != NULL) {
-    m_resetButton->setToolTip("Reset the run controller");
+    m_resetButton->setToolTip("Reset");
   }
 }
 
