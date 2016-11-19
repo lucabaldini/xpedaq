@@ -25,6 +25,7 @@ with this program; if not, write to the Free Software Foundation Inc.,
 #include <iostream>
 #include <QString>
 #include "pHistogram.h"
+#include "pModulationHistogram.h"
 #include "pHistogramPlot.h"
 #include "pMap.h"
 #include "pHitmap.h"
@@ -53,16 +54,16 @@ class pMonitorTab : public pQtCustomTab
     pHistogram* windowSizeHist() {return m_windowSizeHist;}
     pHistogram* clusterSizeHist() {return m_clusterSizeHist;}
     pHistogram* pulseHeightHist() {return m_pulseHeightHist;}
-    pHistogram* modulationHist() {return m_modulationHist;}
+    pModulationHistogram* modulationHist() {return m_modulationHist;}
     pMap* hitmap() {return m_hitmap;}
-    void updateModulationFit(double visibility, double phase);
+    void updateModulationFit();
     void resetModulationFit();
     void updatePulseHeightFit();
     void resetPulseHeightFit();
   
   public slots:
 
-    void update(double visibility, double phase);
+    void update();
     void reset();
      
   private:
@@ -76,7 +77,7 @@ class pMonitorTab : public pQtCustomTab
     pHistogram* m_windowSizeHist;
     pHistogram* m_clusterSizeHist;
     pHistogram* m_pulseHeightHist;    
-    pHistogram* m_modulationHist;
+    pModulationHistogram* m_modulationHist;
     pMap* m_hitmap;
 
     pHistogramPlot *m_windowSizePlot;

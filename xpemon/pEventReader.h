@@ -30,10 +30,10 @@ with this program; if not, write to the Free Software Foundation Inc.,
 
 #include "pDataBlock.h"
 #include "pHistogram.h"
+#include "pModulationHistogram.h"
 #include "pMap.h"
 #include "pEvent.h"
 #include "pMonitorPreferences.h"
-#include "pStokesAccumulator.h"
 
 
 class pEventReader: public QObject
@@ -45,14 +45,13 @@ class pEventReader: public QObject
   
     pEventReader(const pMonitorPreferences& preferences,
 		 pHistogram* windowSizeHist, pHistogram* clusterSizeHist,
-                 pHistogram* pulseHeightHist, pHistogram* modulationHist,
-		 pMap* hitMap);
+                 pHistogram* pulseHeightHist,
+		 pModulationHistogram* modulationHist, pMap* hitMap);
     int numEventsRead() const {return m_numEventsRead;}
     int numEventsAccepted() const {return m_numEventsAccepted;}
     long int currentSeconds() const;
     long int startSeconds() const {return m_startSeconds;}
     long int runningSeconds() const {return currentSeconds() - m_startSeconds;}
-    pStokesAccumulator *stokesAccumulator() const {return m_stokesAccumulator;}
     
   public slots:
   
@@ -67,7 +66,7 @@ class pEventReader: public QObject
     void stopped();
     void eventRead();
     void lastEventUpdated(const pEvent& event);
-    void histogramsUpdated(double visibility, double phase);
+    void histogramsUpdated();
   
   private:
     
@@ -78,7 +77,7 @@ class pEventReader: public QObject
     pHistogram *m_windowSizeHist;
     pHistogram *m_clusterSizeHist;
     pHistogram *m_pulseHeightHist;
-    pHistogram *m_modulationHist;
+    pModulationHistogram *m_modulationHist;
     pMap *m_hitMap;
     
     //Current event info:
@@ -94,7 +93,6 @@ class pEventReader: public QObject
     int m_numEventsRead;
     int m_numEventsAccepted;
     long int m_startSeconds;
-    pStokesAccumulator *m_stokesAccumulator;
 };
 
 #endif //PEVENTREADER_H

@@ -41,8 +41,11 @@ void pStokesAccumulator::reset()
 }
 
 
-void pStokesAccumulator::fill(double phi)
+void pStokesAccumulator::fill(double phi, bool deg)
 {
+  if (deg) {
+    phi *= (M_PI/180.);
+  }
   m_I += 1.;
   m_Q += cos(2.*phi);
   m_U += sin(2.*phi);

@@ -41,7 +41,7 @@ class pStokesAccumulator
     pStokesAccumulator();
 
     void reset();
-    void fill(double phi);
+    void fill(double phi, bool deg = true);
 
     // Getters.
     double I() const {return m_I;}

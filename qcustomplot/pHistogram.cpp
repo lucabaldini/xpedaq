@@ -45,10 +45,12 @@ pHistogram::pHistogram (unsigned int nBins, double xmin, double xmax) :
 }
 
 
-pHistogram::pHistogram(std::vector<double> binning):
-                        m_binEdges(binning), m_minVal(0.), m_maxVal(0.),
-                        m_underflow (0), m_overflow(0)
-                                                     
+pHistogram::pHistogram(std::vector<double> binning) :
+  m_binEdges(binning),
+  m_minVal(0.),
+  m_maxVal(0.),
+  m_underflow (0),
+  m_overflow(0)                                                   
 {
   // A meaningful binning requires at least two entries
   if (m_binEdges.size() < 2) {

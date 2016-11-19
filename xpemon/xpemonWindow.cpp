@@ -150,8 +150,8 @@ void xpemonWindow::setupEvtReaderConnections()
   connect(m_eventReader, SIGNAL(lastEventUpdated(const pEvent&)),
           this, SLOT(showLastEvent(const pEvent&)));  
   // Update the other plots
-  connect (m_eventReader, SIGNAL(histogramsUpdated(double, double)),
-           m_monitorTab, SLOT(update(double, double)));
+  connect (m_eventReader, SIGNAL(histogramsUpdated()),
+           m_monitorTab, SLOT(update()));
   //connect (m_eventReader, SIGNAL(histogramsUpdated()),
   //         m_hitmapTab, SLOT(update()));
 }
@@ -216,10 +216,6 @@ void xpemonWindow::showReaderStatMessage()
   int numEventsAccepted = m_eventReader->numEventsAccepted();
   int numEventsRead = m_eventReader->numEventsRead();
   long int runningSeconds = m_eventReader->runningSeconds();
-  std::pair<double, double> visibility =
-    m_eventReader->stokesAccumulator()->visibility();
-  std::pair<double, double> phase =
-    m_eventReader->stokesAccumulator()->phaseDeg();
   if (runningSeconds > 0 && numEventsRead > 0) {
     double averageRate = numEventsRead/(double)runningSeconds;
     QString msg = QString::number(numEventsRead) + " event(s) read @ " +
@@ -231,12 +227,6 @@ void xpemonWindow::showReaderStatMessage()
       msg += ", " + QString::number(numEventsAccepted) + " events accepted (" +
 	QString::number(cutEfficiency, 'f', 1) + " % cut efficiency)";
     }
-    // And, finally, the modulation.
-    msg += ". Modulation = (" +
-      QString::number(100*(visibility.first), 'f', 2) +
-      " +/- " + QString::number(100*(visibility.second), 'f', 2) +
-      ") %, phase = (" + QString::number(phase.first, 'f', 1) + " +/- " +
-      QString::number(phase.second, 'f', 1) + ") degrees";
     statusBar()->showMessage(msg);
   }
 }

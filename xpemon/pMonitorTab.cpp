@@ -77,7 +77,7 @@ void pMonitorTab::setupPulseHeightPlot()
   // Add a graph for the gaussian fit.
   m_pulseHeightPlot->addGraph();
   m_pulseHeightPlot->graph(0)->setPen(QPen(Qt::red));
-  m_pulseHeightStatBox = new pStatBox(m_pulseHeightPlot, 0.6, 0.0);
+  m_pulseHeightStatBox = new pStatBox(m_pulseHeightPlot, 0.05, 0.0);
   m_pulseHeightStatBox->addField("Peak", 0);
   m_pulseHeightStatBox->addField("FWHM", 2);
   m_pulseHeightStatBox->addField("Tail", 2);
@@ -90,8 +90,9 @@ void pMonitorTab::setupModulationPlot()
   using namespace xpemonPlotOptions;
   pBasicPlotOptions modulationOptions = pBasicPlotOptions("Modulation",
     "Phi [deg]", "Events/bin", defaultPen, defaultBrush);
-  m_modulationHist = new pHistogram(modulationNbins, modulationThetaMin,
-                                    modulationThetaMax);
+  m_modulationHist = new pModulationHistogram(modulationNbins,
+					      modulationThetaMin,
+					      modulationThetaMax);
   m_modulationPlot = new pHistogramPlot(m_modulationHist, modulationOptions);
   m_modulationPlot->axisRect()->setAutoMargins(QCP::msNone);
   m_modulationPlot->axisRect()->setMargins(defaultMargins);
@@ -99,7 +100,7 @@ void pMonitorTab::setupModulationPlot()
   // Add a graph for the cosine square fit.
   m_modulationPlot->addGraph();
   m_modulationPlot->graph(0)->setPen(QPen(Qt::red));
-  m_modulationStatBox = new pStatBox(m_modulationPlot, 0.6, 0.0);
+  m_modulationStatBox = new pStatBox(m_modulationPlot, 0.05, 0.0);
   m_modulationStatBox->addField("Modulation", 1);
   m_modulationStatBox->addField("Phase", 1);
   resetModulationFit();
@@ -108,21 +109,24 @@ void pMonitorTab::setupModulationPlot()
 
 /*!
  */
-void pMonitorTab::updateModulationFit(double visibility, double phase)
+void pMonitorTab::updateModulationFit()
 {
   if (m_modulationHist->entries() > 10) {
+    std::pair<double, double> visibility = m_modulationHist->visibility();
+    std::pair<double, double> phase = m_modulationHist->phaseDeg();
     const int numPoints = 100;
     double norm = m_modulationHist->entries()/(double)m_modulationHist->nbins();
     QVector<double> x(numPoints), y(numPoints);
     for (int i = 0; i < numPoints; ++i) {
       x[i] = -180. + i/float(numPoints)*360;
-      double cosPhi = cos(x[i]/180*3.1415 - phase);
-      y[i] = norm*((1 - visibility) + 2*visibility*pow(cosPhi, 2.));
+      double cosPhi = cos(x[i]/180*3.1415 - phase.first/180*3.1415);
+      y[i] = norm*((1 - visibility.first) + 2*visibility.first*pow(cosPhi, 2.));
     }
     m_modulationPlot->graph(0)->setData(x, y);
+    m_modulationStatBox->setField("Modulation", 100*visibility.first,
+				  100*visibility.second, "%");
+    m_modulationStatBox->setField("Phase", phase.first, phase.second, "deg");
   }
-  m_modulationStatBox->setField("Modulation", 100*visibility, "%");
-  m_modulationStatBox->setField("Phase", 180/3.1415*phase, "deg");
 }
 
 
@@ -195,7 +199,7 @@ void pMonitorTab::setupHitmapPlot()
 }
 
 
-void pMonitorTab::update(double visibility, double phase)
+void pMonitorTab::update()
 {
   m_windowSizePlot->updateDisplay();
   m_windowSizePlot->replot();
@@ -204,7 +208,7 @@ void pMonitorTab::update(double visibility, double phase)
   updatePulseHeightFit();
   m_pulseHeightPlot->updateDisplay();
   m_pulseHeightPlot->replot();
-  updateModulationFit(visibility, phase);
+  updateModulationFit();
   m_modulationPlot->updateDisplay();
   m_modulationPlot->replot();
   m_hitmapPlot->updateDisplay();

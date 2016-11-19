@@ -25,7 +25,7 @@ pEventReader::pEventReader(const pMonitorPreferences& preferences,
 			   pHistogram* windowSizeHist,
 			   pHistogram* clusterSizeHist,
                            pHistogram* pulseHeightHist, 
-                           pHistogram* modulationHist,
+                           pModulationHistogram* modulationHist,
                            pMap* hitMap) :
   m_windowSizeHist(windowSizeHist),
   //m_clusterSizeHist(clusterSizeHist),
@@ -38,7 +38,6 @@ pEventReader::pEventReader(const pMonitorPreferences& preferences,
   m_startSeconds(-1)
 {
   m_udpSocket = new QUdpSocket (this);
-  m_stokesAccumulator = new pStokesAccumulator();
 }
 
 
@@ -96,7 +95,6 @@ void pEventReader::readPendingDatagram()
     m_numEventsRead += 1;
     if (eventAccepted(event)) {
       m_numEventsAccepted += 1;
-      m_stokesAccumulator->fill(event.phi());
       m_isLastEventChanged = true;    
       m_lastEvent = event;
       for (auto const& it : event){
@@ -148,18 +146,8 @@ void pEventReader::updateRequested()
   QMutexLocker locker(&m_mutex);
   if (m_isLastEventChanged) 
     emit lastEventUpdated(m_lastEvent);
-  double visibility = stokesAccumulator()->visibility().first;
-  double phase = stokesAccumulator()->phase().first;
-  emit histogramsUpdated(visibility, phase);
+  emit histogramsUpdated();
   m_isLastEventChanged = false;
-  /*
-  std::cout << m_pulseHeightHist->mean() << " "
-	    << m_pulseHeightHist->rms() << " "
-	    << m_pulseHeightHist->gaussianMeanFwhm().first << " "
-	    << m_pulseHeightHist->gaussianMeanFwhm().second << " "
-	    << m_pulseHeightHist->gaussianMeanFwhm().second/m_pulseHeightHist->gaussianMeanFwhm().first 
-	    << std::endl;
-  */
 }
 
 
@@ -169,7 +157,6 @@ void pEventReader::startReading()
   m_numEventsRead = 0;
   m_numEventsAccepted = 0;
   m_startSeconds = currentSeconds();
-  m_stokesAccumulator->reset();
   QMutexLocker locker(&m_mutex);
   m_stopped = false;
   m_isLastEventChanged = false;
