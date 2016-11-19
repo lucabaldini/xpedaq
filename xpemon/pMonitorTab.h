@@ -57,8 +57,8 @@ class pMonitorTab : public pQtCustomTab
     pMap* hitmap() {return m_hitmap;}
     void updateModulationFit(double visibility, double phase);
     void resetModulationFit();
-    void updatePulseHeightInfo();
-    void resetPulseHeightInfo();
+    void updatePulseHeightFit();
+    void resetPulseHeightFit();
   
   public slots:
 
@@ -85,9 +85,8 @@ class pMonitorTab : public pQtCustomTab
     pHistogramPlot *m_modulationPlot;
     pHitmap *m_hitmapPlot;
 
-    //QCPItemText *m_pulseHeightPeakLabel;
-    //QCPItemText *m_pulseHeightFwhmLabel;
     pStatBox *m_pulseHeightStatBox;
+    pStatBox *m_modulationStatBox;
 };
 
 #endif //PMONITORTAB_H

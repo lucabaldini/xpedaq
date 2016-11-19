@@ -74,13 +74,14 @@ void pMonitorTab::setupPulseHeightPlot()
   m_pulseHeightPlot->axisRect()->setAutoMargins(QCP::msNone);
   m_pulseHeightPlot->axisRect()->setMargins(defaultMargins);
   m_groupBoxGridLayout->addWidget(m_pulseHeightPlot, 0, 1);
-  // Add a graph for the cosine square fit.
+  // Add a graph for the gaussian fit.
   m_pulseHeightPlot->addGraph();
   m_pulseHeightPlot->graph(0)->setPen(QPen(Qt::red));
-  m_pulseHeightStatBox = new pStatBox(m_pulseHeightPlot, 0.65, 0.05);
+  m_pulseHeightStatBox = new pStatBox(m_pulseHeightPlot, 0.6, 0.0);
   m_pulseHeightStatBox->addField("Peak", 0);
   m_pulseHeightStatBox->addField("FWHM", 2);
-  resetPulseHeightInfo();
+  m_pulseHeightStatBox->addField("Tail", 2);
+  resetPulseHeightFit();
 }
 
 
@@ -94,11 +95,14 @@ void pMonitorTab::setupModulationPlot()
   m_modulationPlot = new pHistogramPlot(m_modulationHist, modulationOptions);
   m_modulationPlot->axisRect()->setAutoMargins(QCP::msNone);
   m_modulationPlot->axisRect()->setMargins(defaultMargins);
+  m_groupBoxGridLayout->addWidget(m_modulationPlot, 1, 1);
   // Add a graph for the cosine square fit.
   m_modulationPlot->addGraph();
   m_modulationPlot->graph(0)->setPen(QPen(Qt::red));
-  // Movin on...
-  m_groupBoxGridLayout->addWidget(m_modulationPlot, 1, 1);
+  m_modulationStatBox = new pStatBox(m_modulationPlot, 0.6, 0.0);
+  m_modulationStatBox->addField("Modulation", 1);
+  m_modulationStatBox->addField("Phase", 1);
+  resetModulationFit();
 }
 
 
@@ -117,6 +121,8 @@ void pMonitorTab::updateModulationFit(double visibility, double phase)
     }
     m_modulationPlot->graph(0)->setData(x, y);
   }
+  m_modulationStatBox->setField("Modulation", 100*visibility, "%");
+  m_modulationStatBox->setField("Phase", 180/3.1415*phase, "deg");
 }
 
 
@@ -124,6 +130,7 @@ void pMonitorTab::updateModulationFit(double visibility, double phase)
  */
 void pMonitorTab::resetModulationFit()
 {
+  m_modulationStatBox->reset();
   QVector<double> x(0), y(0);
   m_modulationPlot->graph(0)->setData(x, y);
 }
@@ -131,15 +138,14 @@ void pMonitorTab::resetModulationFit()
 
 /*!
  */
-void pMonitorTab::updatePulseHeightInfo()
+void pMonitorTab::updatePulseHeightFit()
 {
   if (m_pulseHeightHist->entries() > 10) {
-    std::pair<double, double> info = m_pulseHeightHist->gaussianPeakFwhm();
-    double peak = info.first;
-    double rms = info.second/2.355;
-    double fwhm = 100.*info.second/peak;
-    m_pulseHeightStatBox->setField(QString("Peak"), peak);
-    m_pulseHeightStatBox->setField(QString("FWHM"), fwhm);
+    std::pair<double, double> params = m_pulseHeightHist->gaussianPeakFwhm();
+    double peak = params.first;
+    double rms = params.second/2.355;
+    m_pulseHeightStatBox->setField("Peak", peak);
+    m_pulseHeightStatBox->setField("FWHM", 100.*params.second/peak);
     const int numPoints = 100;
     double norm = 0.3989422804014327/rms*m_pulseHeightHist->entries()*
       m_pulseHeightHist->binWidth();
@@ -156,10 +162,8 @@ void pMonitorTab::updatePulseHeightInfo()
 
 /*!
  */
-void pMonitorTab::resetPulseHeightInfo()
+void pMonitorTab::resetPulseHeightFit()
 {
-  //m_pulseHeightPeakLabel->setText("Peak: -");
-  //m_pulseHeightFwhmLabel->setText("FWHM: -");
   m_pulseHeightStatBox->reset();
   QVector<double> x(0), y(0);
   m_pulseHeightPlot->graph(0)->setData(x, y);
@@ -197,7 +201,7 @@ void pMonitorTab::update(double visibility, double phase)
   m_windowSizePlot->replot();
   //m_clusterSizePlot->updateDisplay();
   //m_clusterSizePlot->replot();
-  updatePulseHeightInfo();
+  updatePulseHeightFit();
   m_pulseHeightPlot->updateDisplay();
   m_pulseHeightPlot->replot();
   updateModulationFit(visibility, phase);
@@ -214,7 +218,7 @@ void pMonitorTab::reset()
   m_windowSizePlot->updateDisplay();
   //m_clusterSizeHist->reset();
   //m_clusterSizePlot->updateDisplay();
-  resetPulseHeightInfo();
+  resetPulseHeightFit();
   m_pulseHeightHist->reset();
   m_pulseHeightPlot->updateDisplay();
   resetModulationFit();

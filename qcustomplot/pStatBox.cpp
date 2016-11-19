@@ -38,26 +38,40 @@ void pStatBox::addField(QString name, int precision)
   m_parent->addItem(label);
   m_labelMap->insert(std::pair<QString, QCPItemText*>(name, label));
   m_precisionMap->insert(std::pair<QString, int>(name, precision));
-  label->setPositionAlignment(Qt::AlignTop | Qt::AlignLeft);
+  label->setPositionAlignment(Qt::AlignBottom | Qt::AlignLeft);
   label->position->setType(QCPItemPosition::ptAxisRectRatio);
   label->position->setCoords(m_x0, m_y0 + 0.075*m_labelMap->size());
 }
 
 
-void pStatBox::setField(QString name, double value)
+void pStatBox::setField(QString name, double value, QString units)
 {
   double precision = m_precisionMap->at(name);
-  QString text = name + ": " + QString::number(value, 'f', precision);
+  QString text = name + ": " + QString::number(value, 'f', precision) + " " +
+    units;
   m_labelMap->at(name)->setText(text);
 }
 
 
-void pStatBox::setField(QString name, double value, double error)
+void pStatBox::setField(const char *name, double value, QString units)
+{
+  setField(QString(name), value, units);
+}
+
+
+void pStatBox::setField(QString name, double value, double error, QString units)
 {
   double precision = m_precisionMap->at(name);
   QString text = name + ": " + QString::number(value, 'f', precision) +
-    " +/- " + QString::number(error, 'f', precision);
+    " +/- " + QString::number(error, 'f', precision) + " " + units;
   m_labelMap->at(name)->setText(text);
+}
+
+
+void pStatBox::setField(const char *name, double value, double error,
+			QString units)
+{
+  setField(QString(name), value, error, units);
 }
 
 

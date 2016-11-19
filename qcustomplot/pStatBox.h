@@ -34,8 +34,11 @@ class pStatBox
   
     pStatBox(QCustomPlot *parent, double x0, double y0);
     void addField(QString name, int precision);
-    void setField(QString name, double value);
-    void setField(QString name, double value, double error);
+    void setField(QString name, double value, QString units = "");
+    void setField(const char *name, double value, QString units = "");
+    void setField(QString name, double value, double error, QString units = "");
+    void setField(const char *name, double value, double error,
+		  QString units = "");
     void reset();
     
   private:
