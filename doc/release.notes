@@ -1,4 +1,11 @@
 
+* Added a stat box facility to display the relevant histogram parameters.
+* Added a few statistical facilities to calculate the histogram mean, RMS and
+  FWHM.
+* Added new pModulationHistogram class featuring the internal accumulation
+  of the event-by-event stokes parameters.
+* Added a naive fit to the pulse height distribution FWHM.
+
 -------------------------------------------------------------------------------
 xpedaq (0.19.0) - Wed, 16 Nov 2016 16:42:31 +0100
 -------------------------------------------------------------------------------
