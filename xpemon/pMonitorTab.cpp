@@ -111,11 +111,11 @@ void pMonitorTab::setupModulationPlot()
  */
 void pMonitorTab::updateModulationFit()
 {
-  if (m_modulationHist->entries() > 10) {
+  if (m_modulationHist->sum() > 10) {
     std::pair<double, double> visibility = m_modulationHist->visibility();
     std::pair<double, double> phase = m_modulationHist->phaseDeg();
     const int numPoints = 100;
-    double norm = m_modulationHist->entries()/(double)m_modulationHist->nbins();
+    double norm = m_modulationHist->sum()/(double)m_modulationHist->nbins();
     QVector<double> x(numPoints), y(numPoints);
     for (int i = 0; i < numPoints; ++i) {
       x[i] = -180. + i/float(numPoints)*360;
@@ -144,14 +144,17 @@ void pMonitorTab::resetModulationFit()
  */
 void pMonitorTab::updatePulseHeightFit()
 {
-  if (m_pulseHeightHist->entries() > 10) {
+  if (m_pulseHeightHist->sum() > 10) {
     std::pair<double, double> params = m_pulseHeightHist->gaussianPeakFwhm();
     double peak = params.first;
     double rms = params.second/2.355;
+    double tail = m_pulseHeightHist->sum(0., peak - 2.5*rms)/
+      m_pulseHeightHist->sum();
     m_pulseHeightStatBox->setField("Peak", peak);
     m_pulseHeightStatBox->setField("FWHM", 100.*params.second/peak);
+    m_pulseHeightStatBox->setField("Tail", tail);
     const int numPoints = 100;
-    double norm = 0.3989422804014327/rms*m_pulseHeightHist->entries()*
+    double norm = 0.3989422804014327/rms*m_pulseHeightHist->sum()*
       m_pulseHeightHist->binWidth();
     QVector<double> x(numPoints), y(numPoints);
     for (int i = 0; i < numPoints; ++i) {

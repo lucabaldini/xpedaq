@@ -48,6 +48,7 @@ class pHistogram
     unsigned int nbins() const {return m_nBins;}
     unsigned int entries() const;
     double sum() const;   // returns the sum of all the values stored
+    double sum(double xmin, double xmax) const;
     double xMin () const {return m_xmin;}
     double xMax() const {return m_xmax;}
     double minValue() const {return m_minVal;}

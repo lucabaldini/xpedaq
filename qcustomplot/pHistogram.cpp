@@ -80,10 +80,8 @@ void pHistogram::initialize()
 unsigned int pHistogram::entries() const
 {
   unsigned int nEntries =  0.;
-  for(std::vector<unsigned int>::const_iterator it = m_entries.begin();
-      it != m_entries.end();
-      ++it) {
-    nEntries += (*it);
+  for (const auto &it : m_entries) {
+    nEntries += it;
   }
   return nEntries;
 }
@@ -92,6 +90,19 @@ unsigned int pHistogram::entries() const
 double pHistogram::sum() const
 {
   return m_sum;
+}
+
+
+double pHistogram::sum(double xmin, double xmax) const
+{
+  double val = 0.;
+  for (unsigned int bin = 0; bin < m_nBins; ++bin) {
+    double x = binCenter(bin);
+    if (x >= xmin && x <= xmax) {
+      val += binContent(bin);
+    }
+  }
+  return val;
 }
 
 
@@ -116,10 +127,15 @@ bool pHistogram::isBinInRange(unsigned int binNumber) const
 
 unsigned int pHistogram::findBin (double x) const
 {
-  if (x < m_xmin) throw HistogramError::VALUE_LOWER_THAN_AXIS_RANGE;
-  if (x >= m_xmax) throw HistogramError::VALUE_GREATER_THAN_AXIS_RANGE;
-  
-  if (m_isLinear) return static_cast<unsigned int> ((x - m_xmin) / m_binWidth);
+  if (x < m_xmin) {
+    throw HistogramError::VALUE_LOWER_THAN_AXIS_RANGE;
+  }
+  if (x >= m_xmax) {
+    throw HistogramError::VALUE_GREATER_THAN_AXIS_RANGE;
+  } 
+  if (m_isLinear) {
+    return static_cast<unsigned int> ((x - m_xmin) / m_binWidth);
+  }
   return findPosition(m_binEdges, x);
 }
 
