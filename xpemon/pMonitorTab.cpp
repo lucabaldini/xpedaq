@@ -80,7 +80,7 @@ void pMonitorTab::setupPulseHeightPlot()
   m_pulseHeightStatBox = new pStatBox(m_pulseHeightPlot, 0.05, 0.0);
   m_pulseHeightStatBox->addField("Peak", 0);
   m_pulseHeightStatBox->addField("FWHM", 2);
-  m_pulseHeightStatBox->addField("Tail", 2);
+  m_pulseHeightStatBox->addField("Tail", 3);
   resetPulseHeightFit();
 }
 
@@ -148,13 +148,14 @@ void pMonitorTab::updatePulseHeightFit()
     std::pair<double, double> params = m_pulseHeightHist->gaussianPeakFwhm();
     double peak = params.first;
     double rms = params.second/2.355;
-    double tail = m_pulseHeightHist->sum(0., peak - 2.5*rms)/
-      m_pulseHeightHist->sum();
+    double xmin = peak - 2.5*rms;
+    double xmax = peak + 2.5*rms;
+    double tail = m_pulseHeightHist->sum(0., xmin)/m_pulseHeightHist->sum();
     m_pulseHeightStatBox->setField("Peak", peak);
     m_pulseHeightStatBox->setField("FWHM", 100.*params.second/peak);
     m_pulseHeightStatBox->setField("Tail", tail);
     const int numPoints = 100;
-    double norm = 0.3989422804014327/rms*m_pulseHeightHist->sum()*
+    double norm = 0.3989422804014327/rms*m_pulseHeightHist->sum(xmin, xmax)*
       m_pulseHeightHist->binWidth();
     QVector<double> x(numPoints), y(numPoints);
     for (int i = 0; i < numPoints; ++i) {

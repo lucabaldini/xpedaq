@@ -227,7 +227,8 @@ double pHistogram::rms() const
 }
 
 
-/*!
+/*! We can definitely be smarter, here, and at the very minimum we should be
+  interpolating the bin centers.
  */
 std::pair<double, double> pHistogram::gaussianPeakFwhm() const
 {
@@ -242,7 +243,7 @@ std::pair<double, double> pHistogram::gaussianPeakFwhm() const
       peakSet = true;
     }
     if (sum >= 0.8805) {
-      fwhm = 2*(binCenter(bin) - peak);
+      fwhm = 2*(binCenter(bin) - 0.5*binWidth(bin) - peak);
       break;
     }
   }
