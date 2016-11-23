@@ -79,17 +79,12 @@ void pDataCollector::run()
   m_running = true; 
   long unsigned int fullFrameDataBufferDimension = SRAM_DIM*2; // this definition should definitely be somewhere esle
   long unsigned int maxSize = m_detectorConfiguration->maxBufferSize();
-  long unsigned int bufferDimension;
+  long unsigned int bufferDimension = fullFrameDataBufferDimension;
   pDataBlock *curDataBlock;
   m_xpolFpga->usbController()->resetSequencer();
   m_xpolFpga->usbController()->startSequencer();
   int errorCode = 0;
   while (m_running) {
-    if (m_fullFrame){
-      bufferDimension =  fullFrameDataBufferDimension;
-    } else {
-      bufferDimension = maxSize; 
-    }
     unsigned char* dataBuffer = new (std::nothrow) 
                                                unsigned char[bufferDimension];
     if (dataBuffer == nullptr){
