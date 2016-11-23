@@ -29,12 +29,9 @@ xpemonWindow::xpemonWindow(std::string preferencesFilePath,
 {
   QString title = "xpemon version " + QString(__XPEDAQ_VERSION__);
   setWindowTitle(title);
-  const int pixelFromScreenLeft = 10;
-  const int pixelFromScreenTop = 10;
   const int pixelWidth = 1150;
   const int pixelHeight = 750;
-  setGeometry(pixelFromScreenLeft, pixelFromScreenTop,
-              pixelWidth, pixelHeight);
+  resize(pixelWidth, pixelHeight);
   m_centralWidget   = new QWidget();
   setCentralWidget(m_centralWidget);
   m_mainGridLayout  = new QGridLayout(m_centralWidget);
