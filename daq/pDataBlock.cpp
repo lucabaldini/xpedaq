@@ -71,6 +71,14 @@ pDataBlock::pDataBlock(unsigned char *buffer, unsigned int bufferSize) :
 }
 
 
+/*!Destructor. Delete the underlying data buffer.
+*/
+pDataBlock::~pDataBlock()
+{
+  if (m_rawBuffer) delete[] m_rawBuffer;
+}
+
+
 /*!The amount of usable data in the buffer read from the USB port depends on
   the readout mode and is effectively:
   - 2 * NWORDS = 2 * 13200 * 8 = 211200 bytes in full frame mode (exactly one

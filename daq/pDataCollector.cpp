@@ -66,54 +66,62 @@ void pDataCollector::stop()
   m_running = false;
 }
 
+
 /*!
   This is actually the core of the data acquisition. 
 */
-
 void pDataCollector::run()
 {
   // Force a threshold update upon start run.
   m_lastThresholdUpdate = 0;
   m_dataFIFO = new pDataFIFO(m_outputFilePath, m_userPreferences);
   m_numMalformedBlocks = 0;
-  m_running = true;
-  unsigned long dataBufferDimension = SRAM_DIM*2;  
-  unsigned char* dataBuffer = new (std::nothrow) unsigned char[dataBufferDimension];
-  if (dataBuffer == nullptr)
-  {
-    std::cout << "allocation failed" << std::endl;
-    m_running = false;
-  }  
-  int maxSize = m_detectorConfiguration->maxBufferSize();
+  m_running = true; 
+  long unsigned int fullFrameDataBufferDimension = SRAM_DIM*2; // this definition should definitely be somewhere esle
+  long unsigned int maxSize = m_detectorConfiguration->maxBufferSize();
+  long unsigned int bufferDimension;
   pDataBlock *curDataBlock;
   m_xpolFpga->usbController()->resetSequencer();
   m_xpolFpga->usbController()->startSequencer();
   int errorCode = 0;
   while (m_running) {
+    if (m_fullFrame){
+      bufferDimension =  fullFrameDataBufferDimension;
+    } else {
+      bufferDimension = maxSize; 
+    }
+    unsigned char* dataBuffer = new (std::nothrow) 
+                                               unsigned char[bufferDimension];
+    if (dataBuffer == nullptr){
+        *xpollog::kError << "Allocation failed" << endline;
+        m_running = false;
+        // now that the buffer allocation is inside the cycle this is check is
+        // not sufficient to avoid a bad crash. Need a proper exception. 
+    } 
     errorCode = m_xpolFpga->usbController()->readData(dataBuffer,
-						      &dataBufferDimension);
+						      &bufferDimension);
     if (errorCode) {
       m_running = false;
     } else {
       if (m_fullFrame) {
-	curDataBlock = new pDataBlock(dataBuffer);
+	      curDataBlock = new pDataBlock(dataBuffer);
       } else {
-	curDataBlock = new pDataBlock(dataBuffer, maxSize);
+	      curDataBlock = new pDataBlock(dataBuffer, maxSize);
       }
       if (curDataBlock->errorSummary()) {
-	*xpollog::kError << "Data block at index " 
-			 << m_dataFIFO->getNumAcquiredEvents()
-			 << "+ has error summary 0x" << hex 
-			 << curDataBlock->errorSummary() << dec << "."
-			 << endline;
-	std::cerr << *curDataBlock << std::endl;
-	dumpRawBuffer(dataBuffer);
-	m_numMalformedBlocks ++;
+	      *xpollog::kError << "Data block at index " 
+			                   << m_dataFIFO->getNumAcquiredEvents()
+			                   << "+ has error summary 0x" << hex 
+                         << curDataBlock->errorSummary() << dec << "."
+                         << endline;
+	      std::cerr << *curDataBlock << std::endl;
+        dumpRawBuffer(dataBuffer);
+	      m_numMalformedBlocks ++;
       } else {
-	if (m_emitBlocks) emit blockRead(*curDataBlock);
-	m_dataFIFO->fill(curDataBlock);
-	m_dataFIFO->setStartSeconds(m_startSeconds);
-	m_dataFIFO->flush();
+	      if (m_emitBlocks) emit blockRead(*curDataBlock);
+        m_dataFIFO->fill(curDataBlock);
+        m_dataFIFO->setStartSeconds(m_startSeconds);
+        m_dataFIFO->flush();
       }
       delete curDataBlock;
       // Fist attempt at correcting for the vref drift as a function of time,
@@ -122,9 +130,9 @@ void pDataCollector::run()
       // pXpolFpga::setDacThreshold().)
       long int seconds = currentSeconds();
       if (!m_fullFrame && 
-	  seconds - m_lastThresholdUpdate >= m_thresholdUpdateInterval) {
-	m_xpolFpga->setDacThreshold(m_detectorConfiguration);
-	m_lastThresholdUpdate = seconds;
+	      seconds - m_lastThresholdUpdate >= m_thresholdUpdateInterval) {
+	      m_xpolFpga->setDacThreshold(m_detectorConfiguration);
+	      m_lastThresholdUpdate = seconds;
       }
     }
   }
@@ -135,14 +143,13 @@ void pDataCollector::run()
   m_xpolFpga->usbController()->writeUsbSettings();
   m_xpolFpga->usbController()->readUsbSettings();
   delete m_dataFIFO;
-  delete [] dataBuffer;
 }
+
 
 /*! This is needed since the data collector needs run based information.
   This information must be provided each time the start button is
   pressed (not once and forever at the construction time).
 */
-
 void pDataCollector::setupRun(std::string outputFilePath, long int startSeconds,
 			      pUserPreferences *preferences,
 			      pDetectorConfiguration *configuration)

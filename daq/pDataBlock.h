@@ -56,7 +56,7 @@ class pDataBlock
      have public no-arg constructor and destructor and a copy constructor */
   pDataBlock():m_isWindowed(false){;}
   pDataBlock(const pDataBlock &cSourceDataBlock);
-  ~pDataBlock() {;}
+  ~pDataBlock();
 
   // These are used for the UDP socket. I am not sure they belong here.
   inline char *getCharDataBlock() const {return (char*)m_rawBuffer;}
