@@ -63,7 +63,8 @@ void xpepedsWindow::showDisplayWindow()
   if (m_isWindowOpen) return;
   m_displayWindow = new pDisplayWindow();
   m_displayWindow -> show();
-  connect(m_displayWindow, SIGNAL(windowClosed()), this, SLOT(displayClosed()));
+  connect(m_displayWindow, SIGNAL(windowClosed()),
+          this, SLOT(displayClosed()));
   m_displayWindow -> showPedestals(m_pedRunController -> pedMap());
   m_isWindowOpen = true;
 }
@@ -85,6 +86,14 @@ void xpepedsWindow::displayClosed()
 {
   m_pedRunController -> resetPedMap();
   m_isWindowOpen = false;
+}
+
+
+/*!
+ */
+void xpepedsWindow::setupPedestalMonitoringTab()
+{
+  m_pedestalMonitoringTab = new pPedestalMonitoringTab();
 }
 
 

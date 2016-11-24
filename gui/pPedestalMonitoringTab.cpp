@@ -19,48 +19,49 @@ with this program; if not, write to the Free Software Foundation Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 ***********************************************************************/
 
-#ifndef XPEPEDSWINDOW_H
-#define XPEPEDSWINDOW_H
-
-#include "pAcquisitionWindow.h"
-#include "pDisplayWindow.h"
-#include "pedRunController.h"
 #include "pPedestalMonitoringTab.h"
 
-class xpepedsWindow : public pAcquisitionWindow
+pPedestalMonitoringTab::pPedestalMonitoringTab() :
+  pQtCustomTab("Pedestal Monitoring")
 {
+  setupOutlierThresholdButton();
+  setupConnections();
+}
 
-  Q_OBJECT
 
- public:
+/*!
+ */
+void pPedestalMonitoringTab::setupOutlierThresholdButton()
+{
+  int row = m_groupBoxGridLayout->rowCount();
+  m_outlierThresholdSpinBox = new QSpinBox(this);
+  m_outlierThresholdLabel = new pQtCustomTextLabel(this, "Outlier threshold");
+  m_groupBoxGridLayout->addWidget(m_outlierThresholdLabel, row, 0, 1, 2);
+  m_groupBoxGridLayout->addWidget(m_outlierThresholdSpinBox, row, 3, 1, 1);
+  m_outlierThresholdSpinBox->setMinimum(0);
+  m_outlierThresholdSpinBox->setMaximum(100);
+  m_outlierThresholdSpinBox->setValue(10);
+}
+
+
+/*!
+ */
+void pPedestalMonitoringTab::setupConnections()
+{
+}
+
+
+/*!
+ */
+void pPedestalMonitoringTab::displayConfiguration()
+{
   
-  xpepedsWindow(pedRunController &runController);
-  ~xpepedsWindow() {;}
-  
-  virtual pDetectorConfiguration *detectorConfiguration(int mode = -1);
- 
- 
- public slots:  
- 
- 
- private slots:
+}
 
-   void disableUnusedWidgets();
-   void showDisplayWindow();
-   void closeDisplayWindow(); 
-   void displayClosed();
- 
- 
- private:
-  
-  pDisplayWindow *m_displayWindow;
-  bool m_isWindowOpen;
-  pedRunController *m_pedRunController;
-  pPedestalMonitoringTab *m_pedestalMonitoringTab;
-  
-  void setupPedestalMonitoringTab();
-  void setupConnections();
 
-};
-
-#endif //XPEPEDSWINDOW_H
+/*!
+ */
+int pPedestalMonitoringTab::getThreshold()
+{
+  return m_outlierThresholdSpinBox->value();
+}
