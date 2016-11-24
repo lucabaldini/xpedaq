@@ -68,6 +68,7 @@ HEADERS += pDataBlock.h
 HEADERS += CQuickUsb.h
 HEADERS += pUsbController.h
 HEADERS += pXpolFpga.h
+HEADERS += pXpolRegisterPoker.h
 HEADERS += pDetectorConfiguration.h
 HEADERS += pUserPreferences.h
 HEADERS += pTriggerMask.h
@@ -123,6 +124,7 @@ SOURCES += pDataBlock.cpp
 SOURCES += CQuickUsb.cpp
 SOURCES += pUsbController.cpp
 SOURCES += pXpolFpga.cpp
+SOURCES += pXpolRegisterPoker.cpp
 SOURCES += pDetectorConfiguration.cpp
 SOURCES += pUserPreferences.cpp
 

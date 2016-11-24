@@ -19,45 +19,38 @@ with this program; if not, write to the Free Software Foundation Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 ***********************************************************************/
 
+#ifndef PXPOLREGISTERPOKER_H
+#define PXPOLREGISTERPOKER_H
 
-#ifndef XPEREGRUNCONTROLLER_H
-#define XPEREGRUNCONTROLLER_H
+#include <QTimer>
 
-#include <iostream>
-
-#include <QThread>
-
-#include "pRunController.h"
-#include "pXpolRegisterPoker.h"
+#include "pXpolFpga.h"
 
 
-   
-class xperegRunController: public pRunController
+class pXpolRegisterPoker: public QObject
 {
 
-  Q_OBJECT 
-   
+  Q_OBJECT
+  
   public:
-    
-    xperegRunController();
-    void setupRun();
+  
+    pXpolRegisterPoker(pXpolFpga *xpolFpga);
+    void reset();
     
   public slots:
 
-  protected:
+    void poke();
+    void start();
+    void stop();
+    
+  signals:
   
-    virtual void fsmSetup();
-    virtual void fsmTeardown();
-    virtual void fsmStartRun();
-    virtual void fsmStopRun();
-    virtual void fsmPause();
-    virtual void fsmResume();
-    virtual void fsmStop();
-
+  
   private:
-
-    pXpolRegisterPoker *m_registerPoker;
-    QThread m_thread;
+    
+   QTimer *m_timer;
+   pXpolFpga *m_xpolFpga;
 };
 
-#endif //XPEREGRUNCONTROLLER_H
+#endif //PXPOLREGISTERPOKER_H
+

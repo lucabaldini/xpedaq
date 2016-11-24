@@ -160,13 +160,13 @@ class pRunController : public pFiniteStateMachine
   
  protected:
   
-  void fsmSetup();
-  void fsmTeardown();
-  void fsmStartRun();
-  void fsmStopRun();
-  void fsmPause();
-  void fsmResume();
-  void fsmStop();
+  virtual void fsmSetup();
+  virtual void fsmTeardown();
+  virtual void fsmStartRun();
+  virtual void fsmStopRun();
+  virtual void fsmPause();
+  virtual void fsmResume();
+  virtual void fsmStop();
 
   
   ///\brief Empty constructor---for subclasses.

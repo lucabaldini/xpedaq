@@ -33,6 +33,16 @@ xperegWindow::xperegWindow(xperegRunController &runController) :
   setupDaqDisplay();
   setupMessageDisplay();
   setupTransportBar();
+  setupTabWidget();
+  // This connection needs to be here in order to intercept error signals.
+  //connect(m_runController->usbController(),
+  //  SIGNAL(quickusbError(unsigned long)),
+  // this, SLOT(disableHardwareWidgets()));
+  connect(m_runController->usbController(),
+  	  SIGNAL(connected(QString, QString, QString, QString)),
+  	  m_usbControlTab,
+  	  SLOT(updateInfo(QString, QString, QString, QString)));
+  m_runController->connectUsb();
   setupConnections();
   m_runController->init();
   showMessage("Data acquisition system ready", 2000);
@@ -104,6 +114,8 @@ void xperegWindow::setupTabWidget()
 {
   m_mainTabWidget = new QTabWidget(m_centralWidget);
   m_mainGridLayout->addWidget(m_mainTabWidget, 0, 1, 3, 1);
+  m_usbControlTab = new pUsbControlTab();
+  m_mainTabWidget->addTab(m_usbControlTab, "USB");
 }
 
 
@@ -114,9 +126,9 @@ void xperegWindow::setupConnections()
   connect(m_transportBar, SIGNAL(start()), this, SLOT(startRun()));    
   connect(m_transportBar, SIGNAL(stop()), this, SLOT(stopRun()));
   //connect(m_runController, SIGNAL(runStarted()),
-  //        this, SLOT(disableTabs()));
+  //      this, SLOT(disableTabs()));
   //connect(m_runController, SIGNAL(runStopped()),
-  //        this, SLOT(enableTabs()));          
+  //       this, SLOT(enableTabs()));          
   connect(m_runController, SIGNAL(runStopped()), this, SLOT(stop()));
   connect(m_runController, SIGNAL(stationIdSet(int)), m_daqDisplay,
 	  SLOT(updateStationId(int)));

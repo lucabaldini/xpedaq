@@ -20,44 +20,46 @@ with this program; if not, write to the Free Software Foundation Inc.,
 ***********************************************************************/
 
 
-#ifndef XPEREGRUNCONTROLLER_H
-#define XPEREGRUNCONTROLLER_H
-
-#include <iostream>
-
-#include <QThread>
-
-#include "pRunController.h"
 #include "pXpolRegisterPoker.h"
 
 
-   
-class xperegRunController: public pRunController
+pXpolRegisterPoker::pXpolRegisterPoker(pXpolFpga *xpolFpga) :
+  m_xpolFpga(xpolFpga)
+{
+}
+
+
+void pXpolRegisterPoker::reset()
 {
 
-  Q_OBJECT 
-   
-  public:
-    
-    xperegRunController();
-    void setupRun();
-    
-  public slots:
+}
 
-  protected:
-  
-    virtual void fsmSetup();
-    virtual void fsmTeardown();
-    virtual void fsmStartRun();
-    virtual void fsmStopRun();
-    virtual void fsmPause();
-    virtual void fsmResume();
-    virtual void fsmStop();
+void pXpolRegisterPoker::poke()
+{
+  m_xpolFpga->writeXpolConfigurationRegister(0x23);
+  m_xpolFpga->writeXpolAddressRegister(50, 77);
+  *xpollog::kInfo << "Reading back XPOL registers..." << endline; 
+  unsigned short x, y, value;
+  m_xpolFpga->readXpolAddressConfigurationRegisters(x, y, value);
+  *xpollog::kInfo << "Address x: " << x << endline;
+  *xpollog::kInfo << "Address y: " << y << endline;
+  *xpollog::kInfo << "Configuration register: 0x" << hex << value << dec
+		  << endline;
+}
 
-  private:
 
-    pXpolRegisterPoker *m_registerPoker;
-    QThread m_thread;
-};
+void pXpolRegisterPoker::start()
+{
+  m_timer = new QTimer();
+  m_timer->setInterval(100);
+  connect(m_timer, SIGNAL(timeout()), this, SLOT(poke()));
+  m_timer->start();
+}
 
-#endif //XPEREGRUNCONTROLLER_H
+
+
+void pXpolRegisterPoker::stop()
+{
+  m_timer->stop();
+  delete m_timer;
+}

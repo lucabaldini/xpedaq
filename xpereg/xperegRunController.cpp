@@ -33,16 +33,133 @@ xperegRunController::xperegRunController()
   m_runIdFilePath = xpedaqos::rjoin("config", "runId.cfg");
   setupRun();
   m_timer = new QTimer();
-  m_timer->setInterval(1000);
+  m_timer->setInterval(100000);
   connect(m_timer, SIGNAL(timeout()), this, SLOT(updateRunInfo()));
   m_usbController = new pUsbController();
   m_xpolFpga = new pXpolFpga(m_usbController);
+  m_registerPoker = new pXpolRegisterPoker(m_xpolFpga);
+  connect(this, SIGNAL(runStarted()), m_registerPoker, SLOT(start()));
+  connect(this, SIGNAL(runStopped()), m_registerPoker, SLOT(stop()));
   // This is not used and we should get rid of it?
   m_dataCollector = new pDataCollector(m_xpolFpga, false);
 }                                   
 
 
+/*!
+ */
 void xperegRunController::setupRun()
 {
-  std::cout << "test." << std::endl;
+
+}
+
+
+/*! Nothing to do here.
+ */
+void xperegRunController::fsmSetup()
+{
+
+}
+
+
+/*!
+ */
+void xperegRunController::fsmStartRun()
+{
+  *xpollog::kInfo << "Starting run controller..." << endline;
+  incrementRunId();
+  // Create the output folder.
+  //std::string outputFolder = outputFolderPath();
+  //if (!xpedaqos::folderExists(outputFolder)) {
+  //  xpedaqos::mkdir(outputFolder);
+  //}
+  //*xpollog::kDebug << "Output file set to " << dataFilePath() << "." << endline;
+  // Set the log file path.
+  //std::string logFile = logFilePath();
+  //*xpollog::kInfo << "Redirecting logger to " << logFile << "..." << endline;
+  //xpollog::kLogger->setLogFilePath(logFile);
+  //xpollog::kLogger->enableLogFile(true);
+  // Save the run info.
+  m_timer->start();
+  m_startSeconds = currentSeconds();
+  *xpollog::kInfo << "Run controller started on " << startDatetime()
+		  << " (" << m_startSeconds << " s since January 1, 1970)."
+		  << endline;
+  /*
+  m_dataCollector->reset();
+  if (m_usbController->IsOpened()) {
+    m_usbController->setTimeout(m_userPreferences->usbTimeout());
+    m_xpolFpga->applyTriggerMask(m_triggerMask);
+    m_xpolFpga->setup(m_detectorConfiguration);
+    m_dataCollector->setupRun(dataFilePath(), m_startSeconds, m_userPreferences,
+			      m_detectorConfiguration);
+    m_dataCollector->start();
+  } else {
+    *xpollog::kError << "The USB device is not open." << endline;
+    exit(1);
+  }
+  */
+  m_registerPoker->moveToThread(&m_thread);
+  m_thread.start();
+  emit runStarted();
+}
+
+/*!
+*/
+void xperegRunController::fsmStopRun()
+{
+  *xpollog::kInfo << "Stopping run controller..." << endline;
+  //m_dataCollector->stop();
+  m_stopSeconds = currentSeconds();
+  m_timer->stop();
+  *xpollog::kInfo << "Run controller stopped on " << stopDatetime()
+		  << " (" << m_stopSeconds << " s since January 1, 1970)."
+		  << endline;
+  //*xpollog::kInfo << numEvents() << " events (" << numDataBlocks()
+  //		  << " data blocks) acquired in "<< runDuration()
+  //		  << " seconds."<< endline;
+  *xpollog::kInfo << "Disconnecting logger from file..." << endline;
+  xpollog::kLogger->enableLogFile(false);
+  //writeRunStat(runStatFilePath());
+  emit runStopped();
+  m_thread.quit();
+  m_thread.wait();
+}
+
+
+/*!
+ */
+void xperegRunController::fsmPause()
+{
+  *xpollog::kInfo << "Run controller paused." << endline;
+  // m_dataCollector->stop();
+}
+
+
+/*!
+ */
+void xperegRunController::fsmResume()
+{
+  *xpollog::kInfo << "Run controller restarted." << endline;
+  if (m_usbController->IsOpened()) {
+  //  m_dataCollector->start();
+  } else {
+    *xpollog::kError << "The USB device is not open." << endline;
+    exit(1);
+  }
+}
+
+
+/*!
+ */
+void xperegRunController::fsmStop()
+{
+  fsmStopRun();
+}
+
+
+/*! Nothing to do here.
+ */
+void xperegRunController::fsmTeardown()
+{
+
 }
