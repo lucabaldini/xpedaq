@@ -53,8 +53,8 @@ class PedestalsMap
     double average(unsigned int pixelX, unsigned int pixelY) const;
     double variance(unsigned int pixelX, unsigned int pixelY) const;
     double rms(unsigned int pixelX, unsigned int pixelY) const;  
-    double normDistance(double value, unsigned int pixelX, 
-                        unsigned int pixelY) const;
+    double normDistance(unsigned int pixelX, unsigned int pixelY,
+                        double value) const;
 
     void fill(unsigned int pixelX, unsigned int pixelY, double value);
 	  void reset();

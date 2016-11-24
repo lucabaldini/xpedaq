@@ -88,12 +88,20 @@ double PedestalsMap::rms(unsigned int pixelX, unsigned int pixelY) const
 }
 
 
-double PedestalsMap::normDistance(double value, unsigned int pixelX, 
-                                  unsigned int pixelY) const
+double PedestalsMap::normDistance(unsigned int pixelX, unsigned int pixelY,
+  double value) const
 {
-  pRunningStat p = pedestal(pixelX, pixelY);
-  if (p.rms() > 0.){
-    return (value - p.average()) / p.rms();
+  
+  const pRunningStat p = pedestal(pixelX, pixelY);
+  double rms;
+  try {
+     rms = p.rms();
+  }
+  catch (int err) {
+    return 0;
+  }
+  if (rms > 0.){
+    return fabs((value - p.average()) / rms);
   } else {
     return 0.;
   }
