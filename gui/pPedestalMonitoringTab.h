@@ -19,48 +19,34 @@ with this program; if not, write to the Free Software Foundation Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 ***********************************************************************/
 
-#ifndef XPEPEDSWINDOW_H
-#define XPEPEDSWINDOW_H
+#ifndef PPEDESTALMONITORINGTAB_H
+#define PPEDESTALMONITORINGTAB_H
 
-#include "pAcquisitionWindow.h"
-#include "pDisplayWindow.h"
-#include "pedRunController.h"
-#include "pPedestalMonitoringTab.h"
+#include <QWidget>
+#include <QSpinBox>
 
-class xpepedsWindow : public pAcquisitionWindow
+#include "pQtCustomTab.h"
+#include "pQtCustomTextLabel.h"
+
+class pPedestalMonitoringTab : public pQtCustomTab
 {
 
   Q_OBJECT
+  
+  public:
+    pPedestalMonitoringTab();
+    ~pPedestalMonitoringTab() {;}
+  
+    void displayConfiguration();
+    int getThreshold ();
 
- public:
-  
-  xpepedsWindow(pedRunController &runController);
-  ~xpepedsWindow() {;}
-  
-  virtual pDetectorConfiguration *detectorConfiguration(int mode = -1);
- 
- 
- public slots:  
- 
- 
- private slots:
+  private:
+    QSpinBox *m_outlierThresholdSpinBox;
+    pQtCustomTextLabel *m_outlierThresholdLabel;
 
-   void disableUnusedWidgets();
-   void showDisplayWindow();
-   void closeDisplayWindow(); 
-   void displayClosed();
- 
- 
- private:
-  
-  pDisplayWindow *m_displayWindow;
-  bool m_isWindowOpen;
-  pedRunController *m_pedRunController;
-  pPedestalMonitoringTab *m_pedestalMonitoringTab;
-  
-  void setupPedestalMonitoringTab();
-  void setupConnections();
+    void setupOutlierThresholdButton();
+    void setupConnections();
 
 };
 
-#endif //XPEPEDSWINDOW_H
+#endif //PPEDESTALMONITORINGTAB_H

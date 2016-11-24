@@ -91,6 +91,14 @@ void xpepedsWindow::displayClosed()
 
 /*!
  */
+void xpepedsWindow::setupPedestalMonitoringTab()
+{
+  m_pedestalMonitoringTab = new pPedestalMonitoringTab();
+}
+
+
+/*!
+ */
 void xpepedsWindow::setupConnections()
 {
   pAcquisitionWindow::setupConnections();
