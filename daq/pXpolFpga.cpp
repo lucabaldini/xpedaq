@@ -27,10 +27,12 @@ pXpolFpga::pXpolFpga(pUsbController *usbController)
   m_usbController = usbController;
 }
 
+
 pXpolFpga::~pXpolFpga()
 {
   
 }
+
 
 int pXpolFpga::resetSequencer()
 {
@@ -38,6 +40,7 @@ int pXpolFpga::resetSequencer()
   serialWrite(STATUS_REG,RESET);
   return 1;
 }
+
 
 void pXpolFpga::serialWrite(unsigned short REG_ADD,unsigned short regdata)
 {
@@ -57,6 +60,7 @@ void pXpolFpga::serialWrite(unsigned short REG_ADD,unsigned short regdata)
   }
   m_usbController->WritePort(PORTE,temp,26);
 }
+
 
 void pXpolFpga::mainSerialWrite(unsigned short REG_ADD,unsigned short regdata)
 {
@@ -134,7 +138,7 @@ void pXpolFpga::setupToDisablePixels()
 //read a 16-bit word from fpga serial interface B
 //PE[3] is SCLK, PE[7] is SO_EN, PE[6] is datain (output from fpga)
 //MSb first!!!!!!
-unsigned short pXpolFpga::mainSiRead(unsigned short reg_address){
+uint32_t pXpolFpga::mainSerialRead(unsigned short reg_address){
   unsigned char clkpulse_vect[3];
   unsigned char data;
   unsigned short length=1,i;
@@ -208,16 +212,54 @@ void pXpolFpga::readXpolAddressConfigurationRegisters(unsigned short &x,
   serialWrite(XPOL_SI_CNT_REG, RECV);
   serialWrite(XPOL_SI_CNT_REG, 0);
 
-  unsigned short low_word = mainSiRead(XPM_RBACK_LSW);
-  unsigned short mid_word = mainSiRead(XPM_RBACK_MIDW);
-  unsigned short high_word = mainSiRead(XPM_RBACK_MSW);
+  unsigned short lowWord = mainSerialRead(XPM_RBACK_LSW);
+  unsigned short midWord = mainSerialRead(XPM_RBACK_MIDW);
+  unsigned short highWord = mainSerialRead(XPM_RBACK_MSW);
 
-  x = low_word >> 9;
-  x |= ( (mid_word & 0x0003) << 7 );
-  y = low_word & 0x01FF;
-  conf = ((high_word & 0x000f ) << 2) ;
-  conf |= ((mid_word >> 14) & 0x03);
-} 
+  x = lowWord >> 9;
+  x |= ((midWord & 0x0003) << 7);
+  y = lowWord & 0x01FF;
+  conf = ((highWord & 0x000f) << 2) ;
+  conf |= ((midWord >> 14) & 0x03);
+}
+
+
+uint32_t pXpolFpga::readErrorCode()
+{
+  return mainSerialRead(XPM_ERROR_CODE);
+}
+
+
+uint32_t pXpolFpga::readEventCounter()
+{
+  return mainSerialRead(XPM_EVT_COUNTER_LSW) +
+    (mainSerialRead(XPM_EVT_COUNTER_MSW) << 16);
+}
+
+
+uint32_t pXpolFpga::readRejectedEventCounterWllim()
+{
+  return mainSerialRead(XPM_WLLIM_REJ_COUNTER_LSW) +
+    (mainSerialRead(XPM_WLLIM_REJ_COUNTER_MSW) << 16);
+}
+
+
+uint32_t pXpolFpga::readRejectedEventCounterWulim()
+{
+  return mainSerialRead(XPM_WULIM_REJ_COUNTER_LSW) +
+    (mainSerialRead(XPM_WULIM_REJ_COUNTER_MSW) << 16);
+}
+
+
+void pXpolFpga::readReadoutStatistics(uint32_t &evtCounter,
+				      uint32_t &rejEvtCounterWllim,
+				      uint32_t &rejEvtCounterWulim )
+{
+  evtCounter = readEventCounter();
+  rejEvtCounterWllim = readRejectedEventCounterWllim();
+  rejEvtCounterWulim = readRejectedEventCounterWulim();
+}
+
 
 // this function configs fpga to read XPOL in full frame mode AUTOTRIGGERING
 void pXpolFpga::configFullFrame()
@@ -263,6 +305,7 @@ void pXpolFpga::configFullFrame()
   // 2 because you cannot put more than 2 events in memory  
   serialWrite((unsigned short)XPOL_RDNGS_N_REG,0x2);
 }
+
 
 // this function configs fpga to read XPOL in Windowed mode
 void pXpolFpga::configWindowedMode(pDetectorConfiguration *configuration)
@@ -467,6 +510,7 @@ void pXpolFpga::setDacThreshold(pDetectorConfiguration *configuration)
     endline;
 }
 
+
 //writes two configuration words to both DACs
 void pXpolFpga::setDacConfig()
 {
@@ -485,12 +529,13 @@ void pXpolFpga::setDacConfig()
   }
 }
 
+
 unsigned short pXpolFpga::readVrefDac()
 {
   // Ask the ADC to start the conversion
   mainSerialWrite((unsigned short)XPM_STATUS_REG, (unsigned short)AD2_RUN);
   // Read the reference voltage in ADC counts.
-  unsigned short dac = mainSiRead((unsigned short)XPM_AD2_DATA);
+  unsigned short dac = mainSerialRead((unsigned short)XPM_AD2_DATA);
   // Convert in physical units (V).
   double vref = AD2_LSB*dac;
   // Print out the reading.
@@ -500,6 +545,7 @@ unsigned short pXpolFpga::readVrefDac()
   emit vrefRead(dac, vref);
   return dac;
 }
+
 
 void pXpolFpga::configDAC(pDetectorConfiguration *configuration) 
 {	
@@ -512,6 +558,7 @@ void pXpolFpga::configDAC(pDetectorConfiguration *configuration)
   // Stop the ADC conversion
   mainSerialWrite((unsigned short)XPM_STATUS_REG, 0);
 }
+
 
 void pXpolFpga::setup(pDetectorConfiguration *configuration) 
 {
@@ -532,7 +579,8 @@ void pXpolFpga::setup(pDetectorConfiguration *configuration)
     
     // Configuring FPGA in windowed mode : WINDOWED_INJ, WINDOWED_EVT
     configWindowedMode(configuration);     
-    *xpollog::kInfo << "Windowed Charge Injection Configuration Done." << endline;
+    *xpollog::kInfo << "Windowed charge injection configuration done."
+		    << endline;
   } else if (configuration->readoutMode()==xpoldetector::kWindowedReadoutCode){
     // Sequence : XPM to be Configured before Windowed Mode	 
     *xpollog::kInfo << "Starting Windowed Event Configuration" << endline;
