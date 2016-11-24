@@ -46,8 +46,8 @@ class pRunController : public pFiniteStateMachine
 
   ///\brief Constructor.
   pRunController(std::string configFilePath, std::string preferencesFilePath,
-		             std::string trgMaskFilePath, std::string usrComment="",
-		             bool emitBlocks=false);
+		 std::string trgMaskFilePath, std::string usrComment = "",
+		 bool emitBlocks = false);
 
   ///\brief Destructor.
   ~pRunController() {;}
@@ -169,7 +169,8 @@ class pRunController : public pFiniteStateMachine
   void fsmStop();
 
   
- protected:
+  ///\brief Empty constructor---for subclasses.
+  pRunController() {;}
 
   /// \brief Maximum duration (in s) for the data acquisition.
   int m_maxSeconds;
