@@ -43,7 +43,12 @@ class pXpolFpga : public QObject
   void configWindowedMode(pDetectorConfiguration *configuration);
   void configXPM();
   void configXPMWindowed(pDetectorConfiguration *configuration);
-  void writeAddress(unsigned short X, unsigned short Y);
+
+  void writeXpolAddressRegister(unsigned short x, unsigned short y);
+  void writeXpolConfigurationRegister(unsigned short value);
+  void readXpolAddressConfigurationRegisters(unsigned short &x,
+					     unsigned short &y,
+					     unsigned short &conf);
   
   pUsbController *usbController() const {return m_usbController;}
 

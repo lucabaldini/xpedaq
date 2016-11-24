@@ -85,6 +85,19 @@ with this program; if not, write to the Free Software Foundation Inc.,
 
 #define XPM_OUT_DATA_SEL_REG	0xd
 #define XPM_AD2_DATA		000  //serial output interface channel selectors
+
+#define XPM_ERROR_CODE			3
+#define XPM_RBACK_LSW			4
+#define XPM_RBACK_MIDW			5
+#define XPM_RBACK_MSW			6
+#define XPM_EVT_COUNTER_LSW		8
+#define XPM_EVT_COUNTER_MSW		9
+#define XPM_WLLIM_REJ_COUNTER_LSW	10
+#define XPM_WLLIM_REJ_COUNTER_MSW	11
+#define XPM_WULIM_REJ_COUNTER_LSW 12
+#define XPM_WULIM_REJ_COUNTER_MSW 13
+
+
 #define XPM_CH1_DATA		001
 #define XPM_CH2_DATA		002
 #define XPM_ACQ_RATE		003
@@ -177,7 +190,9 @@ with this program; if not, write to the Free Software Foundation Inc.,
 #define SPARE1			19
 
 #define EP6FULLFLG	0x10
-#define EP6EMPTYFLG	0x200 
+#define EP6EMPTYFLG	0x200
+
+
 
 
 class pUsbController : public QObject, public CQuickUsb
