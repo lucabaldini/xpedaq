@@ -113,7 +113,9 @@ void xperegWindow::setupTransportBar()
 void xperegWindow::setupTabWidget()
 {
   m_mainTabWidget = new QTabWidget(m_centralWidget);
-  m_mainGridLayout->addWidget(m_mainTabWidget, 0, 1, 3, 1);
+  m_mainGridLayout->addWidget(m_mainTabWidget, 0, 1);
+  m_registerTab = new pRegisterTab();
+  m_mainTabWidget->addTab(m_registerTab, "Registers"); 
   m_usbControlTab = new pUsbControlTab();
   m_mainTabWidget->addTab(m_usbControlTab, "USB");
 }
