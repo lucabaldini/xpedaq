@@ -34,8 +34,8 @@ pRegisterTab::pRegisterTab() :
 void pRegisterTab::setupWidgets()
 {
   m_groupBoxGridLayout->setColumnMinimumWidth(0, 200);
-  m_groupBoxGridLayout->setColumnMinimumWidth(1, 150);
-  m_groupBoxGridLayout->setColumnMinimumWidth(2, 150);
+  m_groupBoxGridLayout->setColumnMinimumWidth(1, 125);
+  m_groupBoxGridLayout->setColumnMinimumWidth(2, 125);
   
   m_xLabel = new pQtCustomTextLabel(this, "Address x");
   m_xSpinBox = new QSpinBox(this);
