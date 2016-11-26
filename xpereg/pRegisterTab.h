@@ -29,6 +29,7 @@ with this program; if not, write to the Free Software Foundation Inc.,
 
 #include "pQtCustomTab.h"
 #include "pQtCustomTextLabel.h"
+#include "xpoldetector.h"
 
 
 class pRegisterTab : public pQtCustomTab

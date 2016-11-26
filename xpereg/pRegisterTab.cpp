@@ -39,6 +39,8 @@ void pRegisterTab::setupWidgets()
   
   m_xLabel = new pQtCustomTextLabel(this, "Address x");
   m_xSpinBox = new QSpinBox(this);
+  m_xSpinBox->setMinimum(0);
+  m_xSpinBox->setMaximum(xpoldetector::kNumPixelsX - 1);
   m_xDisplay = new QLineEdit(this);
   m_xDisplay->setEnabled(false);
   m_xDisplay->setText(xpolgui::kNotAvailable);
@@ -48,6 +50,8 @@ void pRegisterTab::setupWidgets()
   
   m_yLabel = new pQtCustomTextLabel(this, "Address y");
   m_ySpinBox = new QSpinBox(this);
+  m_ySpinBox->setMinimum(0);
+  m_ySpinBox->setMaximum(xpoldetector::kNumPixelsY - 1);
   m_yDisplay = new QLineEdit(this);
   m_yDisplay->setEnabled(false);
   m_yDisplay->setText(xpolgui::kNotAvailable);
@@ -57,6 +61,8 @@ void pRegisterTab::setupWidgets()
 
   m_configLabel = new pQtCustomTextLabel(this, "Configuration");
   m_configSpinBox = new QSpinBox(this);
+  m_configSpinBox->setMinimum(0);
+  m_configSpinBox->setMaximum(65535);
   m_configDisplay = new QLineEdit(this);
   m_configDisplay->setEnabled(false);
   m_configDisplay->setText(xpolgui::kNotAvailable);

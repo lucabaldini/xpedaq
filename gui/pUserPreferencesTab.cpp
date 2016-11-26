@@ -1,6 +1,5 @@
 /***********************************************************************
-Copyright (C) 2007, 2008 by Luca Baldini (luca.baldini@pi.infn.it),
-Johan Bregeon, Massimo Minuti and Gloria Spandre.
+Copyright (C) 2007--2016 the X-ray Polarimetry Explorer (XPE) team.
 
 For the license terms see the file LICENSE, distributed along with this
 software.
@@ -26,7 +25,7 @@ with this program; if not, write to the Free Software Foundation Inc.,
 
 #include "pUserPreferencesTab.h"
 
-pUserPreferencesTab::pUserPreferencesTab()
+pUserPreferencesTab::pUserPreferencesTab(bool full)
   : pQtCustomTab("Preferences")
 {
   m_groupBoxGridLayout->setColumnMinimumWidth(0, 250);
@@ -34,15 +33,21 @@ pUserPreferencesTab::pUserPreferencesTab()
   m_loggerInfoString = "INFO";
   m_loggerWarningString = "WARNING";
   m_loggerErrorString = "ERROR";
-  setupVisualizationModeWidgets();
-  addVerticalSpacer();
+  if (full) {
+    setupVisualizationModeWidgets();
+    addVerticalSpacer();
+  }
   setupDataFileWidgets();
   addVerticalSpacer();
-  setupMulticastWidgets();
-  addVerticalSpacer();
+  if (full) {
+    setupMulticastWidgets();
+    addVerticalSpacer();
+  }
   setupLoggerWidgets();
   freezeSize(xpolgui::kTabGroupBoxWidth);
-  setupConnections();
+  if (full) {
+    setupConnections();
+  }
   // To be uncommented when the functionality is implemented.
   m_enableDataFileCheckBox->setEnabled(false);
   enableOutputFolderWidgets(false);

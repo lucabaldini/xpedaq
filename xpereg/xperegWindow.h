@@ -29,8 +29,9 @@ with this program; if not, write to the Free Software Foundation Inc.,
 #include "pMessageDisplay.h"
 #include "pTransportBar.h"
 #include "pAcquisitionWindow.h"
-#include "pUsbControlTab.h"
 #include "pRegisterTab.h"
+#include "pUsbControlTab.h"
+#include "pUserPreferencesTab.h"
 
 
 class xperegWindow : public pQtMainWindowGui
@@ -62,6 +63,7 @@ class xperegWindow : public pQtMainWindowGui
   QTabWidget *m_mainTabWidget;
   pRegisterTab *m_registerTab;
   pUsbControlTab *m_usbControlTab;
+  pUserPreferencesTab *m_userPreferencesTab;
   void setupDaqDisplay();
   void setupMessageDisplay();
   void setupTransportBar();
