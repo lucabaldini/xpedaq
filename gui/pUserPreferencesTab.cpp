@@ -255,7 +255,7 @@ void pUserPreferencesTab::displayUserPreferences(pUserPreferences preferences)
     *xpollog::kError << "Invalid display." << endline;
   }
   m_enableDataFileCheckBox->setChecked(preferences.dataFileEnabled());
-  setOutputFodler(preferences.outputFolder());
+  setOutputFolder(preferences.outputFolder());
   m_enableMulticastCheckBox->setChecked(preferences.multicastEnabled());
   enableMulticastWidgets(preferences.multicastEnabled());
   setMulticastAddress(preferences.multicastAddress());
@@ -267,9 +267,9 @@ void pUserPreferencesTab::displayUserPreferences(pUserPreferences preferences)
   m_enableLogFileCheckBox->setChecked(preferences.logFileEnabled());
 }
 
-void pUserPreferencesTab::setOutputFodler(std::string path)
+void pUserPreferencesTab::setOutputFolder(std::string folderPath)
 {
-  QString pathQString = QString(path.c_str());
+  QString pathQString = QString(folderPath.c_str());
   m_outputFolderDisplay->setText(pathQString);
 }
 

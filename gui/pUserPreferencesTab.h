@@ -66,7 +66,7 @@ class pUserPreferencesTab : public pQtCustomTab
  signals:
   void visualizetionModeChanged(int mode);
 
- private:
+ protected:
   
   QString m_loggerDebugString;
   QString m_loggerInfoString;
@@ -93,7 +93,7 @@ class pUserPreferencesTab : public pQtCustomTab
   void setupMulticastWidgets();
   void setupLoggerWidgets();
   void setupConnections();
-  void setOutputFodler(std::string path);
+  void setOutputFolder(std::string folderPath);
   void setMulticastAddress(std::string address);
   void setMulticastPort(int port);
   int convertLoggerLevel(QString level);

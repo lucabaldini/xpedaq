@@ -57,6 +57,7 @@ HEADERS += pUserPreferencesTab.h
 HEADERS += pQtMainWindowGui.h
 HEADERS += pAcquisitionWindow.h
 HEADERS += xperegRegisterTab.h
+HEADERS += xperegUserPreferencesTab.h
 
 HEADERS += xperegWindow.h
 HEADERS += xperegRunController.h
@@ -115,6 +116,7 @@ SOURCES += pUserPreferencesTab.cpp
 SOURCES += pQtMainWindowGui.cpp
 SOURCES += pAcquisitionWindow.cpp
 SOURCES += xperegRegisterTab.cpp
+SOURCES += xperegUserPreferencesTab.cpp
 
 SOURCES += xperegWindow.cpp
 SOURCES += xperegRunController.cpp

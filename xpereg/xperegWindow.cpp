@@ -57,6 +57,7 @@ xperegWindow::xperegWindow(xperegRunController &runController) :
 void xperegWindow::displayUserPreferences(xperegUserPreferences *preferences)
 {
   m_registerTab->displayUserPreferences(preferences);
+  m_userPreferencesTab->displayUserPreferences(preferences);
 }
 
 
@@ -129,7 +130,7 @@ void xperegWindow::setupTabWidget()
   m_mainTabWidget->addTab(m_registerTab, "Registers"); 
   m_usbControlTab = new pUsbControlTab(false);
   m_mainTabWidget->addTab(m_usbControlTab, "USB");
-  m_userPreferencesTab = new pUserPreferencesTab(false);
+  m_userPreferencesTab = new xperegUserPreferencesTab();
   m_mainTabWidget->addTab(m_userPreferencesTab, "Preferences");
 }
 
