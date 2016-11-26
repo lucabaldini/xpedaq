@@ -35,6 +35,8 @@ xperegWindow::xperegWindow(xperegRunController &runController) :
   setupLoggerConnections();
   setupTransportBar();
   setupTabWidget();
+  xperegUserPreferences *preferences = m_runController->userPreferences();
+  displayUserPreferences(preferences);
   // This connection needs to be here in order to intercept error signals.
   connect(m_runController->usbController(),
 	  SIGNAL(quickusbError(unsigned long)),
@@ -47,6 +49,14 @@ xperegWindow::xperegWindow(xperegRunController &runController) :
   setupConnections();
   m_runController->init();
   showMessage("Data acquisition system ready", 2000);
+}
+
+
+/*!
+ */
+void xperegWindow::displayUserPreferences(xperegUserPreferences *preferences)
+{
+  m_registerTab->displayUserPreferences(preferences);
 }
 
 

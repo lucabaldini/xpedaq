@@ -32,6 +32,7 @@ with this program; if not, write to the Free Software Foundation Inc.,
 #include "pRegisterTab.h"
 #include "pUsbControlTab.h"
 #include "pUserPreferencesTab.h"
+#include "xperegUserPreferences.h"
 
 
 class xperegWindow : public pQtMainWindowGui
@@ -55,6 +56,7 @@ class xperegWindow : public pQtMainWindowGui
    void enableTabs();
    void disableTabs();
    void disableHardwareWidgets();
+   void displayUserPreferences(xperegUserPreferences *preferences);
  
  private slots:
  

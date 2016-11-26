@@ -31,6 +31,7 @@ with this program; if not, write to the Free Software Foundation Inc.,
 #include "pQtCustomTab.h"
 #include "pQtCustomTextLabel.h"
 #include "xpoldetector.h"
+#include "xperegUserPreferences.h"
 
 
 class pRegisterTab : public pQtCustomTab
@@ -38,37 +39,38 @@ class pRegisterTab : public pQtCustomTab
 
   Q_OBJECT
 
- public:
-  
-  pRegisterTab();
-  
- public slots:
-
-
- private slots:
-
-
- private:
+  public:
    
-  pQtCustomTextLabel *m_xLabel;
-  QSpinBox *m_xSpinBox;
-  QLineEdit *m_xDisplay;
-  pQtCustomTextLabel *m_yLabel;
-  QSpinBox *m_ySpinBox;
-  QLineEdit *m_yDisplay;
-  pQtCustomTextLabel *m_configLabel;
-  QSpinBox *m_configSpinBox;
-  QLineEdit *m_configDisplay;
+    pRegisterTab();
+    void displayUserPreferences(xperegUserPreferences *preferences);
+  
+  public slots:
 
-  QCheckBox *m_randomCheckBox;
+    
+  private slots:
 
-  pQtCustomTextLabel *m_numReadoutsLabel;
-  QSpinBox *m_numReadoutsSpinBox;
-  pQtCustomTextLabel *m_readoutIntervalLabel;
-  QSpinBox *m_readoutIntervalSpinBox;
 
-  void setupWidgets();
-  void setupConnections();
+  private:
+   
+    pQtCustomTextLabel *m_xLabel;
+    QSpinBox *m_xSpinBox;
+    QLineEdit *m_xDisplay;
+    pQtCustomTextLabel *m_yLabel;
+    QSpinBox *m_ySpinBox;
+    QLineEdit *m_yDisplay;
+    pQtCustomTextLabel *m_configLabel;
+    QSpinBox *m_configSpinBox;
+    QLineEdit *m_configDisplay;
+    
+    QCheckBox *m_randomCheckBox;
+    
+    pQtCustomTextLabel *m_numReadoutsLabel;
+    QSpinBox *m_numReadoutsSpinBox;
+    pQtCustomTextLabel *m_readoutIntervalLabel;
+    QSpinBox *m_readoutIntervalSpinBox;
+    
+    void setupWidgets();
+    void setupConnections();
 };
 
 #endif

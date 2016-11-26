@@ -106,3 +106,15 @@ void pRegisterTab::setupConnections()
 {
 
 }
+
+
+
+void pRegisterTab::displayUserPreferences(xperegUserPreferences *preferences)
+{
+  m_xSpinBox->setValue(preferences->m_pixelAddressX);
+  m_ySpinBox->setValue(preferences->m_pixelAddressY);
+  m_configSpinBox->setValue(preferences->m_configuration);
+  m_randomCheckBox->setChecked(preferences->m_randomShuffle);
+  m_numReadoutsSpinBox->setValue(preferences->m_numReadouts);
+  m_readoutIntervalSpinBox->setValue(preferences->m_readoutInterval);
+}

@@ -43,6 +43,7 @@ class xperegRunController: public pRunController
     void setupRun(xperegUserPreferences *preferences);
     void setupRun(std::string preferencesFilePath);
     void setupRun();
+    xperegUserPreferences *userPreferences() const {return m_userPreferences;}
     
   public slots:
 

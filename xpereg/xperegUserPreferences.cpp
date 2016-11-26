@@ -98,7 +98,17 @@ void xperegUserPreferences::readFromFile(std::string filePath)
 std::ostream& xperegUserPreferences::fillStream(std::ostream& os) const
 {
   os << xpedaqutils::title("User preferences", true);
-  //os << "Socket Port: " << m_socketPort << std::endl;
+  os << "Pixel address x: " << m_pixelAddressX << std::endl;
+  os << "Pixel address y: " << m_pixelAddressY << std::endl;
+  os << "Configuration register: " << m_configuration << std::endl;
+  os << "Random shuffle: " << m_randomShuffle << std::endl;
+  os << "Number of readouts per poke: " << m_numReadouts << std::endl;
+  os << "Readout interval: " << m_readoutInterval << std::endl;
+  os << "Write data file: " << m_dataFileEnabled << std::endl;
+  os << "Output root folder: " << m_outputFolder << std::endl;
+  os << "Write log file: " << m_logFileEnabled << std::endl;
+  os << "Logger terminal level: " << m_loggerTerminalLevel << std::endl;
+  os << "Logger display level: " << m_loggerDisplayLevel << std::endl;
   os << xpedaqutils::hline();
   return os;
 }
