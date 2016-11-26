@@ -19,8 +19,8 @@ with this program; if not, write to the Free Software Foundation Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 ***********************************************************************/
 
-#ifndef PREGISTERTAB_H
-#define PREGISTERTAB_H
+#ifndef XPEREGREGISTERTAB_H
+#define XPEREGREGISTERTAB_H
 
 #include <QWidget>
 #include <QString>
@@ -34,14 +34,14 @@ with this program; if not, write to the Free Software Foundation Inc.,
 #include "xperegUserPreferences.h"
 
 
-class pRegisterTab : public pQtCustomTab
+class xperegRegisterTab : public pQtCustomTab
 {
 
   Q_OBJECT
 
   public:
    
-    pRegisterTab();
+    xperegRegisterTab();
     void displayUserPreferences(xperegUserPreferences *preferences);
   
   public slots:
@@ -61,16 +61,13 @@ class pRegisterTab : public pQtCustomTab
     pQtCustomTextLabel *m_configLabel;
     QSpinBox *m_configSpinBox;
     QLineEdit *m_configDisplay;
-    
     QCheckBox *m_randomCheckBox;
-    
     pQtCustomTextLabel *m_numReadoutsLabel;
     QSpinBox *m_numReadoutsSpinBox;
     pQtCustomTextLabel *m_readoutIntervalLabel;
     QSpinBox *m_readoutIntervalSpinBox;
-    
     void setupWidgets();
     void setupConnections();
 };
 
-#endif
+#endif //XPEREGREGISTERTAB_H

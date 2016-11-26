@@ -19,10 +19,10 @@ with this program; if not, write to the Free Software Foundation Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 ***********************************************************************/
 
-#include "pRegisterTab.h"
+#include "xperegRegisterTab.h"
 
 
-pRegisterTab::pRegisterTab() :
+xperegRegisterTab::xperegRegisterTab() :
   pQtCustomTab("Register poking")
 {
   setupWidgets();
@@ -31,7 +31,7 @@ pRegisterTab::pRegisterTab() :
 }
 
 
-void pRegisterTab::setupWidgets()
+void xperegRegisterTab::setupWidgets()
 {
   m_groupBoxGridLayout->setColumnMinimumWidth(0, 200);
   m_groupBoxGridLayout->setColumnMinimumWidth(1, 125);
@@ -102,14 +102,15 @@ void pRegisterTab::setupWidgets()
 }
 
 
-void pRegisterTab::setupConnections()
+void xperegRegisterTab::setupConnections()
 {
 
 }
 
 
 
-void pRegisterTab::displayUserPreferences(xperegUserPreferences *preferences)
+void xperegRegisterTab::displayUserPreferences(xperegUserPreferences
+					       *preferences)
 {
   m_xSpinBox->setValue(preferences->m_pixelAddressX);
   m_ySpinBox->setValue(preferences->m_pixelAddressY);

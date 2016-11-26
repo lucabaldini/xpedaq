@@ -125,7 +125,7 @@ void xperegWindow::setupTabWidget()
 {
   m_mainTabWidget = new QTabWidget(m_centralWidget);
   m_mainGridLayout->addWidget(m_mainTabWidget, 0, 1, 2, 1);
-  m_registerTab = new pRegisterTab();
+  m_registerTab = new xperegRegisterTab();
   m_mainTabWidget->addTab(m_registerTab, "Registers"); 
   m_usbControlTab = new pUsbControlTab(false);
   m_mainTabWidget->addTab(m_usbControlTab, "USB");
