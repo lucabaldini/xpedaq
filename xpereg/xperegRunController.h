@@ -29,7 +29,7 @@ with this program; if not, write to the Free Software Foundation Inc.,
 
 #include "pRunController.h"
 #include "pXpolRegisterPoker.h"
-
+#include "xperegUserPreferences.h"
 
    
 class xperegRunController: public pRunController
@@ -39,7 +39,9 @@ class xperegRunController: public pRunController
    
   public:
     
-    xperegRunController();
+    xperegRunController(std::string preferencesFilePath);
+    void setupRun(xperegUserPreferences *preferences);
+    void setupRun(std::string preferencesFilePath);
     void setupRun();
     
   public slots:
@@ -56,6 +58,9 @@ class xperegRunController: public pRunController
 
   private:
 
+    // Why the hell we're not picking up the one from the base class?
+    std::string m_preferencesFilePath;
+    xperegUserPreferences *m_userPreferences;
     pXpolRegisterPoker *m_registerPoker;
     QThread m_thread;
 };

@@ -72,6 +72,7 @@ HEADERS += pXpolFpga.h
 HEADERS += pXpolRegisterPoker.h
 HEADERS += pDetectorConfiguration.h
 HEADERS += pUserPreferences.h
+HEADERS += xperegUserPreferences.h
 HEADERS += pTriggerMask.h
 
 HEADERS += pLoggerChannel.h
@@ -129,6 +130,7 @@ SOURCES += pXpolFpga.cpp
 SOURCES += pXpolRegisterPoker.cpp
 SOURCES += pDetectorConfiguration.cpp
 SOURCES += pUserPreferences.cpp
+SOURCES += xperegUserPreferences.cpp
 
 SOURCES += pLoggerChannel.cpp
 SOURCES += pLogger.cpp

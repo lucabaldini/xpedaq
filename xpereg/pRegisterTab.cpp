@@ -36,7 +36,8 @@ void pRegisterTab::setupWidgets()
   m_groupBoxGridLayout->setColumnMinimumWidth(0, 200);
   m_groupBoxGridLayout->setColumnMinimumWidth(1, 125);
   m_groupBoxGridLayout->setColumnMinimumWidth(2, 125);
-  
+
+  int row = rowCount();
   m_xLabel = new pQtCustomTextLabel(this, "Address x");
   m_xSpinBox = new QSpinBox(this);
   m_xSpinBox->setMinimum(0);
@@ -44,10 +45,11 @@ void pRegisterTab::setupWidgets()
   m_xDisplay = new QLineEdit(this);
   m_xDisplay->setEnabled(false);
   m_xDisplay->setText(xpolgui::kNotAvailable);
-  m_groupBoxGridLayout->addWidget(m_xLabel, 0, 0);
-  m_groupBoxGridLayout->addWidget(m_xSpinBox, 0, 1);
-  m_groupBoxGridLayout->addWidget(m_xDisplay, 0, 2);
-  
+  m_groupBoxGridLayout->addWidget(m_xLabel, row, 0);
+  m_groupBoxGridLayout->addWidget(m_xSpinBox, row, 1);
+  m_groupBoxGridLayout->addWidget(m_xDisplay, row, 2);
+
+  row = rowCount();
   m_yLabel = new pQtCustomTextLabel(this, "Address y");
   m_ySpinBox = new QSpinBox(this);
   m_ySpinBox->setMinimum(0);
@@ -55,10 +57,11 @@ void pRegisterTab::setupWidgets()
   m_yDisplay = new QLineEdit(this);
   m_yDisplay->setEnabled(false);
   m_yDisplay->setText(xpolgui::kNotAvailable);
-  m_groupBoxGridLayout->addWidget(m_yLabel, 1, 0);
-  m_groupBoxGridLayout->addWidget(m_ySpinBox, 1, 1);
-  m_groupBoxGridLayout->addWidget(m_yDisplay, 1, 2);
+  m_groupBoxGridLayout->addWidget(m_yLabel, row, 0);
+  m_groupBoxGridLayout->addWidget(m_ySpinBox, row, 1);
+  m_groupBoxGridLayout->addWidget(m_yDisplay, row, 2);
 
+  row = rowCount();
   m_configLabel = new pQtCustomTextLabel(this, "Configuration");
   m_configSpinBox = new QSpinBox(this);
   m_configSpinBox->setMinimum(0);
@@ -66,9 +69,36 @@ void pRegisterTab::setupWidgets()
   m_configDisplay = new QLineEdit(this);
   m_configDisplay->setEnabled(false);
   m_configDisplay->setText(xpolgui::kNotAvailable);
-  m_groupBoxGridLayout->addWidget(m_configLabel, 2, 0);
-  m_groupBoxGridLayout->addWidget(m_configSpinBox, 2, 1);
-  m_groupBoxGridLayout->addWidget(m_configDisplay, 2, 2);
+  m_groupBoxGridLayout->addWidget(m_configLabel, row, 0);
+  m_groupBoxGridLayout->addWidget(m_configSpinBox, row, 1);
+  m_groupBoxGridLayout->addWidget(m_configDisplay, row, 2);
+
+  addVerticalSpacer();
+
+  row = rowCount();
+  m_randomCheckBox = new QCheckBox("Change values randomly");
+  m_groupBoxGridLayout->addWidget(m_randomCheckBox, row, 0);
+
+  addVerticalSpacer();
+
+  row = rowCount();
+  m_numReadoutsLabel = new pQtCustomTextLabel(this, "Readouts per poke");
+  m_numReadoutsSpinBox = new QSpinBox(this);
+  m_numReadoutsSpinBox->setMinimum(0);
+  m_numReadoutsSpinBox->setMaximum(999999);
+  m_numReadoutsSpinBox->setValue(100);
+  m_groupBoxGridLayout->addWidget(m_numReadoutsLabel, row, 0);
+  m_groupBoxGridLayout->addWidget(m_numReadoutsSpinBox, row, 1);
+
+  row = rowCount();
+  m_readoutIntervalLabel = new pQtCustomTextLabel(this, "Readout interval");
+  m_readoutIntervalSpinBox = new QSpinBox(this);
+  m_readoutIntervalSpinBox->setMinimum(10);
+  m_readoutIntervalSpinBox->setMaximum(10000);
+  m_readoutIntervalSpinBox->setValue(100);
+  m_readoutIntervalSpinBox->setSuffix(" ms");
+  m_groupBoxGridLayout->addWidget(m_readoutIntervalLabel, row, 0);
+  m_groupBoxGridLayout->addWidget(m_readoutIntervalSpinBox, row, 1);
 }
 
 

@@ -52,6 +52,9 @@ class xperegWindow : public pQtMainWindowGui
    void stop();
    void startRun();
    void stopRun();
+   void enableTabs();
+   void disableTabs();
+   void disableHardwareWidgets();
  
  private slots:
  
@@ -71,7 +74,6 @@ class xperegWindow : public pQtMainWindowGui
   void setupLoggerConnections();
   xperegRunController *m_runController;
   void setupConnections();
-
 };
 
 #endif //XPEREGWINDOW_H

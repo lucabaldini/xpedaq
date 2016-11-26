@@ -23,7 +23,8 @@ with this program; if not, write to the Free Software Foundation Inc.,
 #include "xperegRunController.h"
 
 
-xperegRunController::xperegRunController()
+xperegRunController::xperegRunController(std::string preferencesFilePath) :
+  m_preferencesFilePath(preferencesFilePath)
 {
   m_stationIdFilePath = xpedaqos::rjoin("config", "stationId.cfg");
   if (!xpedaqos::fileExists(m_stationIdFilePath)) {
@@ -31,6 +32,10 @@ xperegRunController::xperegRunController()
     exit(1);
   }
   m_runIdFilePath = xpedaqos::rjoin("config", "runId.cfg");
+  if (!xpedaqos::fileExists(m_preferencesFilePath)) {
+    xpedaqos::copyFile(m_preferencesFilePath + ".sample",
+		       m_preferencesFilePath);
+  }
   setupRun();
   m_timer = new QTimer();
   m_timer->setInterval(100000);
@@ -45,11 +50,29 @@ xperegRunController::xperegRunController()
 }                                   
 
 
+void xperegRunController::setupRun(xperegUserPreferences *preferences)
+{
+  *xpollog::kInfo << "Setting up run..." << endline;
+  m_userPreferences = preferences;
+  // The following two lines are duplicated and should be refactored.
+  xpollog::kLogger->setTerminalLevel(m_userPreferences->m_loggerTerminalLevel);
+  xpollog::kLogger->setDisplayLevel(m_userPreferences->m_loggerDisplayLevel);
+}
+
+
+void xperegRunController::setupRun(std::string preferencesFilePath)
+{
+  m_userPreferences = new xperegUserPreferences(preferencesFilePath);
+  xpollog::kLogger->setTerminalLevel(m_userPreferences->m_loggerTerminalLevel);
+  xpollog::kLogger->setDisplayLevel(m_userPreferences->m_loggerDisplayLevel);
+}
+
+
 /*!
  */
 void xperegRunController::setupRun()
 {
-
+  setupRun(m_preferencesFilePath);
 }
 
 

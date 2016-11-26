@@ -21,11 +21,10 @@ int main(int argn, char *argv[])
                          "Run in batch mode");
   
   std::string cfgFolderPath = xpedaqos::rjoin("xpereg", "config");
-  std::string configFilePath = xpedaqos::join(cfgFolderPath, "detector.cfg");
   std::string preferencesFilePath = xpedaqos::join(cfgFolderPath,
 						   "preferences.cfg");
-  std::string trgMaskFilePath = xpedaqos::join(cfgFolderPath, "trgmask.cfg");
-  xperegRunController *runController = new xperegRunController();
+  xperegRunController *runController =
+    new xperegRunController(preferencesFilePath);
 
   // Parse the command-line arguments.
   parser.parse(argn, argv);

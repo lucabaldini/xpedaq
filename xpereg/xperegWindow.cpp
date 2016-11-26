@@ -32,12 +32,13 @@ xperegWindow::xperegWindow(xperegRunController &runController) :
   setWindowTitle(title);
   setupDaqDisplay();
   setupMessageDisplay();
+  setupLoggerConnections();
   setupTransportBar();
   setupTabWidget();
   // This connection needs to be here in order to intercept error signals.
-  //connect(m_runController->usbController(),
-  //  SIGNAL(quickusbError(unsigned long)),
-  // this, SLOT(disableHardwareWidgets()));
+  connect(m_runController->usbController(),
+	  SIGNAL(quickusbError(unsigned long)),
+	  this, SLOT(disableHardwareWidgets()));
   connect(m_runController->usbController(),
   	  SIGNAL(connected(QString, QString, QString, QString)),
   	  m_usbControlTab,
@@ -123,16 +124,40 @@ void xperegWindow::setupTabWidget()
 }
 
 
+void xperegWindow::disableHardwareWidgets()
+{
+  //m_transportBar->setEnabled(0);
+}
+
+
+void xperegWindow::disableTabs()
+{
+  m_registerTab->setEnabled(0);
+  m_usbControlTab->setEnabled(0);
+  m_userPreferencesTab->setEnabled(0);
+}
+
+
+/*!
+*/
+void xperegWindow::enableTabs()
+{
+  m_registerTab->setEnabled(1);
+  m_usbControlTab->setEnabled(1);
+  m_userPreferencesTab->setEnabled(1);
+}
+
+
 /*!
  */
 void xperegWindow::setupConnections()
 {
   connect(m_transportBar, SIGNAL(start()), this, SLOT(startRun()));    
   connect(m_transportBar, SIGNAL(stop()), this, SLOT(stopRun()));
-  //connect(m_runController, SIGNAL(runStarted()),
-  //      this, SLOT(disableTabs()));
-  //connect(m_runController, SIGNAL(runStopped()),
-  //       this, SLOT(enableTabs()));          
+  connect(m_runController, SIGNAL(runStarted()),
+	  this, SLOT(disableTabs()));
+  connect(m_runController, SIGNAL(runStopped()),
+	  this, SLOT(enableTabs()));          
   connect(m_runController, SIGNAL(runStopped()), this, SLOT(stop()));
   connect(m_runController, SIGNAL(stationIdSet(int)), m_daqDisplay,
 	  SLOT(updateStationId(int)));
@@ -150,13 +175,21 @@ void xperegWindow::setupConnections()
   //	  m_daqDisplay, SLOT(updateAverageDaqRate(double)));
   //connect(m_runController, SIGNAL(instantEventRateChanged(double)),
   //m_daqDisplay, SLOT(updateInstantDaqRate(double)));
-  //connect(m_runController->xpolFpga(),
-  //	  SIGNAL(vrefRead(unsigned short, double)),
-  //	  this, SLOT(displayReference(unsigned short, double)));
-  //connect(m_thresholdSettingTab->getRefreshRefButton(), SIGNAL(clicked()),
-  //	  m_runController->xpolFpga(), SLOT(readVrefDac()));
-  //connect(m_userPreferencesTab, SIGNAL(visualizetionModeChanged(int)),
-  //	  this, SLOT(changeVisualizationMode(int)));     
+}
+
+
+/*!
+ */
+void xperegWindow::setupLoggerConnections()
+{
+  connect(xpollog::kDebug, SIGNAL(message(QString)), m_messageDisplay,
+	  SLOT(showMessage(QString)));
+  connect(xpollog::kInfo, SIGNAL(message(QString)), m_messageDisplay,
+	  SLOT(showMessage(QString)));
+  connect(xpollog::kWarning, SIGNAL(message(QString)), m_messageDisplay,
+	  SLOT(showMessage(QString)));
+  connect(xpollog::kError, SIGNAL(message(QString)), m_messageDisplay,
+	  SLOT(showMessage(QString)));
 }
 
 

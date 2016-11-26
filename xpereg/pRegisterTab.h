@@ -25,6 +25,7 @@ with this program; if not, write to the Free Software Foundation Inc.,
 #include <QWidget>
 #include <QString>
 #include <QLineEdit>
+#include <QCheckBox>
 #include <QSpinBox>
 
 #include "pQtCustomTab.h"
@@ -58,6 +59,13 @@ class pRegisterTab : public pQtCustomTab
   pQtCustomTextLabel *m_configLabel;
   QSpinBox *m_configSpinBox;
   QLineEdit *m_configDisplay;
+
+  QCheckBox *m_randomCheckBox;
+
+  pQtCustomTextLabel *m_numReadoutsLabel;
+  QSpinBox *m_numReadoutsSpinBox;
+  pQtCustomTextLabel *m_readoutIntervalLabel;
+  QSpinBox *m_readoutIntervalSpinBox;
 
   void setupWidgets();
   void setupConnections();
