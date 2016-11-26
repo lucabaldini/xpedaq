@@ -1,0 +1,22 @@
+//Pixel address x//
+68
+//Pixel address y//
+50
+//Configuration register//
+14
+//Random shuffle//
+1
+//Number of readouts per poke//
+150
+//Readout interval//
+50
+//Write data file//
+1
+//Output root folder//
+/data/work/xipe/xpedata
+//Write log file//
+1
+//Logger terminal level//
+0
+//Logger display level//
+0
