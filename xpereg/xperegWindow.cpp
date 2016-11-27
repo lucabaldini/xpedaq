@@ -96,9 +96,15 @@ void xperegWindow::stopRun()
  */
 void xperegWindow::setupDaqDisplay()
 {
-  m_daqDisplay = new pDaqDisplay(m_centralWidget);
-  m_daqDisplay->freezeSize(DISPLAYS_WIDTH, -1);
-  m_mainGridLayout->addWidget(m_daqDisplay, 0, 0, Qt::AlignTop);
+  //m_daqDisplay = new pDaqDisplay(m_centralWidget);
+  //m_daqDisplay->freezeSize(DISPLAYS_WIDTH, -1);
+  //m_mainGridLayout->addWidget(m_daqDisplay, 0, 0, Qt::AlignTop);
+  m_display = new pDataDisplayWidget(m_centralWidget);
+  m_display->addDataAcquisitionFields();
+  m_display->addNumPokes();
+  m_display->addNumReadouts();
+  m_display->addNumErrors();
+  m_mainGridLayout->addWidget(m_display, 0, 0, Qt::AlignTop);
 }
 
 
@@ -163,25 +169,28 @@ void xperegWindow::enableTabs()
  */
 void xperegWindow::setupConnections()
 {
-  connect(m_transportBar, SIGNAL(start()), this, SLOT(startRun()));    
-  connect(m_transportBar, SIGNAL(stop()), this, SLOT(stopRun()));
+  connect(m_transportBar, SIGNAL(start()),
+	  this, SLOT(startRun()));    
+  connect(m_transportBar, SIGNAL(stop()),
+	  this, SLOT(stopRun()));
   connect(m_runController, SIGNAL(runStarted()),
 	  this, SLOT(disableTabs()));
   connect(m_runController, SIGNAL(runStopped()),
 	  this, SLOT(enableTabs()));          
-  connect(m_runController, SIGNAL(runStopped()), this, SLOT(stop()));
-  connect(m_runController, SIGNAL(stationIdSet(int)), m_daqDisplay,
-	  SLOT(updateStationId(int)));
-  connect(m_runController, SIGNAL(runIdChanged(int)), m_daqDisplay,
-	  SLOT(updateRunId(int)));
-  connect(m_runController, SIGNAL(statusChanged(QString)), m_daqDisplay,
-	  SLOT(updateStatus(QString)));
+  connect(m_runController, SIGNAL(runStopped()),
+	  this, SLOT(stop()));
+  connect(m_runController, SIGNAL(stationIdSet(int)),
+	  m_display, SLOT(setStationId(int)));
+  connect(m_runController, SIGNAL(runIdChanged(int)),
+	  m_display, SLOT(setRunId(int)));
+  connect(m_runController, SIGNAL(statusChanged(QString)),
+	  m_display, SLOT(setStatus(QString)));
   //connect(m_runController, SIGNAL(numDataBlocksChanged(int)),
   //	  m_daqDisplay, SLOT(updateNumDataBlocks(int)));
   //connect(m_runController, SIGNAL(numEventsChanged(int)),
   //	  m_daqDisplay, SLOT(updateNumEvents(int)));
   connect(m_runController, SIGNAL(elapsedSecondsChanged(int)),
-  	  m_daqDisplay, SLOT(updateElapsedSeconds(int)));
+   	  m_display, SLOT(setElapsedSeconds(int)));
   //connect(m_runController, SIGNAL(averageEventRateChanged(double)),
   //	  m_daqDisplay, SLOT(updateAverageDaqRate(double)));
   //connect(m_runController, SIGNAL(instantEventRateChanged(double)),
