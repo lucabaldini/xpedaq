@@ -32,7 +32,8 @@ class xperegUserPreferences
 {
 
   public:
-
+  
+    xperegUserPreferences() {;}
     xperegUserPreferences(std::string filePath);
 
     unsigned short m_pixelAddressX;
@@ -46,7 +47,7 @@ class xperegUserPreferences
     bool m_logFileEnabled;
     int m_loggerTerminalLevel;
     int m_loggerDisplayLevel;
-  
+    
     // Read/write to/from file.
     void writeToFile(std::string filePath);
     void readFromFile(std::string filePath);

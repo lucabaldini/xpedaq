@@ -230,7 +230,7 @@ class pRunController : public pFiniteStateMachine
   std::string m_trgMaskFilePath;
   
   /// \brief Return the path to the current output folder.
-  std::string outputFolderPath() const;
+  virtual std::string outputFolderPath() const;
 
   /// \brief Return the base string to compose the paths to the output files.
   std::string baseFileName() const;

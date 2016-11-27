@@ -46,7 +46,8 @@ class xperegWindow : public pQtMainWindowGui
   ~xperegWindow() {;}
 
   virtual pDetectorConfiguration *detectorConfiguration(int mode = -1);
- 
+  xperegUserPreferences *userPreferences();
+  
  public slots:
    
    void start();

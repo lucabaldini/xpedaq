@@ -61,9 +61,14 @@ class xperegRunController: public pRunController
 
     // Why the hell we're not picking up the one from the base class?
     std::string m_preferencesFilePath;
+    // We have to overload this as the xpereg configuration facility has
+    // all pubic members and not access facility (see issue #143)
+    virtual std::string outputFolderPath() const;
+   
     xperegUserPreferences *m_userPreferences;
     pXpolRegisterPoker *m_registerPoker;
     QThread m_thread;
+    void saveRunInfo() const;
 };
 
 #endif //XPEREGRUNCONTROLLER_H

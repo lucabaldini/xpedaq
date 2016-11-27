@@ -108,7 +108,6 @@ void xperegRegisterTab::setupConnections()
 }
 
 
-
 void xperegRegisterTab::displayUserPreferences(xperegUserPreferences
 					       *preferences)
 {
@@ -118,4 +117,51 @@ void xperegRegisterTab::displayUserPreferences(xperegUserPreferences
   m_randomCheckBox->setChecked(preferences->m_randomShuffle);
   m_numReadoutsSpinBox->setValue(preferences->m_numReadouts);
   m_readoutIntervalSpinBox->setValue(preferences->m_readoutInterval);
+}
+
+
+void xperegRegisterTab::userPreferences(xperegUserPreferences &preferences)
+{
+  preferences.m_pixelAddressX = pixelAddressX();
+  preferences.m_pixelAddressY = pixelAddressY();
+  preferences.m_configuration = configuration();
+  preferences.m_randomShuffle = randomShuffle();
+  preferences.m_numReadouts = numReadouts();
+  preferences.m_readoutInterval = readoutInterval();
+}
+
+
+unsigned short xperegRegisterTab::pixelAddressX() const
+{
+  return m_xSpinBox->value();
+}
+
+
+unsigned short xperegRegisterTab::pixelAddressY() const
+{
+  return m_ySpinBox->value();
+}
+
+
+unsigned short xperegRegisterTab::configuration() const
+{
+  return m_configSpinBox->value();
+}
+
+
+bool xperegRegisterTab::randomShuffle() const
+{
+  return m_randomCheckBox->isChecked();
+}
+
+
+int xperegRegisterTab::numReadouts() const
+{
+  return m_numReadoutsSpinBox->value();
+}
+
+
+int xperegRegisterTab::readoutInterval() const
+{
+  return m_readoutIntervalSpinBox->value();
 }

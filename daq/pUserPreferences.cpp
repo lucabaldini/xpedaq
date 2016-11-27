@@ -21,20 +21,12 @@ with this program; if not, write to the Free Software Foundation Inc.,
 
 #include "pUserPreferences.h"
 
-pUserPreferences::pUserPreferences()
-{
-  // Do nothing constructor.
-}
 
 pUserPreferences::pUserPreferences(std::string filePath)
 {
   readFromFile(filePath);
 }
 
-pUserPreferences::~pUserPreferences()
-{
-  // Do nothing destructor.
-}
 
 void pUserPreferences::writeToFile(std::string filePath)
 {

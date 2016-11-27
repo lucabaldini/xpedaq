@@ -91,40 +91,39 @@ void xperegRunController::fsmStartRun()
   *xpollog::kInfo << "Starting run controller..." << endline;
   incrementRunId();
   // Create the output folder.
-  //std::string outputFolder = outputFolderPath();
-  //if (!xpedaqos::folderExists(outputFolder)) {
-  //  xpedaqos::mkdir(outputFolder);
-  //}
-  //*xpollog::kDebug << "Output file set to " << dataFilePath() << "." << endline;
+  std::string outputFolder = outputFolderPath();
+  if (!xpedaqos::folderExists(outputFolder)) {
+    xpedaqos::mkdir(outputFolder);
+  }
   // Set the log file path.
-  //std::string logFile = logFilePath();
-  //*xpollog::kInfo << "Redirecting logger to " << logFile << "..." << endline;
-  //xpollog::kLogger->setLogFilePath(logFile);
-  //xpollog::kLogger->enableLogFile(true);
-  // Save the run info.
-  m_timer->start();
-  m_startSeconds = currentSeconds();
+  std::string logFile = logFilePath();
+  *xpollog::kInfo << "Redirecting logger to " << logFile << "..." << endline;
+  xpollog::kLogger->setLogFilePath(logFile);
+  xpollog::kLogger->enableLogFile(true);
+  // Print out the test configuration.
+  std::stringstream preferencesInfo("");
+  preferencesInfo << *m_userPreferences;
+  *xpollog::kDebug << "Settings at start run...\n" << preferencesInfo.str()
+		   << endline;
   *xpollog::kInfo << "Run controller started on " << startDatetime()
 		  << " (" << m_startSeconds << " s since January 1, 1970)."
 		  << endline;
-  /*
-  m_dataCollector->reset();
-  if (m_usbController->IsOpened()) {
-    m_usbController->setTimeout(m_userPreferences->usbTimeout());
-    m_xpolFpga->applyTriggerMask(m_triggerMask);
-    m_xpolFpga->setup(m_detectorConfiguration);
-    m_dataCollector->setupRun(dataFilePath(), m_startSeconds, m_userPreferences,
-			      m_detectorConfiguration);
-    m_dataCollector->start();
-  } else {
-    *xpollog::kError << "The USB device is not open." << endline;
-    exit(1);
-  }
-  */
+  saveRunInfo();
+  //resetRunInfo();
+  m_timer->start();
+  m_startSeconds = currentSeconds();
+  //m_registerPoker->reset();
+  //if (m_usbController->IsOpened()) {
+  //m_usbController->setTimeout(10000);
   m_registerPoker->moveToThread(&m_thread);
   m_thread.start();
+  //} else {
+  //*xpollog::kError << "The USB device is not open." << endline;
+  //exit(1);
+  //  } 
   emit runStarted();
 }
+
 
 /*!
 */
@@ -137,9 +136,8 @@ void xperegRunController::fsmStopRun()
   *xpollog::kInfo << "Run controller stopped on " << stopDatetime()
 		  << " (" << m_stopSeconds << " s since January 1, 1970)."
 		  << endline;
-  //*xpollog::kInfo << numEvents() << " events (" << numDataBlocks()
-  //		  << " data blocks) acquired in "<< runDuration()
-  //		  << " seconds."<< endline;
+  *xpollog::kInfo << "Register test finished after "<< runDuration()
+  		  << " seconds."<< endline;
   *xpollog::kInfo << "Disconnecting logger from file..." << endline;
   xpollog::kLogger->enableLogFile(false);
   //writeRunStat(runStatFilePath());
@@ -185,4 +183,20 @@ void xperegRunController::fsmStop()
 void xperegRunController::fsmTeardown()
 {
 
+}
+
+
+/*!
+ */
+std::string xperegRunController::outputFolderPath() const
+{
+  return xpedaqos::join(m_userPreferences->m_outputFolder, baseFileName());
+}
+
+
+void xperegRunController::saveRunInfo() const
+{
+  m_userPreferences->writeToFile(m_preferencesFilePath);
+  m_userPreferences->writeToFile(userPreferencesFilePath());
+  xpedaqos::copyFile(xpedaqos::rjoin("__version__.h"), xpedaqVersionFilePath());
 }

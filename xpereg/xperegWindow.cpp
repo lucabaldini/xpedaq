@@ -80,7 +80,7 @@ void xperegWindow::stop()
  */
 void xperegWindow::startRun()
 {
-  m_runController->setupRun();
+  m_runController->setupRun(userPreferences());
   m_runController->setRunning();
 }
 
@@ -115,7 +115,7 @@ void xperegWindow::setupMessageDisplay()
  */
 void xperegWindow::setupTransportBar()
 {
-  m_transportBar   = new pTransportBar(m_centralWidget);
+  m_transportBar = new pTransportBar(m_centralWidget);
   m_mainGridLayout->addWidget(m_transportBar, 3, 0, Qt::AlignBottom);
 }
 
@@ -208,4 +208,13 @@ pDetectorConfiguration* xperegWindow::detectorConfiguration(int mode)
 { 
   pDetectorConfiguration *configuration = new pDetectorConfiguration();
   return configuration;
+}
+
+
+xperegUserPreferences* xperegWindow::userPreferences()
+{
+  xperegUserPreferences *preferences = new xperegUserPreferences();
+  m_registerTab->userPreferences(*preferences);
+  m_userPreferencesTab->userPreferences(*preferences);
+  return preferences;
 }

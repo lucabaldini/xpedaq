@@ -43,6 +43,15 @@ class xperegRegisterTab : public pQtCustomTab
    
     xperegRegisterTab();
     void displayUserPreferences(xperegUserPreferences *preferences);
+    void userPreferences(xperegUserPreferences &preferences);
+
+    // Access methods.
+    unsigned short pixelAddressX() const;
+    unsigned short pixelAddressY() const;
+    unsigned short configuration() const;
+    bool randomShuffle() const;
+    int numReadouts() const;
+    int readoutInterval() const;
   
   public slots:
 
