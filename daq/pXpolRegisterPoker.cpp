@@ -126,7 +126,7 @@ int pXpolRegisterPoker::read(unsigned short &x, unsigned short &y,
     m_numReadoutErrors += 1;
     *xpollog::kError << "Readout error code 0x" << hex << errorCode
 		     << dec << ", actual readout values (" << x << ", "
-		     << y << "), " << hex << config << dec << "." << endline;
+		     << y << "), 0x" << hex << config << dec << "." << endline;
   }
   return errorCode; 
 }
