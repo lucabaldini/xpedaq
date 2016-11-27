@@ -50,7 +50,7 @@ class xperegRegisterTab : public pQtCustomTab
     unsigned short pixelAddressY() const;
     unsigned short configuration() const;
     bool randomShuffle() const;
-    int numReadouts() const;
+    int readoutRepeat() const;
     int readoutInterval() const;
   
   public slots:
@@ -71,8 +71,8 @@ class xperegRegisterTab : public pQtCustomTab
     QSpinBox *m_configSpinBox;
     QLineEdit *m_configDisplay;
     QCheckBox *m_randomCheckBox;
-    pQtCustomTextLabel *m_numReadoutsLabel;
-    QSpinBox *m_numReadoutsSpinBox;
+    pQtCustomTextLabel *m_readoutRepeatLabel;
+    QSpinBox *m_readoutRepeatSpinBox;
     pQtCustomTextLabel *m_readoutIntervalLabel;
     QSpinBox *m_readoutIntervalSpinBox;
     void setupWidgets();

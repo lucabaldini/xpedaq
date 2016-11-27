@@ -112,7 +112,8 @@ void xperegRunController::fsmStartRun()
   //resetRunInfo();
   m_timer->start();
   m_startSeconds = currentSeconds();
-  //m_registerPoker->reset();
+  m_registerPoker->setup(m_userPreferences);
+  m_registerPoker->reset();
   //if (m_usbController->IsOpened()) {
   //m_usbController->setTimeout(10000);
   m_registerPoker->moveToThread(&m_thread);

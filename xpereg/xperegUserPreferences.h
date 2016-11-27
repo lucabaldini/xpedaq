@@ -40,7 +40,7 @@ class xperegUserPreferences
     unsigned short m_pixelAddressY;
     unsigned short m_configuration;
     bool m_randomShuffle;
-    int m_numReadouts;
+    int m_readoutRepeat;
     int m_readoutInterval;
     bool m_dataFileEnabled;
     std::string m_outputFolder;
