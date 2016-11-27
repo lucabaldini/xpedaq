@@ -70,7 +70,7 @@ class pDataDisplayWidget : public QGroupBox
 
     // Predefined field that can be added...
     void addStationId() {addField("station_id", "Station ID");}
-    void addRunId() {addField("run_id", "Run Id");}
+    void addRunId() {addField("run_id", "Run ID");}
     void addStatus() {addField("status", "Status");}
     void addElapsedSeconds() {addField("elapsed_seconds", "Elapsed time [s]");}
     void addAverageRate() {addField("average_rate", "Average rate [Hz]");}
