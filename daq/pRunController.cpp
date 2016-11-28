@@ -26,7 +26,7 @@ with this program; if not, write to the Free Software Foundation Inc.,
 /*! Basic constructor.
  */
 pRunController::pRunController(std::string configFilePath,
-			       std::string preferencesFilePath,
+			                         std::string preferencesFilePath,
                                std::string trgMaskFilePath,
                                std::string usrComment,
                                bool emitBlocks)
@@ -101,7 +101,7 @@ void pRunController::init()
 /*!
  */
 void pRunController::setupRun(pDetectorConfiguration *configuration,
-			      pUserPreferences *preferences,
+			                        pUserPreferences *preferences,
                               pTriggerMask *triggerMask,
                               std::string usrComment)
 {
@@ -119,7 +119,7 @@ void pRunController::setupRun(pDetectorConfiguration *configuration,
 /*!
  */
 void pRunController::setupRun(std::string configFilePath,
-			      std::string preferencesFilePath,
+			                        std::string preferencesFilePath,
                               std::string trgMaskFilePath,
                               std::string usrComment)
 { 

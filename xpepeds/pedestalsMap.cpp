@@ -33,7 +33,7 @@ PedestalsMap::PedestalsMap()
 unsigned int PedestalsMap::binIndex (unsigned int pixelX,
                                      unsigned int pixelY) const
 {
-  return pixelX + kNx * pixelY;
+  return pixelX + kNcol * pixelY;
 }
 
 
@@ -64,9 +64,9 @@ const pRunningStat& PedestalsMap::operator()(unsigned int pixelX,
 }
 
 
-int PedestalsMap::numValues (unsigned int pixelX, unsigned int pixelY) const
+int PedestalsMap::numEntries (unsigned int pixelX, unsigned int pixelY) const
 {
-  return pedestal(pixelX, pixelY).numValues();
+  return pedestal(pixelX, pixelY).numEntries();
 }
 
 
@@ -115,8 +115,15 @@ void PedestalsMap::fill(unsigned int pixelX, unsigned int pixelY,
 }
 
 
+void PedestalsMap::setPixel(unsigned int pixelX, unsigned int pixelY,
+                            int nEntries, double average, double rms)
+{
+  pedestal(pixelX, pixelY).load(nEntries, average, rms);
+}
+
+
 void PedestalsMap::reset()
 {
   for (unsigned int index=0; index < kNPedestal; index++)
     {m_pedMap.at(index).reset();}
-}                      
+}

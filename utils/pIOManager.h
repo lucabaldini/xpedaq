@@ -26,8 +26,10 @@ with this program; if not, write to the Free Software Foundation Inc.,
 #include <iostream>
 #include <fstream>
 #include <limits>
-#include "xpollog.h"
+#include <iomanip>
 #include <cstdlib>
+
+#include "xpollog.h"
 
 class pIOManager
 {
@@ -61,7 +63,8 @@ class pIOManager
 	     bool endline = true);
   void write(std::ofstream *outputFile, int item, bool endline = true);
   void write(std::ofstream *outputFile, unsigned int item, bool endline = true);
-  void write(std::ofstream *outputFile, double item, bool endline = true);
+  void write(std::ofstream *outputFile, double item, bool endline = true,
+             bool fixedPrecision = false, int precision = 6);
   void write(std::ofstream *outputFile, std::string item, bool endline = true);
   void write(std::ofstream *outputFile, unsigned char* item, int length);
   void put(std::string filePath, unsigned short int item);

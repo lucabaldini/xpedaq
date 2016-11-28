@@ -221,9 +221,14 @@ void pIOManager::write(std::ofstream *outputFile, unsigned int item, bool endlin
   }
 }
 
-void pIOManager::write(std::ofstream *outputFile, double item, bool endline)
+void pIOManager::write(std::ofstream *outputFile, double item, bool endline,
+                       bool fixedPrecision, int precision)
 {
-  *outputFile << item;
+  if (!fixedPrecision){
+    *outputFile << item;
+  } else {
+    *outputFile << std::fixed << std::setprecision(precision) << item;
+  }
   if (endline){
     *outputFile << std::endl;
   }

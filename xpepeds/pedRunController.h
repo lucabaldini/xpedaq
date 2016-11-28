@@ -24,6 +24,7 @@ with this program; if not, write to the Free Software Foundation Inc.,
 
 #include <iostream>
 
+#include "xpolio.h"
 #include "pRunController.h"
 #include "pedestalsMap.h"
 
@@ -44,6 +45,7 @@ class pedRunController: public pRunController
     pedRunController(std::string configFilePath,
                      std::string preferencesFilePath,
                      std::string trgMaskFilePath,
+                     std::string referenceMapFilePath,
                      double nSigmaAlarmThreshold = 10.,
                      std::string usrComment="");
 
@@ -54,15 +56,33 @@ class pedRunController: public pRunController
   
     void readDataBlock(const pDataBlock &p);
     void resetPedMap();
+    void loadRefMapFromFile(std::string referenceMapFilePath);
+    
+    ///\brief Write average and rms map to file
+    void writeMapToFile() const;
 
   private:
   
-    PedestalsMap *m_pedestalMap;
-    // distance (in rms) between the current event content of a pixel and 
-    // its average over the run that is required to consider the event an
-    // outlier 
-    double m_nSigmaAlarmThreshold;
+    ///\brief Returns the path to the pedestals map output file
+    std::string pedMapOutFilePath() const;
+    
+    ///\brief Write the number of events into an open ouput file
+    void writeNevents(std::ofstream *outputFile) const;
+    
+    ///\brief Write the average map to an open ouput file
+    void writeMap(std::ofstream *outputFile, int precision = 2,
+                  std::string pixelSeparator = " ",
+                  std::string valueSeparator = " ") const;
 
+    ///\brief Current map
+    PedestalsMap *m_pedestalMap;
+    
+    ///\brief Reference map
+    PedestalsMap *m_referenceMap;
+    
+    ///\brief Distance (in sigma) between the current content of a pixel and 
+    // its refernce value required to consider it an outlier 
+    double m_nSigmaAlarmThreshold;
 };
 
 #endif //PEDRUNCONTROLLER_H

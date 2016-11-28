@@ -33,9 +33,11 @@ int main(int argn, char *argv[])
   std::string configFilePath = xpedaqos::join(cfgFolderPath, "detector.cfg");
   std::string preferencesFilePath = xpedaqos::join(cfgFolderPath,
 						   "preferences.cfg");
+  std::string referenceMapFilePath = xpedaqos::join(cfgFolderPath,
+						                                        "referenceMap.pmap");
   std::string trgMaskFilePath = xpedaqos::join(cfgFolderPath, "trgmask.cfg");
   pedRunController *runController = new pedRunController(configFilePath,
-                                       preferencesFilePath, trgMaskFilePath);
+                   preferencesFilePath, trgMaskFilePath, referenceMapFilePath);
   pDetectorConfiguration* configuration =
     runController->detectorConfiguration();  
   // Parse the command-line arguments.

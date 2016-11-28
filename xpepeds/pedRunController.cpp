@@ -21,21 +21,30 @@ with this program; if not, write to the Free Software Foundation Inc.,
 
 #include "pedRunController.h"
 
-
+/*!
+ */
 pedRunController::pedRunController(std::string configFilePath,
                                    std::string preferencesFilePath,
                                    std::string trgMaskFilePath,
+                                   std::string referenceMapFilePath,
                                    double nSigmaAlarmThreshold,
                                    std::string usrComment) : 
   pRunController(configFilePath, preferencesFilePath, trgMaskFilePath,
     usrComment, true),
-  m_nSigmaAlarmThreshold(nSigmaAlarmThreshold)                                 
+  m_nSigmaAlarmThreshold(nSigmaAlarmThreshold)
 {
   m_pedestalMap = new PedestalsMap();
+  loadRefMapFromFile(referenceMapFilePath);
+  if (!xpedaqos::fileExists(referenceMapFilePath)) {
+    xpedaqos::copyFile(referenceMapFilePath + ".sample", referenceMapFilePath);
+  }
   connect (m_dataCollector, SIGNAL(blockRead(const pDataBlock&)),
           this, SLOT(readDataBlock(const pDataBlock&)));
 }                                   
 
+
+/*!
+ */
 void pedRunController::readDataBlock(const pDataBlock &p)
 {
   for (unsigned int evt = 0; evt < p.numEvents(); ++evt) {   
@@ -57,6 +66,93 @@ void pedRunController::readDataBlock(const pDataBlock &p)
 }
 
 
+/*!
+ */
+void pedRunController::loadRefMapFromFile(std::string referenceMapFilePath)
+{
+  *xpollog::kInfo << "Reading pedestals map from " << referenceMapFilePath
+                  << "... " << endline;
+  m_referenceMap = new PedestalsMap();
+  std::ifstream *inputFile = xpolio::kIOManager->
+                                            openInputFile(referenceMapFilePath);
+  // Skip the header
+  xpolio::kIOManager->skipLine(inputFile);
+  // Skip the number of events header
+  xpolio::kIOManager->skipLine(inputFile);
+  // Read the number of events
+  int nEntries = xpolio::kIOManager->readInteger(inputFile);
+  *xpollog::kInfo << "Reference map has " << nEntries << " events"
+                  << endline;
+  // Skip the map header
+  xpolio::kIOManager->skipLine(inputFile);
+  // Read average and rms for each pixel and fill the reference map
+  for (unsigned int row=0; row < pedestals::kNrow; ++row){
+    for (unsigned int col=0; col < pedestals::kNcol; ++col){
+      double average = xpolio::kIOManager->readDouble(inputFile, false);
+      double rms = xpolio::kIOManager->readDouble(inputFile, false);
+      m_referenceMap->setPixel(col, row, nEntries, average, rms);
+    }
+    inputFile->ignore(1, '\n');
+  }
+  xpolio::kIOManager->closeInputFile(inputFile);
+  *xpollog::kInfo << "Done." << endline;
+}
+
+
+/*!
+ */
+std::string pedRunController::pedMapOutFilePath() const
+{
+  return outputFilePath("pedMap.pmap");
+}
+
+
+/*!
+ */
+void pedRunController::writeMapToFile() const
+{
+  std::ofstream *outputFile = xpolio::kIOManager->
+    openOutputFile(pedMapOutFilePath(), true, true);
+  std::string headerLine = "# Some header";
+  xpolio::kIOManager->write(outputFile, headerLine, true);
+  writeNevents(outputFile);
+  writeMap(outputFile);
+  xpolio::kIOManager->closeOutputFile(outputFile);
+}
+
+
+/*!
+ */
+void pedRunController::writeNevents(std::ofstream *outputFile) const
+{
+  xpolio::kIOManager->write(outputFile, "# N. events", true);
+  xpolio::kIOManager->write(outputFile, m_pedestalMap->numEntries(0,0), true);
+}
+
+
+/*!
+ */
+void pedRunController::writeMap(std::ofstream *outputFile, int precision,
+                                std::string pixelSeparator,
+                                std::string valueSeparator) const
+{
+  xpolio::kIOManager->write(outputFile, "# Map", true);
+  for (unsigned int row=0; row < pedestals::kNrow; ++row){
+    for (unsigned int col=0; col < pedestals::kNcol; ++col){
+      double ave = m_pedestalMap->average(col, row);
+      double rms = m_pedestalMap->rms(col, row);
+      xpolio::kIOManager->write(outputFile, ave, false, true, precision);
+      xpolio::kIOManager->write(outputFile, valueSeparator, false);
+      xpolio::kIOManager->write(outputFile, rms, false, true, precision);
+      xpolio::kIOManager->write(outputFile, pixelSeparator, false);
+    }
+    *outputFile << std::endl;
+  }
+}
+
+
+/*!
+ */
 void pedRunController::resetPedMap()
 {
   m_pedestalMap->reset();

@@ -1,6 +1,16 @@
 #include "pRunningStat.h" 
 #include <math.h>
 
+void pRunningStat::load(int numEntries, double average, double rms)
+{
+  m_numEntries = numEntries;
+  m_prevMean = average;
+  m_currentMean = m_prevMean;
+  m_prevVariance = pow(rms, 2.) * (m_numEntries-1);
+  m_currentVariance = m_prevVariance;
+}
+
+
 void pRunningStat::fill(double value)
 {
   m_numEntries += 1;
@@ -55,7 +65,7 @@ void pRunningStat::reset()
 std::ostream& operator<< (std::ostream &out, const pRunningStat &stat)
 {
   out << "Sample mean = " << stat.average()
-      << " ( " << stat.numValues() << " entries)";
+      << " ( " << stat.numEntries() << " entries)";
   try
   {
     out << ", sample standard deviation = " << stat.rms();

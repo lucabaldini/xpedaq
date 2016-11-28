@@ -11,8 +11,9 @@ class pRunningStat
     pRunningStat() : m_numEntries(0),  m_currentMean(0.),
                      m_currentVariance(0.), m_prevMean(0.),  m_prevVariance(0.)
                      {};
+    void load(int numEntries, double average, double rms);
     void fill(double value);
-    int numValues() const {return m_numEntries;};
+    int numEntries() const {return m_numEntries;};
     double average() const;
     double variance() const;
     double rms() const;  

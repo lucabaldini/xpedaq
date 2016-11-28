@@ -24,20 +24,21 @@ with this program; if not, write to the Free Software Foundation Inc.,
 
 #include <vector>
 #include <iostream>
+#include <string>
 
 #include "xpoldetector.h"
 #include "pRunningStat.h"
 
 
 namespace pedestals{
-  const unsigned int kNx = static_cast<unsigned int>(xpoldetector::kNumPixelsX);
-  const unsigned int kNy = static_cast<unsigned int>(xpoldetector::kNumPixelsY);
-  const unsigned int kNPedestal = kNx * kNy;
+  const unsigned int kNcol = static_cast<unsigned int>(xpoldetector::kNumPixelsX);
+  const unsigned int kNrow = static_cast<unsigned int>(xpoldetector::kNumPixelsY);
+  const unsigned int kNPedestal = kNcol * kNrow;
 }
 
 /* This is the core object of the pedestal application. It's a 2D map of
-   pRunningStat object (one for each pixel of the detector), holding the
-   mean and the variance of the respective pixels.
+   pRunningStat object (one for each pixel of the detector), each holding the
+   mean and the variance of the respective pixel.
    Internally the map is implemented as a one dimensional vector, with a method
    for transforming (x,y) coordinates into a single array index */
 
@@ -47,9 +48,9 @@ class PedestalsMap
   public:
   
     PedestalsMap();
-    
+        
     //Getters
-    int numValues (unsigned int pixelX, unsigned int pixelY) const;
+    int numEntries (unsigned int pixelX, unsigned int pixelY) const;
     double average(unsigned int pixelX, unsigned int pixelY) const;
     double variance(unsigned int pixelX, unsigned int pixelY) const;
     double rms(unsigned int pixelX, unsigned int pixelY) const;  
@@ -57,6 +58,8 @@ class PedestalsMap
                         double value) const;
 
     void fill(unsigned int pixelX, unsigned int pixelY, double value);
+	  void setPixel(unsigned int pixelX, unsigned int pixelY, int nEntries,
+	                double average, double rms);
 	  void reset();
 
     pRunningStat& operator()(unsigned int pixelX, unsigned int pixelY);
