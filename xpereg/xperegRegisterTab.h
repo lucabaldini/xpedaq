@@ -43,8 +43,20 @@ class xperegRegisterTab : public pQtCustomTab
    
     xperegRegisterTab();
     void displayUserPreferences(xperegUserPreferences *preferences);
+    void userPreferences(xperegUserPreferences &preferences);
+
+    // Access methods.
+    unsigned short pixelAddressX() const;
+    unsigned short pixelAddressY() const;
+    unsigned short configuration() const;
+    bool randomShuffle() const;
+    int readoutRepeat() const;
+    int readoutInterval() const;
   
   public slots:
+
+    void updateRegisters(unsigned short x, unsigned short y,
+			 unsigned short config);
 
     
   private slots:
@@ -62,8 +74,8 @@ class xperegRegisterTab : public pQtCustomTab
     QSpinBox *m_configSpinBox;
     QLineEdit *m_configDisplay;
     QCheckBox *m_randomCheckBox;
-    pQtCustomTextLabel *m_numReadoutsLabel;
-    QSpinBox *m_numReadoutsSpinBox;
+    pQtCustomTextLabel *m_readoutRepeatLabel;
+    QSpinBox *m_readoutRepeatSpinBox;
     pQtCustomTextLabel *m_readoutIntervalLabel;
     QSpinBox *m_readoutIntervalSpinBox;
     void setupWidgets();

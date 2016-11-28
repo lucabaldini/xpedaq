@@ -34,6 +34,7 @@ class xperegUserPreferencesTab : public pUserPreferencesTab
   public:
     xperegUserPreferencesTab();
     void displayUserPreferences(xperegUserPreferences *preferences);
+    void userPreferences(xperegUserPreferences &preferences);
  
 };
 

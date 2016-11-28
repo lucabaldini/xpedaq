@@ -23,41 +23,148 @@ with this program; if not, write to the Free Software Foundation Inc.,
 #include "pXpolRegisterPoker.h"
 
 
+/*!
+ */
 pXpolRegisterPoker::pXpolRegisterPoker(pXpolFpga *xpolFpga) :
-  m_xpolFpga(xpolFpga)
+  m_xpolFpga(xpolFpga),
+  m_pixelAddressX(0),
+  m_pixelAddressY(0),
+  m_configuration(0),
+  m_randomShuffle(false),
+  m_readoutRepeat(100),
+  m_readoutInterval(100),
+  m_numPokes(0),
+  m_numReadouts(0),
+  m_numReadoutErrors(0)
 {
+  m_rndEngine = std::default_random_engine();
+  m_rndDistX = std::uniform_int_distribution<int>(0, 299);
+  m_rndDistY = std::uniform_int_distribution<int>(0, 351);
+  m_rndDistConfig = std::uniform_int_distribution<int>(0, 48);
 }
 
 
+/*! Setup the register poker passing all the arguments explicitely.
+ */
+void pXpolRegisterPoker::setup(unsigned short x, unsigned short y,
+			       unsigned short config, bool shuffle, int repeat,
+			       int interval)
+{
+  m_pixelAddressX = x;
+  m_pixelAddressY = y;
+  m_configuration = config;
+  m_randomShuffle = shuffle;
+  m_readoutRepeat = repeat;
+  m_readoutInterval = interval;
+}
+
+
+/*! Setup the register poker via a xperegUserPreferences pointer.
+ */
+void pXpolRegisterPoker::setup(xperegUserPreferences *preferences)
+{
+  setup(preferences->m_pixelAddressX, preferences->m_pixelAddressY,
+	preferences->m_configuration, preferences->m_randomShuffle,
+	preferences->m_readoutRepeat, preferences->m_readoutInterval);
+}
+
+
+/*! Shuffle the values being written into the registers randomly.
+ */
+void pXpolRegisterPoker::shuffle()
+{
+  m_pixelAddressX = m_rndDistX(m_rndEngine);
+  m_pixelAddressY = m_rndDistY(m_rndEngine);
+  m_configuration = m_rndDistConfig(m_rndEngine);
+  emit shuffled(m_pixelAddressX, m_pixelAddressY, m_configuration);
+}
+
+
+/*! Reset the test statistics.
+ */
 void pXpolRegisterPoker::reset()
 {
-
+  m_numPokes = 0;
+  m_numReadouts = 0;
+  m_numReadoutErrors = 0;
 }
 
+
+/*! Write the XPOL registers once .
+ */
+void pXpolRegisterPoker::write()
+{
+  *xpollog::kInfo << "Writing (" << m_pixelAddressX << ", " << m_pixelAddressY
+		  << "), 0x" << hex << m_configuration << dec
+		  << " into the XPOL registers..." << endline;
+  m_xpolFpga->writeXpolAddressRegister(m_pixelAddressX, m_pixelAddressY);
+  m_xpolFpga->writeXpolConfigurationRegister(m_configuration);
+  emit registersWritten(m_pixelAddressX, m_pixelAddressY, m_configuration);
+}
+
+
+/*! Read back the XPOL registers and compare with the values that we wrote.
+
+The function returns 0 upon success and an error code upon failure. The actual
+readout values are stored into the references passed as arguments.
+ */
+int pXpolRegisterPoker::read(unsigned short &x, unsigned short &y,
+			     unsigned short &config)
+{
+  int errorCode = 0;
+  m_xpolFpga->readXpolAddressConfigurationRegisters(x, y, config);
+  if (x != m_pixelAddressX) {
+    errorCode += AddressXMismatch;
+  }
+  if (y != m_pixelAddressY) {
+    errorCode += AddressYMismatch;
+  }
+  if (config != m_configuration) {
+    errorCode += ConfigurationMismatch;
+  }
+  if (errorCode) {
+    emit readoutError(errorCode);
+    m_numReadoutErrors += 1;
+    *xpollog::kError << "Readout error code 0x" << hex << errorCode
+		     << dec << ", actual readout values (" << x << ", "
+		     << y << "), 0x" << hex << config << dec << "." << endline;
+    // Re-write the register upon error.
+    write();
+  }
+  return errorCode; 
+}
+
+
+/*!
+ */
 void pXpolRegisterPoker::poke()
 {
-  m_xpolFpga->writeXpolConfigurationRegister(0x23);
-  m_xpolFpga->writeXpolAddressRegister(50, 77);
-  *xpollog::kInfo << "Reading back XPOL registers..." << endline; 
-  unsigned short x, y, value;
-  m_xpolFpga->readXpolAddressConfigurationRegisters(x, y, value);
-  *xpollog::kInfo << "Address x: " << x << endline;
-  *xpollog::kInfo << "Address y: " << y << endline;
-  *xpollog::kInfo << "Configuration register: 0x" << hex << value << dec
-		  << endline;
+  unsigned short x, y, config;
+  if (m_numReadouts % m_readoutRepeat == 0) {
+    if (m_randomShuffle) {
+      shuffle();
+    }
+    write();
+    m_numPokes += 1;
+  }
+  read(x, y, config);
+  m_numReadouts += 1;
 }
 
 
+/*!
+ */
 void pXpolRegisterPoker::start()
 {
   m_timer = new QTimer();
-  m_timer->setInterval(100);
+  m_timer->setInterval(m_readoutInterval);
   connect(m_timer, SIGNAL(timeout()), this, SLOT(poke()));
   m_timer->start();
 }
 
 
-
+/*!
+ */
 void pXpolRegisterPoker::stop()
 {
   m_timer->stop();

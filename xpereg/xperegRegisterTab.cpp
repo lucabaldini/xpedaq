@@ -82,13 +82,13 @@ void xperegRegisterTab::setupWidgets()
   addVerticalSpacer();
 
   row = rowCount();
-  m_numReadoutsLabel = new pQtCustomTextLabel(this, "Readouts per poke");
-  m_numReadoutsSpinBox = new QSpinBox(this);
-  m_numReadoutsSpinBox->setMinimum(0);
-  m_numReadoutsSpinBox->setMaximum(999999);
-  m_numReadoutsSpinBox->setValue(100);
-  m_groupBoxGridLayout->addWidget(m_numReadoutsLabel, row, 0);
-  m_groupBoxGridLayout->addWidget(m_numReadoutsSpinBox, row, 1);
+  m_readoutRepeatLabel = new pQtCustomTextLabel(this, "Readouts per poke");
+  m_readoutRepeatSpinBox = new QSpinBox(this);
+  m_readoutRepeatSpinBox->setMinimum(0);
+  m_readoutRepeatSpinBox->setMaximum(999999);
+  m_readoutRepeatSpinBox->setValue(100);
+  m_groupBoxGridLayout->addWidget(m_readoutRepeatLabel, row, 0);
+  m_groupBoxGridLayout->addWidget(m_readoutRepeatSpinBox, row, 1);
 
   row = rowCount();
   m_readoutIntervalLabel = new pQtCustomTextLabel(this, "Readout interval");
@@ -108,7 +108,6 @@ void xperegRegisterTab::setupConnections()
 }
 
 
-
 void xperegRegisterTab::displayUserPreferences(xperegUserPreferences
 					       *preferences)
 {
@@ -116,6 +115,62 @@ void xperegRegisterTab::displayUserPreferences(xperegUserPreferences
   m_ySpinBox->setValue(preferences->m_pixelAddressY);
   m_configSpinBox->setValue(preferences->m_configuration);
   m_randomCheckBox->setChecked(preferences->m_randomShuffle);
-  m_numReadoutsSpinBox->setValue(preferences->m_numReadouts);
+  m_readoutRepeatSpinBox->setValue(preferences->m_readoutRepeat);
   m_readoutIntervalSpinBox->setValue(preferences->m_readoutInterval);
+}
+
+
+void xperegRegisterTab::updateRegisters(unsigned short x, unsigned short y,
+					unsigned short config)
+{
+  m_xSpinBox->setValue(x);
+  m_ySpinBox->setValue(y);
+  m_configSpinBox->setValue(config);
+}
+
+
+void xperegRegisterTab::userPreferences(xperegUserPreferences &preferences)
+{
+  preferences.m_pixelAddressX = pixelAddressX();
+  preferences.m_pixelAddressY = pixelAddressY();
+  preferences.m_configuration = configuration();
+  preferences.m_randomShuffle = randomShuffle();
+  preferences.m_readoutRepeat = readoutRepeat();
+  preferences.m_readoutInterval = readoutInterval();
+}
+
+
+unsigned short xperegRegisterTab::pixelAddressX() const
+{
+  return m_xSpinBox->value();
+}
+
+
+unsigned short xperegRegisterTab::pixelAddressY() const
+{
+  return m_ySpinBox->value();
+}
+
+
+unsigned short xperegRegisterTab::configuration() const
+{
+  return m_configSpinBox->value();
+}
+
+
+bool xperegRegisterTab::randomShuffle() const
+{
+  return m_randomCheckBox->isChecked();
+}
+
+
+int xperegRegisterTab::readoutRepeat() const
+{
+  return m_readoutRepeatSpinBox->value();
+}
+
+
+int xperegRegisterTab::readoutInterval() const
+{
+  return m_readoutIntervalSpinBox->value();
 }

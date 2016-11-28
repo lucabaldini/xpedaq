@@ -26,6 +26,7 @@ with this program; if not, write to the Free Software Foundation Inc.,
 #include "pQtMainWindowGui.h"
 #include "xperegRunController.h"
 #include "pDaqDisplay.h"
+#include "pDataDisplayWidget.h"
 #include "pMessageDisplay.h"
 #include "pTransportBar.h"
 #include "pAcquisitionWindow.h"
@@ -46,7 +47,8 @@ class xperegWindow : public pQtMainWindowGui
   ~xperegWindow() {;}
 
   virtual pDetectorConfiguration *detectorConfiguration(int mode = -1);
- 
+  xperegUserPreferences *userPreferences();
+  
  public slots:
    
    void start();
@@ -63,6 +65,7 @@ class xperegWindow : public pQtMainWindowGui
  private:
   
   pDaqDisplay *m_daqDisplay;
+  pDataDisplayWidget *m_display;
   pMessageDisplay *m_messageDisplay;
   pTransportBar *m_transportBar;
   QTabWidget *m_mainTabWidget;

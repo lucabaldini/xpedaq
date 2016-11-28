@@ -43,7 +43,7 @@ void xperegUserPreferences::writeToFile(std::string filePath)
   xpolio::kIOManager->write(outputFile, "//Random shuffle//");
   xpolio::kIOManager->write(outputFile, m_randomShuffle);
   xpolio::kIOManager->write(outputFile, "//Number of readouts per poke//");
-  xpolio::kIOManager->write(outputFile, m_numReadouts);
+  xpolio::kIOManager->write(outputFile, m_readoutRepeat);
   xpolio::kIOManager->write(outputFile, "//Readout interval//");
   xpolio::kIOManager->write(outputFile, m_readoutInterval);
   xpolio::kIOManager->write(outputFile, "//Write data file//");
@@ -76,7 +76,7 @@ void xperegUserPreferences::readFromFile(std::string filePath)
   xpolio::kIOManager->skipLine(inputFile);
   m_randomShuffle = xpolio::kIOManager->readBool(inputFile);
   xpolio::kIOManager->skipLine(inputFile);
-  m_numReadouts = xpolio::kIOManager->readInteger(inputFile);
+  m_readoutRepeat = xpolio::kIOManager->readInteger(inputFile);
   xpolio::kIOManager->skipLine(inputFile);
   m_readoutInterval = xpolio::kIOManager->readInteger(inputFile);
   xpolio::kIOManager->skipLine(inputFile);
@@ -102,7 +102,7 @@ std::ostream& xperegUserPreferences::fillStream(std::ostream& os) const
   os << "Pixel address y: " << m_pixelAddressY << std::endl;
   os << "Configuration register: " << m_configuration << std::endl;
   os << "Random shuffle: " << m_randomShuffle << std::endl;
-  os << "Number of readouts per poke: " << m_numReadouts << std::endl;
+  os << "Number of readouts per poke: " << m_readoutRepeat << std::endl;
   os << "Readout interval: " << m_readoutInterval << std::endl;
   os << "Write data file: " << m_dataFileEnabled << std::endl;
   os << "Output root folder: " << m_outputFolder << std::endl;

@@ -40,6 +40,18 @@ void xperegUserPreferencesTab::displayUserPreferences(xperegUserPreferences
     setCurrentIndex(preferences->m_loggerTerminalLevel);
   m_loggerDisplayLevelComboBox->
     setCurrentIndex(preferences->m_loggerDisplayLevel);
-  m_enableLogFileCheckBox->setChecked(preferences->m_logFileEnabled);
-  
+  m_enableLogFileCheckBox->setChecked(preferences->m_logFileEnabled);  
 }
+
+
+void xperegUserPreferencesTab::userPreferences(xperegUserPreferences
+					       &preferences)
+{
+  preferences.m_dataFileEnabled = dataFileEnabled();
+  preferences.m_outputFolder = getOutputFolder();
+  preferences.m_logFileEnabled = logFileEnabled();
+  preferences.m_loggerTerminalLevel = getLoggerTerminalLevel();
+  preferences.m_loggerDisplayLevel = getLoggerDisplayLevel();
+}
+
+ 

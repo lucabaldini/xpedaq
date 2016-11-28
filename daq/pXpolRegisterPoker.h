@@ -22,9 +22,13 @@ with this program; if not, write to the Free Software Foundation Inc.,
 #ifndef PXPOLREGISTERPOKER_H
 #define PXPOLREGISTERPOKER_H
 
+#include <random>
+
 #include <QTimer>
 
 #include "pXpolFpga.h"
+#include "xperegUserPreferences.h"
+#include "xpollog.h"
 
 
 class pXpolRegisterPoker: public QObject
@@ -35,7 +39,18 @@ class pXpolRegisterPoker: public QObject
   public:
   
     pXpolRegisterPoker(pXpolFpga *xpolFpga);
+    void setup(unsigned short x, unsigned short y, unsigned short config,
+	       bool shuffle, int repeat, int interval);
+    void setup(xperegUserPreferences *preferences);
+    void shuffle();
     void reset();
+    void write();
+    int read(unsigned short &x, unsigned short &y, unsigned short &config);
+    // Access test statistics.
+    int numPokes() const {return m_numPokes;}
+    int numReadouts() const {return m_numReadouts;}
+    int numReadoutErrors() const {return m_numReadoutErrors;}
+
     
   public slots:
 
@@ -44,12 +59,38 @@ class pXpolRegisterPoker: public QObject
     void stop();
     
   signals:
-  
+
+    void registersWritten(unsigned short x, unsigned short y,
+			  unsigned short config);
+    void shuffled(unsigned short x, unsigned short y, unsigned short config);
+    void readoutError(int errorCode);
   
   private:
+
+    enum ReadoutError {
+      AddressXMismatch = 0x1,
+      AddressYMismatch = 0x2,
+      ConfigurationMismatch = 0x4
+    };
     
-   QTimer *m_timer;
-   pXpolFpga *m_xpolFpga;
+    QTimer *m_timer;
+    pXpolFpga *m_xpolFpga;
+    // Test configuration.
+    unsigned short m_pixelAddressX;
+    unsigned short m_pixelAddressY;
+    unsigned short m_configuration;
+    bool m_randomShuffle;
+    int m_readoutRepeat;
+    int m_readoutInterval;
+    // Bookkeping for readout statistics and errors.
+    int m_numPokes;
+    int m_numReadouts;
+    int m_numReadoutErrors;
+    // Random number generation.
+    std::default_random_engine m_rndEngine;
+    std::uniform_int_distribution<int> m_rndDistX;
+    std::uniform_int_distribution<int> m_rndDistY;
+    std::uniform_int_distribution<int> m_rndDistConfig;
 };
 
 #endif //PXPOLREGISTERPOKER_H

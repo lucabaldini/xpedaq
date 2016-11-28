@@ -44,9 +44,20 @@ class xperegRunController: public pRunController
     void setupRun(std::string preferencesFilePath);
     void setupRun();
     xperegUserPreferences *userPreferences() const {return m_userPreferences;}
+    pXpolRegisterPoker *registerPoker() const {return m_registerPoker;}
+    
     
   public slots:
 
+
+  signals:
+
+    void numPokesChanged(int numPokes);
+    void numReadoutsChanged(int numReadouts);
+    void numReadoutErrorsChanged(int numErrors);
+    //void averageEventRateChanged(double rate);
+
+    
   protected:
   
     virtual void fsmSetup();
@@ -57,13 +68,24 @@ class xperegRunController: public pRunController
     virtual void fsmResume();
     virtual void fsmStop();
 
+    
   private:
 
     // Why the hell we're not picking up the one from the base class?
     std::string m_preferencesFilePath;
+    // We have to overload this as the xpereg configuration facility has
+    // all pubic members and not access facility (see issue #143)
+    virtual std::string outputFolderPath() const;
+   
     xperegUserPreferences *m_userPreferences;
     pXpolRegisterPoker *m_registerPoker;
     QThread m_thread;
+    void saveRunInfo() const;
+
+  private slots:
+   
+    virtual void updateRunInfo();
+    virtual void resetRunInfo();
 };
 
 #endif //XPEREGRUNCONTROLLER_H
