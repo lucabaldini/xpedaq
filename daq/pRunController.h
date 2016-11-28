@@ -297,8 +297,8 @@ class pRunController : public pFiniteStateMachine
   
  private slots:
    
-  void updateRunInfo();
-  void resetRunInfo();
+  virtual void updateRunInfo();
+  virtual void resetRunInfo();
 
 };
 

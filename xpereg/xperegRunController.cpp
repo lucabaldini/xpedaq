@@ -38,7 +38,7 @@ xperegRunController::xperegRunController(std::string preferencesFilePath) :
   }
   setupRun();
   m_timer = new QTimer();
-  m_timer->setInterval(100000);
+  m_timer->setInterval(1000);
   connect(m_timer, SIGNAL(timeout()), this, SLOT(updateRunInfo()));
   m_usbController = new pUsbController();
   m_xpolFpga = new pXpolFpga(m_usbController);
@@ -109,19 +109,19 @@ void xperegRunController::fsmStartRun()
 		  << " (" << m_startSeconds << " s since January 1, 1970)."
 		  << endline;
   saveRunInfo();
-  //resetRunInfo();
+  resetRunInfo();
   m_timer->start();
   m_startSeconds = currentSeconds();
   m_registerPoker->setup(m_userPreferences);
   m_registerPoker->reset();
-  //if (m_usbController->IsOpened()) {
-  //m_usbController->setTimeout(10000);
-  m_registerPoker->moveToThread(&m_thread);
-  m_thread.start();
-  //} else {
-  //*xpollog::kError << "The USB device is not open." << endline;
-  //exit(1);
-  //  } 
+  if (m_usbController->IsOpened()) {
+    m_usbController->setTimeout(1000);
+    m_registerPoker->moveToThread(&m_thread);
+    m_thread.start();
+  } else {
+    *xpollog::kError << "The USB device is not open." << endline;
+    exit(1);
+  } 
   emit runStarted();
 }
 
@@ -200,4 +200,22 @@ void xperegRunController::saveRunInfo() const
   m_userPreferences->writeToFile(m_preferencesFilePath);
   m_userPreferences->writeToFile(userPreferencesFilePath());
   xpedaqos::copyFile(xpedaqos::rjoin("__version__.h"), xpedaqVersionFilePath());
+}
+
+
+void xperegRunController::updateRunInfo()
+{
+  emit elapsedSecondsChanged(elapsedSeconds());
+  emit numPokesChanged(m_registerPoker->numPokes());
+  emit numReadoutsChanged(m_registerPoker->numReadouts());
+  emit numReadoutErrorsChanged(m_registerPoker->numReadoutErrors());
+}
+
+
+void xperegRunController::resetRunInfo()
+{
+  emit elapsedSecondsChanged(0);
+  emit numPokesChanged(0);
+  emit numReadoutsChanged(0);
+  emit numReadoutErrorsChanged(0);
 }

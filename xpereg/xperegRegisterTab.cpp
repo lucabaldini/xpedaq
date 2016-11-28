@@ -120,6 +120,15 @@ void xperegRegisterTab::displayUserPreferences(xperegUserPreferences
 }
 
 
+void xperegRegisterTab::updateRegisters(unsigned short x, unsigned short y,
+					unsigned short config)
+{
+  m_xSpinBox->setValue(x);
+  m_ySpinBox->setValue(y);
+  m_configSpinBox->setValue(config);
+}
+
+
 void xperegRegisterTab::userPreferences(xperegUserPreferences &preferences)
 {
   preferences.m_pixelAddressX = pixelAddressX();

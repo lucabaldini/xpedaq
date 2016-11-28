@@ -55,6 +55,9 @@ class xperegRegisterTab : public pQtCustomTab
   
   public slots:
 
+    void updateRegisters(unsigned short x, unsigned short y,
+			 unsigned short config);
+
     
   private slots:
 

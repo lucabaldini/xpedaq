@@ -169,6 +169,7 @@ void xperegWindow::enableTabs()
  */
 void xperegWindow::setupConnections()
 {
+  // Connections for test start/stop.
   connect(m_transportBar, SIGNAL(start()),
 	  this, SLOT(startRun()));    
   connect(m_transportBar, SIGNAL(stop()),
@@ -179,18 +180,27 @@ void xperegWindow::setupConnections()
 	  this, SLOT(enableTabs()));          
   connect(m_runController, SIGNAL(runStopped()),
 	  this, SLOT(stop()));
+  // Connections for the DAQ display widget.
   connect(m_runController, SIGNAL(stationIdSet(int)),
 	  m_display, SLOT(setStationId(int)));
   connect(m_runController, SIGNAL(runIdChanged(int)),
 	  m_display, SLOT(setRunId(int)));
   connect(m_runController, SIGNAL(statusChanged(QString)),
 	  m_display, SLOT(setStatus(QString)));
-  //connect(m_runController, SIGNAL(numDataBlocksChanged(int)),
-  //	  m_daqDisplay, SLOT(updateNumDataBlocks(int)));
-  //connect(m_runController, SIGNAL(numEventsChanged(int)),
-  //	  m_daqDisplay, SLOT(updateNumEvents(int)));
   connect(m_runController, SIGNAL(elapsedSecondsChanged(int)),
    	  m_display, SLOT(setElapsedSeconds(int)));
+  connect(m_runController, SIGNAL(numPokesChanged(int)),
+  	  m_display, SLOT(setNumPokes(int)));
+  connect(m_runController, SIGNAL(numReadoutsChanged(int)),
+  	  m_display, SLOT(setNumReadouts(int)));
+  connect(m_runController, SIGNAL(numReadoutErrorsChanged(int)),
+  	  m_display, SLOT(setNumErrors(int)));
+  // Update of the test parameters.
+  connect(m_runController->registerPoker(),
+	  SIGNAL(shuffled(unsigned short, unsigned short, unsigned short)),
+	  m_registerTab,
+	  SLOT(updateRegisters(unsigned short, unsigned short, unsigned short)));
+
   //connect(m_runController, SIGNAL(averageEventRateChanged(double)),
   //	  m_daqDisplay, SLOT(updateAverageDaqRate(double)));
   //connect(m_runController, SIGNAL(instantEventRateChanged(double)),

@@ -16,6 +16,7 @@ INPUT(
 ./..\build\pCommentBoxWidget.o
 ./..\build\pQtDisplayGui.o
 ./..\build\pDaqDisplay.o
+./..\build\pDataDisplayWidget.o
 ./..\build\pMessageDisplay.o
 ./..\build\pQtCustomTab.o
 ./..\build\pReadoutModeTab.o
@@ -27,6 +28,8 @@ INPUT(
 ./..\build\pUserPreferencesTab.o
 ./..\build\pQtMainWindowGui.o
 ./..\build\pAcquisitionWindow.o
+./..\build\xperegRegisterTab.o
+./..\build\xperegUserPreferencesTab.o
 ./..\build\xperegWindow.o
 ./..\build\xperegRunController.o
 ./..\build\pFiniteStateMachine.o
@@ -40,6 +43,7 @@ INPUT(
 ./..\build\pXpolRegisterPoker.o
 ./..\build\pDetectorConfiguration.o
 ./..\build\pUserPreferences.o
+./..\build\xperegUserPreferences.o
 ./..\build\pLoggerChannel.o
 ./..\build\pLogger.o
 ./..\build\pIOManager.o
@@ -53,6 +57,7 @@ INPUT(
 ./..\build\moc_pCommentBoxWidget.o
 ./..\build\moc_pQtDisplayGui.o
 ./..\build\moc_pDaqDisplay.o
+./..\build\moc_pDataDisplayWidget.o
 ./..\build\moc_pMessageDisplay.o
 ./..\build\moc_pReadoutModeTab.o
 ./..\build\moc_pThresholdSettingTab.o
@@ -62,6 +67,8 @@ INPUT(
 ./..\build\moc_pUsbControlTab.o
 ./..\build\moc_pUserPreferencesTab.o
 ./..\build\moc_pAcquisitionWindow.o
+./..\build\moc_xperegRegisterTab.o
+./..\build\moc_xperegUserPreferencesTab.o
 ./..\build\moc_xperegWindow.o
 ./..\build\moc_xperegRunController.o
 ./..\build\moc_pFiniteStateMachine.o

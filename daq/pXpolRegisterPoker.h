@@ -46,6 +46,11 @@ class pXpolRegisterPoker: public QObject
     void reset();
     void write();
     int read(unsigned short &x, unsigned short &y, unsigned short &config);
+    // Access test statistics.
+    int numPokes() const {return m_numPokes;}
+    int numReadouts() const {return m_numReadouts;}
+    int numReadoutErrors() const {return m_numReadoutErrors;}
+
     
   public slots:
 

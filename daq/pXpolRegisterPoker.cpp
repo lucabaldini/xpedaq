@@ -40,7 +40,7 @@ pXpolRegisterPoker::pXpolRegisterPoker(pXpolFpga *xpolFpga) :
   m_rndEngine = std::default_random_engine();
   m_rndDistX = std::uniform_int_distribution<int>(0, 299);
   m_rndDistY = std::uniform_int_distribution<int>(0, 351);
-  m_rndDistConfig = std::uniform_int_distribution<int>(0, 65535);
+  m_rndDistConfig = std::uniform_int_distribution<int>(0, 48);
 }
 
 
@@ -76,6 +76,7 @@ void pXpolRegisterPoker::shuffle()
   m_pixelAddressX = m_rndDistX(m_rndEngine);
   m_pixelAddressY = m_rndDistY(m_rndEngine);
   m_configuration = m_rndDistConfig(m_rndEngine);
+  emit shuffled(m_pixelAddressX, m_pixelAddressY, m_configuration);
 }
 
 
@@ -127,6 +128,8 @@ int pXpolRegisterPoker::read(unsigned short &x, unsigned short &y,
     *xpollog::kError << "Readout error code 0x" << hex << errorCode
 		     << dec << ", actual readout values (" << x << ", "
 		     << y << "), 0x" << hex << config << dec << "." << endline;
+    // Re-write the register upon error.
+    write();
   }
   return errorCode; 
 }
@@ -154,7 +157,7 @@ void pXpolRegisterPoker::poke()
 void pXpolRegisterPoker::start()
 {
   m_timer = new QTimer();
-  m_timer->setInterval(100);
+  m_timer->setInterval(m_readoutInterval);
   connect(m_timer, SIGNAL(timeout()), this, SLOT(poke()));
   m_timer->start();
 }
