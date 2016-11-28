@@ -46,8 +46,8 @@ class pRunController : public pFiniteStateMachine
 
   ///\brief Constructor.
   pRunController(std::string configFilePath, std::string preferencesFilePath,
-		             std::string trgMaskFilePath, std::string usrComment="",
-		             bool emitBlocks=false);
+		 std::string trgMaskFilePath, std::string usrComment = "",
+		 bool emitBlocks = false);
 
   ///\brief Destructor.
   ~pRunController() {;}
@@ -80,25 +80,25 @@ class pRunController : public pFiniteStateMachine
   ///\brief Return the current user comment.
   std::string userComment() const {return m_userComment;}
   
-  /// \brief Setup all the relevant run information.
+  ///\brief Setup all the relevant run information.
   void setupRun(pDetectorConfiguration *configuration,
                 pUserPreferences *preferences,
                 pTriggerMask *triggerMask,
                 std::string usrComment);
 
-  /// \brief Same thing but reading the info from file.
+  ///\brief Same thing but reading the info from file.
   void setupRun(std::string configFilePath,
                 std::string preferencesFilePath,
                 std::string trgMaskFilePath,
                 std::string usrComment);
 
-  /// \brief Same thing but reading the stuff from the default files.
+  ///\brief Same thing but reading the stuff from the default files.
   void setupRun();
   
-  /// \brief Return the current value of the system time.
+  ///\brief Return the current value of the system time.
   long int currentSeconds() const;
 
-  /// \brief Return the time elapsed since the start run. 
+  ///\brief Return the time elapsed since the start run. 
   long int elapsedSeconds() const {return currentSeconds() - m_startSeconds;};
 
   ///\brief Return the number of seconds since January 1, 1970 at the start run.
@@ -160,105 +160,106 @@ class pRunController : public pFiniteStateMachine
   
  protected:
   
-  void fsmSetup();
-  void fsmTeardown();
-  void fsmStartRun();
-  void fsmStopRun();
-  void fsmPause();
-  void fsmResume();
-  void fsmStop();
+  virtual void fsmSetup();
+  virtual void fsmTeardown();
+  virtual void fsmStartRun();
+  virtual void fsmStopRun();
+  virtual void fsmPause();
+  virtual void fsmResume();
+  virtual void fsmStop();
 
   
- protected:
+  ///\brief Empty constructor---for subclasses.
+  pRunController() {;}
 
-  /// \brief Maximum duration (in s) for the data acquisition.
+  ///\brief Maximum duration (in s) for the data acquisition.
   int m_maxSeconds;
 
-  /// \brief Maximum number of events to be collected.
+  ///\brief Maximum number of events to be collected.
   int m_maxEvents;
 
-  /// \brief Maximum number of data blocks to be collected.
+  ///\brief Maximum number of data blocks to be collected.
   int m_maxDataBlocks;
 
-  /// \brief Path to the configuration file containing the station identifier.
+  ///\brief Path to the configuration file containing the station identifier.
   std::string m_stationIdFilePath;
 
-  /// \brief Station identifier for the machine where the DAQ is running.
+  ///\brief Station identifier for the machine where the DAQ is running.
   int m_stationId;
 
-  /// \brief Read the station identifier from the proper file.
+  ///\brief Read the station identifier from the proper file.
   int readStationId() const;
 
-  /// \brief Set the current station identifier.
+  ///\brief Set the current station identifier.
   void setStationId(int stationId);
 
-  /// \brief Path to the configuration file containing the run identifier.
+  ///\brief Path to the configuration file containing the run identifier.
   std::string m_runIdFilePath;
 
-  /// \brief Current run identifier.
+  ///\brief Current run identifier.
   int m_runId;
 
-  /// \brief Read the current run identifier from the proper file.
+  ///\brief Read the current run identifier from the proper file.
   int readRunId() const;
 
-  /// \brief Write the current run identifier to the proper file.
+  ///\brief Write the current run identifier to the proper file.
   void writeRunId() const;
 
-  /// \brief Set the current run identifier.
+  ///\brief Set the current run identifier.
   void setRunId(int runId);
 
-  /// \brief Increment the current run identifier.
+  ///\brief Increment the current run identifier.
   void incrementRunId();
 
-  /// \brief QTimer object for the data acquisition.
+  ///\brief QTimer object for the data acquisition.
   QTimer *m_timer;
 
-  /// \brief The value of the system time, latched at the start run.
+  ///\brief The value of the system time, latched at the start run.
   long int m_startSeconds;
 
-  /// \brief The value of the system time, latched at the stop run.
+  ///\brief The value of the system time, latched at the stop run.
   long int m_stopSeconds;
 
-  /// \brief Path to the detector configuration file path.
+  ///\brief Path to the detector configuration file path.
   std::string m_configFilePath;
 
-  /// \brief Path to the user preferences configuration file path.
+  ///\brief Path to the user preferences configuration file path.
   std::string m_preferencesFilePath;
 
-  /// \brief Path to the trigger mask configuration file path.
+  ///\brief Path to the trigger mask configuration file path.
   std::string m_trgMaskFilePath;
   
-  /// \brief Return the path to the current output folder.
+  ///\brief Return the path to the current output folder.
   std::string outputFolderPath() const;
 
-  /// \brief Return the base string to compose the paths to the output files.
+  ///\brief Return the base string to compose the paths to the output files.
   std::string baseFileName() const;
 
-  /// \brief Return the path to a generic output file.
+  ///\brief Return the path to a generic output file.
   std::string outputFilePath(std::string fileName) const;
 
-  /// \brief Return the path to the current output data file. 
+  ///\brief Return the path to the current output data file. 
   std::string dataFilePath() const;
 
-  /// \brief Return the path to the current log file.
+  ///\brief Return the path to the current log file.
   std::string logFilePath() const;
 
-  /// \brief Return the path to the curret run report.
+  ///\brief Return the path to the curret run report.
   std::string reportFilePath() const;
 
-  /// \brief Return the path to the (output copy) of the configuration file.
+  ///\brief Return the path to the (output copy) of the configuration file.
   std::string detectorConfigurationFilePath() const;
 
-  /// \brief Return the path to the (output copy) of the preferences file.
+  ///\brief Return the path to the (output copy) of the preferences file.
   std::string userPreferencesFilePath() const;
 
-  /// \brief Return the path to the (output copy) of the trigger mask file.
+  ///\brief Return the path to the (output copy) of the trigger mask file.
   std::string trgMaskFilePath() const;
 
   ///\brief Return the path to the output file with the run statistics.
   std::string runStatFilePath() const;
 
-  /// \brief Return the path to the (output copy) of the version header file.
+  ///\brief Return the path to the (output copy) of the version header file.
   std::string xpedaqVersionFilePath() const;
 
   ///\brief Write the file header to the output .mdat file.
@@ -267,31 +268,31 @@ class pRunController : public pFiniteStateMachine
   ///\brief Write the relevant run statistics to a file.
   void writeRunStat(std::string filePath) const;
 
-  /// \brief Save the run info into the output folder.
+  ///\brief Save the run info into the output folder.
   void saveRunInfo() const;
 
-  /// \brief Pointer to the USB controller member object.
+  ///\brief Pointer to the USB controller member object.
   pUsbController *m_usbController;
 
-  /// \brief Pointer to the data collector member object.
+  ///\brief Pointer to the data collector member object.
   pDataCollector *m_dataCollector;
 
-  /// \brief Pointer to the FPGA member object.
+  ///\brief Pointer to the FPGA member object.
   pXpolFpga *m_xpolFpga;
 
-  /// \brief Pointer to the detector configuration member object.
+  ///\brief Pointer to the detector configuration member object.
   pDetectorConfiguration *m_detectorConfiguration;
 
-  /// \brief Pointer to the user preferences member object.
+  ///\brief Pointer to the user preferences member object.
   pUserPreferences *m_userPreferences;
 
-  /// \brief Pointer to the trigger mask member object.
+  ///\brief Pointer to the trigger mask member object.
   pTriggerMask *m_triggerMask;
  
-  /// /brief A run comment inserted by the user
+  ///\brief A run comment inserted by the user
   std::string m_userComment;
   
-  /// Flag for requiring the dataCollector to emit data blocks on reading
+  ///\brief Flag for requiring the dataCollector to emit data blocks on reading
   bool m_emitBlocks;
   
  private slots:
