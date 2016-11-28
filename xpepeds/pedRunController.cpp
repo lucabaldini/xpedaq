@@ -53,13 +53,12 @@ void pedRunController::readDataBlock(const pDataBlock &p)
     adc_count_t height = 0;
     for (unsigned int index = 0; index < p.numPixels(evt); ++index) {
       p.readPixel(evt, index, x, y, height);
-      //double dist = m_pedestalMap->normDistance(x, y, height);
-      double dist = fabs((height - 1100)/50.);
-      if (dist > m_nSigmaAlarmThreshold){
-        *xpollog::kError << "Outlier pixel at (" << x << "," << y << ")."
-                        << " Value = " << height << ", Norm. distance = "
-                         << dist << " [sigma]" << endline;
-      }
+      double dist = m_referenceMap->normDistance(x, y, height);
+      //if (dist > m_nSigmaAlarmThreshold){
+      //  *xpollog::kError << "Outlier pixel at (" << x << "," << y << ")."
+      //                  << " Value = " << height << ", Norm. distance = "
+      //                   << dist << " [sigma]" << endline;
+      //}
       m_pedestalMap->fill(x, y, height);
     }
   }	
