@@ -70,7 +70,8 @@ std::string pChrono::double2datetime(double t) const
 
 
 std::ostream& pChrono::fillStream(std::ostream& os) const
-{  
-  os << std::fixed << now() << " s";
+{
+  double t = now();
+  os << std::fixed << t << " s (" << double2datetime(t) << ")";
   return os;
 }
