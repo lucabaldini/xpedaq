@@ -97,6 +97,7 @@ HEADERS += pVariant.h
 HEADERS += pOption.h
 HEADERS += pOptionParser.h
 HEADERS += pRunningStat.h
+HEADERS += pChrono.h
 
 SOURCES += xpolgui.cpp
 SOURCES += xpoldetector.cpp
@@ -165,6 +166,7 @@ SOURCES += pVariant.cpp
 SOURCES += pOption.cpp
 SOURCES += pOptionParser.cpp
 SOURCES += pRunningStat.cpp
+SOURCES += pChrono.cpp
 
 SOURCES += xpepeds.cpp
 

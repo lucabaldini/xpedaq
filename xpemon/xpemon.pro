@@ -78,6 +78,7 @@ HEADERS += pLoggerChannel.h
 HEADERS += pLogger.h
 HEADERS += pIOManager.h
 HEADERS += pUdpSender.h
+HEADERS += pChrono.h
 
 HEADERS += xpemonWindow.h
 HEADERS += pOptionBoxWidget.h
@@ -146,6 +147,7 @@ SOURCES += pLoggerChannel.cpp
 SOURCES += pLogger.cpp
 SOURCES += pIOManager.cpp
 SOURCES += pUdpSender.cpp
+SOURCES += pChrono.cpp
 
 SOURCES += xpemonWindow.cpp
 SOURCES += pOptionBoxWidget.cpp
