@@ -198,3 +198,21 @@ void pedRunController::resetPedMap()
 {
   m_pedestalMap->reset();
 }
+
+
+/*!
+ */
+void pedRunController::writeRunStat(std::string filePath) const
+{
+  std::ofstream *outputFile = xpolio::kIOManager->openOutputFile(filePath);
+  *outputFile << "Start date/time: " << startDatetime() << std::endl;
+  *outputFile << "Start seconds: " << m_startSeconds  << std::endl;
+  *outputFile << "Stop date/time: " << stopDatetime()  << std::endl;
+  *outputFile << "Stop seconds: " << m_stopSeconds  << std::endl;
+  *outputFile << "Run duration [s]: " << runDuration() << std::endl;
+  *outputFile << "Number of events: " << numEvents()  << std::endl;
+  *outputFile << "Number of data blocks: " << numDataBlocks()  << std::endl;
+  *outputFile << "Number of corrupted events: " << numCorruptedEvents()
+              << std::endl;
+  xpolio::kIOManager->closeOutputFile(outputFile);
+}

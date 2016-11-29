@@ -80,6 +80,9 @@ class pedRunController: public pRunController
                   std::string pixelSeparator = " ",
                   std::string valueSeparator = " ") const;
 
+    ///\brief Write the relevant run statistics to a file.
+    virtual void writeRunStat(std::string filePath) const;
+    
     ///\brief Check the inut reference map file path
     bool isReferenceMapPathValid(std::string referenceMapFilePath) const;
        
