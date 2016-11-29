@@ -28,13 +28,15 @@ int main(int argn, char *argv[])
   parser.addOption<int>("clock-frequency", 'f',
                         "Clock frequency code (0-32-64-96)");  
   parser.addOption<std::string>("comment", 'm', "A user comment");
+  parser.addOption<std::string>("reference-file", 'r',
+				"Path to the reference pedestal file");
   
   std::string cfgFolderPath = xpedaqos::rjoin("xpepeds", "config");
   std::string configFilePath = xpedaqos::join(cfgFolderPath, "detector.cfg");
   std::string preferencesFilePath = xpedaqos::join(cfgFolderPath,
 						   "preferences.cfg");
   std::string referenceMapFilePath = xpedaqos::join(cfgFolderPath,
-						                                        "referenceMap.pmap");
+						    "referenceMap.pmap");
   std::string trgMaskFilePath = xpedaqos::join(cfgFolderPath, "trgmask.cfg");
   pedRunController *runController = new pedRunController(configFilePath,
                    preferencesFilePath, trgMaskFilePath, referenceMapFilePath);
