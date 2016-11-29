@@ -87,6 +87,8 @@ class pDataBlock
   double averageEventRate() const;
 
   void setStartSeconds(unsigned int startSeconds);
+
+  int verifyRoi(unsigned int evt, unsigned short x, unsigned short y) const;
  
   // Terminal formatting.
   std::ostream& fillStream(std::ostream& os) const;
@@ -112,7 +114,14 @@ class pDataBlock
     UnphysicalXMin = 0x10,
     UnphysicalXMax = 0x20,
     UnphysicalYMin = 0x40,
-    UnphysicalYMax = 0x80,
+    UnphysicalYMax = 0x80
+  };
+
+  enum RoiError {
+    WrongXMin = 0x01,
+    WrongXMax = 0x02,
+    WrongYMin = 0x04,
+    WrongYMax = 0x08
   };
 
   /*!\brief The raw data block as read from the FPGA.

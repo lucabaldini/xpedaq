@@ -77,20 +77,22 @@ void pDataCollector::run()
   m_dataFIFO = new pDataFIFO(m_outputFilePath, m_userPreferences);
   m_numMalformedBlocks = 0;
   m_running = true; 
-  long unsigned int fullFrameDataBufferDimension = SRAM_DIM*2; // this definition should definitely be somewhere esle
+  long unsigned int fullFrameDataBufferDimension = SRAM_DIM*2; // this definition should definitely be somewhere else
   long unsigned int maxSize = m_detectorConfiguration->maxBufferSize();
   long unsigned int bufferDimension = fullFrameDataBufferDimension;
   pDataBlock *curDataBlock;
   m_xpolFpga->usbController()->resetSequencer();
   m_xpolFpga->usbController()->startSequencer();
   int errorCode = 0;
+  unsigned short pixAddressX = m_detectorConfiguration->pixelAddressX();
+  unsigned short pixAddressY = m_detectorConfiguration->pixelAddressY();
   while (m_running) {
     unsigned char* dataBuffer = new (std::nothrow) 
       unsigned char[bufferDimension];
     if (dataBuffer == nullptr){
       *xpollog::kError << "Allocation failed" << endline;
       m_running = false;
-      // now that the buffer allocation is inside the cycle this is check is
+      // now that the buffer allocation is inside the cycle this check is
       // not sufficient to avoid a bad crash. Need a proper exception. 
     } 
     errorCode = m_xpolFpga->usbController()->readData(dataBuffer,
@@ -102,6 +104,23 @@ void pDataCollector::run()
 	curDataBlock = new pDataBlock(dataBuffer);
       } else {
 	curDataBlock = new pDataBlock(dataBuffer, maxSize);
+
+	// Shit to check the ROI.
+	if (m_detectorConfiguration->readoutMode() ==
+	    xpoldetector::kChargeInjectionReadoutCode) {
+	  for (unsigned int evt = 0; evt < curDataBlock->numEvents(); evt ++) {
+	    int errorCode = curDataBlock->verifyRoi(evt, pixAddressX,
+						    pixAddressY);
+	    if (errorCode) {
+	      *xpollog::kError << "Window mismatch at event "
+			       << m_dataFIFO->getNumAcquiredEvents()
+			       << " (error code 0x" << errorCode 
+			       << ")" << endline;
+	    }
+	  }
+	}
+	// End of shit.
+	
       }
       if (curDataBlock->errorSummary()) {
 	*xpollog::kError << "Data block at index " 

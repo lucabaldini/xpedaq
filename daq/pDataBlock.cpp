@@ -281,6 +281,62 @@ void pDataBlock::readPixel(unsigned int event, unsigned int index,
 }
 
 
+int pDataBlock::verifyRoi(unsigned int evt, unsigned short x,
+			  unsigned short y) const
+{
+  int errorCode = 0;
+  // Calculate the expected ROI.
+  short int expXMin, expXMax, expYMin, expYMax;
+  unsigned short padx = 8;
+  unsigned short pady = 10;
+  if (x % 2 == 0) {
+    expXMin = x - padx;
+    expXMax = x + padx + 1;
+  } else {
+    expXMin = x - padx - 1;
+    expXMax = x + padx;
+  }
+  if (expXMin < 0) {
+    expXMin = 0;
+  }
+  if (expXMax > xpoldetector::kNumPixelsX) {
+    expXMax = xpoldetector::kNumPixelsX;
+  }
+  if (y % 2 == 0) {
+    expYMin = y - pady;
+    expYMax = y + pady + 1;
+  } else {
+    expYMin = y - pady - 1;
+    expYMax = y + pady;
+  }
+  if (expYMin < 0) {
+    expYMin = 0;
+  }
+  if (expYMax > xpoldetector::kNumPixelsY) {
+    expYMax = xpoldetector::kNumPixelsY;
+  }
+  // Compare the actual ROI with the expected one.
+  if (xmin(evt) != static_cast<unsigned short>(expXMin)) {
+    errorCode += WrongXMin;
+  }
+  if (xmax(evt) != static_cast<unsigned short>(expXMax)) {
+    errorCode += WrongXMax;
+  }
+  if (ymin(evt) != static_cast<unsigned short>(expYMin)) {
+    errorCode += WrongYMin;
+  }
+  if (ymax(evt) != static_cast<unsigned short>(expYMax)) {
+    errorCode += WrongYMax;
+  }
+  //std::cout << xmin(evt) << " " << xmax(evt) << " "
+  //<< ymin(evt) << " " << ymax(evt) << " -- "
+  //<< expXMin << " " << expXMax << " "
+  //	    << expYMin << " " << expYMax << ", error code: " << errorCode
+  //	    <<std::endl;
+  return errorCode;
+}
+
+
 /*!
   Terminal formatting.
  */
