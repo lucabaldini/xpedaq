@@ -86,12 +86,12 @@ void pDataCollector::run()
   int errorCode = 0;
   while (m_running) {
     unsigned char* dataBuffer = new (std::nothrow) 
-                                               unsigned char[bufferDimension];
+      unsigned char[bufferDimension];
     if (dataBuffer == nullptr){
-        *xpollog::kError << "Allocation failed" << endline;
-        m_running = false;
-        // now that the buffer allocation is inside the cycle this is check is
-        // not sufficient to avoid a bad crash. Need a proper exception. 
+      *xpollog::kError << "Allocation failed" << endline;
+      m_running = false;
+      // now that the buffer allocation is inside the cycle this is check is
+      // not sufficient to avoid a bad crash. Need a proper exception. 
     } 
     errorCode = m_xpolFpga->usbController()->readData(dataBuffer,
 						      &bufferDimension);
@@ -99,21 +99,21 @@ void pDataCollector::run()
       m_running = false;
     } else {
       if (m_fullFrame) {
-	      curDataBlock = new pDataBlock(dataBuffer);
+	curDataBlock = new pDataBlock(dataBuffer);
       } else {
-	      curDataBlock = new pDataBlock(dataBuffer, maxSize);
+	curDataBlock = new pDataBlock(dataBuffer, maxSize);
       }
       if (curDataBlock->errorSummary()) {
-	      *xpollog::kError << "Data block at index " 
-			                   << m_dataFIFO->getNumAcquiredEvents()
-			                   << "+ has error summary 0x" << hex 
+	*xpollog::kError << "Data block at index " 
+			 << m_dataFIFO->getNumAcquiredEvents()
+			 << "+ has error summary 0x" << hex 
                          << curDataBlock->errorSummary() << dec << "."
                          << endline;
-	      std::cerr << *curDataBlock << std::endl;
+	std::cerr << *curDataBlock << std::endl;
         dumpRawBuffer(dataBuffer);
-	      m_numMalformedBlocks ++;
+	m_numMalformedBlocks ++;
       } else {
-	      if (m_emitBlocks) emit blockRead(*curDataBlock);
+	if (m_emitBlocks) emit blockRead(*curDataBlock);
         m_dataFIFO->fill(curDataBlock);
         m_dataFIFO->setStartSeconds(m_startSeconds);
         m_dataFIFO->flush();
@@ -125,9 +125,9 @@ void pDataCollector::run()
       // pXpolFpga::setDacThreshold().)
       long int seconds = currentSeconds();
       if (!m_fullFrame && 
-	      seconds - m_lastThresholdUpdate >= m_thresholdUpdateInterval) {
-	      m_xpolFpga->setDacThreshold(m_detectorConfiguration);
-	      m_lastThresholdUpdate = seconds;
+	  seconds - m_lastThresholdUpdate >= m_thresholdUpdateInterval) {
+	m_xpolFpga->setDacThreshold(m_detectorConfiguration);
+	m_lastThresholdUpdate = seconds;
       }
     }
   }
