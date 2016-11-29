@@ -93,7 +93,7 @@ void xperegRegisterTab::setupWidgets()
   row = rowCount();
   m_readoutIntervalLabel = new pQtCustomTextLabel(this, "Readout interval");
   m_readoutIntervalSpinBox = new QSpinBox(this);
-  m_readoutIntervalSpinBox->setMinimum(10);
+  m_readoutIntervalSpinBox->setMinimum(200);
   m_readoutIntervalSpinBox->setMaximum(10000);
   m_readoutIntervalSpinBox->setValue(100);
   m_readoutIntervalSpinBox->setSuffix(" ms");

@@ -38,9 +38,9 @@ pXpolRegisterPoker::pXpolRegisterPoker(pXpolFpga *xpolFpga) :
   m_numReadoutErrors(0)
 {
   m_rndEngine = std::default_random_engine();
-  m_rndDistX = std::uniform_int_distribution<int>(0, 299);
-  m_rndDistY = std::uniform_int_distribution<int>(0, 351);
-  m_rndDistConfig = std::uniform_int_distribution<int>(0, 48);
+  m_rndDistX = std::uniform_int_distribution<int>(0, 511);
+  m_rndDistY = std::uniform_int_distribution<int>(0, 511);
+  m_rndDistConfig = std::uniform_int_distribution<int>(0, 63);
 }
 
 
