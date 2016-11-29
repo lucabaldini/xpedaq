@@ -29,21 +29,29 @@ int main(int argn, char *argv[])
                         "Clock frequency code (0-32-64-96)");  
   parser.addOption<std::string>("comment", 'm', "A user comment");
   parser.addOption<std::string>("reference-file", 'r',
-				"Path to the reference pedestal file");
-  
+                                "Path to the reference pedestal file");
+  // Parse the command-line arguments.
+  parser.parse(argn, argv);
+
   std::string cfgFolderPath = xpedaqos::rjoin("xpepeds", "config");
   std::string configFilePath = xpedaqos::join(cfgFolderPath, "detector.cfg");
   std::string preferencesFilePath = xpedaqos::join(cfgFolderPath,
 						   "preferences.cfg");
-  std::string referenceMapFilePath = xpedaqos::join(cfgFolderPath,
-						    "referenceMap.pmap");
   std::string trgMaskFilePath = xpedaqos::join(cfgFolderPath, "trgmask.cfg");
-  pedRunController *runController = new pedRunController(configFilePath,
-                   preferencesFilePath, trgMaskFilePath, referenceMapFilePath);
+  std::string referenceMapFilePath;
+  
+  // Initialize run controller and detector configuration
+  pedRunController *runController;
+  if (parser.optionSet("reference-file")) {
+    referenceMapFilePath  =  parser.value<std::string>("reference-file");
+    runController = new pedRunController(configFilePath, preferencesFilePath,
+      trgMaskFilePath, referenceMapFilePath);
+  } else {
+    runController = new pedRunController(configFilePath, preferencesFilePath,
+      trgMaskFilePath);
+  }
   pDetectorConfiguration* configuration =
     runController->detectorConfiguration();  
-  // Parse the command-line arguments.
-  parser.parse(argn, argv);
 
   // Apply all command-line options.
   if (parser.optionSet("max-seconds")) {

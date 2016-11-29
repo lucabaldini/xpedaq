@@ -45,7 +45,7 @@ class pedRunController: public pRunController
     pedRunController(std::string configFilePath,
                      std::string preferencesFilePath,
                      std::string trgMaskFilePath,
-                     std::string referenceMapFilePath,
+                     std::string referenceMapFilePath="",
                      double nSigmaAlarmThreshold = 10.,
                      std::string usrComment="");
 
@@ -76,6 +76,9 @@ class pedRunController: public pRunController
 
     ///\brief Current map
     PedestalsMap *m_pedestalMap;
+    
+    ///\brief Flag for comparing with reference
+    bool m_compareWithRef;
     
     ///\brief Reference map
     PedestalsMap *m_referenceMap;

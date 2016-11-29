@@ -31,13 +31,14 @@ pedRunController::pedRunController(std::string configFilePath,
                                    std::string usrComment) : 
   pRunController(configFilePath, preferencesFilePath, trgMaskFilePath,
     usrComment, true),
+  m_compareWithRef(false),
   m_nSigmaAlarmThreshold(nSigmaAlarmThreshold)
 {
   m_pedestalMap = new PedestalsMap();
-  loadRefMapFromFile(referenceMapFilePath);
-  if (!xpedaqos::fileExists(referenceMapFilePath)) {
-    xpedaqos::copyFile(referenceMapFilePath + ".sample", referenceMapFilePath);
-  }
+  if (!referenceMapFilePath.empty()){
+    m_compareWithRef = true;
+    loadRefMapFromFile(referenceMapFilePath);
+  }  
   connect (m_dataCollector, SIGNAL(blockRead(const pDataBlock&)),
           this, SLOT(readDataBlock(const pDataBlock&)));
 }                                   
@@ -53,7 +54,9 @@ void pedRunController::readDataBlock(const pDataBlock &p)
     adc_count_t height = 0;
     for (unsigned int index = 0; index < p.numPixels(evt); ++index) {
       p.readPixel(evt, index, x, y, height);
-      double dist = m_referenceMap->normDistance(x, y, height);
+      if (m_compareWithRef){
+        double dist = m_referenceMap->normDistance(x, y, height);
+      }
       //if (dist > m_nSigmaAlarmThreshold){
       //  *xpollog::kError << "Outlier pixel at (" << x << "," << y << ")."
       //                  << " Value = " << height << ", Norm. distance = "
@@ -69,11 +72,16 @@ void pedRunController::readDataBlock(const pDataBlock &p)
  */
 void pedRunController::loadRefMapFromFile(std::string referenceMapFilePath)
 {
+  if (!xpedaqos::fileExists(referenceMapFilePath)) {
+    *xpollog::kError << "File not found" << referenceMapFilePath
+                     << endline;
+    return;
+  }
   *xpollog::kInfo << "Reading pedestals map from " << referenceMapFilePath
                   << "... " << endline;
   m_referenceMap = new PedestalsMap();
   std::ifstream *inputFile = xpolio::kIOManager->
-                                            openInputFile(referenceMapFilePath);
+                                           openInputFile(referenceMapFilePath);
   // Skip the header
   xpolio::kIOManager->skipLine(inputFile);
   // Skip the number of events header
