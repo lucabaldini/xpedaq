@@ -53,9 +53,10 @@ class pChrono
     double split() const;
 
     double startSeconds() const {return m_start;}
-    double stopSeconds() const {return m_start;}
-    std::string startDateTime() const {return double2datetime(m_start);};
-    std::string stopDateTime() const {return double2datetime(m_stop);};
+    double stopSeconds() const {return m_stop;}
+    double elapsedSeconds() const {return m_stop - m_start;}
+    std::string startDateTime() const;
+    std::string stopDateTime() const;
 
     std::ostream& fillStream(std::ostream& os) const;
     friend std::ostream& operator<<(std::ostream& os, const pChrono& chrono)

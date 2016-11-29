@@ -23,12 +23,10 @@ with this program; if not, write to the Free Software Foundation Inc.,
 #include "pChrono.h"
 
 
-/*! Cnstructor---start the chronometer.
+/*! Do-nothing constructor.
  */
 pChrono::pChrono()
-{
-  start();
-}
+{}
 
 
 /*! Return the current seconds from January 1, 2016 as a double-precision
@@ -82,6 +80,30 @@ std::string pChrono::double2datetime(double t) const
   // Use the put_time manipulator to format the datetime.
   std::stringstream datetime("");
   datetime << std::put_time(std::localtime(&s), "%b %d, %Y @ %T") << "." << us;
+  return datetime.str();
+}
+
+
+/*! Terminal formatting---this prints out both the datetime and the seconds
+  from January 1, 2016 of the start time.
+ */
+std::string pChrono::startDateTime() const
+{
+  std::stringstream datetime("");
+  datetime << double2datetime(m_start) << " (" << std::fixed << m_start
+	   << std::defaultfloat << " s since January 1, 1970)";
+  return datetime.str();
+}
+
+
+/*! Terminal formatting---this prints out both the datetime and the seconds
+  from January 1, 2016 of the stop time.
+ */
+std::string pChrono::stopDateTime() const
+{
+  std::stringstream datetime("");
+  datetime << double2datetime(m_stop) << " (" << std::fixed << m_stop
+	   << std::defaultfloat << " s since January 1, 1970)";
   return datetime.str();
 }
 
