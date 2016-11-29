@@ -137,11 +137,14 @@ void xperegRunController::fsmStopRun()
   m_chrono->stop();
   *xpollog::kInfo << "Run controller stopped on " << m_chrono->stopDateTime()
 		  << endline;
-  *xpollog::kInfo << "Register test finished after "
+  *xpollog::kInfo << m_registerPoker->numPokes() << " poke(s) ("
+		  << m_registerPoker->numReadouts() << " readouts, "
+		  << m_registerPoker->numReadoutErrors()
+		  << " readout errors) performed in "
 		  << m_chrono->elapsedSeconds() << " s." << endline;
   *xpollog::kInfo << "Disconnecting logger from file..." << endline;
   xpollog::kLogger->enableLogFile(false);
-  //writeRunStat(runStatFilePath());
+  writeRunStat(runStatFilePath());
   emit runStopped();
   m_thread.quit();
   m_thread.wait();
@@ -211,4 +214,25 @@ void xperegRunController::resetRunInfo()
   emit numPokesChanged(0);
   emit numReadoutsChanged(0);
   emit numReadoutErrorsChanged(0);
+}
+
+
+void xperegRunController::writeRunStat(std::string filePath) const
+{
+  *xpollog::kInfo << "Writing run statistics to " << filePath <<
+    "... " << endline;
+  std::ofstream *outputFile = xpolio::kIOManager->openOutputFile(filePath);
+  *outputFile << "Start date/time: " << startDatetime() << std::endl;
+  *outputFile << "Start seconds: " << m_startSeconds << std::endl;
+  *outputFile << "Stop date/time: " << stopDatetime() << std::endl;
+  *outputFile << "Stop seconds: " << m_stopSeconds << std::endl;
+  *outputFile << "Run duration [s]: " << m_chrono->elapsedSeconds()
+	      << std::endl;
+  *outputFile << "Number of pokes: " << m_registerPoker->numPokes()
+	      << std::endl;
+  *outputFile << "Number of readouts: " << m_registerPoker->numReadouts()
+	      << std::endl;
+  *outputFile << "Number of readout errors: "
+	      << m_registerPoker->numReadoutErrors() << std::endl;  
+  xpolio::kIOManager->closeOutputFile(outputFile);
 }

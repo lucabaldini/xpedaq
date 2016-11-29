@@ -83,6 +83,7 @@ class xperegRunController: public pRunController
     QThread m_thread;
     pChrono *m_chrono;
     void saveRunInfo() const;
+    virtual void writeRunStat(std::string filePath) const;
 
   private slots:
    

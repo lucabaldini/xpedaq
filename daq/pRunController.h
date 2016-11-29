@@ -266,7 +266,7 @@ class pRunController : public pFiniteStateMachine
   void writeDataFileHeader() const;
 
   ///\brief Write the relevant run statistics to a file.
-  void writeRunStat(std::string filePath) const;
+  virtual void writeRunStat(std::string filePath) const;
 
   /// \brief Save the run info into the output folder.
   void saveRunInfo() const;
