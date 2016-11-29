@@ -20,6 +20,7 @@ with this program; if not, write to the Free Software Foundation Inc.,
 ***********************************************************************/
 
 #include "pLoggerChannel.h"
+#include "pChrono.h"
 
 
 pLoggerChannel::pLoggerChannel(std::string name)
@@ -55,19 +56,11 @@ void pLoggerChannel::write(const QString &s)
     // This is horrible. We should have a better way to figure out whether
     // we need to write the timestamp.
     if (m_lineTerminated) {
-      logFile << "(" << timestamp() << ") ";
+      logFile << "(" << pChrono::datetime(true) << ") ";
     }
     logFile.close();
   }
   m_lineTerminated = (s.right(1) == "\n");
-}
-
-std::string pLoggerChannel::timestamp()
-{
-  long int seconds = static_cast<long int> (time(NULL));
-  std::string datetime(ctime(&seconds));
-  datetime.erase(datetime.size() - 1);
-  return datetime;
 }
 
 

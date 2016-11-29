@@ -32,13 +32,23 @@ pChrono::pChrono()
 /*! Return the current seconds from January 1, 2016 as a double-precision
   floating point number with a (theoretical) microsecond accuracy.
  */
-double pChrono::now() const
+double pChrono::now()
 {
   auto tp = std::chrono::system_clock::now();
   auto us = std::chrono::time_point_cast<std::chrono::microseconds>(tp);
   return 1.0e-6*us.time_since_epoch().count();
 }
 
+
+std::string pChrono::datetime(bool seconds)
+{
+  double t = now();
+  std::string datetime = double2datetime(t);
+  if (seconds) {
+    datetime +=  " (" + std::to_string(t) + " s since January 1, 1970)";
+  }
+  return datetime;
+}
 
 /*! Start the chronometer, i.e., set the start time to the current seconds from
   January 1, 1970.
@@ -72,7 +82,7 @@ double pChrono::split() const
   from January 1, 1970 into a datetime string (including the fractional part
   of the seconds up to the microsecond).
  */
-std::string pChrono::double2datetime(double t) const
+std::string pChrono::double2datetime(double t)
 {
   // Split seconds and microseconds.
   long int s = static_cast<long int> (t);

@@ -47,7 +47,12 @@ class pChrono
   public:
 
     pChrono();
-    double now() const;
+
+    // Static convenience methods.
+    static double now();
+    static std::string datetime(bool seconds);
+    static std::string double2datetime(double t);
+
     double start();
     double stop();
     double split() const;
@@ -67,7 +72,6 @@ class pChrono
 
     double m_start;
     double m_stop;
-    std::string double2datetime(double t) const;
 };
 
 #endif //PCHRONO_H

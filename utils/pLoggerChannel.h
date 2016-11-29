@@ -72,7 +72,6 @@ class pLoggerChannel : public QObject
   bool m_logFileEnabled;
   void reset();
   void write(const QString &s);
-  std::string timestamp();
 
  signals:
   void message(QString message);
