@@ -328,11 +328,12 @@ int pDataBlock::verifyRoi(unsigned int evt, unsigned short x,
   if (ymax(evt) != static_cast<unsigned short>(expYMax)) {
     errorCode += WrongYMax;
   }
-  //std::cout << xmin(evt) << " " << xmax(evt) << " "
-  //<< ymin(evt) << " " << ymax(evt) << " -- "
-  //<< expXMin << " " << expXMax << " "
-  //	    << expYMin << " " << expYMax << ", error code: " << errorCode
-  //	    <<std::endl;
+  if (errorCode) {
+    *xpollog::kInfo << "Expected ROI w(" << expXMin << ", " << expYMin
+		    << ")--(" << expXMax << ", " << expYMax << "), got w("
+		    << xmin(evt) << ", " << ymin(evt) << ")--(" << xmax(evt)
+		    << ", " << ymax(evt) << ")" << endline;
+  }
   return errorCode;
 }
 
