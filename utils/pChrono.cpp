@@ -77,10 +77,13 @@ std::string pChrono::double2datetime(double t) const
   // Split seconds and microseconds.
   long int s = static_cast<long int> (t);
   int us = round(1.e6*(t - s));
-  // Use the put_time manipulator to format the datetime.
-  std::stringstream datetime("");
-  datetime << std::put_time(std::localtime(&s), "%b %d, %Y @ %T") << "." << us;
-  return datetime.str();
+  // Some shit to convert into a string. The initial implementation of this
+  // was using the put_time manipulator, but apparently this is only imlemented
+  // in gcc 5, so we had to resort to this horrible C workaround.
+  char buffer[80];
+  strftime(buffer, 80, "%b %d, %Y @ %H:%M:%S", localtime(&s));
+  std::string datetime(buffer);
+  return datetime + "." + std::to_string(us);
 }
 
 
@@ -91,7 +94,7 @@ std::string pChrono::startDateTime() const
 {
   std::stringstream datetime("");
   datetime << double2datetime(m_start) << " (" << std::fixed << m_start
-	   << std::defaultfloat << " s since January 1, 1970)";
+	   << " s since January 1, 1970)";
   return datetime.str();
 }
 
@@ -103,7 +106,7 @@ std::string pChrono::stopDateTime() const
 {
   std::stringstream datetime("");
   datetime << double2datetime(m_stop) << " (" << std::fixed << m_stop
-	   << std::defaultfloat << " s since January 1, 1970)";
+	   << " s since January 1, 1970)";
   return datetime.str();
 }
 
@@ -114,7 +117,8 @@ std::string pChrono::stopDateTime() const
 std::ostream& pChrono::fillStream(std::ostream& os) const
 {
   double t = now();
-  os << double2datetime(t) << " (" << std::fixed << t << std::defaultfloat
+  os << double2datetime(t) << " (" << std::fixed << t
      << " s since January 1, 1970)";
+  os.unsetf(std::ios_base::fixed);
   return os;
 }
