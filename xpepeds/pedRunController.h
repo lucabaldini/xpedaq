@@ -46,7 +46,6 @@ class pedRunController: public pRunController
                      std::string preferencesFilePath,
                      std::string trgMaskFilePath,
                      std::string referenceMapFilePath="",
-                     double nSigmaAlarmThreshold = 10.,
                      std::string usrComment="");
 
     const PedestalsMap& pedMap() const {return (*m_pedestalMap);}
@@ -56,8 +55,11 @@ class pedRunController: public pRunController
   
     void readDataBlock(const pDataBlock &p);
     void resetPedMap();
-    void loadRefMapFromFile(std::string referenceMapFilePath);
-    
+    void loadRefMapFromFile(std::string referenceMapFilePath);  
+    int nSigmaAlarmThreshold() const {return m_nSigmaAlarmThreshold;}
+    void setNSigmaAlarmThreshold(double nSigma)
+      {m_nSigmaAlarmThreshold = nSigma;}
+
     ///\brief Write average and rms map to file
     void writeMapToFile() const;
 
@@ -88,7 +90,7 @@ class pedRunController: public pRunController
     
     ///\brief Distance (in sigma) between the current content of a pixel and 
     // its refernce value required to consider it an outlier 
-    double m_nSigmaAlarmThreshold;
+    int m_nSigmaAlarmThreshold;
 };
 
 #endif //PEDRUNCONTROLLER_H

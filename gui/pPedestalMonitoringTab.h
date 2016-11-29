@@ -35,10 +35,13 @@ class pPedestalMonitoringTab : public pQtCustomTab
   
   public:
     pPedestalMonitoringTab();
-    ~pPedestalMonitoringTab() {;}
-  
+    ~pPedestalMonitoringTab() {;} 
+    int getThreshold();
+    
+  public slots:
     void displayConfiguration();
-    int getThreshold ();
+    void enableAll();
+    void disableAll();
 
   private:
     QSpinBox *m_outlierThresholdSpinBox;

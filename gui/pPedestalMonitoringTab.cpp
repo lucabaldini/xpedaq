@@ -53,6 +53,22 @@ void pPedestalMonitoringTab::setupConnections()
 
 /*!
  */
+void pPedestalMonitoringTab::enableAll()
+{
+  m_outlierThresholdSpinBox->setEnabled(true);
+}
+
+
+/*!
+ */
+void pPedestalMonitoringTab::disableAll()
+{
+  m_outlierThresholdSpinBox->setEnabled(false);
+}
+
+
+/*!
+ */
 void pPedestalMonitoringTab::displayConfiguration()
 {
   
