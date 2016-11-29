@@ -109,7 +109,7 @@ void xpepedsWindow::setupConnections()
   connect (m_transportBar, SIGNAL(stop()),
            this, SLOT(showDisplayWindow()));
   connect (m_runController, SIGNAL(runStopped()),
-           m_pedRunController, SLOT(writeMapToFile()));           
+           m_pedRunController, SLOT(writeMapToFile()));
 }
 
 

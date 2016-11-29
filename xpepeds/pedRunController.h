@@ -49,8 +49,10 @@ class pedRunController: public pRunController
                      std::string usrComment="");
 
     const PedestalsMap& pedMap() const {return (*m_pedestalMap);}
-
-  
+    int numCorruptedEvents() const {return m_nCorruptedEvents;}
+    int numSigmaAlarmThreshold() const {return m_nSigmaAlarmThreshold;}
+    int numOutlierPixelsThreshold() const {return m_nOutlierPixelsThreshold;}
+    
   public slots:
   
     void readDataBlock(const pDataBlock &p);
@@ -59,6 +61,8 @@ class pedRunController: public pRunController
     int nSigmaAlarmThreshold() const {return m_nSigmaAlarmThreshold;}
     void setNSigmaAlarmThreshold(double nSigma)
       {m_nSigmaAlarmThreshold = nSigma;}
+    void setNOutlierPixelsThreshold(double nOutlierPixels)
+      {m_nOutlierPixelsThreshold = nOutlierPixels;}
 
     ///\brief Write average and rms map to file
     void writeMapToFile() const;
@@ -91,6 +95,16 @@ class pedRunController: public pRunController
     ///\brief Distance (in sigma) between the current content of a pixel and 
     // its refernce value required to consider it an outlier 
     int m_nSigmaAlarmThreshold;
+    
+    ///\brief Number of outliers required to consider an event corrupted
+    int m_nOutlierPixelsThreshold;
+    
+    ///\brief Number of corrupted events
+    int m_nCorruptedEvents;
+    
+    ///\brief Number of outliers in last event
+    int m_nCurEventOutliers;
+    
 };
 
 #endif //PEDRUNCONTROLLER_H

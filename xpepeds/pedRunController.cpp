@@ -31,7 +31,11 @@ pedRunController::pedRunController(std::string configFilePath,
   pRunController(configFilePath, preferencesFilePath, trgMaskFilePath,
     usrComment, true),
   m_compareWithRef(false),
-  m_nSigmaAlarmThreshold(10)
+  m_nSigmaAlarmThreshold(20),
+  m_nOutlierPixelsThreshold (1),
+  m_nCorruptedEvents (0),
+  m_nCurEventOutliers(0)
+  
 {
   m_pedestalMap = new PedestalsMap();
   if (!referenceMapFilePath.empty()){
@@ -51,17 +55,25 @@ void pedRunController::readDataBlock(const pDataBlock &p)
     unsigned int x = 1000; //unphysical initialization
     unsigned int y = 1000; //unphysical initialization
     adc_count_t height = 0;
+    m_nCurEventOutliers = 0;
     for (unsigned int index = 0; index < p.numPixels(evt); ++index) {
       p.readPixel(evt, index, x, y, height);
       if (m_compareWithRef){
         double dist = m_referenceMap->normDistance(x, y, height);
+        if (dist > m_nSigmaAlarmThreshold){
+          m_nCurEventOutliers++;
+          *xpollog::kError << "Outlier pixel at (" << x << "," << y << ")."
+                           << " Value = " << height << " Reference is "
+                           << m_referenceMap->average(x, y) << " +- "
+                           << m_referenceMap->rms(x, y)
+                           << ", Norm. distance = " << dist << " [sigma]"
+                           << endline;
+        }
       }
-      //if (dist > m_nSigmaAlarmThreshold){
-      //  *xpollog::kError << "Outlier pixel at (" << x << "," << y << ")."
-      //                  << " Value = " << height << ", Norm. distance = "
-      //                   << dist << " [sigma]" << endline;
-      //}
       m_pedestalMap->fill(x, y, height);
+    }
+    if (m_nCurEventOutliers >= m_nOutlierPixelsThreshold){
+      m_nCorruptedEvents++;
     }
   }	
 }
@@ -85,7 +97,7 @@ void pedRunController::loadRefMapFromFile(std::string referenceMapFilePath)
                   << "... " << endline;
   m_referenceMap = new PedestalsMap();
   std::ifstream *inputFile = xpolio::kIOManager->
-                                           openInputFile(referenceMapFilePath);
+                                          openInputFile(referenceMapFilePath);
   // Skip the header
   xpolio::kIOManager->skipLine(inputFile);
   // Skip the number of events header
@@ -137,13 +149,15 @@ std::string pedRunController::pedMapOutFilePath() const
  */
 void pedRunController::writeMapToFile() const
 {
+  *xpollog::kInfo << "Writing pedestals map to " << pedMapOutFilePath()
+                  << "... " << endline;
   std::ofstream *outputFile = xpolio::kIOManager->
     openOutputFile(pedMapOutFilePath(), true, true);
-  std::string headerLine = "# Some header";
+  std::string headerLine = "#" + pedMapOutFilePath();
   xpolio::kIOManager->write(outputFile, headerLine, true);
   writeNevents(outputFile);
   writeMap(outputFile);
-  xpolio::kIOManager->closeOutputFile(outputFile);
+  xpolio::kIOManager->closeOutputFile(outputFile); 
 }
 
 
@@ -151,7 +165,7 @@ void pedRunController::writeMapToFile() const
  */
 void pedRunController::writeNevents(std::ofstream *outputFile) const
 {
-  xpolio::kIOManager->write(outputFile, "# N. events", true);
+  xpolio::kIOManager->write(outputFile, "#N. events", true);
   xpolio::kIOManager->write(outputFile, m_pedestalMap->numEntries(0,0), true);
 }
 
@@ -162,7 +176,8 @@ void pedRunController::writeMap(std::ofstream *outputFile, int precision,
                                 std::string pixelSeparator,
                                 std::string valueSeparator) const
 {
-  xpolio::kIOManager->write(outputFile, "# Map", true);
+  std::string mapHeaderLine  = "#Map (average " + valueSeparator + "rms)";
+  xpolio::kIOManager->write(outputFile, mapHeaderLine, true);
   for (unsigned int row=0; row < pedestals::kNrow; ++row){
     for (unsigned int col=0; col < pedestals::kNcol; ++col){
       double ave = m_pedestalMap->average(col, row);
