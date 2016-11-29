@@ -23,12 +23,17 @@ with this program; if not, write to the Free Software Foundation Inc.,
 #include "pChrono.h"
 
 
+/*! Cnstructor---start the chronometer.
+ */
 pChrono::pChrono()
 {
   start();
 }
 
 
+/*! Return the current seconds from January 1, 2016 as a double-precision
+  floating point number with a (theoretical) microsecond accuracy.
+ */
 double pChrono::now() const
 {
   auto tp = std::chrono::system_clock::now();
@@ -37,6 +42,9 @@ double pChrono::now() const
 }
 
 
+/*! Start the chronometer, i.e., set the start time to the current seconds from
+  January 1, 1970.
+ */
 double pChrono::start()
 {
   m_start = now();
@@ -44,6 +52,9 @@ double pChrono::start()
 }
 
 
+/*! Stop the chronometer, i.e., set the stop time to the current seconds from
+  January 1, 1970.
+ */
 double pChrono::stop()
 {
   m_stop = now();
@@ -51,27 +62,37 @@ double pChrono::stop()
 }
 
 
+/*! Return the number of seconds elapsed since the start.
+ */
 double pChrono::split() const
 {
   return now() - m_start;
 }
 
 
+/*! Convert a double-precision floating point number representing the seconds
+  from January 1, 1970 into a datetime string (including the fractional part
+  of the seconds up to the microsecond).
+ */
 std::string pChrono::double2datetime(double t) const
 {
-  // Convert the seconds to date and time.
-  long int seconds = static_cast<long int> (t);
-  // Create the datetime string.
-  std::string datetime(ctime(&seconds));
-  // Don't forget stripping the newline.
-  datetime.erase(datetime.size() - 1);
-  return datetime;
+  // Split seconds and microseconds.
+  long int s = static_cast<long int> (t);
+  int us = round(1.e6*(t - s));
+  // Use the put_time manipulator to format the datetime.
+  std::stringstream datetime("");
+  datetime << std::put_time(std::localtime(&s), "%b %d, %Y @ %T") << "." << us;
+  return datetime.str();
 }
 
 
+/*! Terminal formatting---this prints out both the datetime and the seconds
+  from January 1, 2016.
+ */
 std::ostream& pChrono::fillStream(std::ostream& os) const
 {
   double t = now();
-  os << std::fixed << t << " s (" << double2datetime(t) << ")";
+  os << double2datetime(t) << " (" << std::fixed << t << std::defaultfloat
+     << " s since January 1, 1970)";
   return os;
 }

@@ -26,6 +26,20 @@ with this program; if not, write to the Free Software Foundation Inc.,
 
 #include <iostream>
 #include <chrono>
+#include <iomanip>
+#include <sstream>
+#include <math.h>
+
+
+/*! Simple timing facility.
+
+This is essentially a simple timing facility that can be started and stopped
+as if it was a chronometer.
+
+All the underlying times are measured since January 1, 1970 and stored as
+ double-precision floating point numbers, with a theoretical microsecond
+accuracy (although I am sure the least significant digits are not accurate).
+*/
 
 
 class pChrono
@@ -38,6 +52,10 @@ class pChrono
     double stop();
     double split() const;
 
+    double startSeconds() const {return m_start;}
+    double stopSeconds() const {return m_start;}
+    std::string startDateTime() const {return double2datetime(m_start);};
+    std::string stopDateTime() const {return double2datetime(m_stop);};
 
     std::ostream& fillStream(std::ostream& os) const;
     friend std::ostream& operator<<(std::ostream& os, const pChrono& chrono)
