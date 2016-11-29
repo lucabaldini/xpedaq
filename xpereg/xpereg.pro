@@ -83,6 +83,7 @@ HEADERS += pIOManager.h
 HEADERS += pVariant.h
 HEADERS += pOption.h
 HEADERS += pOptionParser.h
+HEADERS += pChrono.h
 
 HEADERS += pUdpSender.h
 HEADERS += pTriggerMask.h
@@ -142,6 +143,7 @@ SOURCES += pIOManager.cpp
 SOURCES += pVariant.cpp
 SOURCES += pOption.cpp
 SOURCES += pOptionParser.cpp
+SOURCES += pChrono.cpp
 
 SOURCES += pUdpSender.cpp
 SOURCES += pTriggerMask.cpp

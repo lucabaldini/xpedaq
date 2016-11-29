@@ -30,6 +30,7 @@ with this program; if not, write to the Free Software Foundation Inc.,
 #include "pRunController.h"
 #include "pXpolRegisterPoker.h"
 #include "xperegUserPreferences.h"
+#include "pChrono.h"
 
    
 class xperegRunController: public pRunController
@@ -80,6 +81,7 @@ class xperegRunController: public pRunController
     xperegUserPreferences *m_userPreferences;
     pXpolRegisterPoker *m_registerPoker;
     QThread m_thread;
+    pChrono *m_chrono;
     void saveRunInfo() const;
 
   private slots:

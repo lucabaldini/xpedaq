@@ -39,6 +39,7 @@ xperegRunController::xperegRunController(std::string preferencesFilePath) :
   setupRun();
   m_timer = new QTimer();
   m_timer->setInterval(1000);
+  m_chrono = new pChrono();
   connect(m_timer, SIGNAL(timeout()), this, SLOT(updateRunInfo()));
   m_usbController = new pUsbController();
   m_xpolFpga = new pXpolFpga(m_usbController);
@@ -104,14 +105,14 @@ void xperegRunController::fsmStartRun()
   std::stringstream preferencesInfo("");
   preferencesInfo << *m_userPreferences;
   *xpollog::kDebug << "Settings at start run...\n" << preferencesInfo.str()
-		   << endline;
-  *xpollog::kInfo << "Run controller started on " << startDatetime()
-		  << " (" << m_startSeconds << " s since January 1, 1970)."
-		  << endline;
+		   << endline;  
   saveRunInfo();
   resetRunInfo();
   m_timer->start();
   m_startSeconds = currentSeconds();
+  m_chrono->start();
+  *xpollog::kInfo << "Run controller started on " << m_chrono->startDateTime()
+		  << endline;
   m_registerPoker->setup(m_userPreferences);
   m_registerPoker->reset();
   if (m_usbController->IsOpened()) {
@@ -131,14 +132,13 @@ void xperegRunController::fsmStartRun()
 void xperegRunController::fsmStopRun()
 {
   *xpollog::kInfo << "Stopping run controller..." << endline;
-  //m_dataCollector->stop();
   m_stopSeconds = currentSeconds();
   m_timer->stop();
-  *xpollog::kInfo << "Run controller stopped on " << stopDatetime()
-		  << " (" << m_stopSeconds << " s since January 1, 1970)."
+  m_chrono->stop();
+  *xpollog::kInfo << "Run controller stopped on " << m_chrono->stopDateTime()
 		  << endline;
-  *xpollog::kInfo << "Register test finished after "<< runDuration()
-  		  << " seconds."<< endline;
+  *xpollog::kInfo << "Register test finished after "
+		  << m_chrono->elapsedSeconds() << " s." << endline;
   *xpollog::kInfo << "Disconnecting logger from file..." << endline;
   xpollog::kLogger->enableLogFile(false);
   //writeRunStat(runStatFilePath());
@@ -152,8 +152,7 @@ void xperegRunController::fsmStopRun()
  */
 void xperegRunController::fsmPause()
 {
-  *xpollog::kInfo << "Run controller paused." << endline;
-  // m_dataCollector->stop();
+  
 }
 
 
@@ -161,13 +160,7 @@ void xperegRunController::fsmPause()
  */
 void xperegRunController::fsmResume()
 {
-  *xpollog::kInfo << "Run controller restarted." << endline;
-  if (m_usbController->IsOpened()) {
-  //  m_dataCollector->start();
-  } else {
-    *xpollog::kError << "The USB device is not open." << endline;
-    exit(1);
-  }
+
 }
 
 
