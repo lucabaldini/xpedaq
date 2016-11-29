@@ -73,9 +73,14 @@ void pedRunController::readDataBlock(const pDataBlock &p)
 void pedRunController::loadRefMapFromFile(std::string referenceMapFilePath)
 {
   if (!xpedaqos::fileExists(referenceMapFilePath)) {
-    *xpollog::kError << "File not found" << referenceMapFilePath
+    *xpollog::kError << "File not found: " << referenceMapFilePath
                      << endline;
-    return;
+    exit(1);
+  }
+  if (!isReferenceMapPathValid(referenceMapFilePath)){
+    *xpollog::kError << "Input file does not appear to be a valid .pmap file: "
+                     << referenceMapFilePath << endline;
+    exit(1);
   }
   *xpollog::kInfo << "Reading pedestals map from " << referenceMapFilePath
                   << "... " << endline;
@@ -103,6 +108,21 @@ void pedRunController::loadRefMapFromFile(std::string referenceMapFilePath)
   }
   xpolio::kIOManager->closeInputFile(inputFile);
   *xpollog::kInfo << "Done." << endline;
+}
+
+
+/*! Check if the input file name ends with ".pmap"
+*/
+bool pedRunController::isReferenceMapPathValid(
+  std::string referenceMapFilePath) const
+{
+  std::string ending = ".pmap";
+  if (referenceMapFilePath.length() >= ending.length()) {
+    return (0 == referenceMapFilePath.compare (referenceMapFilePath.length()
+      - ending.length(), ending.length(), ending));
+  } else {
+    return false;
+  }
 }
 
 

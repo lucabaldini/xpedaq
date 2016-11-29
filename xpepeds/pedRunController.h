@@ -74,6 +74,9 @@ class pedRunController: public pRunController
                   std::string pixelSeparator = " ",
                   std::string valueSeparator = " ") const;
 
+    ///\brief Check the inut reference map file path
+    bool isReferenceMapPathValid(std::string referenceMapFilePath) const;
+       
     ///\brief Current map
     PedestalsMap *m_pedestalMap;
     
