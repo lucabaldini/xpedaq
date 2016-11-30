@@ -370,8 +370,10 @@ void pRunController::fsmStopRun()
 void pRunController::writeRunSummary()
 {
   *xpollog::kInfo << numEvents() << " events (" << numDataBlocks()
-		  << " data blocks) acquired in "<< runDuration()
-		  << " seconds."<< endline;
+                  << " data blocks) acquired in "<< runDuration()
+                  << " seconds."<< endline;
+  *xpollog::kInfo << m_dataCollector->numWrongRoiEvents()
+                  << " events with wrong ROI." << endline; 
 }
 
 

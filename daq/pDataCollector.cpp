@@ -28,6 +28,7 @@ pDataCollector::pDataCollector(pXpolFpga *xpolFpga, bool emitBlocks,
   m_xpolFpga(xpolFpga),
   m_thresholdUpdateInterval(thresholdUpdateInterval),
   m_numMalformedBlocks(0),
+  m_numWrongRoiEvents(0),
   m_emitBlocks(emitBlocks)
 { 
   //Register pDataBlock as object that can be emitted as signals
@@ -76,6 +77,7 @@ void pDataCollector::run()
   m_lastThresholdUpdate = 0;
   m_dataFIFO = new pDataFIFO(m_outputFilePath, m_userPreferences);
   m_numMalformedBlocks = 0;
+  m_numWrongRoiEvents = 0;
   m_running = true; 
   long unsigned int fullFrameDataBufferDimension = SRAM_DIM*2; // this definition should definitely be somewhere else
   long unsigned int maxSize = m_detectorConfiguration->maxBufferSize();
@@ -113,6 +115,7 @@ void pDataCollector::run()
 	    int errorCode = curDataBlock->verifyRoi(evt, pixAddressX,
 						    pixAddressY);
 	    if (errorCode) {
+	      m_numWrongRoiEvents++;
 	      *xpollog::kError << "Window mismatch at event "
 			       << m_dataFIFO->getNumAcquiredEvents()
 			       << " (error code 0x" << errorCode 

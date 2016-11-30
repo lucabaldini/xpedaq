@@ -67,6 +67,7 @@ class pDataCollector : public QThread
 		pDetectorConfiguration *configuration);
   int numDataBlocks() const {return m_dataFIFO->getNumAcquiredDataBlocks();}
   int numEvents() const {return m_dataFIFO->getNumAcquiredEvents();}
+  int numWrongRoiEvents() const {return m_numWrongRoiEvents;}
   long int currentSeconds() const;
   long int secondsSinceLastThresholdUpdate() const;
 
@@ -100,6 +101,8 @@ class pDataCollector : public QThread
   long int m_startSeconds;
   int m_numMalformedBlocks;
   bool m_emitBlocks;
+  int m_numWrongRoiEvents;
+  
   void dumpRawBuffer(unsigned char *buffer);
 };
 
