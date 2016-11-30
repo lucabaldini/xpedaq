@@ -104,7 +104,7 @@ void pDataFIFO::flush(bool writeToDisk)
          m_iterator++) {
       outputFile->write((*m_iterator)->getCharDataBlock(),
 		        (*m_iterator)->size());
-    }
+  }
   xpolio::kIOManager->closeOutputFile(outputFile);
   }
   m_buffer.clear();

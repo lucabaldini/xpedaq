@@ -265,6 +265,9 @@ class pRunController : public pFiniteStateMachine
   ///\brief Write the file header to the output .mdat file.
   void writeDataFileHeader() const;
 
+  ///\brief Write a short summary in the log file
+  virtual void writeRunSummary();
+
   ///\brief Write the relevant run statistics to a file.
   virtual void writeRunStat(std::string filePath) const;
 

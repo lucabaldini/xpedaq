@@ -32,7 +32,9 @@ pedRunController::pedRunController(std::string configFilePath,
   m_compareWithRef(false),
   m_nSigmaAlarmThreshold(20),
   m_nBadPixelsThreshold(10),
-  m_nCorruptedEvents(0)
+  m_nCorruptedEvents(0),
+  m_writtenDataBlocks(0),
+  m_referenceMapFilePath("")
 {
   m_pedestalMap = new PedestalsMap();
   connect (m_dataCollector, SIGNAL(blockRead(const pDataBlock&)),
@@ -42,56 +44,25 @@ pedRunController::pedRunController(std::string configFilePath,
 
 /*!
  */
-void pedRunController::readDataBlock(const pDataBlock &p)
-{
-  for (unsigned int evt = 0; evt < p.numEvents(); ++evt) {   
-    unsigned int x = 1000; //unphysical initialization
-    unsigned int y = 1000; //unphysical initialization
-    adc_count_t height = 0;
-    int curEventBadPixels = 0;
-    for (unsigned int index = 0; index < p.numPixels(evt); ++index) {
-      p.readPixel(evt, index, x, y, height);
-      if (m_compareWithRef){
-        double dist = m_referenceMap->normDistance(x, y, height);
-        if (dist > m_nSigmaAlarmThreshold){
-          curEventBadPixels++;
-          //*xpollog::kError << "Bad pixel at (" << x << "," << y << ")."
-          //                 << " Value = " << height << " Reference is "
-          //                 << m_referenceMap->average(x, y) << " +- "
-          //                 << m_referenceMap->rms(x, y)
-          //                 << ", Norm. distance = " << dist << " [sigma]"
-          //                 << endline;
-        }
-      }
-      m_pedestalMap->fill(x, y, height);
-    }
-    if (curEventBadPixels >= m_nBadPixelsThreshold){
-      m_nCorruptedEvents++;
-    }
-  }	
-}
-
-
-/*!
- */
 void pedRunController::loadRefMapFromFile(std::string referenceMapFilePath)
 {
   m_compareWithRef = true;
-  if (!xpedaqos::fileExists(referenceMapFilePath)) {
-    *xpollog::kError << "File not found: " << referenceMapFilePath
+  m_referenceMapFilePath = referenceMapFilePath;
+  if (!xpedaqos::fileExists(m_referenceMapFilePath)) {
+    *xpollog::kError << "File not found: " << m_referenceMapFilePath
                      << endline;
     exit(1);
   }
-  if (!isReferenceMapPathValid(referenceMapFilePath)){
+  if (!isReferenceMapPathValid(m_referenceMapFilePath)){
     *xpollog::kError << "Input file does not look like a valid .pmap file: "
-                     << referenceMapFilePath << endline;
+                     << m_referenceMapFilePath << endline;
     exit(1);
   }
-  *xpollog::kInfo << "Reading pedestals map from " << referenceMapFilePath
+  *xpollog::kInfo << "Reading pedestals map from " << m_referenceMapFilePath
                   << "... " << endline;
   m_referenceMap = new PedestalsMap();
   std::ifstream *inputFile = xpolio::kIOManager->
-                                          openInputFile(referenceMapFilePath);
+                                        openInputFile(m_referenceMapFilePath);
   // Skip the header
   xpolio::kIOManager->skipLine(inputFile);
   // Skip the number of events header
@@ -154,11 +125,89 @@ void pedRunController::setNBadPixelsThreshold(int nBadPixels)
 
 /*!
  */
+std::string pedRunController::corruptedOutFilePath()
+{
+  return outputFilePath("corrupted_blocks.mdat");
+}
+
+
+/*!
+ */
 std::string pedRunController::pedMapOutFilePath() const
 {
   return outputFilePath("pedMap.pmap");
 }
 
+
+/*!
+ */
+void pedRunController::readDataBlock(const pDataBlock &block)
+{
+  int curBlockCorruptedEvents = 0;
+  // loop on pDataBlock events
+  for (unsigned int evt = 0; evt < block.numEvents(); ++evt) { 
+    unsigned int x = 1000; //unphysical initialization
+    unsigned int y = 1000; //unphysical initialization
+    adc_count_t height = 0;
+    int curEventBadPixels = 0;
+    // loop on the pixels of a single event
+    for (unsigned int index = 0; index < block.numPixels(evt); ++index) {
+      block.readPixel(evt, index, x, y, height);
+      m_pedestalMap->fill(x, y, height);
+      if (m_compareWithRef){ // comparison with reference map
+        double dist = m_referenceMap->normDistance(x, y, height);
+        if (dist > m_nSigmaAlarmThreshold){
+          curEventBadPixels++;
+          //*xpollog::kError << "Bad pixel at (" << x << "," << y << ")."
+          //                 << " Value = " << height << " Reference is "
+          //                 << m_referenceMap->average(x, y) << " +- "
+          //                 << m_referenceMap->rms(x, y)
+          //                 << ", Norm. distance = " << dist << " [sigma]"
+          //                 << endline;
+        }
+      } // end of comparison with reference map
+    } // end of the loop on single event pixels
+    if (curEventBadPixels >= m_nBadPixelsThreshold){
+      *xpollog::kInfo << "Corrupted data block with " << curEventBadPixels 
+                      << " bad pixels" << endline;
+      curBlockCorruptedEvents++;
+    }
+  } // end of the loop on events in the dataBlock
+  if (m_compareWithRef && curBlockCorruptedEvents>0){
+    m_nCorruptedEvents+=curBlockCorruptedEvents;
+    writeCorruptedBlock(block);
+  }
+}
+
+
+/*!
+ */
+void pedRunController::writeCorruptedBlock(const pDataBlock &block)
+{
+  m_writtenDataBlocks++;
+  *xpollog::kInfo << "Writing bad data block n. " << m_writtenDataBlocks
+  << endline;
+  std::ofstream *outputFile = xpolio::kIOManager->
+                           openOutputFile(corruptedOutFilePath(), true, true);
+  outputFile->write(block.getCharDataBlock(), block.size());
+  xpolio::kIOManager->closeOutputFile(outputFile);
+}
+
+
+/*!
+*/
+void pedRunController::writeRunSummary()
+{
+  pRunController::writeRunSummary();
+  if (m_compareWithRef){
+    *xpollog::kInfo << "Reference pedestals map: " << referenceMapFilePath()
+                  << endline;
+    *xpollog::kInfo << "Found " << numCorruptedEvents() << " events with "
+                    << "at least " << m_nSigmaAlarmThreshold << " pixels "
+                    << "more than " << m_nBadPixelsThreshold << " sigma "
+                    << "away from the reference average." << endline;
+  }
+}
 
 
 /*!
@@ -210,14 +259,6 @@ void pedRunController::writeMap(std::ofstream *outputFile, int precision,
 
 /*!
  */
-void pedRunController::resetPedMap()
-{
-  m_pedestalMap->reset();
-}
-
-
-/*!
- */
 void pedRunController::writeRunStat(std::string filePath) const
 {
   //If we are not counting the corrupted events, the base version is invoked
@@ -238,4 +279,12 @@ void pedRunController::writeRunStat(std::string filePath) const
                 << std::endl;
     xpolio::kIOManager->closeOutputFile(outputFile);
   }
+}
+
+
+/*!
+ */
+void pedRunController::resetPedMap()
+{
+  m_pedestalMap->reset();
 }

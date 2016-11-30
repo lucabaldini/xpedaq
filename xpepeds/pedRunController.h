@@ -50,6 +50,8 @@ class pedRunController: public pRunController
     int numCorruptedEvents() const {return m_nCorruptedEvents;}
     int numSigmaAlarmThreshold() const {return m_nSigmaAlarmThreshold;}
     int numBadPixelsThreshold() const {return m_nBadPixelsThreshold;}
+    int getNumWrittenDataBlocks() const {return m_writtenDataBlocks;}
+    std::string referenceMapFilePath() const {return m_referenceMapFilePath;}
     
   public slots:
   
@@ -80,8 +82,17 @@ class pedRunController: public pRunController
     ///\brief Write the relevant run statistics to a file.
     virtual void writeRunStat(std::string filePath) const;
     
+    ///\brief Write a short summary in the log file
+    virtual void writeRunSummary();
+    
     ///\brief Check the inut reference map file path
     bool isReferenceMapPathValid(std::string referenceMapFilePath) const;
+    
+    ///\brief Dump corrupted data block to file
+    void writeCorruptedBlock(const pDataBlock &block);  
+        
+    ///\brief Return the path to the file with the corrupted data blocks
+    std::string corruptedOutFilePath();
        
     ///\brief Current map
     PedestalsMap *m_pedestalMap;
@@ -102,9 +113,11 @@ class pedRunController: public pRunController
     ///\brief Number of corrupted events
     int m_nCorruptedEvents;
     
-    ///\brief Number of bad pixels in last event
-    //int m_nCurEventBadPixels;
+    ///\brief The number of blocks written to file.
+    int m_writtenDataBlocks;
     
+    ///\brief Path to the reference map file.
+    std::string m_referenceMapFilePath;
 };
 
 #endif //PEDRUNCONTROLLER_H
