@@ -66,13 +66,10 @@ class xperegRegisterTab : public pQtCustomTab
    
     pQtCustomTextLabel *m_xLabel;
     QSpinBox *m_xSpinBox;
-    QLineEdit *m_xDisplay;
     pQtCustomTextLabel *m_yLabel;
     QSpinBox *m_ySpinBox;
-    QLineEdit *m_yDisplay;
     pQtCustomTextLabel *m_configLabel;
     QSpinBox *m_configSpinBox;
-    QLineEdit *m_configDisplay;
     QCheckBox *m_randomCheckBox;
     pQtCustomTextLabel *m_readoutRepeatLabel;
     QSpinBox *m_readoutRepeatSpinBox;

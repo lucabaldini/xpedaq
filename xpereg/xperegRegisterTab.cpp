@@ -33,45 +33,28 @@ xperegRegisterTab::xperegRegisterTab() :
 
 void xperegRegisterTab::setupWidgets()
 {
-  m_groupBoxGridLayout->setColumnMinimumWidth(0, 200);
-  m_groupBoxGridLayout->setColumnMinimumWidth(1, 125);
-  m_groupBoxGridLayout->setColumnMinimumWidth(2, 125);
-
+  m_groupBoxGridLayout->setColumnMinimumWidth(0, 250);
   int row = rowCount();
   m_xLabel = new pQtCustomTextLabel(this, "Address x");
   m_xSpinBox = new QSpinBox(this);
   m_xSpinBox->setMinimum(0);
   m_xSpinBox->setMaximum(xpoldetector::kNumPixelsX - 1);
-  m_xDisplay = new QLineEdit(this);
-  m_xDisplay->setEnabled(false);
-  m_xDisplay->setText(xpolgui::kNotAvailable);
   m_groupBoxGridLayout->addWidget(m_xLabel, row, 0);
   m_groupBoxGridLayout->addWidget(m_xSpinBox, row, 1);
-  m_groupBoxGridLayout->addWidget(m_xDisplay, row, 2);
-
   row = rowCount();
   m_yLabel = new pQtCustomTextLabel(this, "Address y");
   m_ySpinBox = new QSpinBox(this);
   m_ySpinBox->setMinimum(0);
   m_ySpinBox->setMaximum(xpoldetector::kNumPixelsY - 1);
-  m_yDisplay = new QLineEdit(this);
-  m_yDisplay->setEnabled(false);
-  m_yDisplay->setText(xpolgui::kNotAvailable);
   m_groupBoxGridLayout->addWidget(m_yLabel, row, 0);
   m_groupBoxGridLayout->addWidget(m_ySpinBox, row, 1);
-  m_groupBoxGridLayout->addWidget(m_yDisplay, row, 2);
-
   row = rowCount();
   m_configLabel = new pQtCustomTextLabel(this, "Configuration");
   m_configSpinBox = new QSpinBox(this);
   m_configSpinBox->setMinimum(0);
   m_configSpinBox->setMaximum(65535);
-  m_configDisplay = new QLineEdit(this);
-  m_configDisplay->setEnabled(false);
-  m_configDisplay->setText(xpolgui::kNotAvailable);
   m_groupBoxGridLayout->addWidget(m_configLabel, row, 0);
   m_groupBoxGridLayout->addWidget(m_configSpinBox, row, 1);
-  m_groupBoxGridLayout->addWidget(m_configDisplay, row, 2);
 
   addVerticalSpacer();
 
@@ -89,7 +72,6 @@ void xperegRegisterTab::setupWidgets()
   m_readoutRepeatSpinBox->setValue(100);
   m_groupBoxGridLayout->addWidget(m_readoutRepeatLabel, row, 0);
   m_groupBoxGridLayout->addWidget(m_readoutRepeatSpinBox, row, 1);
-
   row = rowCount();
   m_readoutIntervalLabel = new pQtCustomTextLabel(this, "Readout interval");
   m_readoutIntervalSpinBox = new QSpinBox(this);
