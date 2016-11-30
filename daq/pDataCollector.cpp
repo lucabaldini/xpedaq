@@ -86,6 +86,7 @@ void pDataCollector::run()
   int errorCode = 0;
   unsigned short pixAddressX = m_detectorConfiguration->pixelAddressX();
   unsigned short pixAddressY = m_detectorConfiguration->pixelAddressY();
+  bool writeToDisk = m_userPreferences->dataFileEnabled();
   while (m_running) {
     unsigned char* dataBuffer = new (std::nothrow) 
       unsigned char[bufferDimension];
@@ -132,10 +133,12 @@ void pDataCollector::run()
         dumpRawBuffer(dataBuffer);
 	m_numMalformedBlocks ++;
       } else {
-	if (m_emitBlocks) emit blockRead(*curDataBlock);
+	      if (m_emitBlocks){
+	        emit blockRead(*curDataBlock);
+	      }
         m_dataFIFO->fill(curDataBlock);
         m_dataFIFO->setStartSeconds(m_startSeconds);
-        m_dataFIFO->flush();
+        m_dataFIFO->flush(writeToDisk);
       }
       delete curDataBlock;
       // Fist attempt at correcting for the vref drift as a function of time,

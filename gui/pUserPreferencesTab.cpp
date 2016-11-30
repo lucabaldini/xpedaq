@@ -49,7 +49,7 @@ pUserPreferencesTab::pUserPreferencesTab(bool full)
     setupConnections();
   }
   // To be uncommented when the functionality is implemented.
-  m_enableDataFileCheckBox->setEnabled(false);
+  m_enableDataFileCheckBox->setEnabled(true);
   enableOutputFolderWidgets(false);
 }
 

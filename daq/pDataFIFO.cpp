@@ -95,16 +95,18 @@ void pDataFIFO::setStartSeconds(unsigned int startSeconds)
   }
 }
 
-void pDataFIFO::flush()
+void pDataFIFO::flush(bool writeToDisk)
 {
-  std::ofstream *outputFile = xpolio::kIOManager->
-    openOutputFile(m_outputFilePath, true, true);
-  for (m_iterator = m_buffer.begin(); m_iterator != m_buffer.end();
-       m_iterator++) {
-    outputFile->write((*m_iterator)->getCharDataBlock(),
-		      (*m_iterator)->size());
-  }
+  if (writeToDisk){
+    std::ofstream *outputFile = xpolio::kIOManager->
+      openOutputFile(m_outputFilePath, true, true);
+    for (m_iterator = m_buffer.begin(); m_iterator != m_buffer.end();
+         m_iterator++) {
+      outputFile->write((*m_iterator)->getCharDataBlock(),
+		        (*m_iterator)->size());
+    }
   xpolio::kIOManager->closeOutputFile(outputFile);
+  }
   m_buffer.clear();
   m_numEvents = 0;
   m_size = 0;

@@ -62,7 +62,7 @@ class pDataFIFO : pUdpSender
   inline int getNumAcquiredEvents() const {return m_acquiredEvents;}
   inline double getLastDataBlockAverageEventRate()
     {return m_buffer.back()->averageEventRate();}
-  void flush();
+  void flush(bool writeToDisk = true);
   void setStartSeconds(unsigned int startSeconds);
 
  private:
