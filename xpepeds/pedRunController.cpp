@@ -185,7 +185,7 @@ void pedRunController::readDataBlock(const pDataBlock &block)
 void pedRunController::writeCorruptedBlock(const pDataBlock &block)
 {
   m_writtenDataBlocks++;
-  *xpollog::kInfo << "Writing bad data block n. " << m_writtenDataBlocks
+  *xpollog::kInfo << "Writing corrupted data block n. " << m_writtenDataBlocks
   << endline;
   std::ofstream *outputFile = xpolio::kIOManager->
                            openOutputFile(corruptedOutFilePath(), true, true);
@@ -203,8 +203,8 @@ void pedRunController::writeRunSummary()
     *xpollog::kInfo << "Reference pedestals map: " << referenceMapFilePath()
                   << endline;
     *xpollog::kInfo << "Found " << numCorruptedEvents() << " events with "
-                    << "at least " << m_nSigmaAlarmThreshold << " pixels "
-                    << "more than " << m_nBadPixelsThreshold << " sigma "
+                    << "at least " << m_nBadPixelsThreshold << " pixels "
+                    << "more than " << m_nSigmaAlarmThreshold << " sigma "
                     << "away from the reference average." << endline;
   }
 }
