@@ -69,7 +69,6 @@ HEADERS += pUsbControlTab.h
 HEADERS += pUserPreferencesTab.h
 HEADERS += pQtMainWindowGui.h
 HEADERS += pAcquisitionWindow.h
-HEADERS += pPedestalMonitoringTab.h
 
 HEADERS += pDisplayWindow.h
 HEADERS += xpepedsPlotGrid.h
@@ -138,7 +137,6 @@ SOURCES += pUsbControlTab.cpp
 SOURCES += pUserPreferencesTab.cpp
 SOURCES += pQtMainWindowGui.cpp
 SOURCES += pAcquisitionWindow.cpp
-SOURCES += pPedestalMonitoringTab.cpp
 
 SOURCES += xpepedsWindow.cpp
 SOURCES += pDisplayWindow.cpp

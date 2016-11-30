@@ -28,7 +28,6 @@ with this program; if not, write to the Free Software Foundation Inc.,
 #include "pRunController.h"
 #include "pedestalsMap.h"
 
-
 /* Run controller for the pedestal application.
    It is basically identical to its base class pRunController, but with an extra
    member for keeping track of the value and rms of each pixel, and a method for
@@ -45,13 +44,12 @@ class pedRunController: public pRunController
     pedRunController(std::string configFilePath,
                      std::string preferencesFilePath,
                      std::string trgMaskFilePath,
-                     std::string referenceMapFilePath="",
                      std::string usrComment="");
 
     const PedestalsMap& pedMap() const {return (*m_pedestalMap);}
     int numCorruptedEvents() const {return m_nCorruptedEvents;}
     int numSigmaAlarmThreshold() const {return m_nSigmaAlarmThreshold;}
-    int numOutlierPixelsThreshold() const {return m_nOutlierPixelsThreshold;}
+    int numBadPixelsThreshold() const {return m_nBadPixelsThreshold;}
     
   public slots:
   
@@ -59,10 +57,9 @@ class pedRunController: public pRunController
     void resetPedMap();
     void loadRefMapFromFile(std::string referenceMapFilePath);  
     int nSigmaAlarmThreshold() const {return m_nSigmaAlarmThreshold;}
-    void setNSigmaAlarmThreshold(double nSigma)
-      {m_nSigmaAlarmThreshold = nSigma;}
-    void setNOutlierPixelsThreshold(double nOutlierPixels)
-      {m_nOutlierPixelsThreshold = nOutlierPixels;}
+    int nBadPixelsThreshold() const {return m_nSigmaAlarmThreshold;}
+    void setNSigmaAlarmThreshold(int nSigma);
+    void setNBadPixelsThreshold(int nBadPixels);
 
     ///\brief Write average and rms map to file
     void writeMapToFile() const;
@@ -96,17 +93,17 @@ class pedRunController: public pRunController
     PedestalsMap *m_referenceMap;
     
     ///\brief Distance (in sigma) between the current content of a pixel and 
-    // its refernce value required to consider it an outlier 
+    // its refernce value required to consider it a bad pixel 
     int m_nSigmaAlarmThreshold;
     
-    ///\brief Number of outliers required to consider an event corrupted
-    int m_nOutlierPixelsThreshold;
+    ///\brief Number of bad pixels required to consider an event corrupted
+    int m_nBadPixelsThreshold;
     
     ///\brief Number of corrupted events
     int m_nCorruptedEvents;
     
-    ///\brief Number of outliers in last event
-    int m_nCurEventOutliers;
+    ///\brief Number of bad pixels in last event
+    //int m_nCurEventBadPixels;
     
 };
 

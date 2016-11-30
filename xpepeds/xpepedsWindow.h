@@ -25,7 +25,6 @@ with this program; if not, write to the Free Software Foundation Inc.,
 #include "pAcquisitionWindow.h"
 #include "pDisplayWindow.h"
 #include "pedRunController.h"
-#include "pPedestalMonitoringTab.h"
 
 class xpepedsWindow : public pAcquisitionWindow
 {
@@ -56,9 +55,7 @@ class xpepedsWindow : public pAcquisitionWindow
   pDisplayWindow *m_displayWindow;
   bool m_isWindowOpen;
   pedRunController *m_pedRunController;
-  pPedestalMonitoringTab *m_pedestalMonitoringTab;
   
-  void setupPedestalMonitoringTab();
   void setupConnections();
 
 };

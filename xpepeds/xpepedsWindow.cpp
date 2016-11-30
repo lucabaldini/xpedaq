@@ -29,7 +29,6 @@ xpepedsWindow::xpepedsWindow(pedRunController &runController) :
 {
   QString title = "xpepeds version " + QString(__XPEDAQ_VERSION__);
   setWindowTitle(title);
-  setupPedestalMonitoringTab();
   disableUnusedWidgets();
   m_isWindowOpen = false;
   setupConnections();
@@ -87,15 +86,6 @@ void xpepedsWindow::displayClosed()
 {
   m_pedRunController -> resetPedMap();
   m_isWindowOpen = false;
-}
-
-
-/*!
- */
-void xpepedsWindow::setupPedestalMonitoringTab()
-{
-  m_pedestalMonitoringTab = new pPedestalMonitoringTab();
-  m_mainTabWidget->addTab(m_pedestalMonitoringTab, "Monitoring");
 }
 
 

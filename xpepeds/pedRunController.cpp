@@ -26,25 +26,18 @@ with this program; if not, write to the Free Software Foundation Inc.,
 pedRunController::pedRunController(std::string configFilePath,
                                    std::string preferencesFilePath,
                                    std::string trgMaskFilePath,
-                                   std::string referenceMapFilePath,
                                    std::string usrComment) : 
   pRunController(configFilePath, preferencesFilePath, trgMaskFilePath,
     usrComment, true),
   m_compareWithRef(false),
   m_nSigmaAlarmThreshold(20),
-  m_nOutlierPixelsThreshold (1),
-  m_nCorruptedEvents (0),
-  m_nCurEventOutliers(0)
-  
+  m_nBadPixelsThreshold(10),
+  m_nCorruptedEvents(0)
 {
   m_pedestalMap = new PedestalsMap();
-  if (!referenceMapFilePath.empty()){
-    m_compareWithRef = true;
-    loadRefMapFromFile(referenceMapFilePath);
-  }  
   connect (m_dataCollector, SIGNAL(blockRead(const pDataBlock&)),
           this, SLOT(readDataBlock(const pDataBlock&)));
-}                                   
+}
 
 
 /*!
@@ -55,24 +48,24 @@ void pedRunController::readDataBlock(const pDataBlock &p)
     unsigned int x = 1000; //unphysical initialization
     unsigned int y = 1000; //unphysical initialization
     adc_count_t height = 0;
-    m_nCurEventOutliers = 0;
+    int curEventBadPixels = 0;
     for (unsigned int index = 0; index < p.numPixels(evt); ++index) {
       p.readPixel(evt, index, x, y, height);
       if (m_compareWithRef){
         double dist = m_referenceMap->normDistance(x, y, height);
         if (dist > m_nSigmaAlarmThreshold){
-          m_nCurEventOutliers++;
-          *xpollog::kError << "Outlier pixel at (" << x << "," << y << ")."
-                           << " Value = " << height << " Reference is "
-                           << m_referenceMap->average(x, y) << " +- "
-                           << m_referenceMap->rms(x, y)
-                           << ", Norm. distance = " << dist << " [sigma]"
-                           << endline;
+          curEventBadPixels++;
+          //*xpollog::kError << "Bad pixel at (" << x << "," << y << ")."
+          //                 << " Value = " << height << " Reference is "
+          //                 << m_referenceMap->average(x, y) << " +- "
+          //                 << m_referenceMap->rms(x, y)
+          //                 << ", Norm. distance = " << dist << " [sigma]"
+          //                 << endline;
         }
       }
       m_pedestalMap->fill(x, y, height);
     }
-    if (m_nCurEventOutliers >= m_nOutlierPixelsThreshold){
+    if (curEventBadPixels >= m_nBadPixelsThreshold){
       m_nCorruptedEvents++;
     }
   }	
@@ -83,13 +76,14 @@ void pedRunController::readDataBlock(const pDataBlock &p)
  */
 void pedRunController::loadRefMapFromFile(std::string referenceMapFilePath)
 {
+  m_compareWithRef = true;
   if (!xpedaqos::fileExists(referenceMapFilePath)) {
     *xpollog::kError << "File not found: " << referenceMapFilePath
                      << endline;
     exit(1);
   }
   if (!isReferenceMapPathValid(referenceMapFilePath)){
-    *xpollog::kError << "Input file does not appear to be a valid .pmap file: "
+    *xpollog::kError << "Input file does not look like a valid .pmap file: "
                      << referenceMapFilePath << endline;
     exit(1);
   }
@@ -139,10 +133,32 @@ bool pedRunController::isReferenceMapPathValid(
 
 /*!
  */
+void pedRunController::setNSigmaAlarmThreshold(int nSigma)
+{
+  *xpollog::kInfo << "Setting the threshold for bad pixel to "
+                  << nSigma << " [sigma] ... " << endline;
+  m_nSigmaAlarmThreshold = nSigma;
+}
+
+
+/*!
+ */
+void pedRunController::setNBadPixelsThreshold(int nBadPixels)
+{
+  *xpollog::kInfo << "Setting the number of bad pixel to consider an event "
+                  << "corrupted to " << nBadPixels
+                  << " ... " << endline;
+  m_nBadPixelsThreshold = nBadPixels;
+}
+
+
+/*!
+ */
 std::string pedRunController::pedMapOutFilePath() const
 {
   return outputFilePath("pedMap.pmap");
 }
+
 
 
 /*!
@@ -204,9 +220,12 @@ void pedRunController::resetPedMap()
  */
 void pedRunController::writeRunStat(std::string filePath) const
 {
+  //If we are not counting the corrupted events, the base version is invoked
   if (!m_compareWithRef){
     pRunController::writeRunStat(filePath);
   } else {
+  //Otherwise we use the derived version, with more info. Code duplication is
+  //ugly, but the idea is not to mess to much with the base class.
     std::ofstream *outputFile = xpolio::kIOManager->openOutputFile(filePath);
     *outputFile << "Start date/time: " << startDatetime() << std::endl;
     *outputFile << "Start seconds: " << m_startSeconds  << std::endl;
