@@ -84,7 +84,7 @@ void xpepedsWindow::closeDisplayWindow()
  */
 void xpepedsWindow::displayClosed()
 {
-  m_pedRunController -> resetPedMap();
+  m_pedRunController -> reset();
   m_isWindowOpen = false;
 }
 

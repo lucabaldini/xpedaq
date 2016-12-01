@@ -56,6 +56,7 @@ class pedRunController: public pRunController
   public slots:
   
     void readDataBlock(const pDataBlock &p);
+    void reset();
     void resetPedMap();
     void loadRefMapFromFile(std::string referenceMapFilePath);  
     int nSigmaAlarmThreshold() const {return m_nSigmaAlarmThreshold;}

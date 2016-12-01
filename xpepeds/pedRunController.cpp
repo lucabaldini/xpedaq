@@ -288,3 +288,13 @@ void pedRunController::resetPedMap()
 {
   m_pedestalMap->reset();
 }
+
+
+/*!
+ */
+void pedRunController::reset()
+{
+  m_nCorruptedEvents = 0;
+  m_writtenDataBlocks = 0;
+  resetPedMap();  
+}
