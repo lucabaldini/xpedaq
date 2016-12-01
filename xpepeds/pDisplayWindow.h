@@ -6,7 +6,6 @@
 #include <QtGui/QVBoxLayout>
 #include <QtGui/QWidget>
 
-#include "pQtCustomPushButton.h"
 #include "pedestalsMap.h"
 #include "xpepedsPlotGrid.h"
 
@@ -24,8 +23,6 @@ class pDisplayWindow : public QMainWindow
     explicit pDisplayWindow(QWidget *parent = 0, int posx = 400,
                             int posy = 250, int windowWidth = 1200,
                             int windowWeight = 800);
-    
-  
   signals:
   
     void windowClosed();
