@@ -67,18 +67,12 @@ void xpepedsPlotGrid::fillPlots(const PedestalsMap& pedMap)
 {
   for (unsigned int col=0; col < pedestals::kNcol; ++col){
     for (unsigned int row=0; row < pedestals::kNrow; ++row){
-      try {
-        double average = pedMap.average (col,row);
-        double rms = pedMap.rms (col,row);
-        m_averageMap -> fillBin (col, row, average);
-        m_rmsMap -> fillBin (col, row, rms);                            
-        m_averageHist -> fill (average);
-        m_rmsHist -> fill (rms);
-        
-      }
-      catch (int err){
-        continue;
-      }    
+      double average = pedMap.average (col,row);
+      double rms = pedMap.rms (col,row);
+      m_averageMap -> fillBin (col, row, average);
+      m_rmsMap -> fillBin (col, row, rms);                            
+      m_averageHist -> fill (average);
+      m_rmsHist -> fill (rms);
     }
   }
   m_averagePlot -> updateDisplay();

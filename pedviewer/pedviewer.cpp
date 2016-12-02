@@ -43,6 +43,8 @@ int main(int argn, char *argv[])
   // Add the actual options.
   parser.addOption<std::string>("filepath", 'f',
                         "path to the input file");
+  parser.addOption<std::string>("reference-file", 'r',
+                                "Path to the reference pedestal file");
                         
   // Parse the command-line arguments.
   parser.parse(argn, argv);
@@ -55,6 +57,11 @@ int main(int argn, char *argv[])
     exit(1);
   } else {
     filePath = parser.value<std::string>("filepath");
+  }
+  
+  if (parser.optionSet("reference-file")) {
+    std::string referenceMapFilePath  =  parser.value<std::string>
+                                                          ("reference-file");
   }
   
   //Read the pedestal map from file

@@ -39,15 +39,13 @@ double pRunningStat::average() const
 double pRunningStat::variance() const
 {
   if (m_numEntries < 2)
-    throw -1;
+    return 0;
   return m_currentVariance/(m_numEntries - 1.);
 }
 
 
 double pRunningStat::rms() const
 {
-  if (m_numEntries < 2)
-    throw -1;
   return sqrt(this->variance());
 }  
 
