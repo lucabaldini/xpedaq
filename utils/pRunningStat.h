@@ -9,7 +9,8 @@ class pRunningStat
   public:
     
     pRunningStat() : m_numEntries(0),  m_currentMean(0.),
-                     m_currentVariance(0.), m_prevMean(0.),  m_prevVariance(0.)
+                     m_currentVariance(0.), m_prevMean(0.),
+                     m_prevVariance(0.)
                      {};
     void load(int numEntries, double average, double rms);
     void fill(double value);
