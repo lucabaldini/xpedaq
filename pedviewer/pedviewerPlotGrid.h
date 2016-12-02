@@ -27,24 +27,27 @@ class pedviewerPlotGrid: public QWidget
   public slots:
     
     void fillPlots(const PedestalsMap& pedMap);
+    void fillPlots(const PedestalsMap& pedMap, const PedestalsMap& refMap);
     void replotAll();
      
   private:
     
-    void setupAverageMap();
-    void setupRmsMap();
-    void setupAverageHist(double xmin =0., double xmax =1800.);
-    void setupRmsHist(double xmin =0., double xmax =150.);
+    void setupSupMap(const pColorMapOptions& option);
+    void setupInfMap(const pColorMapOptions& option);
+    void setupSupHist(const pBasicPlotOptions& options,
+                      double xmin =0., double xmax =1800.);
+    void setupInfHist(const pBasicPlotOptions& options,
+                      double xmin =0., double xmax =150.);
     
-    pMap *m_averageMap;
-    pMap *m_rmsMap;
-    pHistogram *m_averageHist;
-    pHistogram *m_rmsHist;
+    pMap *m_supMap;
+    pMap *m_infMap;
+    pHistogram *m_supHist;
+    pHistogram *m_infHist;
     QGridLayout *m_PlotLayout;
-    pMapPlot *m_averageMapPlot;
-    pMapPlot *m_rmsMapPlot;
-    pHistogramPlot *m_averagePlot;
-    pHistogramPlot *m_rmsPlot;
+    pMapPlot *m_supMapPlot;
+    pMapPlot *m_infMapPlot;
+    pHistogramPlot *m_supPlot;
+    pHistogramPlot *m_infPlot;
         
 };
 

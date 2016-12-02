@@ -56,6 +56,17 @@ void pedviewerWindow::showPedestals(const PedestalsMap& pedMap)
 }
 
 
+/* Display the results (average and RMS) of a pedestal measurement
+   subtracting a reference map
+ */
+void pedviewerWindow::showPedestals(const PedestalsMap& pedMap,
+                                    const PedestalsMap& refMap)
+{  
+  m_plotGrid -> fillPlots(pedMap, refMap);
+  m_plotGrid -> replotAll();
+}
+
+
 void pedviewerWindow::closeEvent(QCloseEvent *event)
 {
   emit windowClosed();

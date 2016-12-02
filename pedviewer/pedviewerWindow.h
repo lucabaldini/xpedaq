@@ -52,6 +52,8 @@ class pedviewerWindow : public QMainWindow
   public slots:
 
     void showPedestals(const PedestalsMap& pedMap);
+    void showPedestals(const PedestalsMap& pedMap,
+                       const PedestalsMap& refMap);
   
   
   private slots:

@@ -32,6 +32,23 @@ with this program; if not, write to the Free Software Foundation Inc.,
 #include "pedFileIO.h"
 #include "pedestalsMap.h"
 
+
+/* Application for viewing a file produced by the pedestals application
+   (aka "xpepeds").
+   Can be used to open:
+   1) a ".pmap" file 
+   2) a ".mdat" file
+   If the input is a ".pmap" file, the application will load the map in the
+   file and show its content.
+   If the input is a ".mdat" file, the application will loop over the events
+   in the files and fill a new map, that is than shown. The user is asked
+   to sepcify the number of events (default=1) that will be included in the
+   loop, as well as the starting event (default is to sart from the beginning
+   of the file).
+   A reference pedestal map (".pmap" file) can be passed as optional
+   arguments. In that case, instead of the absolute values read from the file,
+   the application will show a comparison with the reference map.  
+*/
 int main(int argn, char *argv[])
 {
   xpedaqutils::startmsg();
@@ -58,17 +75,17 @@ int main(int argn, char *argv[])
   } else {
     filePath = parser.value<std::string>("filepath");
   }
+  
+  bool subtractRef = false;
+  std::string referenceMapFilePath = "";
+  if (parser.optionSet("reference-file")) {
+    referenceMapFilePath  =  parser.value<std::string>("reference-file");
+    subtractRef = true;
+  }
    
   //Read the pedestal map from file
   PedestalsMap pedMap = PedestalsMap();
   fillPedMapFromFile(pedMap, filePath);
-  
-  if (parser.optionSet("reference-file")) {
-    std::string referenceMapFilePath  =  parser.value<std::string>
-                                                          ("reference-file");
-    PedestalsMap referenceMap = PedestalsMap();
-    fillPedMapFromMapFile(referenceMap, referenceMapFilePath);
-  }
   
   // Start the application.
   QApplication app(argn, argv);
@@ -77,8 +94,15 @@ int main(int argn, char *argv[])
   pedviewerWindow* window = new pedviewerWindow();
   QObject::connect(window, SIGNAL(windowClosed()),
 	                 &app, SLOT(quit()));
-  // Show the window content
+  // Show the window
   window -> show();
-  window->showPedestals(pedMap);
+  
+  if (!subtractRef){
+    window->showPedestals(pedMap);
+  } else {
+    PedestalsMap referenceMap = PedestalsMap();
+    fillPedMapFromMapFile(referenceMap, referenceMapFilePath);
+    window->showPedestals(pedMap, referenceMap);
+  }
   return app.exec();
 }
