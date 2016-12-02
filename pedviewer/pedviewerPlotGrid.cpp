@@ -11,8 +11,10 @@ pedviewerPlotGrid::pedviewerPlotGrid(QWidget *parent) : QWidget(parent)
 
 void pedviewerPlotGrid::setupSupMap(const pColorMapOptions& options)
 {
-  m_supMap = new pMap(pedestals::kNcol, 0, pedestals::kNcol,
-                      pedestals::kNrow, 0, pedestals::kNrow);
+  m_supMap = new pMap(xpoldetector::kNumPixelsX,
+                      0, xpoldetector::kNumPixelsX,
+                      xpoldetector::kNumPixelsY,
+                      0, xpoldetector::kNumPixelsY);
   m_supMapPlot = new pMapPlot(m_supMap, options);
   m_supMapPlot -> setObjectName(QString::fromUtf8("average map"));                              
   m_PlotLayout -> addWidget(m_supMapPlot, 0, 0);
@@ -31,8 +33,10 @@ void pedviewerPlotGrid::setupSupHist(const pBasicPlotOptions& options,
 
 void pedviewerPlotGrid::setupInfMap(const pColorMapOptions& options)
 {
-  m_infMap = new pMap(pedestals::kNcol, 0, pedestals::kNcol,
-                      pedestals::kNrow, 0, pedestals::kNrow);
+  m_infMap = new pMap(xpoldetector::kNumPixelsX,
+                      0, xpoldetector::kNumPixelsX,
+                      xpoldetector::kNumPixelsY,
+                      0, xpoldetector::kNumPixelsY);
   m_infMapPlot = new pMapPlot(m_infMap, options);
   m_infMapPlot -> setObjectName(QString::fromUtf8("rms map"));
   m_PlotLayout -> addWidget(m_infMapPlot, 1, 0);
@@ -55,8 +59,8 @@ void pedviewerPlotGrid::fillPlots(const PedestalsMap& pedMap)
 {
   double averageMax = 100.;
   double rmsMax = 100.;
-  for (unsigned int col=0; col < pedestals::kNcol; ++col){
-    for (unsigned int row=0; row < pedestals::kNrow; ++row){
+  for (unsigned int col=0; col < xpoldetector::kNumPixelsX; ++col){
+    for (unsigned int row=0; row < xpoldetector::kNumPixelsY; ++row){
       double average = pedMap.average (col,row);
       double rms = pedMap.rms (col,row);;
       if (average > averageMax) averageMax = average;      
@@ -76,8 +80,8 @@ void pedviewerPlotGrid::fillPlots(const PedestalsMap& pedMap)
   pBasicPlotOptions rmsHistOptions = pBasicPlotOptions("Rms",
                                      "Rms [counts]", "n. pixel");
   setupInfHist(rmsHistOptions, 0., 1.5*rmsMax);
-  for (unsigned int col=0; col < pedestals::kNcol; ++col){
-    for (unsigned int row=0; row < pedestals::kNrow; ++row){
+  for (unsigned int col=0; col < xpoldetector::kNumPixelsX; ++col){
+    for (unsigned int row=0; row < xpoldetector::kNumPixelsY; ++row){
       double average = pedMap.average (col,row);
       double rms= pedMap.rms (col,row);
       m_supMap -> fillBin (col, row, average);
@@ -100,8 +104,8 @@ void pedviewerPlotGrid::fillPlots(const PedestalsMap& pedMap,
 {
   double diffMax = 100.;
   double normDiffMax = 100.;
-  for (unsigned int col=0; col < pedestals::kNcol; ++col){
-    for (unsigned int row=0; row < pedestals::kNrow; ++row){
+  for (unsigned int col=0; col < xpoldetector::kNumPixelsX; ++col){
+    for (unsigned int row=0; row < xpoldetector::kNumPixelsY; ++row){
       double diff = pedMap.average (col,row) - refMap.average (col,row);
       double rms = pow(pow(pedMap.rms(col,row), 2.)
                        + pow(refMap.rms(col,row), 2.), 0.5);
@@ -124,8 +128,8 @@ void pedviewerPlotGrid::fillPlots(const PedestalsMap& pedMap,
   pBasicPlotOptions rmsHistOptions = pBasicPlotOptions("Rms",
                                    "average - reference [sigma]", "n. pixel");
   setupInfHist(rmsHistOptions, 0., 1.5*normDiffMax);
-  for (unsigned int col=0; col < pedestals::kNcol; ++col){
-    for (unsigned int row=0; row < pedestals::kNrow; ++row){
+  for (unsigned int col=0; col < xpoldetector::kNumPixelsX; ++col){
+    for (unsigned int row=0; row < xpoldetector::kNumPixelsY; ++row){
       double diff = pedMap.average (col,row) - refMap.average (col,row);
       double rms = pow(pow(pedMap.rms(col,row), 2.)
                        + pow(refMap.rms(col,row), 2.), 0.5);

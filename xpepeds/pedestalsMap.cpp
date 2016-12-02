@@ -21,11 +21,10 @@ with this program; if not, write to the Free Software Foundation Inc.,
 
 #include "pedestalsMap.h"
 
-using namespace pedestals;
-
 PedestalsMap::PedestalsMap()
 {
-  for (unsigned int index=0; index < kNPedestal; index++)
+  
+  for (unsigned int index=0; index < nPedestals(); index++)
     {m_pedMap.push_back(pRunningStat());}
 }
 
@@ -33,7 +32,7 @@ PedestalsMap::PedestalsMap()
 unsigned int PedestalsMap::binIndex (unsigned int pixelX,
                                      unsigned int pixelY) const
 {
-  return pixelX + kNcol * pixelY;
+  return pixelX + xpoldetector::kNumPixelsX * pixelY;
 }
 
 
@@ -50,7 +49,8 @@ const pRunningStat& PedestalsMap::pedestal(unsigned int pixelX,
 }
 
 
-pRunningStat& PedestalsMap::operator()(unsigned int pixelX, unsigned int pixelY)
+pRunningStat& PedestalsMap::operator()(unsigned int pixelX,
+                                       unsigned int pixelY)
 {
   return pedestal(pixelX, pixelY);
 }
@@ -124,6 +124,6 @@ void PedestalsMap::setPixel(unsigned int pixelX, unsigned int pixelY,
 
 void PedestalsMap::reset()
 {
-  for (unsigned int index=0; index < kNPedestal; index++)
+  for (unsigned int index=0; index < nPedestals(); index++)
     {m_pedMap.at(index).reset();}
 }

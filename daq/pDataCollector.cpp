@@ -28,8 +28,8 @@ pDataCollector::pDataCollector(pXpolFpga *xpolFpga, bool emitBlocks,
   m_xpolFpga(xpolFpga),
   m_thresholdUpdateInterval(thresholdUpdateInterval),
   m_numMalformedBlocks(0),
-  m_numWrongRoiEvents(0),
-  m_emitBlocks(emitBlocks)
+  m_emitBlocks(emitBlocks),
+  m_numWrongRoiEvents(0)
 { 
   //Register pDataBlock as object that can be emitted as signals
   qRegisterMetaType<pDataBlock>("pDataBlock");

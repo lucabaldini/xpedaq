@@ -30,12 +30,6 @@ with this program; if not, write to the Free Software Foundation Inc.,
 #include "pRunningStat.h"
 
 
-namespace pedestals{
-  const unsigned int kNcol = static_cast<unsigned int>(xpoldetector::kNumPixelsX);
-  const unsigned int kNrow = static_cast<unsigned int>(xpoldetector::kNumPixelsY);
-  const unsigned int kNPedestal = kNcol * kNrow;
-}
-
 /* This is the core object of the pedestal application. It's a 2D map of
    pRunningStat object (one for each pixel of the detector), each holding the
    mean and the variance of the respective pixel.
@@ -50,6 +44,8 @@ class PedestalsMap
     PedestalsMap();
         
     //Getters
+    unsigned int nPedestals() const
+      {return xpoldetector::kNumPixelsX * xpoldetector::kNumPixelsY;}
     int numEntries (unsigned int pixelX, unsigned int pixelY) const;
     double average(unsigned int pixelX, unsigned int pixelY) const;
     double variance(unsigned int pixelX, unsigned int pixelY) const;

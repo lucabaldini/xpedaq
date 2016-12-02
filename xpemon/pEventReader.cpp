@@ -22,8 +22,8 @@ with this program; if not, write to the Free Software Foundation Inc.,
 #include "pEventReader.h"
 
 pEventReader::pEventReader(const pMonitorPreferences& preferences,
-			   pHistogram* windowSizeHist,
-			   pHistogram* clusterSizeHist,
+			                     pHistogram* windowSizeHist,
+			                     pHistogram* clusterSizeHist,
                            pHistogram* pulseHeightHist, 
                            pModulationHistogram* modulationHist,
                            pMap* hitMap) :

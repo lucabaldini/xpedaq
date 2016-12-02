@@ -76,8 +76,8 @@ void pedRunController::loadRefMapFromFile(std::string referenceMapFilePath)
   // Skip the map header
   xpolio::kIOManager->skipLine(inputFile);
   // Read average and rms for each pixel and fill the reference map
-  for (unsigned int row=0; row < pedestals::kNrow; ++row){
-    for (unsigned int col=0; col < pedestals::kNcol; ++col){
+  for (unsigned int row=0; row < xpoldetector::kNumPixelsY; ++row){
+    for (unsigned int col=0; col < xpoldetector::kNumPixelsX; ++col){
       double average = xpolio::kIOManager->readDouble(inputFile, false);
       double rms = xpolio::kIOManager->readDouble(inputFile, false);
       m_referenceMap->setPixel(col, row, nEntries, average, rms);
@@ -263,8 +263,8 @@ void pedRunController::writeMap(std::ofstream *outputFile, int precision,
 {
   std::string mapHeaderLine  = "#Map (average " + valueSeparator + "rms)";
   xpolio::kIOManager->write(outputFile, mapHeaderLine, true);
-  for (unsigned int row=0; row < pedestals::kNrow; ++row){
-    for (unsigned int col=0; col < pedestals::kNcol; ++col){
+  for (unsigned int row=0; row < xpoldetector::kNumPixelsY; ++row){
+    for (unsigned int col=0; col < xpoldetector::kNumPixelsX; ++col){
       double ave = m_pedestalMap->average(col, row);
       double rms = m_pedestalMap->rms(col, row);
       xpolio::kIOManager->write(outputFile, ave, false, true, precision);

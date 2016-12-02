@@ -59,8 +59,8 @@ void fillPedMapFromMapFile(PedestalsMap& map, std::string filePath)
   // Skip the map header
   xpolio::kIOManager->skipLine(inputFile);
   // Read average and rms for each pixel and fill the reference map
-  for (unsigned int row=0; row < pedestals::kNrow; ++row){
-    for (unsigned int col=0; col < pedestals::kNcol; ++col){
+  for (unsigned int row=0; row < xpoldetector::kNumPixelsY; ++row){
+    for (unsigned int col=0; col < xpoldetector::kNumPixelsX; ++col){
       double average = xpolio::kIOManager->readDouble(inputFile, false);
       double rms = xpolio::kIOManager->readDouble(inputFile, false);
       map.setPixel(col, row, nEntries, average, rms);
@@ -108,8 +108,8 @@ void fillPedMapFromDataFile(PedestalsMap& map, std::string filePath,
     if (buffer == nullptr){
       *xpollog::kError << "Allocation failed" << endline;
       exit(1); 
-    } 
-    for(unsigned int i=0; i < (2*pedestals::kNPedestal); ++i){
+    }
+    for(unsigned int i=0; i < (2*map.nPedestals()); ++i){
       fStream.read((char*)&tmp, sizeof(char));
       buffer[i]  = tmp;
     }

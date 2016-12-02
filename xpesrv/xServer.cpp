@@ -110,9 +110,9 @@ void xServer::stop()
 
 void xServer::broadcastEvent()
 {
-  int maxEvsize = 10000; 
+  const int maxEvsize = 10000; 
   //unsigned char data[2];
-  unsigned char buffer[10000];
+  unsigned char buffer[maxEvsize];
   char tmp1, tmp2;
   int bindex = 0;
   //fread(data, 1, 2, m_inputFile);
