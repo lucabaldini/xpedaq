@@ -58,15 +58,17 @@ int main(int argn, char *argv[])
   } else {
     filePath = parser.value<std::string>("filepath");
   }
+   
+  //Read the pedestal map from file
+  PedestalsMap pedMap = PedestalsMap();
+  fillPedMapFromFile(pedMap, filePath);
   
   if (parser.optionSet("reference-file")) {
     std::string referenceMapFilePath  =  parser.value<std::string>
                                                           ("reference-file");
+    PedestalsMap referenceMap = PedestalsMap();
+    fillPedMapFromMapFile(referenceMap, referenceMapFilePath);
   }
-  
-  //Read the pedestal map from file
-  PedestalsMap pedMap = PedestalsMap();
-  fillPedMapFromFile(pedMap, filePath);
   
   // Start the application.
   QApplication app(argn, argv);
