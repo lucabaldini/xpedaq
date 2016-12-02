@@ -33,7 +33,7 @@ bool nameEndsWith(std::string filePath, std::string ending);
 void fillPedMapFromMapFile(PedestalsMap& map, std::string filePath);
 void fillPedMapFromBlock(PedestalsMap& map, const pDataBlock &block);
 void fillPedMapFromDataFile(PedestalsMap& map, std::string filePath,
-                            int nEvents =1, int firstEvent =0);
+                            int nEvents, int firstEvent);
 void fillPedMapFromFile(PedestalsMap& map, std::string filePath);
 
 #endif //PEDFILEIO

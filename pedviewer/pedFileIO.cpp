@@ -134,8 +134,8 @@ void fillPedMapFromFile(PedestalsMap& map, std::string filePath)
   if (nameEndsWith(filePath, ".pmap")){
     fillPedMapFromMapFile(map, filePath);
   } else if (nameEndsWith(filePath, ".mdat")){
-    int nEvents;
-    int firstEvent;
+    int nEvents=1;
+    int firstEvent=0;
     *xpollog::kInfo << "Reading full frame events from " << filePath
                   << "... " << endline;    
     std::cout << "Select the number of events to be read "
@@ -150,6 +150,7 @@ void fillPedMapFromFile(PedestalsMap& map, std::string filePath)
       }
       std::cout << "Invalid input, please try again" << std::endl;
     }
+    std::cout << nEvents << std::endl;
     std::cout << "Select the first event to be read [default = 0 "
                  << "(first event)]: ";
     strInput = "";
