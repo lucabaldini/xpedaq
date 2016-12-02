@@ -51,6 +51,7 @@ class pedRunController: public pRunController
     int numSigmaAlarmThreshold() const {return m_nSigmaAlarmThreshold;}
     int numBadPixelsThreshold() const {return m_nBadPixelsThreshold;}
     int getNumWrittenDataBlocks() const {return m_writtenDataBlocks;}
+    int firstColumnExcluded() const {return m_excludeFirstColumn;}
     std::string referenceMapFilePath() const {return m_referenceMapFilePath;}
     
   public slots:
@@ -63,6 +64,8 @@ class pedRunController: public pRunController
     int nBadPixelsThreshold() const {return m_nSigmaAlarmThreshold;}
     void setNSigmaAlarmThreshold(int nSigma);
     void setNBadPixelsThreshold(int nBadPixels);
+    void setFirstColumnExcluded(bool isExcluded)
+      {m_excludeFirstColumn = isExcluded;}
 
     ///\brief Write average and rms map to file
     void writeMapToFile() const;
@@ -119,6 +122,12 @@ class pedRunController: public pRunController
     
     ///\brief Path to the reference map file.
     std::string m_referenceMapFilePath;
+    
+    ///\brief Max number of bad pixels for event to print in the log
+    int m_maxNumBadPixelsInLog;
+    
+    ///\brief Flag to not count bad pixels in first (noisy) column
+    bool m_excludeFirstColumn;
 };
 
 #endif //PEDRUNCONTROLLER_H

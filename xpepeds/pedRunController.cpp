@@ -34,7 +34,9 @@ pedRunController::pedRunController(std::string configFilePath,
   m_nBadPixelsThreshold(10),
   m_nCorruptedEvents(0),
   m_writtenDataBlocks(0),
-  m_referenceMapFilePath("")
+  m_referenceMapFilePath(""),
+  m_maxNumBadPixelsInLog(5),
+  m_excludeFirstColumn(true)
 {
   m_pedestalMap = new PedestalsMap();
   connect (m_dataCollector, SIGNAL(blockRead(const pDataBlock&)),
@@ -143,33 +145,51 @@ std::string pedRunController::pedMapOutFilePath() const
  */
 void pedRunController::readDataBlock(const pDataBlock &block)
 {
-  int curBlockCorruptedEvents = 0;
+  int curBlockCorruptedEvents = 0; //number of corrupted events in this buffer
+  std::stringstream badPixelsLogString; // for accumulating bad pixels info
   // loop on pDataBlock events
   for (unsigned int evt = 0; evt < block.numEvents(); ++evt) { 
     unsigned int x = 1000; //unphysical initialization
     unsigned int y = 1000; //unphysical initialization
     adc_count_t height = 0;
     int curEventBadPixels = 0;
+    badPixelsLogString.clear(); //clear the error status
+    badPixelsLogString.str(std::string()); // clear the content
     // loop on the pixels of a single event
     for (unsigned int index = 0; index < block.numPixels(evt); ++index) {
       block.readPixel(evt, index, x, y, height);
       m_pedestalMap->fill(x, y, height);
       if (m_compareWithRef){ // comparison with reference map
+        if (x == 0 && m_excludeFirstColumn) // exclude first (noisy) column
+          continue;
         double dist = m_referenceMap->normDistance(x, y, height);
         if (dist > m_nSigmaAlarmThreshold){
           curEventBadPixels++;
-          //*xpollog::kError << "Bad pixel at (" << x << "," << y << ")."
-          //                 << " Value = " << height << " Reference is "
-          //                 << m_referenceMap->average(x, y) << " +- "
-          //                 << m_referenceMap->rms(x, y)
-          //                 << ", Norm. distance = " << dist << " [sigma]"
-          //                 << endline;
+          if (curEventBadPixels <= m_maxNumBadPixelsInLog){
+            badPixelsLogString << "(" << x << "," << y << "), "
+                               << "value = " << height << " reference is "
+                               << m_referenceMap->average(x, y) << " +- "
+                               << m_referenceMap->rms(x, y)
+                               << ", norm. distance = " << dist << " [sigma]"
+                               << "\n";
+          }
         }
       } // end of comparison with reference map
     } // end of the loop on single event pixels
     if (curEventBadPixels >= m_nBadPixelsThreshold){
       *xpollog::kInfo << "Corrupted data block with " << curEventBadPixels 
                       << " bad pixels" << endline;
+      if (curEventBadPixels <= m_maxNumBadPixelsInLog){
+        // We have all the bad pixels in the stream:
+        *xpollog::kInfo << "Bad pixels:" << badPixelsLogString.str()
+                        << endline;
+      } else {
+        // We have the first m_maxNumBadPixelsInLog in the stream
+        *xpollog::kInfo << "Bad pixels:" << badPixelsLogString.str()
+                        << "and "
+                        << curEventBadPixels - m_maxNumBadPixelsInLog 
+                        << " others." << endline;
+      }
       curBlockCorruptedEvents++;
     }
   } // end of the loop on events in the dataBlock
