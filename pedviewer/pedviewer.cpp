@@ -36,7 +36,7 @@ int main(int argn, char *argv[])
 {
   xpedaqutils::startmsg();
   
-  std::string intent = "View a pedestal event from a file";
+  std::string intent = "View pedestal events from file";
   std::string usage = "xpepeds [options] filepath";
   pOptionParser parser(intent, usage);
   
