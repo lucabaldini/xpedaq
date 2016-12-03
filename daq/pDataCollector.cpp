@@ -155,7 +155,6 @@ void pDataCollector::run()
 	m_lastThresholdUpdate = seconds;
       }
     }
-  m_xpolFpga->setup(m_detectorConfiguration);
   }
   m_xpolFpga->usbController()->stopSequencer();
   m_xpolFpga->usbController()->flushQUsbFIFO();
