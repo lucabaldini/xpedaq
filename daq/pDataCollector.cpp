@@ -24,7 +24,7 @@ with this program; if not, write to the Free Software Foundation Inc.,
 
 
 pDataCollector::pDataCollector(pXpolFpga *xpolFpga, bool emitBlocks,
-			       int thresholdUpdateInterval):
+			                         int thresholdUpdateInterval):
   m_xpolFpga(xpolFpga),
   m_thresholdUpdateInterval(thresholdUpdateInterval),
   m_numMalformedBlocks(0),
@@ -155,6 +155,7 @@ void pDataCollector::run()
 	m_lastThresholdUpdate = seconds;
       }
     }
+  m_xpolFpga->setup(m_detectorConfiguration);
   }
   m_xpolFpga->usbController()->stopSequencer();
   m_xpolFpga->usbController()->flushQUsbFIFO();
@@ -170,9 +171,10 @@ void pDataCollector::run()
   This information must be provided each time the start button is
   pressed (not once and forever at the construction time).
 */
-void pDataCollector::setupRun(std::string outputFilePath, long int startSeconds,
-			      pUserPreferences *preferences,
-			      pDetectorConfiguration *configuration)
+void pDataCollector::setupRun(std::string outputFilePath,
+                              long int startSeconds,
+                              pUserPreferences *preferences,
+                              pDetectorConfiguration *configuration)
 {
   m_outputFilePath = outputFilePath;
   m_startSeconds = startSeconds;
