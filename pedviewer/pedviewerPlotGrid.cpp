@@ -103,15 +103,19 @@ void pedviewerPlotGrid::fillPlots(const PedestalsMap& pedMap,
                                   const PedestalsMap& refMap)
 {
   double diffMax = 100.;
-  double normDiffMax = 100.;
+  double diffMin = -100.;
+  double normDiffMax = 1.;
+  double normDiffMin = -1.;
   for (unsigned int col=0; col < xpoldetector::kNumPixelsX; ++col){
     for (unsigned int row=0; row < xpoldetector::kNumPixelsY; ++row){
       double diff = pedMap.average (col,row) - refMap.average (col,row);
       double rms = pow(pow(pedMap.rms(col,row), 2.)
                        + pow(refMap.rms(col,row), 2.), 0.5);
       double normDiff = diff/rms;
-      if (diff > diffMax) diffMax = diff;      
+      if (diff > diffMax) diffMax = diff;
+      if (diff < diffMin) diffMin = diff;
       if (normDiff > normDiffMax) normDiffMax = normDiff;
+      if (normDiff < normDiffMin) normDiffMin = normDiff;
     }
   }
   pColorMapOptions averageMapOptions ("Difference map", "x", "y",
@@ -120,14 +124,14 @@ void pedviewerPlotGrid::fillPlots(const PedestalsMap& pedMap,
   setupSupMap(averageMapOptions);
   pBasicPlotOptions averageHistOptions = pBasicPlotOptions("Difference",
                                   "average - reference [counts]", "n. pixel");
-  setupSupHist(averageHistOptions, 0., 1.5*diffMax);
+  setupSupHist(averageHistOptions, 1.5*diffMin, 1.5*diffMax);
   pColorMapOptions rmsMapOptions ("Normalized difference", "x", "y",
                                   "average - reference [sigma]",
                                   QCPColorGradient::gpThermal);
   setupInfMap(rmsMapOptions);
   pBasicPlotOptions rmsHistOptions = pBasicPlotOptions("Rms",
                                    "average - reference [sigma]", "n. pixel");
-  setupInfHist(rmsHistOptions, 0., 1.5*normDiffMax);
+  setupInfHist(rmsHistOptions, 1.5*normDiffMin , 1.5*normDiffMax);
   for (unsigned int col=0; col < xpoldetector::kNumPixelsX; ++col){
     for (unsigned int row=0; row < xpoldetector::kNumPixelsY; ++row){
       double diff = pedMap.average (col,row) - refMap.average (col,row);
