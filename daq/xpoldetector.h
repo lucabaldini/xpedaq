@@ -106,6 +106,7 @@ namespace xpoldetector{
   extern const unsigned short kClockSlowerFreqCode;
   extern const unsigned short kNumPixelsX;
   extern const unsigned short kNumPixelsY;
+  extern const unsigned int kNumPixels;
   extern const unsigned short kLargeBufferMode;
   extern const unsigned short kSmallBufferMode;
   extern const unsigned short kNumReadOutBuffers;

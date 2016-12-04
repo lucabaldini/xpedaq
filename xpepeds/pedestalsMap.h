@@ -44,8 +44,6 @@ class PedestalsMap
     PedestalsMap();
         
     //Getters
-    unsigned int nPedestals() const
-      {return xpoldetector::kNumPixelsX * xpoldetector::kNumPixelsY;}
     int numEntries (unsigned int pixelX, unsigned int pixelY) const;
     double average(unsigned int pixelX, unsigned int pixelY) const;
     double variance(unsigned int pixelX, unsigned int pixelY) const;

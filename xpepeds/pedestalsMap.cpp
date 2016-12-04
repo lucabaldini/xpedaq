@@ -24,7 +24,7 @@ with this program; if not, write to the Free Software Foundation Inc.,
 PedestalsMap::PedestalsMap()
 {
   
-  for (unsigned int index=0; index < nPedestals(); index++)
+  for (unsigned int index=0; index < xpoldetector::kNumPixels; index++)
     {m_pedMap.push_back(pRunningStat());}
 }
 
@@ -124,6 +124,6 @@ void PedestalsMap::setPixel(unsigned int pixelX, unsigned int pixelY,
 
 void PedestalsMap::reset()
 {
-  for (unsigned int index=0; index < nPedestals(); index++)
+  for (unsigned int index=0; index < xpoldetector::kNumPixels; index++)
     {m_pedMap.at(index).reset();}
 }

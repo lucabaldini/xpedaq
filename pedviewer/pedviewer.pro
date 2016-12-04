@@ -65,9 +65,11 @@ HEADERS += pChrono.h
 
 HEADERS += pedestalsMap.h
 
-HEADERS += pedFileIO.h
 HEADERS += pedviewerPlotGrid.h
 HEADERS += pedviewerWindow.h
+HEADERS += pedFile.h
+HEADERS += pedmapFile.h
+HEADERS += pedDataFile.h
 
 SOURCES += xpolgui.cpp
 SOURCES += xpoldetector.cpp
@@ -101,9 +103,11 @@ SOURCES += pChrono.cpp
 
 SOURCES += pedestalsMap.cpp
 
-SOURCES += pedFileIO.cpp
 SOURCES += pedviewerPlotGrid.cpp
 SOURCES += pedviewerWindow.cpp
+SOURCES += pedFile.cpp
+SOURCES += pedmapFile.cpp
+SOURCES += pedDataFile.cpp
 
 SOURCES += pedviewer.cpp
 

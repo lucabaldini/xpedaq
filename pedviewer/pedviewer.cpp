@@ -29,8 +29,11 @@ with this program; if not, write to the Free Software Foundation Inc.,
 #include "xpedaqutils.h"
 #include "pOptionParser.h"
 #include "pedviewerWindow.h"
-#include "pedFileIO.h"
+#include "pedFile.h"
+#include "pedmapFile.h"
+#include "pedDataFile.h"
 #include "pedestalsMap.h"
+#include "xpollog.h"
 
 
 /* Application for viewing a file produced by the pedestals application
@@ -67,6 +70,7 @@ int main(int argn, char *argv[])
   parser.parse(argn, argv);
   
   // Apply all command-line options.
+  PedFile* inputFile;
   std::string filePath;
   if (!parser.optionSet("filepath")) {
     std::cout << "ERROR: No input file specified." << std::endl;
@@ -74,18 +78,27 @@ int main(int argn, char *argv[])
     exit(1);
   } else {
     filePath = parser.value<std::string>("filepath");
+  }  
+  PedFile::inputFileType fileType = identifyFileType(filePath);
+  if (fileType == PedFile::pedmapType){
+    inputFile = new PedmapFile(filePath);
+  } else if (fileType == PedFile::dataType){
+    inputFile = new PedDataFile(filePath);
+  } else {
+    *xpollog::kError << "Unknown file type: " << filePath << "Exiting..."
+                    << endline;
+    exit(1);
   }
   
-  bool subtractRef = false;
-  std::string referenceMapFilePath = "";
+  PedmapFile* referenceFile;
   if (parser.optionSet("reference-file")) {
-    referenceMapFilePath  =  parser.value<std::string>("reference-file");
-    subtractRef = true;
+    referenceFile = new PedmapFile(
+                                 parser.value<std::string>("reference-file"));
   }
    
   //Read the pedestal map from file
   PedestalsMap pedMap = PedestalsMap();
-  fillPedMapFromFile(pedMap, filePath);
+  inputFile->fillPedMap(pedMap);
   
   // Start the application.
   QApplication app(argn, argv);
@@ -97,11 +110,11 @@ int main(int argn, char *argv[])
   // Show the window
   window -> show();
   
-  if (!subtractRef){
+  if (!referenceFile){
     window->showPedestals(pedMap);
   } else {
     PedestalsMap referenceMap = PedestalsMap();
-    fillPedMapFromMapFile(referenceMap, referenceMapFilePath);
+    referenceFile->fillPedMap(referenceMap);
     window->showPedestals(pedMap, referenceMap);
   }
   return app.exec();
