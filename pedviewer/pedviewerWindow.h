@@ -29,6 +29,9 @@ with this program; if not, write to the Free Software Foundation Inc.,
 
 #include "pedestalsMap.h"
 #include "pedviewerPlotGrid.h"
+#include "pedFile.h"
+#include "pedmapFile.h"
+#include "pedDataFile.h"
 
 
 /* Class implementing a pop-up window to display a bunch of result plots
@@ -41,27 +44,32 @@ class pedviewerWindow : public QMainWindow
   
   public:
   
-    explicit pedviewerWindow(QWidget *parent = 0, int posx = 400,
-                            int posy = 250, int windowWidth = 1200,
-                            int windowWeight = 800);
+    explicit pedviewerWindow(PedFile* inputFile,
+                             PedmapFile* referenceFile =nullptr,
+                             QWidget *parent = 0, int posx = 400,
+                             int posy = 250, int windowWidth = 1200,
+                             int windowWeight = 800);
   signals:
   
     void windowClosed();
-  
-  
+    
   public slots:
 
-    void showPedestals(const PedestalsMap& pedMap);
-    void showPedestals(const PedestalsMap& pedMap,
-                       const PedestalsMap& refMap);
-  
-  
+    void showPedestals();
+    void showPedestalsWithRef();
+    void nextPressed();
+    void prevPressed();
+    
   private slots:
  
-   void closeEvent(QCloseEvent *event);
-  
+    void updatePlots();
+    void updateNavBarStatus(int curEvent);   
+    void closeEvent(QCloseEvent *event);
   
   private:
+  
+    int readNumEventsToDisplay();
+    int readFirstEventToDisplay();
   
     int m_posx;
     int m_posy;
@@ -70,6 +78,12 @@ class pedviewerWindow : public QMainWindow
     QWidget *m_centralWidget;
     QVBoxLayout *m_verticalLayout;
     pedviewerPlotGrid *m_plotGrid;
+    PedFile* m_inputFile;
+    PedmapFile* m_referenceFile;
+    PedestalsMap* m_pedMap;
+    PedestalsMap* m_referenceMap;
+    int m_nEvents;
+    int m_curEvent;
 };
 
 #endif // PEDVIEWERWINDOW_H

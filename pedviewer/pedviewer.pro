@@ -42,6 +42,9 @@ HEADERS += xpollog.h
 HEADERS += xpolio.h
 HEADERS += xpedaqheader.h
 
+HEADERS += pQtCustomLineEdit.h
+HEADERS += pQtCustomTextLabel.h
+
 HEADERS += qcustomplot.h
 HEADERS += histogramUtils.h
 HEADERS += pHistogramOptions.h
@@ -79,6 +82,9 @@ SOURCES += xpedaqos.cpp
 SOURCES += xpollog.cpp
 SOURCES += xpolio.cpp
 SOURCES += xpedaqheader.cpp
+
+SOURCES += pQtCustomLineEdit.cpp
+SOURCES += pQtCustomTextLabel.cpp
 
 SOURCES += qcustomplot.cpp
 SOURCES += histogramUtils.cpp

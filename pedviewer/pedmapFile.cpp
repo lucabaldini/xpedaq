@@ -36,7 +36,7 @@ PedmapFile::PedmapFile(std::string filePath) :
 
 /*
 */
-void PedmapFile::fillPedMap(PedestalsMap& map) const
+int PedmapFile::fillPedMap(PedestalsMap& map) const
 {
   // Skip the map header
   xpolio::kIOManager->skipLine(m_inputFile);
@@ -49,6 +49,7 @@ void PedmapFile::fillPedMap(PedestalsMap& map) const
     }
     m_inputFile->ignore(1, '\n');
   }
+  return m_nEvents;
 }
 
 

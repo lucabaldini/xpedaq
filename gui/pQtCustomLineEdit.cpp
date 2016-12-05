@@ -19,6 +19,9 @@ with this program; if not, write to the Free Software Foundation Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 ***********************************************************************/
 
+#include <iostream>
+#include <limits>
+
 #include "pQtCustomLineEdit.h"
 
 
@@ -36,12 +39,22 @@ pQtCustomLineEditBase::pQtCustomLineEditBase() :
 
 
 template <typename T>
-pQtCustomLineEdit<T>::pQtCustomLineEdit(T initalVal) : 
+pQtCustomLineEdit<T>::pQtCustomLineEdit(T initialVal) : 
   pQtCustomLineEditBase()
 {
   m_min = std::numeric_limits<T>::lowest(); //NOTE: min() is the positive min!
   m_max = std::numeric_limits<T>::max();
-  setVal(initalVal);
+  setVal(initialVal);
+}
+
+
+template <typename T>
+pQtCustomLineEdit<T>::pQtCustomLineEdit(T initialVal, T min, T max) : 
+  pQtCustomLineEditBase(),
+  m_min(min),
+  m_max(max)
+{
+  setVal(initialVal);
 }
 
 

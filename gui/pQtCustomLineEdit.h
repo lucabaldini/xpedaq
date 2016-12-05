@@ -30,9 +30,6 @@ with this program; if not, write to the Free Software Foundation Inc.,
 #ifndef PQTCUSTOMLINEEDIT_H
 #define PQTCUSTOMLINEEDIT_H
 
-#include <iostream>
-#include <limits>
-
 #include <QString>
 #include <QLineEdit>
 
@@ -59,7 +56,8 @@ class pQtCustomLineEdit : public pQtCustomLineEditBase
 {
   public:
   
-    explicit pQtCustomLineEdit(T initalVal = 0.);
+    explicit pQtCustomLineEdit(T initialVal =0);
+    explicit pQtCustomLineEdit(T initialVal, T min, T max);
     T value();
     T rangeMin(){return m_min;}
     T rangeMax(){return m_max;}

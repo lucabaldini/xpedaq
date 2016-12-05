@@ -37,40 +37,33 @@ PedDataFile::PedDataFile(std::string filePath) :
 
 /*!
  */
-void PedDataFile::fillPedMap(PedestalsMap& map) const
+int PedDataFile::fillPedMap(PedestalsMap& map) const
 {
-  int nEvents=1;
-  int firstEvent=0;
-  *xpollog::kInfo << "Reading full frame events... " << endline;    
-  std::cout << "Select the number of events to be read "
-            << "[default = 1]: ";
-  std::string strInput = "";
-  while (true){
-    getline(std::cin, strInput);
-    // This code converts from string to number safely.
-    std::stringstream inputStream(strInput);
-    if (inputStream.str() == "" || (inputStream >> nEvents)){
-      break;
-    }
-    std::cout << "Invalid input, please try again" << std::endl;
+  for (int evt = 0; evt < m_nEvents; ++evt){
+    addEventToMap(map, evt);
   }
-  std::cout << nEvents << std::endl;
-  std::cout << "Select the first event to be read [default = 0 "
-               << "(first event)]: ";
-  strInput = "";
-  while (true){
-    getline(std::cin, strInput);
-    // This code converts from string to number safely.
-    std::stringstream inputStream(strInput);
-    if (inputStream.str() == "" || (inputStream >> firstEvent)){
-      break;
-    }
-    std::cout << "Invalid input, please try again" << std::endl;
-  }
-  
+  return m_nEvents;
+}
+
+
+/*!
+ */
+int PedDataFile::fillPedMap(PedestalsMap& map, int nEvents,
+                            int firstEvent) const
+{
   for (int evt = firstEvent; evt < (nEvents+firstEvent); ++evt){
     addEventToMap(map, evt);
   }
+  return nEvents + firstEvent - 1;
+}
+                           
+
+
+/*!
+ */
+int PedDataFile::curEvent() const
+{
+  return m_inputFile->tellg()/(2*xpoldetector::kNumPixels);
 }
 
 
@@ -89,6 +82,7 @@ void PedDataFile::readNumberOfEvents()
 */
 void PedDataFile::addEventToMap(PedestalsMap& map, int evt) const
 {
+  *xpollog::kInfo << "Loading event " << evt << endline;
   // Move the cursor to the beginning of the event
   m_inputFile->seekg (evt*2*xpoldetector::kNumPixels, m_inputFile->beg);
   //Read the event

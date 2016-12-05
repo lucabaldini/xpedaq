@@ -31,8 +31,6 @@ with this program; if not, write to the Free Software Foundation Inc.,
 #include "pedviewerWindow.h"
 #include "pedFile.h"
 #include "pedmapFile.h"
-#include "pedDataFile.h"
-#include "pedestalsMap.h"
 #include "xpollog.h"
 
 
@@ -70,8 +68,8 @@ int main(int argn, char *argv[])
   parser.parse(argn, argv);
   
   // Apply all command-line options.
-  PedFile* inputFile;
-  std::string filePath;
+  PedFile* inputFile = nullptr;
+  std::string filePath ="";
   if (!parser.optionSet("filepath")) {
     std::cout << "ERROR: No input file specified." << std::endl;
     std::cout << "Exiting." << std::endl;
@@ -90,32 +88,25 @@ int main(int argn, char *argv[])
     exit(1);
   }
   
-  PedmapFile* referenceFile;
+  PedmapFile* referenceFile = nullptr;
   if (parser.optionSet("reference-file")) {
     referenceFile = new PedmapFile(
                                  parser.value<std::string>("reference-file"));
   }
-   
-  //Read the pedestal map from file
-  PedestalsMap pedMap = PedestalsMap();
-  inputFile->fillPedMap(pedMap);
   
   // Start the application.
   QApplication app(argn, argv);
   
   // Create the window.
-  pedviewerWindow* window = new pedviewerWindow();
+  pedviewerWindow* window;
+  if (!referenceFile){
+     window = new pedviewerWindow(inputFile);
+  } else {
+    window = new pedviewerWindow(inputFile, referenceFile);
+  }
   QObject::connect(window, SIGNAL(windowClosed()),
 	                 &app, SLOT(quit()));
   // Show the window
   window -> show();
-  
-  if (!referenceFile){
-    window->showPedestals(pedMap);
-  } else {
-    PedestalsMap referenceMap = PedestalsMap();
-    referenceFile->fillPedMap(referenceMap);
-    window->showPedestals(pedMap, referenceMap);
-  }
   return app.exec();
 }
