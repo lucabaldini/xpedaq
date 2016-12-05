@@ -108,11 +108,49 @@ void xServer::stop()
     }
 }
 
+
+bool xServer::isRoiValid(const int* Roi)
+{
+  return ((Roi[0] >= 0) && (Roi[1] < 300) && (Roi[1] > Roi [0])
+           && (Roi[2] >= 0) && (Roi[3] < 352) && (Roi[3] > Roi[2]));
+}
+
+
+void xServer::goToNextEvent()
+{
+  *xpollog::kInfo << "Looking for a good header..." << endline;
+  // find next event 
+  char tmp1, tmp2;
+  int tag =0;
+  int counter =0;
+  do{
+    fStream.read((char*)&tmp1, sizeof(char));
+    fStream.read((char*)&tmp2, sizeof(char));
+    tag = COMB(tmp1,tmp2);
+    counter+=2;
+  } while ((tag != 65535) && (!fStream.eof()));
+  if (fStream.eof()){
+    *xpollog::kInfo << "EOF reached without finding other good events. "
+                    << "( " << counter << " characters read)."
+                    << endline;
+    stop();
+    emit serverStopped();
+    return;
+  }
+  *xpollog::kInfo << "Good event found" << endline;
+  // go back two characters, so that the next iteration finds the cursor in
+  // the expected poisition (i.e. at the beginning of the header)
+  fStream.putback(tmp2);
+  fStream.putback(tmp1);
+}
+
+
+
 void xServer::broadcastEvent()
 {
-  const int maxEvsize = 10000; 
+  const int maxEvtsize = 10000; 
   //unsigned char data[2];
-  unsigned char buffer[maxEvsize];
+  unsigned char buffer[maxEvtsize];
   char tmp1, tmp2;
   int bindex = 0;
   //fread(data, 1, 2, m_inputFile);
@@ -123,8 +161,8 @@ void xServer::broadcastEvent()
   if(tag != 65535)
     {
       *xpollog::kInfo << "Tag " << tag << " found." << endline;
-      stop();
-      emit serverStopped();
+      goToNextEvent();
+      return;
     }
   buffer[bindex]  = tmp1; //data[0];
   buffer[bindex+1]= tmp2; //data[1];
@@ -141,7 +179,10 @@ void xServer::broadcastEvent()
     buffer[bindex+1]= tmp2; //data[1];         
     bindex+=2;
   }
+  // *xpollog::kDebug << Roi[0] << " " << Roi[1] << " " << Roi[2] << " "
+  //                << Roi[3] << endline;
   int numPix = (Roi[1]+1- Roi[0])*(Roi[3]+1- Roi[2]);
+  //*xpollog::kDebug << numPix << endline;
   // read BufferID and Time Stamps
   //fread(data,1,2,m_inputFile);
   fStream.read((char*)&tmp1, sizeof(char));
@@ -178,6 +219,17 @@ void xServer::broadcastEvent()
   buffer[bindex+1]= tmp2; //data[1];
   bindex+=2;
 
+  if (!isRoiValid(Roi)){
+    *xpollog::kError << "Invalid ROI. Skipping event..." << endline;
+    goToNextEvent();
+    return;
+  }
+  if ((2*numPix) > maxEvtsize){
+    *xpollog::kError << "Evt too big (" << numPix << " pixels)."
+                     << endline;
+    fStream.ignore(2*numPix);
+    return;
+  }
   for(int j=0; j<numPix ; j++)
     {
       //fread(data,1,2,m_inputFile);
