@@ -31,8 +31,7 @@ PedviewerMenuBar::PedviewerMenuBar(QWidget *parent) :
   createActions();
   createMenu();
   addMenu(m_fileMenu);
-  //std::string basePath = xpedaqos::environmentalVariable("XPEDAQ_ROOT");
-  std::string basePath = "/home/alberto/xpe/xpedata";
+  std::string basePath = xpedaqos::environmentalVariable("XPEDAQ_ROOT");
   m_baseDir = QString::fromStdString(basePath);
 }
 
