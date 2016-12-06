@@ -30,15 +30,17 @@ class PedDataFile: public PedFile
   public:
     PedDataFile(std::string filePath);
     virtual int fillPedMap(PedestalsMap& map) const;
-    virtual int fillPedMap(PedestalsMap& map, int nEvents,
-                           int firstEvent) const;
+    virtual int fillPedMap(PedestalsMap& map, int firstEvent,
+                           int numEvents = 1) const;
     int curEvent() const;
   
   private:
     virtual void readNumberOfEvents();
-    void addEventToMap(PedestalsMap& map, int evt) const;
+    void goToEvent(int evtNumber) const;
+    void addEventToMap(PedestalsMap& map, int evtNumber) const;
     void addNextEventToMap(PedestalsMap& map) const;
-    void addDataBlockToMap(PedestalsMap& map, const pDataBlock &block) const;    
+    void addDataBlockToMap(PedestalsMap& map, const pDataBlock &block) const;
+    int nBytesPerEvent() const {return 2*xpoldetector::kNumPixels;}
 };
 
 #endif //PEDDATAFILE_H

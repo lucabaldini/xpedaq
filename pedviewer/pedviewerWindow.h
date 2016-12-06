@@ -22,20 +22,24 @@ with this program; if not, write to the Free Software Foundation Inc.,
 #ifndef PEDVIEWERWINDOW_H
 #define PEDVIEWERWINDOW_H
 
-#include <QtGui/QMainWindow>
-#include <QtGui/QStatusBar>
-#include <QtGui/QVBoxLayout>
-#include <QtGui/QWidget>
+#include <QMainWindow>
+#include <QStatusBar>
+#include <QVBoxLayout>
+#include <QWidget>
+#include <QPushButton>
+#include <QHBoxLayout>
 
 #include "pedestalsMap.h"
 #include "pedviewerPlotGrid.h"
 #include "pedFile.h"
 #include "pedmapFile.h"
 #include "pedDataFile.h"
+#include "pedviewerMenuBar.h"
+#include "pQtCustomLineEdit.h"
+#include "pQtCustomTextLabel.h"
 
 
-/* Class implementing a pop-up window to display a bunch of result plots
-   at the end of an acquisition. */
+/* Main windw for the pedestal files viewer application. */
 
 
 class pedviewerWindow : public QMainWindow
@@ -44,42 +48,53 @@ class pedviewerWindow : public QMainWindow
   
   public:
   
-    explicit pedviewerWindow(PedFile* inputFile,
-                             PedmapFile* referenceFile =nullptr,
-                             QWidget *parent = 0, int posx = 400,
-                             int posy = 250, int windowWidth = 1200,
-                             int windowWeight = 800);
+    explicit pedviewerWindow(QWidget *parent = 0, int windowWidth = 1080,
+                             int windowWeight = 700);
   signals:
   
     void windowClosed();
-    
-  public slots:
+        
+  private slots:
 
+    void openFile(const QString& filePath);
+    void loadReferenceFile(const QString& filePath); 
     void showPedestals();
     void showPedestalsWithRef();
+    void showEvent(int evtNumber);
+    void showMap();
     void nextPressed();
     void prevPressed();
-    
-  private slots:
- 
+    void evtNumberEditChanged();    
     void updatePlots();
-    void updateNavBarStatus(int curEvent);   
+    void updateNavBarStatus(int curEvent);
+    void setButtonsEnabled(bool enabled);
+    void setNavBarEnabled(bool enabled);
+    void setTotEvtLabel(int numEvents);
+    void updateEvtNumberEdit(int curEvent);
+    void setEvtNumberEditRange(int min, int max);       
     void closeEvent(QCloseEvent *event);
   
   private:
   
-    int readNumEventsToDisplay();
-    int readFirstEventToDisplay();
+    void setupNavBar();
+    void setupConnections();
   
-    int m_posx;
-    int m_posy;
+    /*** Graphical stuff ***/
     int m_windowHeight;
-    int m_windowWidth;
+    int m_windowWidth;    
     QWidget *m_centralWidget;
     QVBoxLayout *m_verticalLayout;
     pedviewerPlotGrid *m_plotGrid;
+    PedviewerMenuBar *m_menuBar;
+    /*** Navigation bar ***/
+    QHBoxLayout *m_navLayout;
+    QPushButton *m_prevButton;
+    QPushButton *m_nextButton;
+    pQtCustomTextLabel *m_totEvtLabel;
+    pQtCustomLineEdit<int> *m_evtNumberEdit; 
+    
+    /*** Data stuff ***/
     PedFile* m_inputFile;
-    PedmapFile* m_referenceFile;
     PedestalsMap* m_pedMap;
     PedestalsMap* m_referenceMap;
     int m_nEvents;

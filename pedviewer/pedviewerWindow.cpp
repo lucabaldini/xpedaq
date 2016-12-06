@@ -19,69 +19,166 @@ with this program; if not, write to the Free Software Foundation Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 ***********************************************************************/
 
-#include <QFileDialog>
-
-#include "xpedaqos.h"
 #include "pedviewerWindow.h"
 #include "xpollog.h"
 
 /*
 */
-pedviewerWindow::pedviewerWindow(PedFile* inputFile,
-                                 PedmapFile* referenceFile,
-                                 QWidget *parent, int posx, int posy,
-                                 int windowHeight, int windowWidth) :
+pedviewerWindow::pedviewerWindow(QWidget *parent, int windowHeight,
+                                 int windowWidth) :
   QMainWindow(parent),
-  m_posx (posx),
-  m_posy(posy),
   m_windowHeight(windowHeight),
   m_windowWidth(windowWidth),
-  m_inputFile(inputFile),
-  m_referenceFile(referenceFile),
+  m_inputFile(nullptr),
+  m_pedMap(nullptr),
+  m_referenceMap(nullptr),
   m_curEvent(-1)
 {
   if (objectName().isEmpty())
     setObjectName(QString::fromUtf8("DisplayWindow"));
   resize(m_windowHeight, m_windowWidth);
   m_centralWidget = new QWidget(this);
-  m_centralWidget -> setObjectName(QString::fromUtf8("centralWidget"));
+  m_centralWidget->setObjectName(QString::fromUtf8("centralWidget"));
+  setCentralWidget(m_centralWidget);
+  
   m_verticalLayout = new QVBoxLayout(m_centralWidget);
-  m_verticalLayout -> setSpacing(6);
-  m_verticalLayout -> setContentsMargins(11, 11, 11, 11);
-  m_verticalLayout -> setObjectName(QString::fromUtf8("verticalLayout"));
+  m_verticalLayout->setContentsMargins(10, 10, 10, 10);
+  m_verticalLayout->setObjectName(QString::fromUtf8("verticalLayout"));
+
+  m_menuBar = new PedviewerMenuBar();
+  m_verticalLayout->setMenuBar(m_menuBar);
+  setupNavBar();
 
   m_plotGrid = new pedviewerPlotGrid();
-  m_verticalLayout -> addWidget(m_plotGrid);
+  m_verticalLayout->addWidget(m_plotGrid, 1);
 
-  setCentralWidget(m_centralWidget);
-  setGeometry(m_posx, m_posy, m_windowHeight, m_windowWidth);
-
-  //Read the pedestal map from file
-  m_nEvents = m_inputFile->nEvents();
-  m_plotGrid->setTotEvtLabel(m_nEvents);
   m_pedMap = new PedestalsMap();
-  m_plotGrid->setButtonsEnabled(false);
-  
+  setupConnections();
+}
+
+
+/*
+*/
+void pedviewerWindow::setupNavBar()
+{
+  m_navLayout = new QHBoxLayout();
+  m_prevButton = new QPushButton("Prev");
+  m_nextButton = new QPushButton("Next");
+  m_evtNumberEdit = new pQtCustomLineEdit<int>();
+  QString initialLabel = QString("/ ") + QString::number(0);
+  m_totEvtLabel = new pQtCustomTextLabel(this, initialLabel);
+  m_navLayout->addWidget(m_prevButton);
+  m_navLayout->addWidget(m_nextButton);
+  m_navLayout->addWidget(m_evtNumberEdit);
+  m_navLayout->addWidget(m_totEvtLabel);
+  m_verticalLayout->addLayout(m_navLayout, 0);
+  setNavBarEnabled(false);
+}
+
+
+/*
+*/
+void pedviewerWindow::setButtonsEnabled(bool enabled)
+{
+  m_prevButton->setEnabled(enabled);
+  m_nextButton->setEnabled(enabled);
+}
+
+
+/*
+*/
+void pedviewerWindow::setNavBarEnabled(bool enabled)
+{
+  m_evtNumberEdit->setEnabled(enabled);
+  setButtonsEnabled(enabled);
+}
+
+
+/*
+*/
+void pedviewerWindow::setTotEvtLabel(int numEvents)
+{
+  QString label = QString("/ ") + QString::number(numEvents);
+  m_totEvtLabel->setText(label);
+}
+
+
+/*
+*/
+void pedviewerWindow::updateEvtNumberEdit(int curEvent)
+{
+  m_evtNumberEdit->setVal(curEvent);
+}
+
+
+/*
+*/
+void pedviewerWindow::setEvtNumberEditRange(int min, int max)
+{
+  m_evtNumberEdit->setRange(min, max);
+}
+
+
+/*
+*/
+void pedviewerWindow::openFile(const QString& filePath)
+{
+  if(filePath.isEmpty()){
+    return;
+  }
+  //Convert QString to std::string
+  std::string filePathString = filePath.toUtf8().constData();
+  // Determine the file type
+  PedFile::inputFileType fileType = identifyFileType(filePathString);
+  // If the type is unknown do nothing
+  if (fileType == PedFile::unknownType){
+    *xpollog::kError << "Unknown file type: " << filePathString
+                     << "Exiting..." << endline;
+    return;
+  }
+  // Delete the current file (by C++ specifics this operation is harmless,
+  // even if there is no file opened)
+  delete m_inputFile;
+  // Open the file with the appropriate type
+  if (fileType == PedFile::dataType){
+    m_inputFile = new PedDataFile(filePathString);
+  } else if (fileType == PedFile::pedmapType){
+    m_inputFile = new PedmapFile(filePathString);
+  } else {
+    return;
+  }
+  //Read data from the file
+  m_nEvents = m_inputFile->nEvents();
+  setTotEvtLabel(m_nEvents);
+  setEvtNumberEditRange(1, m_nEvents);
   if (m_inputFile->fileType() == PedFile::dataType){
-    int evt = readFirstEventToDisplay();
-    m_curEvent = m_inputFile->fillPedMap(*m_pedMap, 1, evt);
-    updateNavBarStatus(m_curEvent);
+    showEvent(1);
   } else {
-    m_curEvent = m_inputFile->fillPedMap(*m_pedMap);
+    showMap();
   }
-  
-  if (!(m_referenceFile == nullptr)){
+}
+
+
+/*
+*/
+void pedviewerWindow::loadReferenceFile(const QString& filePath)
+{
+  if(filePath.isEmpty()){
+    return;
+  }
+  // Convert QString to std::string
+  std::string filePathString = filePath.toUtf8().constData();
+  // Open the file
+  PedmapFile* referenceFile = new PedmapFile(filePathString);
+  // Read data from the file
+  if (m_referenceMap == nullptr){
     m_referenceMap = new PedestalsMap();
-    m_referenceFile->fillPedMap(*m_referenceMap);
   } else {
-    m_referenceMap = nullptr;
+    m_referenceMap->reset();
   }
-  updatePlots();
-  
-  connect(m_plotGrid->m_nextButton, SIGNAL(clicked()), 
-          this, SLOT(nextPressed()));
-  connect(m_plotGrid->m_prevButton, SIGNAL(clicked()), 
-          this, SLOT(prevPressed()));
+  referenceFile->fillPedMap(*m_referenceMap);
+  // Close te file and release the memory
+  delete referenceFile;
 }
 
 
@@ -89,8 +186,8 @@ pedviewerWindow::pedviewerWindow(PedFile* inputFile,
  */
 void pedviewerWindow::showPedestals()
 {  
-  m_plotGrid -> fillPlots(*m_pedMap);
-  m_plotGrid -> replotAll();
+  m_plotGrid->fillPlots(*m_pedMap);
+  m_plotGrid->replotAll();
 }
 
 
@@ -99,8 +196,31 @@ void pedviewerWindow::showPedestals()
  */
 void pedviewerWindow::showPedestalsWithRef()
 {  
-  m_plotGrid -> fillPlots(*m_pedMap, *m_referenceMap);
-  m_plotGrid -> replotAll();
+  m_plotGrid->fillPlots(*m_pedMap, *m_referenceMap);
+  m_plotGrid->replotAll();
+}
+
+
+/*
+*/
+void pedviewerWindow::showEvent(int evtNumber)
+{ 
+  m_plotGrid->clear();
+  m_pedMap->reset();
+  m_curEvent = m_inputFile->fillPedMap(*m_pedMap, evtNumber);
+  updateNavBarStatus(m_curEvent);
+  updatePlots();
+}
+
+
+/*
+*/
+void pedviewerWindow::showMap()
+{
+  m_plotGrid->clear();
+  m_pedMap->reset();
+  m_curEvent = m_inputFile->fillPedMap(*m_pedMap);
+  updatePlots();
 }
 
 
@@ -108,12 +228,7 @@ void pedviewerWindow::showPedestalsWithRef()
 */
 void pedviewerWindow::nextPressed()
 { 
-  *xpollog::kInfo << "Next" << endline;
-  m_plotGrid->clear();
-  m_pedMap->reset();
-  m_curEvent = m_inputFile->fillPedMap(*m_pedMap, 1, m_curEvent+1);
-  updateNavBarStatus(m_curEvent);
-  updatePlots();
+  showEvent(m_curEvent+1);
 }
 
 
@@ -121,12 +236,18 @@ void pedviewerWindow::nextPressed()
 */
 void pedviewerWindow::prevPressed()
 {
-  *xpollog::kInfo << "Prev" << endline;
-  m_plotGrid->clear();
-  m_pedMap->reset();
-  m_curEvent = m_inputFile->fillPedMap(*m_pedMap, 1, m_curEvent-1);
-  updateNavBarStatus(m_curEvent);
-  updatePlots();
+  showEvent(m_curEvent-1);
+}
+
+
+/*
+*/
+void pedviewerWindow::evtNumberEditChanged()
+{
+  int evtRequested = m_evtNumberEdit->value();
+  if (evtRequested != m_curEvent){
+    showEvent(m_evtNumberEdit->value());
+  }
 }
 
 
@@ -145,10 +266,10 @@ void pedviewerWindow::updatePlots()
 */
 void pedviewerWindow::updateNavBarStatus(int curEvent)
 {
-  m_plotGrid->updateEvtNumberEdit(curEvent);
-  m_plotGrid->setButtonsEnabled(true);
-  if (curEvent == 0) m_plotGrid->setPrevButtonEnabled(false);
-  if (curEvent == m_nEvents-1) m_plotGrid->setNextButtonEnabled(false);
+  setNavBarEnabled(true);
+  if (curEvent == 1) m_prevButton->setEnabled(false);
+  if (curEvent == m_nEvents) m_nextButton->setEnabled(false);
+  updateEvtNumberEdit(curEvent);
 }
 
 
@@ -163,43 +284,16 @@ void pedviewerWindow::closeEvent(QCloseEvent *event)
 
 /*
 */
-int pedviewerWindow::readNumEventsToDisplay()
+void pedviewerWindow::setupConnections()
 {
-  int nEvents=1;
-  std::cout << "Select the number of events to be read "
-            << "[default = 1]: ";
-  std::string strInput = "";
-  while (true){
-    getline(std::cin, strInput);
-    // This code converts from string to number safely.
-    std::stringstream inputStream(strInput);
-    if (inputStream.str() == "" || (inputStream >> nEvents)){
-      break;
-    }
-    std::cout << "Invalid input, please try again" << std::endl;
-  }
-  return nEvents;
+  connect(m_nextButton, SIGNAL(clicked()), 
+          this, SLOT(nextPressed()));
+  connect(m_prevButton, SIGNAL(clicked()), 
+          this, SLOT(prevPressed()));
+  connect(m_evtNumberEdit, SIGNAL(inputAccepted()), 
+          this, SLOT(evtNumberEditChanged()));
+  connect(m_menuBar, SIGNAL(fileLoaded(const QString&)),
+          this, SLOT(openFile(const QString&)));
+  connect(m_menuBar, SIGNAL(referenceFileLoaded(const QString&)),
+          this, SLOT(loadReferenceFile(const QString&)));  
 }
-
-
-/*
-*/
-int pedviewerWindow::readFirstEventToDisplay()
-{
-  int firstEvent=0;
-  *xpollog::kInfo << "Reading full frame events... " << endline;    
-  std::cout << "Select the first event to be read [default = 0 "
-               << "(first event)]: ";
-  std::string strInput = "";
-  while (true){
-    getline(std::cin, strInput);
-    // This code converts from string to number safely.
-    std::stringstream inputStream(strInput);
-    if (inputStream.str() == "" || (inputStream >> firstEvent)){
-      break;
-    }
-    std::cout << "Invalid input, please try again" << std::endl;
-  }
-  return firstEvent;
-}
-

@@ -73,6 +73,7 @@ HEADERS += pedviewerWindow.h
 HEADERS += pedFile.h
 HEADERS += pedmapFile.h
 HEADERS += pedDataFile.h
+HEADERS += pedviewerMenuBar.h
 
 SOURCES += xpolgui.cpp
 SOURCES += xpoldetector.cpp
@@ -114,6 +115,7 @@ SOURCES += pedviewerWindow.cpp
 SOURCES += pedFile.cpp
 SOURCES += pedmapFile.cpp
 SOURCES += pedDataFile.cpp
+SOURCES += pedviewerMenuBar.cpp
 
 SOURCES += pedviewer.cpp
 

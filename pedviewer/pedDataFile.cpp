@@ -35,7 +35,7 @@ PedDataFile::PedDataFile(std::string filePath) :
 }
 
 
-/*!
+/*! Fill the given map with all the events in the file
  */
 int PedDataFile::fillPedMap(PedestalsMap& map) const
 {
@@ -46,51 +46,59 @@ int PedDataFile::fillPedMap(PedestalsMap& map) const
 }
 
 
-/*!
+/*! Fill the given map with a specific subsample of the events in the file.
  */
-int PedDataFile::fillPedMap(PedestalsMap& map, int nEvents,
-                            int firstEvent) const
+int PedDataFile::fillPedMap(PedestalsMap& map, int firstEvent,
+                            int numEvents) const
 {
-  for (int evt = firstEvent; evt < (nEvents+firstEvent); ++evt){
+  for (int evt = firstEvent; evt < (numEvents+firstEvent); ++evt){
     addEventToMap(map, evt);
   }
-  return nEvents + firstEvent - 1;
+  return numEvents + firstEvent - 1;
 }
                            
 
 
-/*!
+/*! Return the event number of the event pointed by the cursor. Event 
+    numbering goes from 1 to m_nEvents
  */
 int PedDataFile::curEvent() const
 {
-  return m_inputFile->tellg()/(2*xpoldetector::kNumPixels);
+  return 1 + (m_inputFile->tellg())/(nBytesPerEvent());
 }
 
 
-/*
+/* Determine the number of events in the file
 */
 void PedDataFile::readNumberOfEvents()
 {
-  m_nEvents = fileSize()/(2*xpoldetector::kNumPixels);
+  m_nEvents = fileSize()/(nBytesPerEvent());
   *xpollog::kInfo << "Input file has " << m_nEvents << " events"
                   << endline;
+}
+
+
+/* Move the cursor to the beginning of a specific event
+*/
+void PedDataFile::goToEvent(int evtNumber) const
+{
+  m_inputFile->seekg ((evtNumber-1)*nBytesPerEvent(), m_inputFile->beg);
 }
 
 
 /* Add to the input map a specific event in the file. Leave the cursor
    at the end of the specified event
 */
-void PedDataFile::addEventToMap(PedestalsMap& map, int evt) const
+void PedDataFile::addEventToMap(PedestalsMap& map, int evtNumber) const
 {
-  *xpollog::kInfo << "Loading event " << evt << endline;
   // Move the cursor to the beginning of the event
-  m_inputFile->seekg (evt*2*xpoldetector::kNumPixels, m_inputFile->beg);
+  goToEvent(evtNumber);
   //Read the event
   addNextEventToMap(map);
 }
 
 
-/*! Add to the input map the event at the current stream position
+/*! Add to the given map the event at the current stream position
  */
 void PedDataFile::addNextEventToMap(PedestalsMap& map) const
 {
@@ -99,7 +107,7 @@ void PedDataFile::addNextEventToMap(PedestalsMap& map) const
     *xpollog::kError << "Allocation failed" << endline;
     return;
   }
-  m_inputFile->readsome(buffer, 2*xpoldetector::kNumPixels);
+  m_inputFile->readsome(buffer, nBytesPerEvent());
   pDataBlock block = pDataBlock(reinterpret_cast<unsigned char*>(buffer));
   addDataBlockToMap(map, block);
 }

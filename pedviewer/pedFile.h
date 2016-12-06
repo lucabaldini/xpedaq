@@ -35,10 +35,10 @@ class PedFile
 {
   public:
     PedFile(std::string filePath);
-    ~PedFile();
+    virtual ~PedFile();
     virtual int fillPedMap(PedestalsMap& map) const = 0;
-    virtual int fillPedMap(PedestalsMap& map, int nEvents,
-                           int firstEvent) const = 0;
+    virtual int fillPedMap(PedestalsMap& map, int firstEvent,
+                           int numEvents =1) const = 0;
     int nEvents() const {return m_nEvents;}
    
     enum inputFileType {

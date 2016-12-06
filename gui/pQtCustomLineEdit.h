@@ -63,7 +63,8 @@ class pQtCustomLineEdit : public pQtCustomLineEditBase
     T rangeMax(){return m_max;}
     void setVal(T val);
     void setRangeMin(T min);
-    void setRangeMax(T max);    
+    void setRangeMax(T max);
+    void setRange(T min, T max);
     virtual void validate();
     
   protected:

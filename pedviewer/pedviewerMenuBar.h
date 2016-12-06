@@ -19,22 +19,38 @@ with this program; if not, write to the Free Software Foundation Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 ***********************************************************************/
 
-#ifndef PEDMAPFILE_H
-#define PEDMAPFILE_H
+#include <QWidget>
+#include <QMenuBar>
+#include <QMenu>
+#include <QString>
 
-#include "pedFile.h"
+#ifndef PEDVIEWERMENUBAR_H
+#define PEDVIEWERMENUBAR_H
 
-class PedmapFile: public PedFile 
+class PedviewerMenuBar : public QMenuBar
 {
-  public:
-    PedmapFile(std::string filePath);
-    virtual int fillPedMap(PedestalsMap& map) const;
-    virtual int fillPedMap(PedestalsMap& map, int firstEvent,
-                           int numEvents=1) const {return 0;}
   
-  private:  
-    virtual void readNumberOfEvents();
-       
+  Q_OBJECT
+  
+  public:
+    explicit PedviewerMenuBar(QWidget* parent =0);
+    
+  signals:
+    void fileLoaded(const QString& filePath) const;
+    void referenceFileLoaded(const QString& filePath) const;
+    
+  public slots:
+    void openFilePressed();
+    void loadReferenceMapPressed();
+  
+  private:
+    void createActions();
+    void createMenu();
+  
+    QMenu *m_fileMenu;
+    QAction *m_openAct;
+    QAction *m_loadReferenceAct;
+    QString m_baseDir;
 };
 
-#endif //PEDMAPFILE_H
+#endif // PEDVIEWERMENUBAR_H
