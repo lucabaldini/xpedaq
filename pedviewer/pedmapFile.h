@@ -29,8 +29,7 @@ class PedmapFile: public PedFile
   public:
     PedmapFile(std::string filePath);
     virtual int fillPedMap(PedestalsMap& map) const;
-    virtual int fillPedMap(PedestalsMap& map, int firstEvent,
-                           int numEvents=1) const {return 0;}
+    virtual int fillPedMap(PedestalsMap&, int, int) const {return 0;}
   
   private:  
     virtual void readNumberOfEvents();

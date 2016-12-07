@@ -63,14 +63,12 @@ class pedviewerWindow : public QMainWindow
     void openDataFile(const QString& filePath);
     void openMapFile(const QString& filePath);
     void loadReferenceFile(const QString& filePath); 
-    void showPedestals();
-    void showPedestalsWithRef();
     void showEvent(int evtNumber);
     void showMap();
+    void updatePlots();
     void nextPressed();
     void prevPressed();
     void evtNumberEditChanged();    
-    void updatePlots();
     void updateNavBarStatus(int curEvent);
     void setButtonsEnabled(bool enabled);
     void setNavBarEnabled(bool enabled);
@@ -89,7 +87,8 @@ class pedviewerWindow : public QMainWindow
     int m_windowWidth;    
     QWidget *m_centralWidget;
     QVBoxLayout *m_verticalLayout;
-    pedviewerPlotGrid *m_plotGrid;
+    PedviewerPlotGrid *m_plotGrid;
+    PedviewerPlotGrid *m_refPlotGrid;
     PedviewerMenuBar *m_menuBar;
     /*** Navigation bar ***/
     QHBoxLayout *m_navLayout;
@@ -103,8 +102,9 @@ class pedviewerWindow : public QMainWindow
     PedFile* m_inputFile;
     PedestalsMap* m_pedMap;
     PedestalsMap* m_referenceMap;
-    int m_nEvents;
+    int m_numEvents;
     int m_curEvent;
+    PedviewerPlotGrid::displayMode m_plotType;
 };
 
 #endif // PEDVIEWERWINDOW_H

@@ -14,27 +14,40 @@
 #include "pedestalsMap.h"
 
 
-class pedviewerPlotGrid: public QWidget
+class PedviewerPlotGrid: public QWidget
 {
   
   Q_OBJECT
   
   public:
   
-    explicit pedviewerPlotGrid(QWidget *parent = 0);
-    ~pedviewerPlotGrid();
+    explicit PedviewerPlotGrid(QWidget *parent = 0);
+    ~PedviewerPlotGrid();
     // Sets the preferred initial size
     QSize sizeHint() const {return QSize(800, 800);}
+    
+    enum displayMode {
+      singleEvtType,
+      mapType,
+      unknownType
+    };
   
   public slots:
     
-    void fillPlots(const PedestalsMap& pedMap);
-    void fillPlots(const PedestalsMap& pedMap, const PedestalsMap& refMap);
+    void fillPlots(const PedestalsMap& pedMap, displayMode plotType);
+    void fillPlots(const PedestalsMap& pedMap, const PedestalsMap& refMap,
+                   displayMode plotType);
     void replotAll();
     void clear();
      
   private:
     
+    void findEdges(const PedestalsMap& pedMap,
+                   double& aveMin, double& aveMax,
+                   double& rmsMin, double& rmsMax) const;
+    void findEdges(const PedestalsMap& pedMap, const PedestalsMap& refMap,
+                   double& aveMin, double& aveMax,
+                   double& rmsMin, double& rmsMax) const;
     void setupSupMap(const pColorMapOptions& option);
     void setupInfMap(const pColorMapOptions& option);
     void setupSupHist(const pBasicPlotOptions& options,

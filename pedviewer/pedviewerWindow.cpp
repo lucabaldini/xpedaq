@@ -32,7 +32,8 @@ pedviewerWindow::pedviewerWindow(QWidget *parent, int windowHeight,
   m_inputFile(nullptr),
   m_pedMap(nullptr),
   m_referenceMap(nullptr),
-  m_curEvent(-1)
+  m_curEvent(-1),
+  m_plotType(PedviewerPlotGrid::unknownType)
 {
   if (objectName().isEmpty())
     setObjectName(QString::fromUtf8("DisplayWindow"));
@@ -50,7 +51,7 @@ pedviewerWindow::pedviewerWindow(QWidget *parent, int windowHeight,
   setupNavBar();
   setNavBarEnabled(false);
 
-  m_plotGrid = new pedviewerPlotGrid(this);
+  m_plotGrid = new PedviewerPlotGrid(this);
   m_verticalLayout->addWidget(m_plotGrid, 1);
 
   m_pedMap = new PedestalsMap();
@@ -149,11 +150,12 @@ void pedviewerWindow::openDataFile(const QString& filePath)
   // Open the file with the appropriate type
   m_inputFile = new PedDataFile(filePathString);
   // Read number of events in the file
-  m_nEvents = m_inputFile->nEvents();
+  m_numEvents = m_inputFile->nEvents();
   // Setup navigation bar
-  setTotEvtLabel(m_nEvents);
-  setEvtNumberEditRange(1, m_nEvents);
+  setTotEvtLabel(m_numEvents);
+  setEvtNumberEditRange(1, m_numEvents);
   // Plot the first event
+  m_plotType = PedviewerPlotGrid::singleEvtType;
   showEvent(1);
 }
 
@@ -181,12 +183,14 @@ void pedviewerWindow::openMapFile(const QString& filePath)
   // Open the file with the appropriate type
   m_inputFile = new PedmapFile(filePathString);
   //Read number of events from the file
-  m_nEvents = m_inputFile->nEvents();
+  m_numEvents = m_inputFile->nEvents();
   // Setup navigation bar
   setNavBarEnabled(false);
-  setTotEvtLabel(m_nEvents);
-  updateNavBarStatus(m_nEvents);
+  setEvtNumberEditRange(1, m_numEvents);
+  setTotEvtLabel(m_numEvents);
+  updateNavBarStatus(m_numEvents);
   // Plot the map
+  m_plotType = PedviewerPlotGrid::mapType;
   showMap();
 }
 
@@ -218,27 +222,6 @@ void pedviewerWindow::loadReferenceFile(const QString& filePath)
 }
 
 
-/* Display the results (average and RMS) of a pedestal measurement
- */
-void pedviewerWindow::showPedestals()
-{  
-  m_plotGrid->clear();
-  m_plotGrid->fillPlots(*m_pedMap);
-  m_plotGrid->replotAll();
-}
-
-
-/* Display the results (average and RMS) of a pedestal measurement
-   subtracting a reference map
- */
-void pedviewerWindow::showPedestalsWithRef()
-{  
-  m_plotGrid->clear();
-  m_plotGrid->fillPlots(*m_pedMap, *m_referenceMap);
-  m_plotGrid->replotAll();
-}
-
-
 /*
 */
 void pedviewerWindow::showEvent(int evtNumber)
@@ -258,6 +241,7 @@ void pedviewerWindow::showMap()
   m_pedMap->reset();
   m_curEvent = m_inputFile->fillPedMap(*m_pedMap);
   updatePlots();
+  updateNavBarStatus(m_numEvents);
 }
 
 
@@ -292,19 +276,22 @@ void pedviewerWindow::evtNumberEditChanged()
 */
 void pedviewerWindow::updatePlots()
 {
+  m_plotGrid->clear();
   if (m_subtractRefCheckBox->isChecked()){
-    showPedestalsWithRef();
+    m_plotGrid->fillPlots(*m_pedMap, *m_referenceMap, m_plotType);
   } else {
-    showPedestals();
+    m_plotGrid->fillPlots(*m_pedMap, m_plotType);
   }
+  m_plotGrid->replotAll();
 }
+
 
 /*
 */
 void pedviewerWindow::updateNavBarStatus(int curEvent)
 {
   if (curEvent == 1) m_prevButton->setEnabled(false);
-  if (curEvent == m_nEvents) m_nextButton->setEnabled(false);
+  if (curEvent == m_numEvents) m_nextButton->setEnabled(false);
   updateEvtNumberEdit(curEvent);
   // Activate the checkbox only if there is a reference map loaded
   m_subtractRefCheckBox->setEnabled(!(m_referenceMap == nullptr));
