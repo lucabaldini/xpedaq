@@ -38,12 +38,23 @@ PedviewerMenuBar::PedviewerMenuBar(QWidget *parent) :
 
 /*
 */
-void PedviewerMenuBar::openFilePressed()
+void PedviewerMenuBar::openDataFilePressed()
 {
   QString filePath = QFileDialog::getOpenFileName(this,
-    tr("Open File"), m_baseDir, tr("Pedestal Files (*.pmap *.mdat)"));
+    tr("Open File"), m_baseDir, tr("Pedestal Files (*.mdat)"));
     //, 0, QFileDialog::DontUseNativeDialog);
-  emit fileLoaded(filePath);
+  emit dataFileLoaded(filePath);
+}
+
+
+/*
+*/
+void PedviewerMenuBar::openMapFilePressed()
+{
+  QString filePath = QFileDialog::getOpenFileName(this,
+    tr("Open File"), m_baseDir, tr("Pedestal Files (*.pmap)"));
+    //, 0, QFileDialog::DontUseNativeDialog);
+  emit mapFileLoaded(filePath);
 }
 
 
@@ -62,12 +73,18 @@ void PedviewerMenuBar::loadReferenceMapPressed()
 */
 void PedviewerMenuBar::createActions()
 {
-    m_openAct = new QAction(tr("&Open File"), this);
-    m_openAct->setStatusTip(tr("Open a pedestal data file or map"));
-    connect(m_openAct, SIGNAL(triggered()), this, SLOT(openFilePressed()));
+    m_openDataFileAct = new QAction(tr("&Open data file"), this);
+    m_openDataFileAct->setStatusTip(tr("Open a pedestals data file"));
+    connect(m_openDataFileAct, SIGNAL(triggered()),
+            this, SLOT(openDataFilePressed()));
+    
+    m_openMapFileAct = new QAction(tr("&Open map"), this);
+    m_openMapFileAct->setStatusTip(tr("Open a pedestals map"));
+    connect(m_openMapFileAct, SIGNAL(triggered()),
+            this, SLOT(openMapFilePressed()));
+
     m_loadReferenceAct = new QAction(tr("&Load reference map"), this);
-    m_loadReferenceAct->setStatusTip(
-                               tr("Open a pedestal map to use as reference"));
+    m_loadReferenceAct->setStatusTip(tr("Load a reference pedestals map"));
     connect(m_loadReferenceAct, SIGNAL(triggered()),
             this, SLOT(loadReferenceMapPressed()));
 }
@@ -79,6 +96,7 @@ void PedviewerMenuBar::createMenu()
 {
     m_fileMenu = new QMenu(tr("&File"));
     addMenu(m_fileMenu);
-    m_fileMenu->addAction(m_openAct);
+    m_fileMenu->addAction(m_openDataFileAct);
+    m_fileMenu->addAction(m_openMapFileAct);
     m_fileMenu->addAction(m_loadReferenceAct);
 }

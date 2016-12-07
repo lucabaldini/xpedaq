@@ -28,6 +28,10 @@ with this program; if not, write to the Free Software Foundation Inc.,
 #include <QWidget>
 #include <QPushButton>
 #include <QHBoxLayout>
+#include <QCheckBox>
+#include <QThread>
+#include <QMutex>
+#include <QTabWidget>
 
 #include "pedestalsMap.h"
 #include "pedviewerPlotGrid.h"
@@ -39,7 +43,7 @@ with this program; if not, write to the Free Software Foundation Inc.,
 #include "pQtCustomTextLabel.h"
 
 
-/* Main windw for the pedestal files viewer application. */
+/* Main window for the pedestal files viewer application. */
 
 
 class pedviewerWindow : public QMainWindow
@@ -56,7 +60,8 @@ class pedviewerWindow : public QMainWindow
         
   private slots:
 
-    void openFile(const QString& filePath);
+    void openDataFile(const QString& filePath);
+    void openMapFile(const QString& filePath);
     void loadReferenceFile(const QString& filePath); 
     void showPedestals();
     void showPedestalsWithRef();
@@ -92,6 +97,7 @@ class pedviewerWindow : public QMainWindow
     QPushButton *m_nextButton;
     pQtCustomTextLabel *m_totEvtLabel;
     pQtCustomLineEdit<int> *m_evtNumberEdit; 
+    QCheckBox *m_subtractRefCheckBox;
     
     /*** Data stuff ***/
     PedFile* m_inputFile;

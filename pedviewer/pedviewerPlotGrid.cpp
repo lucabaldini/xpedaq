@@ -18,6 +18,18 @@ pedviewerPlotGrid::pedviewerPlotGrid(QWidget *parent) :
   setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 }
 
+/*
+*/
+pedviewerPlotGrid::~pedviewerPlotGrid()
+{
+  // The Qt object are taken care of by their parents widgets, so we need
+  // to release the memory only of the other objects
+  delete m_supMap;
+  delete m_infMap;
+  delete m_supHist;
+  delete m_infHist;
+}
+
 
 /*
 */
@@ -139,7 +151,7 @@ void pedviewerPlotGrid::clear()
   delete m_supMap;
   delete m_infMap;
   delete m_supHist;
-  delete m_infHist;  
+  delete m_infHist;
 }
 
 

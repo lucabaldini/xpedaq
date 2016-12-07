@@ -22,6 +22,7 @@ class pedviewerPlotGrid: public QWidget
   public:
   
     explicit pedviewerPlotGrid(QWidget *parent = 0);
+    ~pedviewerPlotGrid();
     // Sets the preferred initial size
     QSize sizeHint() const {return QSize(800, 800);}
   
