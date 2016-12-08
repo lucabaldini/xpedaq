@@ -23,6 +23,8 @@ with this program; if not, write to the Free Software Foundation Inc.,
 #define PCUSTOMCOLORMAPPLOT_H
 
 #include <QMenu>
+#include <QFileDialog>
+#include <QString>
 
 #include "qcustomplot.h"
 #include "pHistogramOptions.h"
@@ -61,6 +63,7 @@ class pCustomColorMapPlot : public QCustomPlot
     void contextMenuRequest(QPoint pos);
     void setLogScaleZ();
     void setLinScaleZ();
+    void savePlot();
      
   protected:
     
