@@ -32,6 +32,7 @@ with this program; if not, write to the Free Software Foundation Inc.,
 #include <QThread>
 #include <QMutex>
 #include <QTabWidget>
+#include <QDialog>
 
 #include "pedestalsMap.h"
 #include "pedviewerPlotGrid.h"
@@ -41,6 +42,7 @@ with this program; if not, write to the Free Software Foundation Inc.,
 #include "pedviewerMenuBar.h"
 #include "pQtCustomLineEdit.h"
 #include "pQtCustomTextLabel.h"
+#include "pedviewerBuildMapDialog.h"
 
 
 /* Main window for the pedestal files viewer application. */
@@ -75,8 +77,10 @@ class pedviewerWindow : public QMainWindow
     void setTotEvtLabel(int numEvents);
     void updateEvtNumberEdit(int curEvent);
     void setEvtNumberEditRange(int min, int max);       
+    void showBuildMapDialog();  
+    void buildAndShowMap(const std::vector<int>& events);
     void closeEvent(QCloseEvent *event);
-  
+    
   private:
   
     void setupNavBar();
@@ -86,6 +90,8 @@ class pedviewerWindow : public QMainWindow
     int m_windowHeight;
     int m_windowWidth;    
     QWidget *m_centralWidget;
+    QWidget *m_referencePlotWidget;
+    QTabWidget *m_tabWidget;
     QVBoxLayout *m_verticalLayout;
     PedviewerPlotGrid *m_plotGrid;
     PedviewerPlotGrid *m_refPlotGrid;

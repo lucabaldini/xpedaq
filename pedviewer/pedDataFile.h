@@ -29,12 +29,30 @@ class PedDataFile: public PedFile
 {
   public:
     PedDataFile(std::string filePath);
+    
+    /* \brief Fill the given map with the events in the file
+    */
     virtual int fillPedMap(PedestalsMap& map) const;
+    
+    /* \brief Fill the given map with the events in a specific subrange of the
+              file
+    */
     virtual int fillPedMap(PedestalsMap& map, int firstEvent,
-                           int numEvents = 1) const;
+                           int numEvents = 1) const;                  
+    
+    /* \brief Fill the given map with the events at the positions specified
+              in the input array.
+    */
+    virtual void fillPedMap(PedestalsMap& map,
+                            const std::vector<int>& events) const;
+    
+    /* \brief Return the event number of the event currently pointed by the
+              read cursor of the file streamer.
+    */
     int curEvent() const;
   
   private:
+    
     virtual void readNumberOfEvents();
     void goToEvent(int evtNumber) const;
     void addEventToMap(PedestalsMap& map, int evtNumber) const;

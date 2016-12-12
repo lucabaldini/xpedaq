@@ -23,6 +23,7 @@ with this program; if not, write to the Free Software Foundation Inc.,
 #define PEDFILE_H
 
 #include <string>
+#include <vector>
 
 #include "xpollog.h"
 #include "xpedaqos.h"
@@ -34,11 +35,32 @@ with this program; if not, write to the Free Software Foundation Inc.,
 class PedFile
 {
   public:
+    /* \brief Base constructor
+    */
     PedFile(std::string filePath);
+    
+    /* \brief Base destructor (it needs to be virtual http://www.learncpp.com/cpp-tutorial/123-virtual-destructors-virtual-assignment-and-overriding-virtualization/)
+    */
     virtual ~PedFile();
+    
+    /* \brief Fill the given map with the events in the file (pure virtual)
+    */
     virtual int fillPedMap(PedestalsMap& map) const = 0;
+    
+    /* \brief Fill the given map with the events in a specific subrange of the
+              file (pure virtual)
+    */
     virtual int fillPedMap(PedestalsMap& map, int firstEvent,
-                           int numEvents =1) const = 0;
+      int numEvents =1) const = 0;
+    
+    /* \brief Fill the given map with the events at the positions specified
+              in the input array (pure virtual)
+    */
+    virtual void fillPedMap(PedestalsMap& map,
+                            const std::vector<int>& events) const = 0;
+    
+    /* \brief Number of events in the file
+    */
     int nEvents() const {return m_nEvents;}
    
     enum inputFileType {
@@ -51,8 +73,7 @@ class PedFile
     inputFileType fileType() const {return m_fileType;}
     std::streampos fileSize() const;
     
-  protected:
-     
+  protected:   
     /*! \brief Read the number of events from the file
     */
     virtual void readNumberOfEvents() = 0;

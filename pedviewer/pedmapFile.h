@@ -29,9 +29,15 @@ class PedmapFile: public PedFile
   public:
     PedmapFile(std::string filePath);
     virtual int fillPedMap(PedestalsMap& map) const;
-    virtual int fillPedMap(PedestalsMap&, int, int) const {return 0;}
   
-  private:  
+  private:
+    /* These inherited fucntions do not really make sense for this class, so
+       we make them private (we still need a definition, because they are
+       purely virtual in the base class) */
+    virtual int fillPedMap(PedestalsMap&, int, int) const {return -1;}
+    virtual void fillPedMap(PedestalsMap&, const std::vector<int>&) const
+      {return;}
+    
     virtual void readNumberOfEvents();
        
 };

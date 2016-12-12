@@ -33,12 +33,14 @@ class PedviewerMenuBar : public QMenuBar
   Q_OBJECT
   
   public:
-    explicit PedviewerMenuBar(QWidget* parent =0);
+    explicit PedviewerMenuBar(QWidget* parent =0);   
+    void setBuildMapActionEnabed(bool enabled);
     
   signals:
     void dataFileLoaded(const QString& filePath) const;
     void mapFileLoaded(const QString& filePath) const;
     void referenceFileLoaded(const QString& filePath) const;
+    void buildMapPressed();
     
   public slots:
     void openDataFilePressed();
@@ -50,10 +52,12 @@ class PedviewerMenuBar : public QMenuBar
     void createMenu();
   
     QMenu *m_fileMenu;
+    QMenu *m_editMenu;
     QAction *m_openDataFileAct;
     QAction *m_openMapFileAct;
     QAction *m_loadReferenceAct;
-    QString m_baseDir;
+    QAction *m_buildMapAct;
+    QString m_lastOpenDir;
 };
 
 #endif // PEDVIEWERMENUBAR_H

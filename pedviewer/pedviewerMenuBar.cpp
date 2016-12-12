@@ -31,8 +31,18 @@ PedviewerMenuBar::PedviewerMenuBar(QWidget *parent) :
   createActions();
   createMenu();
   addMenu(m_fileMenu);
-  std::string basePath = xpedaqos::environmentalVariable("XPEDAQ_ROOT");
-  m_baseDir = QString::fromStdString(basePath);
+  const QString DEFAULT_DIR = QString::fromStdString(
+                              xpedaqos::environmentalVariable("XPEDAQ_ROOT"));
+  m_lastOpenDir = DEFAULT_DIR;
+  m_buildMapAct->setEnabled(false);
+}
+
+
+/*
+*/
+void PedviewerMenuBar::setBuildMapActionEnabed(bool enabled)
+{
+  m_buildMapAct->setEnabled(enabled);
 }
 
 
@@ -41,9 +51,11 @@ PedviewerMenuBar::PedviewerMenuBar(QWidget *parent) :
 void PedviewerMenuBar::openDataFilePressed()
 {
   QString filePath = QFileDialog::getOpenFileName(this,
-    tr("Open File"), m_baseDir, tr("Pedestal Files (*.mdat)"));
+    tr("Open File"), m_lastOpenDir, tr("Pedestal Files (*.mdat)"));
     //, 0, QFileDialog::DontUseNativeDialog);
-  emit dataFileLoaded(filePath);
+  QDir CurrentDir;
+  m_lastOpenDir = CurrentDir.absoluteFilePath(filePath);
+  emit dataFileLoaded(filePath);  
 }
 
 
@@ -52,8 +64,10 @@ void PedviewerMenuBar::openDataFilePressed()
 void PedviewerMenuBar::openMapFilePressed()
 {
   QString filePath = QFileDialog::getOpenFileName(this,
-    tr("Open File"), m_baseDir, tr("Pedestal Files (*.pmap)"));
+    tr("Open File"), m_lastOpenDir, tr("Pedestal Files (*.pmap)"));
     //, 0, QFileDialog::DontUseNativeDialog);
+  QDir CurrentDir;
+  m_lastOpenDir = CurrentDir.absoluteFilePath(filePath);
   emit mapFileLoaded(filePath);
 }
 
@@ -63,8 +77,10 @@ void PedviewerMenuBar::openMapFilePressed()
 void PedviewerMenuBar::loadReferenceMapPressed()
 {
   QString filePath = QFileDialog::getOpenFileName(this,
-    tr("Open Map"), m_baseDir, tr("Pedestal Maps (*.pmap)"));
+    tr("Open Map"), m_lastOpenDir, tr("Pedestal Maps (*.pmap)"));
     //, 0, QFileDialog::DontUseNativeDialog);
+  QDir CurrentDir;
+  m_lastOpenDir = CurrentDir.absoluteFilePath(filePath);
   emit referenceFileLoaded(filePath);
 }
 
@@ -87,6 +103,11 @@ void PedviewerMenuBar::createActions()
     m_loadReferenceAct->setStatusTip(tr("Load a reference pedestals map"));
     connect(m_loadReferenceAct, SIGNAL(triggered()),
             this, SLOT(loadReferenceMapPressed()));
+            
+    m_buildMapAct = new QAction(tr("&Build map"), this);
+    m_buildMapAct->setStatusTip(tr("Merge events into a map"));
+    connect(m_buildMapAct, SIGNAL(triggered()),
+            this, SIGNAL(buildMapPressed()));
 }
 
 
@@ -99,4 +120,7 @@ void PedviewerMenuBar::createMenu()
     m_fileMenu->addAction(m_openDataFileAct);
     m_fileMenu->addAction(m_openMapFileAct);
     m_fileMenu->addAction(m_loadReferenceAct);
+    m_editMenu = new QMenu(tr("&Edit"));
+    addMenu(m_editMenu);
+    m_editMenu->addAction(m_buildMapAct);
 }

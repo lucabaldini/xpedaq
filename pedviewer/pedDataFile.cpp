@@ -35,7 +35,7 @@ PedDataFile::PedDataFile(std::string filePath) :
 }
 
 
-/*! Fill the given map with all the events in the file
+/*!
  */
 int PedDataFile::fillPedMap(PedestalsMap& map) const
 {
@@ -46,7 +46,7 @@ int PedDataFile::fillPedMap(PedestalsMap& map) const
 }
 
 
-/*! Fill the given map with a specific subsample of the events in the file.
+/*!
  */
 int PedDataFile::fillPedMap(PedestalsMap& map, int firstEvent,
                             int numEvents) const
@@ -58,9 +58,19 @@ int PedDataFile::fillPedMap(PedestalsMap& map, int firstEvent,
 }
                            
 
+/*! \brief Note: no check is performed to make sure the given event numbers
+           are within range
+ */
+void PedDataFile::fillPedMap(PedestalsMap& map,
+                             const std::vector<int>& events) const
+{
+  for (auto evt: events){
+    addEventToMap(map, evt);
+  }
+}
 
-/*! Return the event number of the event pointed by the cursor. Event 
-    numbering goes from 1 to m_nEvents
+
+/*! \brief Note: event numbering goes from 1 to m_nEvents
  */
 int PedDataFile::curEvent() const
 {

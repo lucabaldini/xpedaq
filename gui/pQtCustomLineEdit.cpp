@@ -119,7 +119,7 @@ void pQtCustomLineEdit<T>::validate()
     setText(QString::number(m_value));
     return;
   }
-  // else override the stored value wth the inserted value
+  // else override the stored value with the inserted value
   m_value = newVal;
   emit inputAccepted();
 }

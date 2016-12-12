@@ -42,8 +42,10 @@ HEADERS += xpollog.h
 HEADERS += xpolio.h
 HEADERS += xpedaqheader.h
 
+HEADERS += pQtGridLayoutWidget.h
 HEADERS += pQtCustomLineEdit.h
 HEADERS += pQtCustomTextLabel.h
+HEADERS += pMinMaxOptionPair.h
 
 HEADERS += qcustomplot.h
 HEADERS += histogramUtils.h
@@ -74,6 +76,7 @@ HEADERS += pedFile.h
 HEADERS += pedmapFile.h
 HEADERS += pedDataFile.h
 HEADERS += pedviewerMenuBar.h
+HEADERS += pedviewerBuildMapDialog.h
 
 SOURCES += xpolgui.cpp
 SOURCES += xpoldetector.cpp
@@ -84,8 +87,10 @@ SOURCES += xpollog.cpp
 SOURCES += xpolio.cpp
 SOURCES += xpedaqheader.cpp
 
+SOURCES += pQtGridLayoutWidget.cpp
 SOURCES += pQtCustomLineEdit.cpp
 SOURCES += pQtCustomTextLabel.cpp
+SOURCES += pMinMaxOptionPair.cpp
 
 SOURCES += qcustomplot.cpp
 SOURCES += histogramUtils.cpp
@@ -116,6 +121,7 @@ SOURCES += pedFile.cpp
 SOURCES += pedmapFile.cpp
 SOURCES += pedDataFile.cpp
 SOURCES += pedviewerMenuBar.cpp
+SOURCES += pedviewerBuildMapDialog.cpp
 
 SOURCES += pedviewer.cpp
 

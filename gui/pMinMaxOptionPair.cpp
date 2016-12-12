@@ -38,6 +38,10 @@ pMinMaxOptionPair<T>::pMinMaxOptionPair(QWidget *parent, T min, T max) :
            this, SLOT(updateMaxRange()));
   connect (m_maxEdit, SIGNAL(inputAccepted()),
            this, SLOT(updateMinRange()));
+  connect (m_minEdit, SIGNAL(textEdited(const QString &)),
+           this, SIGNAL(textEdited()));
+  connect (m_maxEdit, SIGNAL(textEdited(const QString &)),
+           this, SIGNAL(textEdited()));
   
   m_minEdit->setRangeMax(max);
   m_maxEdit->setRangeMin(min);

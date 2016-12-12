@@ -29,6 +29,13 @@ pedviewerWindow::pedviewerWindow(QWidget *parent, int windowHeight,
   QMainWindow(parent),
   m_windowHeight(windowHeight),
   m_windowWidth(windowWidth),
+  m_centralWidget(nullptr),
+  m_referencePlotWidget(nullptr),
+  m_tabWidget(nullptr),
+  m_verticalLayout(nullptr),
+  m_plotGrid(nullptr),
+  m_refPlotGrid(nullptr),
+  m_menuBar(nullptr),
   m_inputFile(nullptr),
   m_pedMap(nullptr),
   m_referenceMap(nullptr),
@@ -42,7 +49,17 @@ pedviewerWindow::pedviewerWindow(QWidget *parent, int windowHeight,
   m_centralWidget->setObjectName(QString::fromUtf8("centralWidget"));
   setCentralWidget(m_centralWidget);
   
-  m_verticalLayout = new QVBoxLayout(m_centralWidget);
+  //Apparently we need this totally useless intermediate layout, or the
+  //tab widget won't resize automatically with the main window...
+  QVBoxLayout* dummyLayout = new QVBoxLayout(m_centralWidget);
+  
+  m_tabWidget = new QTabWidget(m_centralWidget);
+  dummyLayout->addWidget(m_tabWidget);
+  
+  QWidget* mainPlotWidget = new QWidget();
+  m_tabWidget->addTab(mainPlotWidget, "Plots");
+  
+  m_verticalLayout = new QVBoxLayout(mainPlotWidget);
   m_verticalLayout->setContentsMargins(10, 10, 10, 10);
   m_verticalLayout->setObjectName(QString::fromUtf8("verticalLayout"));
 
@@ -51,7 +68,7 @@ pedviewerWindow::pedviewerWindow(QWidget *parent, int windowHeight,
   setupNavBar();
   setNavBarEnabled(false);
 
-  m_plotGrid = new PedviewerPlotGrid(this);
+  m_plotGrid = new PedviewerPlotGrid(mainPlotWidget);
   m_verticalLayout->addWidget(m_plotGrid, 1);
 
   m_pedMap = new PedestalsMap();
@@ -157,6 +174,7 @@ void pedviewerWindow::openDataFile(const QString& filePath)
   // Plot the first event
   m_plotType = PedviewerPlotGrid::singleEvtType;
   showEvent(1);
+  m_menuBar->setBuildMapActionEnabed(false);
 }
 
 
@@ -192,6 +210,7 @@ void pedviewerWindow::openMapFile(const QString& filePath)
   // Plot the map
   m_plotType = PedviewerPlotGrid::mapType;
   showMap();
+  m_menuBar->setBuildMapActionEnabed(false);
 }
 
 
@@ -213,12 +232,28 @@ void pedviewerWindow::loadReferenceFile(const QString& filePath)
     m_referenceMap->reset();
   }
   referenceFile->fillPedMap(*m_referenceMap);
-  // Close te file and release the memory
-  delete referenceFile;
+  // If there is a main file opened enable the check box
   if (!(m_inputFile==nullptr)){
     m_subtractRefCheckBox->setEnabled(true);
-    updatePlots();
+    // If the check box was already checked apply the subtraction immediatly
+    updatePlots();   
   }
+  // Show the reference map in a separate tab
+  if (m_referencePlotWidget == nullptr){
+    // If the tab hasn't already been created do it now
+    m_referencePlotWidget = new QWidget();
+    m_tabWidget->addTab(m_referencePlotWidget, "Reference");
+    QVBoxLayout *refVerticalLayout = new QVBoxLayout(m_referencePlotWidget);
+    refVerticalLayout->setContentsMargins(10, 10, 10, 10);
+    refVerticalLayout->setObjectName(QString::fromUtf8("verticalRefLayout"));
+    m_refPlotGrid = new PedviewerPlotGrid(m_referencePlotWidget);
+    refVerticalLayout->addWidget(m_refPlotGrid, 0);
+  } else {
+    m_refPlotGrid->clear();
+  }
+  m_refPlotGrid->fillPlots((*m_referenceMap), PedviewerPlotGrid::mapType);
+  // Close te file and release the memory
+  delete referenceFile;
 }
 
 
@@ -300,6 +335,27 @@ void pedviewerWindow::updateNavBarStatus(int curEvent)
 
 /*
 */
+void pedviewerWindow::showBuildMapDialog()
+{
+  PedviewerBuildMapDialog* buildMapDialog = new PedviewerBuildMapDialog(this,
+    m_numEvents);
+  connect (buildMapDialog, SIGNAL(inputAccepted(const std::vector<int>&)),
+           this, SLOT(buildAndShowMap(const std::vector<int>&)));           
+  // Show the dialog (modal)
+  buildMapDialog->exec();
+}
+
+
+/*
+*/
+void pedviewerWindow::buildAndShowMap(const std::vector<int>& events)
+{
+  *xpollog::kInfo << events.at(0) << endline;
+}
+
+
+/*
+*/
 void pedviewerWindow::closeEvent(QCloseEvent *event)
 {
   emit windowClosed();
@@ -311,10 +367,7 @@ void pedviewerWindow::closeEvent(QCloseEvent *event)
 */
 void pedviewerWindow::setupConnections()
 {
-  connect(m_nextButton, SIGNAL(clicked()), 
-          this, SLOT(nextPressed()));
-  connect(m_prevButton, SIGNAL(clicked()), 
-          this, SLOT(prevPressed()));
+  /* Menu bar connections */
   connect(m_evtNumberEdit, SIGNAL(inputAccepted()), 
           this, SLOT(evtNumberEditChanged()));
   connect(m_menuBar, SIGNAL(dataFileLoaded(const QString&)),
@@ -323,6 +376,14 @@ void pedviewerWindow::setupConnections()
           this, SLOT(openMapFile(const QString&)));
   connect(m_menuBar, SIGNAL(referenceFileLoaded(const QString&)),
           this, SLOT(loadReferenceFile(const QString&)));
+  connect (m_menuBar, SIGNAL(buildMapPressed()),
+           this, SLOT(showBuildMapDialog()));
+  
+  /* Navigation bar connections */
+  connect(m_nextButton, SIGNAL(clicked()), 
+          this, SLOT(nextPressed()));
+  connect(m_prevButton, SIGNAL(clicked()), 
+          this, SLOT(prevPressed()));
   connect (m_subtractRefCheckBox, SIGNAL(stateChanged(int)),
            this, SLOT(updatePlots()));
 }
