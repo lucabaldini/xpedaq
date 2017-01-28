@@ -1,5 +1,5 @@
 /***********************************************************************
-Copyright (C) 2007--2016 the X-ray Polarimetry Explorer (XPE) team.
+Copyright (C) 2007--2017 the X-ray Polarimetry Explorer (XPE) team.
 
 For the license terms see the file LICENSE, distributed along with this
 software.
@@ -179,6 +179,50 @@ double pHistogram::binCenter(unsigned int binNumber) const
 }
 
 
+double pHistogram::binLowEdge(unsigned int binNumber) const
+{
+  if (!isBinInRange(binNumber)) {
+    throw HistogramError::BIN_OUT_OF_RANGE;
+  }
+  return m_binEdges.at(binNumber);
+}
+
+
+double pHistogram::binHighEdge(unsigned int binNumber) const
+{
+  if (!isBinInRange(binNumber)) {
+    throw HistogramError::BIN_OUT_OF_RANGE;
+  }
+  return m_binEdges.at(binNumber + 1);
+}
+
+
+/*! Return the quantile point corresponding to a given value of the histogram
+cumulative function.
+
+This is simply interpolating linearly over the bin edges.
+*/
+double pHistogram::quantile(double q) const
+{
+  double sum = 0.;
+  for (unsigned int bin = 0; bin < m_nBins; ++bin) {
+    sum += binContent(bin)/m_sum;
+    if (sum >= q) {
+      if (bin == 0) {
+	return binCenter(bin);
+      } else {
+	double x1 = binLowEdge(bin);
+	double x2 = binHighEdge(bin);
+	double y1 = sum - binContent(bin)/m_sum;
+	double y2 = sum;
+	return x1 + (x2 - x1)*(q - y1)/(y2 - y1);
+      }
+      return binCenter(bin);
+    }
+  }
+}
+
+
 /*! Return the mean value of the histogram.
   
   We might have done this in an unbinned fashion using a pRunningStat object,
@@ -227,43 +271,13 @@ double pHistogram::rms() const
 }
 
 
-/*! 
+/*! This could be streamlined if we had a function calculating an array of
+quantiles, so that we can loop on the bins exactly once.
  */
 std::pair<double, double> pHistogram::gaussianPeakFwhm() const
 {
-  double peak = 0.;
-  double fwhm = 0.;
-  double sum = 0.;
-  bool peakSet = false;
-  for (unsigned int bin = 0; bin < m_nBins; ++bin) {
-    sum += binContent(bin)/m_sum;
-    if (!peakSet && sum >= 0.5) {
-      if (bin == 0) {
-	peak = binCenter(bin) + 0.5*binWidth(bin);
-      } else {
-	double y1 = sum - binContent(bin)/m_sum;
-	double y2 = sum;
-	double x1 = binCenter(bin - 1) + 0.5*binWidth(bin);
-	double x2 = binCenter(bin) + 0.5*binWidth(bin);
-	peak = x1 + (x2 - x1)*(0.5 - y1)/(y2 - y1);
-      }
-      peakSet = true;
-    }
-    if (sum >= 0.8805) {
-      double x = 0.;
-      if (bin == 0) {
-	x = binCenter(bin) + 0.5*binWidth(bin);
-      } else {
-	double y1 = sum - binContent(bin)/m_sum;
-	double y2 = sum;
-	double x1 = binCenter(bin - 1) + 0.5*binWidth(bin);
-	double x2 = binCenter(bin) + 0.5*binWidth(bin);
-	x = x1 + (x2 - x1)*(0.8805 - y1)/(y2 - y1);
-      }
-      fwhm = 2*(x - peak);
-      break;
-    }
-  }
+  double peak = quantile(0.5);
+  double fwhm = 2*(quantile(0.8805) - peak);
   return std::make_pair(peak, fwhm);
 }
 

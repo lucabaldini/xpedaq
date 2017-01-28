@@ -36,7 +36,7 @@ const double xpemonPlotOptions::windowSizeXmax = 1600.;
 // Cluster size
 const unsigned int xpemonPlotOptions::clusterSizeNbins = 100;
 const double xpemonPlotOptions::clusterSizeXmin = 0.;
-const double xpemonPlotOptions::clusterSizeXmax = 250.;
+const double xpemonPlotOptions::clusterSizeXmax = 300.;
 
 // Pulse height
 const unsigned int xpemonPlotOptions::pulseHeightNbins = 100;

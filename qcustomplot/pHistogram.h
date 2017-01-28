@@ -59,7 +59,10 @@ class pHistogram
     double binContent(unsigned int binNumber) const;
     unsigned int binEntries(unsigned int binNumber) const;
     double binWidth(unsigned int binNumber = 0) const;
-    double binCenter (unsigned int binNumber) const;
+    double binCenter(unsigned int binNumber) const;
+    double binLowEdge(unsigned int binNumber) const;
+    double binHighEdge(unsigned int binNumber) const;
+    double quantile(double q) const;
     double mean() const;
     double mom2(double x0) const;
     double rms() const;
