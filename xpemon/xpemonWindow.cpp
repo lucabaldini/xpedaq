@@ -60,7 +60,7 @@ xpemonWindow::xpemonWindow(std::string preferencesFilePath,
                                             m_mainGridLayout->rowCount(), 1);
   m_eventDisplayTab = new pEventDisplayTab();
   m_mainTabWidget->addTab(m_eventDisplayTab, "Event Display");
-  m_monitorTab = new pMonitorTab();
+  m_monitorTab = new pMonitorTab(m_preferences->m_showModulationPlot);
   m_mainTabWidget->addTab(m_monitorTab, "Monitor Plots");
   //m_hitmapTab = new pHitmapTab();
   //m_mainTabWidget->addTab(m_hitmapTab, "Hit Map");

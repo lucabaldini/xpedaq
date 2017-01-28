@@ -44,7 +44,7 @@ class pMonitorTab : public pQtCustomTab
   
   public:
   
-    pMonitorTab();
+    pMonitorTab(bool showModulationPlot = true);
     ~pMonitorTab() {;}
     // Sets the preferred initial size
     //QSize sizeHint() const {return QSize(800, 800);}
@@ -68,8 +68,10 @@ class pMonitorTab : public pQtCustomTab
      
   private:
 
+    bool m_showModulationPlot;
+
     void setupWindowSizePlot();
-    //void setupClusterSizePlot();
+    void setupClusterSizePlot();
     void setupPulseHeightPlot();
     void setupModulationPlot();
     void setupHitmapPlot();

@@ -24,15 +24,16 @@ with this program; if not, write to the Free Software Foundation Inc.,
 
 /*!
  */
-pMonitorTab::pMonitorTab() :
-  pQtCustomTab("Monitor Plots")
+pMonitorTab::pMonitorTab(bool showModulationPlot) :
+  pQtCustomTab("Monitor Plots"),
+  m_showModulationPlot(showModulationPlot)
 {
   // Get as much space as possible, starting from the preferred initial size
   setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
   setupWindowSizePlot();
-  //setupClusterSizePlot();
-  setupPulseHeightPlot(); 
+  setupPulseHeightPlot();
   setupModulationPlot();
+  setupClusterSizePlot();
   setupHitmapPlot();
 }
 
@@ -51,15 +52,18 @@ void pMonitorTab::setupWindowSizePlot()
 }
 
 
-//void pMonitorTab::setupClusterSizePlot()
-//{
-//  pBasicPlotOptions clusterSizeOptions = pBasicPlotOptions("Cluster size",
-//    "Cluster size [pixel]", "Events/bin", defaultPen, defaultBrush);
-//  m_clusterSizeHist = new pHistogram(clusterSizeNbins, clusterSizeXmin,
-//				     clusterSizeXmax);
-//  m_clusterSizePlot = new pHistogramPlot(m_clusterSizeHist, clusterSizeOptions);
-//  m_groupBoxGridLayout->addWidget(m_clusterSizePlot, 0, 1);
-//}
+void pMonitorTab::setupClusterSizePlot()
+{
+  using namespace xpemonPlotOptions;
+  pBasicPlotOptions clusterSizeOptions = pBasicPlotOptions("Cluster size",
+    "Cluster size [pixel]", "Events/bin", defaultPen, defaultBrush);
+  m_clusterSizeHist = new pHistogram(clusterSizeNbins, clusterSizeXmin,
+				     clusterSizeXmax);
+  m_clusterSizePlot = new pHistogramPlot(m_clusterSizeHist, clusterSizeOptions);
+  if (!m_showModulationPlot) {
+    m_groupBoxGridLayout->addWidget(m_clusterSizePlot, 1, 1);
+  }
+}
 
 
 void pMonitorTab::setupPulseHeightPlot()
@@ -96,14 +100,16 @@ void pMonitorTab::setupModulationPlot()
   m_modulationPlot = new pHistogramPlot(m_modulationHist, modulationOptions);
   m_modulationPlot->axisRect()->setAutoMargins(QCP::msNone);
   m_modulationPlot->axisRect()->setMargins(defaultMargins);
-  m_groupBoxGridLayout->addWidget(m_modulationPlot, 1, 1);
-  // Add a graph for the cosine square fit.
-  m_modulationPlot->addGraph();
-  m_modulationPlot->graph(0)->setPen(QPen(Qt::red));
-  m_modulationStatBox = new pStatBox(m_modulationPlot, 0.05, 0.0);
-  m_modulationStatBox->addField("Modulation", 1);
-  m_modulationStatBox->addField("Phase", 1);
-  resetModulationFit();
+  if (m_showModulationPlot) {
+    m_groupBoxGridLayout->addWidget(m_modulationPlot, 1, 1);
+    // Add a graph for the cosine square fit.
+    m_modulationPlot->addGraph();
+    m_modulationPlot->graph(0)->setPen(QPen(Qt::red));
+    m_modulationStatBox = new pStatBox(m_modulationPlot, 0.05, 0.0);
+    m_modulationStatBox->addField("Modulation", 1);
+    m_modulationStatBox->addField("Phase", 1);
+    resetModulationFit();
+  }
 }
 
 
@@ -207,14 +213,17 @@ void pMonitorTab::update()
 {
   m_windowSizePlot->updateDisplay();
   m_windowSizePlot->replot();
-  //m_clusterSizePlot->updateDisplay();
-  //m_clusterSizePlot->replot();
   updatePulseHeightFit();
   m_pulseHeightPlot->updateDisplay();
   m_pulseHeightPlot->replot();
-  updateModulationFit();
-  m_modulationPlot->updateDisplay();
-  m_modulationPlot->replot();
+  if (m_showModulationPlot) {
+    updateModulationFit();
+    m_modulationPlot->updateDisplay();
+    m_modulationPlot->replot();
+  } else {
+    m_clusterSizePlot->updateDisplay();
+    m_clusterSizePlot->replot();
+  }
   m_hitmapPlot->updateDisplay();
   m_hitmapPlot->replot();
 }
@@ -224,14 +233,17 @@ void pMonitorTab::reset()
 {
   m_windowSizeHist->reset();
   m_windowSizePlot->updateDisplay();
-  //m_clusterSizeHist->reset();
-  //m_clusterSizePlot->updateDisplay();
   resetPulseHeightFit();
   m_pulseHeightHist->reset();
   m_pulseHeightPlot->updateDisplay();
-  resetModulationFit();
-  m_modulationHist->reset();
-  m_modulationPlot->updateDisplay();
+  if (m_showModulationPlot) {
+    resetModulationFit();
+    m_modulationHist->reset();
+    m_modulationPlot->updateDisplay();
+  } else {
+    m_clusterSizeHist->reset();
+    m_clusterSizePlot->updateDisplay();
+  }
   m_hitmap->reset();
   m_hitmapPlot->updateDisplay();
 }

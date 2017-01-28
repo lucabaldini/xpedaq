@@ -3,21 +3,21 @@
 //Refresh Interval//
 1000
 //Zero Suppression Threshold//
-9
+8
 //Minimum elongation//
-1.
+0
 //Maximum elongation//
-100.
+100
 //Minimum cluster size//
-6
+0
 //Maximum cluster size//
-10000
+1000
 //Minimum pulse height//
-600
+0
 //Maximum pulse height//
 10000
 //Minimum window size//
-200
+0
 //Maximum window size//
 10000
 //Minimum skewness//
@@ -25,4 +25,6 @@
 //Maximum skewness//
 100
 //Display the box with the cuts//
+1
+//Display the modulation plot//
 1

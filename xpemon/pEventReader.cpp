@@ -28,7 +28,7 @@ pEventReader::pEventReader(const pMonitorPreferences& preferences,
                            pModulationHistogram* modulationHist,
                            pMap* hitMap) :
   m_windowSizeHist(windowSizeHist),
-  //m_clusterSizeHist(clusterSizeHist),
+  m_clusterSizeHist(clusterSizeHist),
   m_pulseHeightHist(pulseHeightHist),
   m_modulationHist(modulationHist),
   m_hitMap(hitMap),
@@ -103,7 +103,7 @@ void pEventReader::readPendingDatagram()
         }
       }
       m_windowSizeHist->fill(nPixel);
-      //m_clusterSizeHist->fill(event.clusterSize());
+      m_clusterSizeHist->fill(event.clusterSize());
       m_pulseHeightHist->fill(event.pulseHeight());
       m_modulationHist->fill(event.phiDeg());
     }

@@ -52,7 +52,11 @@ class pMonitorPreferences
   int m_maxWindowSize;
   double m_minSkewness;
   double m_maxSkewness;
+  // Hidden options.
+  // Show the widgets with the quality cuts in the monitor.
   bool m_showCuts;
+  // Show the modulation plot (if false, this is replaced by the cluster size).
+  bool m_showModulationPlot;
   
   // Read/write to/from file.
   void writeToFile(std::string filePath);
