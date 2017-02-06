@@ -69,6 +69,14 @@ void PedDataFile::fillPedMap(PedestalsMap& map,
   }
 }
 
+void PedDataFile::readEvent (char* buffer, int evtNumber) const
+{
+  // Move the cursor to the beginning of the event
+  goToEvent(evtNumber);
+  //Read the event
+  m_inputFile->readsome(buffer, nBytesPerEvent());
+}
+
 
 /*! \brief Note: event numbering goes from 1 to m_nEvents
  */
@@ -112,13 +120,15 @@ void PedDataFile::addEventToMap(PedestalsMap& map, int evtNumber) const
  */
 void PedDataFile::addNextEventToMap(PedestalsMap& map) const
 {
-  char* buffer = new (std::nothrow) char[SRAM_DIM*2];
+  char* buffer = new (std::nothrow) char[nBytesPerEvent()];
   if (buffer == nullptr){
     *xpollog::kError << "Allocation failed" << endline;
     return;
   }
   m_inputFile->readsome(buffer, nBytesPerEvent());
   pDataBlock block = pDataBlock(reinterpret_cast<unsigned char*>(buffer));
+  // The pDataBlock destructor will take care of deleting the buffer,
+  // we don't need to delete it manualy here 
   addDataBlockToMap(map, block);
 }
 

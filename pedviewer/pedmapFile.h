@@ -37,7 +37,7 @@ class PedmapFile: public PedFile
     virtual int fillPedMap(PedestalsMap&, int, int) const {return -1;}
     virtual void fillPedMap(PedestalsMap&, const std::vector<int>&) const
       {return;}
-    
+    virtual void readEvent (char*, int) const {return;}
     virtual void readNumberOfEvents();
        
 };

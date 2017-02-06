@@ -46,6 +46,10 @@ class PedDataFile: public PedFile
     virtual void fillPedMap(PedestalsMap& map,
                             const std::vector<int>& events) const;
     
+    /* \brief Fill the given buffer with a specific (raw) event
+    */
+    virtual void readEvent (char* buffer, int evtNumber) const;
+    
     /* \brief Return the event number of the event currently pointed by the
               read cursor of the file streamer.
     */
