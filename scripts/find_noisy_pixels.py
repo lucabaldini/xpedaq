@@ -50,8 +50,8 @@ def highest_occupancy_pxl(pxl_matrix, npxl=10):
 # execute run for noisy pixel
 # don't forget to check for min window=32 of pixel on the border won't trigger
 EXECUTABLE=os.path.join(os.environ['XPEDAQ_ROOT'],'bin','xpedaq')
-MAX_SECONDS=100
-MAX_BLOCK= 100
+MAX_SECONDS=1000
+MAX_BLOCK= 1000
 THRESHOLD_DAC=285 # 230 mV
 
 """ For reference here list of usefull options:
@@ -87,6 +87,7 @@ run_n_evt = 0
 run_duration = 0 #s
 print("Run stats for run %s" % run_id)
 for l in run_stat_file:
+	print(l.strip('\n'))
 	if 'duration' in l:
 		run_duration = float(l.strip('\n').split(':')[-1])
 	if 'events' in l:
