@@ -108,8 +108,8 @@ void pXpolFpga::maskPixel(unsigned short x, unsigned short y)
  */
 void pXpolFpga::applyTriggerMask(pTriggerMask *trgMask)
 {
+  enableAllPixels();
   if (trgMask->size()) {
-    enableAllPixels();
     //setupToDisablePixels();
     for (const auto &chan : *(trgMask->mask())) {
       *xpollog::kInfo << "Masking pixel <" << chan.first << ", " 
