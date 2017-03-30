@@ -50,7 +50,7 @@ def highest_occupancy_pxl(pxl_matrix, npxl=10):
 # execute run for noisy pixel
 # don't forget to check for min window=32 of pixel on the border won't trigger
 EXECUTABLE=os.path.join(os.environ['XPEDAQ_ROOT'],'bin','xpedaq')
-MAX_SECONDS=1000
+MAX_SECONDS=30
 MAX_BLOCK= 1000
 THRESHOLD_DAC=285 # 230 mV
 
