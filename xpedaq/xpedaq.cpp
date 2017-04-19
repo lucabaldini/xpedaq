@@ -27,6 +27,10 @@ int main(int argn, char *argv[])
                         "Clock shift code (0-800 in step of 25)");
   parser.addOption<int>("clock-frequency", 'f',
                         "Clock frequency code (0-32-64-96)");
+  parser.addOption<int>("sample-delay", 'd',
+                        "Sample delay (50 us units)");
+  parser.addOption<int>("trg-delay", 'D',
+                        "Trigger-enable delay (50 us units)");
   parser.addOption<int>("nped-subtracted", 'p',
            "Number of sampling for pedestal subtraction (0-1-2-4-8)");
   parser.addOption<bool>("charge-injection", 'I',
@@ -76,6 +80,14 @@ int main(int argn, char *argv[])
     const int clock_frequency = parser.value<int>("clock-frequency");
     configuration->setClockFrequency(clock_frequency);
   }
+  if (parser.optionSet("sample-delay")){
+    const int sample_delay = parser.value<int>("sample-delay");
+    configuration->setPedSampleDelay(sample_delay);
+  }  
+  if (parser.optionSet("trg-delay")){
+    const int trg_delay = parser.value<int>("trg-delay");
+    configuration->setTrgEnableDelay(trg_delay);
+  }  
   if (parser.optionSet("nped-subtracted")){
     const int nped_subtracted = parser.value<int>("nped-subtracted");
     configuration->setNumPedSamples(nped_subtracted);
