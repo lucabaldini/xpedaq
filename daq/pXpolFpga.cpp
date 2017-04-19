@@ -308,6 +308,11 @@ void pXpolFpga::configWindowedMode(pDetectorConfiguration *configuration)
   // 0x0 means : USB speaks with the ASIC via the FPGA
   // 0xf means : the ASIC works in windowed mode				
   serialWrite((unsigned short)15,0xf);
+  
+  // Hack for setting the probes.
+  //mainSerialWrite((unsigned short)XPM_PROBESPARE3_REG, 31);
+  //mainSerialWrite((unsigned short)XPM_PROBESPARE2_REG, 31);
+  //mainSerialWrite((unsigned short)XPM_PROBEEVENT_REG, 30);
 
   // When the second bit of this register is set to 1 : analogical reset of the ASIC
   serialWrite((unsigned short)XPOL_DISPIX_REG,0x0);  //aaresetn      
