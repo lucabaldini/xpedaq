@@ -536,6 +536,8 @@ unsigned short pXpolFpga::readVrefDac()
   mainSerialWrite((unsigned short)XPM_STATUS_REG, (unsigned short)AD2_RUN);
   // Read the reference voltage in ADC counts.
   unsigned short dac = mainSerialRead((unsigned short)XPM_AD2_DATA);
+  //reset AD2_RUN
+  mainSerialWrite((unsigned short)XPM_STATUS_REG, 0);
   // Convert in physical units (V).
   double vref = AD2_LSB*dac;
   // Print out the reading.
