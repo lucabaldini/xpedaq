@@ -41,6 +41,7 @@ class pXpolFpga : public QObject
   void setup(pDetectorConfiguration *configuration); 
   void configFullFrame();
   void configWindowedMode(pDetectorConfiguration *configuration);
+  void setProbes();
   void configXPM();
   void configXPMWindowed(pDetectorConfiguration *configuration);
 
@@ -72,7 +73,7 @@ class pXpolFpga : public QObject
  protected:
 
  private:
-
+	
    void serialWrite(unsigned short REG_ADD, unsigned short regdata);
    void mainSerialWrite(unsigned short REG_ADD, unsigned short regdata);
    void setupToDisablePixels();

@@ -304,6 +304,8 @@ void pXpolFpga::configFullFrame()
   // Number of events you want to take within a loop
   // 2 because you cannot put more than 2 events in memory  
   serialWrite((unsigned short)XPOL_RDNGS_N_REG,0x2);
+  
+  setProbes();
 }
 
 
@@ -393,8 +395,20 @@ void pXpolFpga::configWindowedMode(pDetectorConfiguration *configuration)
   // 0x0 means : USB speaks with the ASIC via the FPGA
   // 0xf means : the ASIC works in windowed mode				
   serialWrite((unsigned short)15, 0xf);
+  
+  setProbes();
 }
-
+void pXpolFpga::setProbes()
+{	
+	 unsigned short  spare3_probe = 21;
+	 unsigned short  spare2_probe = 20;
+	 unsigned short  event_probe  = 2;
+	 mainSerialWrite((unsigned short) XPM_PROBESPARE3_REG, spare3_probe);
+	 mainSerialWrite((unsigned short) XPM_PROBESPARE2_REG, spare2_probe);
+	 mainSerialWrite((unsigned short) XPM_PROBEEVENT_REG,  event_probe);
+	 *xpollog::kInfo << "Setting probes...  " << spare3_probe <<" "<< spare2_probe << " "<< event_probe << "..." << endline;
+	 
+}
 
 void pXpolFpga::configXPM()
 {
