@@ -1,4 +1,9 @@
 
+* ADC count changed from uint16 to int 16.
+* Added fuction to read the XPOL register, and minor refactoring of the
+  pXpolFpga code.
+* Added functions to read the readout counters in the FPGA.
+
 -------------------------------------------------------------------------------
 xpedaq (0.22.1) - Sat, 28 Jan 2017 08:17:36 +0100
 -------------------------------------------------------------------------------

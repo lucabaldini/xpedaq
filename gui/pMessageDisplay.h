@@ -26,6 +26,7 @@ with this program; if not, write to the Free Software Foundation Inc.,
 #include <iostream>
 
 #include <QTextEdit>
+#include <QScrollBar>
 
 #include "pQtGroupBoxWidget.h"
 

@@ -79,7 +79,7 @@ HEADERS += pUdpSender.h
 HEADERS += pVariant.h
 HEADERS += pOption.h
 HEADERS += pOptionParser.h
-
+HEADERS += pChrono.h
 
 SOURCES += xpolgui.cpp
 SOURCES += xpoldetector.cpp
@@ -131,6 +131,7 @@ SOURCES += pUdpSender.cpp
 SOURCES += pVariant.cpp
 SOURCES += pOption.cpp
 SOURCES += pOptionParser.cpp
+SOURCES += pChrono.cpp
 
 SOURCES += xpedaq.cpp
 

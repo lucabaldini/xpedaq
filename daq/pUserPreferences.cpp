@@ -21,20 +21,12 @@ with this program; if not, write to the Free Software Foundation Inc.,
 
 #include "pUserPreferences.h"
 
-pUserPreferences::pUserPreferences()
-{
-  // Do nothing constructor.
-}
 
 pUserPreferences::pUserPreferences(std::string filePath)
 {
   readFromFile(filePath);
 }
 
-pUserPreferences::~pUserPreferences()
-{
-  // Do nothing destructor.
-}
 
 void pUserPreferences::writeToFile(std::string filePath)
 {
@@ -72,17 +64,17 @@ void pUserPreferences::readFromFile(std::string filePath)
   xpolio::kIOManager->skipLine(inputFile);
   setVisualizationMode(xpolio::kIOManager->readUnsignedShort(inputFile));
   xpolio::kIOManager->skipLine(inputFile);
-  enableDataFile(bool(xpolio::kIOManager->readUnsignedShort(inputFile)));
+  enableDataFile(bool(xpolio::kIOManager->readBool(inputFile)));
   xpolio::kIOManager->skipLine(inputFile);
   setOutputFolder(xpolio::kIOManager->readLine(inputFile));
   xpolio::kIOManager->skipLine(inputFile);
-  enableMulticast(bool(xpolio::kIOManager->readUnsignedShort(inputFile)));
+  enableMulticast(bool(xpolio::kIOManager->readBool(inputFile)));
   xpolio::kIOManager->skipLine(inputFile);
   setMulticastAddress(xpolio::kIOManager->readLine(inputFile));
   xpolio::kIOManager->skipLine(inputFile);
   setMulticastPort(xpolio::kIOManager->readInteger(inputFile));
   xpolio::kIOManager->skipLine(inputFile);
-  enableLogFile(bool(xpolio::kIOManager->readUnsignedShort(inputFile)));
+  enableLogFile(bool(xpolio::kIOManager->readBool(inputFile)));
   xpolio::kIOManager->skipLine(inputFile);
   setLoggerTerminalLevel(xpolio::kIOManager->readInteger(inputFile));
   xpolio::kIOManager->skipLine(inputFile);

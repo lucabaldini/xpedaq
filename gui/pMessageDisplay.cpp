@@ -22,6 +22,7 @@ with this program; if not, write to the Free Software Foundation Inc.,
 
 #include "pMessageDisplay.h"
 
+
 pMessageDisplay::pMessageDisplay(QWidget *parent)
   : pQtGroupBoxWidget(parent)
 {
@@ -35,11 +36,12 @@ void pMessageDisplay::setupTextEdit()
   m_mainTextEdit = new QTextEdit(m_mainGroupBox);
   m_mainTextEdit->setReadOnly(true);
   m_mainTextEdit->setCurrentFont(MESSAGE_DISPLAY_FONT);
-  m_mainTextEdit->ensureCursorVisible();
   addWidget(m_mainTextEdit, 0, 0);
 }
 
 void pMessageDisplay::showMessage(QString message)
 {
   m_mainTextEdit->insertPlainText(message);
+  m_mainTextEdit->verticalScrollBar()->
+    setValue(m_mainTextEdit->verticalScrollBar()->maximum());
 }

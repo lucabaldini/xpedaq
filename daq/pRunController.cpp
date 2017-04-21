@@ -357,13 +357,23 @@ void pRunController::fsmStopRun()
   *xpollog::kInfo << "Run controller stopped on " << stopDatetime()
 		  << " (" << m_stopSeconds << " s since January 1, 1970)."
 		  << endline;
-  *xpollog::kInfo << numEvents() << " events (" << numDataBlocks()
-		  << " data blocks) acquired in "<< runDuration()
-		  << " seconds."<< endline;
+  writeRunSummary();
   *xpollog::kInfo << "Disconnecting logger from file..." << endline;
   xpollog::kLogger->enableLogFile(false);
   writeRunStat(runStatFilePath());
   emit runStopped();
+}
+
+
+/*!
+*/
+void pRunController::writeRunSummary()
+{
+  *xpollog::kInfo << numEvents() << " events (" << numDataBlocks()
+                  << " data blocks) acquired in "<< runDuration()
+                  << " seconds."<< endline;
+  *xpollog::kInfo << m_dataCollector->numWrongRoiEvents()
+                  << " events with wrong ROI." << endline; 
 }
 
 

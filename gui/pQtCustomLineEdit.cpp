@@ -19,6 +19,9 @@ with this program; if not, write to the Free Software Foundation Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 ***********************************************************************/
 
+#include <iostream>
+#include <limits>
+
 #include "pQtCustomLineEdit.h"
 
 
@@ -36,12 +39,22 @@ pQtCustomLineEditBase::pQtCustomLineEditBase() :
 
 
 template <typename T>
-pQtCustomLineEdit<T>::pQtCustomLineEdit(T initalVal) : 
+pQtCustomLineEdit<T>::pQtCustomLineEdit(T initialVal) : 
   pQtCustomLineEditBase()
 {
   m_min = std::numeric_limits<T>::lowest(); //NOTE: min() is the positive min!
   m_max = std::numeric_limits<T>::max();
-  setVal(initalVal);
+  setVal(initialVal);
+}
+
+
+template <typename T>
+pQtCustomLineEdit<T>::pQtCustomLineEdit(T initialVal, T min, T max) : 
+  pQtCustomLineEditBase(),
+  m_min(min),
+  m_max(max)
+{
+  setVal(initialVal);
 }
 
 
@@ -57,8 +70,6 @@ void pQtCustomLineEdit<T>::setVal(T val)
 {
   //must be comprised between min and max
   if (val < m_min || val > m_max){
-    std::cout << "Value inserted out of range ( " << val
-              << "). Input has been ignored." << std::endl;
   }
   else{
     m_value = val;
@@ -71,11 +82,7 @@ template <typename T>
 void pQtCustomLineEdit<T>::setRangeMin(T min)
 {
   //min must be lower than max
-  if (min >= m_max){
-    std::cout << "Lower limit inserted is not smaller than upper limit. Input"
-              << " has been ignored." << std::endl;
-  }
-  else {
+  if (min < m_max){
     m_min = min;
   }
 }
@@ -85,12 +92,18 @@ template <typename T>
 void pQtCustomLineEdit<T>::setRangeMax(T max)
 {
   //max must be grater than min
-  if (max <= m_min){
-    std::cout << "Upper limit inserted is not greater than lower limit. Input"
-              << " has been ignored." << std::endl;
-  }
-  else {
+  if (max > m_min){
     m_max = max;
+  }
+}
+
+template <typename T>
+void pQtCustomLineEdit<T>::setRange(T min, T max)
+{
+  //max must be grater than min
+  if (max > min){
+    m_max = max;
+    m_min = min;
   }
 }
 
@@ -102,11 +115,11 @@ void pQtCustomLineEdit<T>::validate()
   bool convSuccess = convertions::qStrToNumber(text(), newVal);
   // if the value inserted is invalid restore the stored value
   if (!convSuccess || newVal > m_max || newVal < m_min){
-    std::cout << "Invalid input " << text().toStdString() << std::endl;
+    //std::cout << "Invalid input " << text().toStdString() << std::endl;
     setText(QString::number(m_value));
     return;
   }
-  // else override the stored value wth the inserted value
+  // else override the stored value with the inserted value
   m_value = newVal;
   emit inputAccepted();
 }

@@ -24,12 +24,12 @@ with this program; if not, write to the Free Software Foundation Inc.,
 
 /*!
  */
-pUsbControlTab::pUsbControlTab()
+pUsbControlTab::pUsbControlTab(bool timeoutWidgets)
   : pQtCustomTab("USB management")
 {
   m_groupBoxGridLayout->setColumnMinimumWidth(0, 250);
   m_groupBoxGridLayout->setColumnMinimumWidth(2, 30);
-  setupWidgets();
+  setupWidgets(timeoutWidgets);
   freezeSize(xpolgui::kTabGroupBoxWidth);
 }
 
@@ -52,7 +52,7 @@ void pUsbControlTab::setTimeout(int timeout)
 
 /*!
  */
-void pUsbControlTab::setupWidgets()
+void pUsbControlTab::setupWidgets(bool timeoutWidgets)
 {
   int row = m_groupBoxGridLayout->rowCount();
   m_statusLabel = new pQtCustomTextLabel(this, "Connection status");
@@ -97,17 +97,19 @@ void pUsbControlTab::setupWidgets()
   m_groupBoxGridLayout->addWidget(m_firmwareVersionLabel, row, 0);
   m_groupBoxGridLayout->addWidget(m_firmwareVersionDisplay, row, 1, 1, 2);
   addVerticalSpacer();
-  row += 2;
-  m_timeoutLabel = new pQtCustomTextLabel(this, "USB timeout");
-  m_timeoutLabel->setLabelStyle();
-  m_timeoutSpinBox = new QSpinBox(this);
-  m_timeoutSpinBox->setMinimum(1000);
-  m_timeoutSpinBox->setMaximum(1000000);
-  m_timeoutSpinBox->setSingleStep(1000);
-  m_timeoutUnitsLabel = new pQtCustomTextLabel(this, "[ms]");
-  m_groupBoxGridLayout->addWidget(m_timeoutLabel, row, 0);
-  m_groupBoxGridLayout->addWidget(m_timeoutSpinBox, row, 1);
-  m_groupBoxGridLayout->addWidget(m_timeoutUnitsLabel, row, 2);
+  if (timeoutWidgets) {
+    row += 2;
+    m_timeoutLabel = new pQtCustomTextLabel(this, "USB timeout");
+    m_timeoutLabel->setLabelStyle();
+    m_timeoutSpinBox = new QSpinBox(this);
+    m_timeoutSpinBox->setMinimum(1000);
+    m_timeoutSpinBox->setMaximum(1000000);
+    m_timeoutSpinBox->setSingleStep(1000);
+    m_timeoutUnitsLabel = new pQtCustomTextLabel(this, "[ms]");
+    m_groupBoxGridLayout->addWidget(m_timeoutLabel, row, 0);
+    m_groupBoxGridLayout->addWidget(m_timeoutSpinBox, row, 1);
+    m_groupBoxGridLayout->addWidget(m_timeoutUnitsLabel, row, 2);
+  }
 }
 
 

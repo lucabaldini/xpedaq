@@ -11,7 +11,7 @@
 //Multicast port//
 50001
 //Write log file//
-88
+1
 //Logger terminal level//
 0
 //Logger display level//

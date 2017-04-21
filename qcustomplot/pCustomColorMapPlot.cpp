@@ -220,6 +220,7 @@ void pCustomColorMapPlot::contextMenuRequest(QPoint pos)
   else {
     menu->addAction("Set z to lin scale", this, SLOT(setLinScaleZ()));
   }
+  menu->addAction("Save", this, SLOT(savePlot()));
   menu->popup(mapToGlobal(pos));
 }
 
@@ -273,4 +274,14 @@ void pCustomColorMapPlot::paintCoordinate()
                        + QString::number(i) + QString(", bin content=")
                        + QString::number(cellContent);
   painter.drawText(textPos, cursorText);  
+}
+
+
+void pCustomColorMapPlot::savePlot()
+{
+  QString fileName;
+  fileName = QFileDialog::getSaveFileName(this, tr("Save File"),
+             "", tr("Images (*.pdf)"));
+  savePdf(fileName, true, 0, 0, QString("xpedaq package"),
+          m_options.m_plotName);
 }

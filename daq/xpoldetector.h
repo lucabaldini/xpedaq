@@ -28,7 +28,7 @@ with this program; if not, write to the Free Software Foundation Inc.,
 #include <vector>
 #include <cstdint>
 
-typedef uint16_t adc_count_t;
+typedef int16_t adc_count_t;
 typedef uint64_t microsecond_t;
 
 namespace event
@@ -106,6 +106,7 @@ namespace xpoldetector{
   extern const unsigned short kClockSlowerFreqCode;
   extern const unsigned short kNumPixelsX;
   extern const unsigned short kNumPixelsY;
+  extern const unsigned int kNumPixels;
   extern const unsigned short kLargeBufferMode;
   extern const unsigned short kSmallBufferMode;
   extern const unsigned short kNumReadOutBuffers;

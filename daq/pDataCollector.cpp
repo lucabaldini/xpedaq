@@ -24,11 +24,12 @@ with this program; if not, write to the Free Software Foundation Inc.,
 
 
 pDataCollector::pDataCollector(pXpolFpga *xpolFpga, bool emitBlocks,
-			       int thresholdUpdateInterval):
+			                         int thresholdUpdateInterval):
   m_xpolFpga(xpolFpga),
   m_thresholdUpdateInterval(thresholdUpdateInterval),
   m_numMalformedBlocks(0),
-  m_emitBlocks(emitBlocks)
+  m_emitBlocks(emitBlocks),
+  m_numWrongRoiEvents(0)
 { 
   //Register pDataBlock as object that can be emitted as signals
   qRegisterMetaType<pDataBlock>("pDataBlock");
@@ -76,22 +77,26 @@ void pDataCollector::run()
   m_lastThresholdUpdate = 0;
   m_dataFIFO = new pDataFIFO(m_outputFilePath, m_userPreferences);
   m_numMalformedBlocks = 0;
+  m_numWrongRoiEvents = 0;
   m_running = true; 
-  long unsigned int fullFrameDataBufferDimension = SRAM_DIM*2; // this definition should definitely be somewhere esle
+  long unsigned int fullFrameDataBufferDimension = SRAM_DIM*2; // this definition should definitely be somewhere else
   long unsigned int maxSize = m_detectorConfiguration->maxBufferSize();
   long unsigned int bufferDimension = fullFrameDataBufferDimension;
   pDataBlock *curDataBlock;
   m_xpolFpga->usbController()->resetSequencer();
   m_xpolFpga->usbController()->startSequencer();
   int errorCode = 0;
+  unsigned short pixAddressX = m_detectorConfiguration->pixelAddressX();
+  unsigned short pixAddressY = m_detectorConfiguration->pixelAddressY();
+  bool writeToDisk = m_userPreferences->dataFileEnabled();
   while (m_running) {
     unsigned char* dataBuffer = new (std::nothrow) 
-                                               unsigned char[bufferDimension];
+      unsigned char[bufferDimension];
     if (dataBuffer == nullptr){
-        *xpollog::kError << "Allocation failed" << endline;
-        m_running = false;
-        // now that the buffer allocation is inside the cycle this is check is
-        // not sufficient to avoid a bad crash. Need a proper exception. 
+      *xpollog::kError << "Allocation failed" << endline;
+      m_running = false;
+      // now that the buffer allocation is inside the cycle this check is
+      // not sufficient to avoid a bad crash. Need a proper exception. 
     } 
     errorCode = m_xpolFpga->usbController()->readData(dataBuffer,
 						      &bufferDimension);
@@ -99,24 +104,44 @@ void pDataCollector::run()
       m_running = false;
     } else {
       if (m_fullFrame) {
-	      curDataBlock = new pDataBlock(dataBuffer);
+	curDataBlock = new pDataBlock(dataBuffer);
       } else {
-	      curDataBlock = new pDataBlock(dataBuffer, maxSize);
+	curDataBlock = new pDataBlock(dataBuffer, maxSize);
+
+	// Shit to check the ROI.
+	if (m_detectorConfiguration->readoutMode() ==
+	    xpoldetector::kChargeInjectionReadoutCode) {
+	  for (unsigned int evt = 0; evt < curDataBlock->numEvents(); evt ++) {
+	    int errorCode = curDataBlock->verifyRoi(evt, pixAddressX,
+						    pixAddressY);
+	    if (errorCode) {
+	      m_numWrongRoiEvents++;
+	      *xpollog::kError << "Window mismatch at event "
+			       << m_dataFIFO->getNumAcquiredEvents()
+			       << " (error code 0x" << errorCode 
+			       << ")" << endline;
+	    }
+	  }
+	}
+	// End of shit.
+	
       }
       if (curDataBlock->errorSummary()) {
-	      *xpollog::kError << "Data block at index " 
-			                   << m_dataFIFO->getNumAcquiredEvents()
-			                   << "+ has error summary 0x" << hex 
+	*xpollog::kError << "Data block at index " 
+			 << m_dataFIFO->getNumAcquiredEvents()
+			 << "+ has error summary 0x" << hex 
                          << curDataBlock->errorSummary() << dec << "."
                          << endline;
-	      std::cerr << *curDataBlock << std::endl;
+	std::cerr << *curDataBlock << std::endl;
         dumpRawBuffer(dataBuffer);
-	      m_numMalformedBlocks ++;
+	m_numMalformedBlocks ++;
       } else {
-	      if (m_emitBlocks) emit blockRead(*curDataBlock);
+	      if (m_emitBlocks){
+	        emit blockRead(*curDataBlock);
+	      }
         m_dataFIFO->fill(curDataBlock);
         m_dataFIFO->setStartSeconds(m_startSeconds);
-        m_dataFIFO->flush();
+        m_dataFIFO->flush(writeToDisk);
       }
       delete curDataBlock;
       // Fist attempt at correcting for the vref drift as a function of time,
@@ -125,9 +150,9 @@ void pDataCollector::run()
       // pXpolFpga::setDacThreshold().)
       long int seconds = currentSeconds();
       if (!m_fullFrame && 
-	      seconds - m_lastThresholdUpdate >= m_thresholdUpdateInterval) {
-	      m_xpolFpga->setDacThreshold(m_detectorConfiguration);
-	      m_lastThresholdUpdate = seconds;
+	  seconds - m_lastThresholdUpdate >= m_thresholdUpdateInterval) {
+	m_xpolFpga->setDacThreshold(m_detectorConfiguration);
+	m_lastThresholdUpdate = seconds;
       }
     }
   }
@@ -145,9 +170,10 @@ void pDataCollector::run()
   This information must be provided each time the start button is
   pressed (not once and forever at the construction time).
 */
-void pDataCollector::setupRun(std::string outputFilePath, long int startSeconds,
-			      pUserPreferences *preferences,
-			      pDetectorConfiguration *configuration)
+void pDataCollector::setupRun(std::string outputFilePath,
+                              long int startSeconds,
+                              pUserPreferences *preferences,
+                              pDetectorConfiguration *configuration)
 {
   m_outputFilePath = outputFilePath;
   m_startSeconds = startSeconds;

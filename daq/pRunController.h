@@ -46,8 +46,8 @@ class pRunController : public pFiniteStateMachine
 
   ///\brief Constructor.
   pRunController(std::string configFilePath, std::string preferencesFilePath,
-		             std::string trgMaskFilePath, std::string usrComment="",
-		             bool emitBlocks=false);
+		 std::string trgMaskFilePath, std::string usrComment = "",
+		 bool emitBlocks = false);
 
   ///\brief Destructor.
   ~pRunController() {;}
@@ -160,16 +160,17 @@ class pRunController : public pFiniteStateMachine
   
  protected:
   
-  void fsmSetup();
-  void fsmTeardown();
-  void fsmStartRun();
-  void fsmStopRun();
-  void fsmPause();
-  void fsmResume();
-  void fsmStop();
+  virtual void fsmSetup();
+  virtual void fsmTeardown();
+  virtual void fsmStartRun();
+  virtual void fsmStopRun();
+  virtual void fsmPause();
+  virtual void fsmResume();
+  virtual void fsmStop();
 
   
- protected:
+  ///\brief Empty constructor---for subclasses.
+  pRunController() {;}
 
   /// \brief Maximum duration (in s) for the data acquisition.
   int m_maxSeconds;
@@ -229,7 +230,7 @@ class pRunController : public pFiniteStateMachine
   std::string m_trgMaskFilePath;
   
   /// \brief Return the path to the current output folder.
-  std::string outputFolderPath() const;
+  virtual std::string outputFolderPath() const;
 
   /// \brief Return the base string to compose the paths to the output files.
   std::string baseFileName() const;
@@ -264,8 +265,11 @@ class pRunController : public pFiniteStateMachine
   ///\brief Write the file header to the output .mdat file.
   void writeDataFileHeader() const;
 
+  ///\brief Write a short summary in the log file
+  virtual void writeRunSummary();
+
   ///\brief Write the relevant run statistics to a file.
-  void writeRunStat(std::string filePath) const;
+  virtual void writeRunStat(std::string filePath) const;
 
   /// \brief Save the run info into the output folder.
   void saveRunInfo() const;
@@ -296,8 +300,8 @@ class pRunController : public pFiniteStateMachine
   
  private slots:
    
-  void updateRunInfo();
-  void resetRunInfo();
+  virtual void updateRunInfo();
+  virtual void resetRunInfo();
 
 };
 

@@ -25,7 +25,7 @@ with this program; if not, write to the Free Software Foundation Inc.,
 #include "pQtCustomTab.h"
 #include "xpolgui.h"
 #include "pMap.h"
-#include "pMapPlot.h"
+#include "pHitmap.h"
 #include "pHistogramOptions.h"
 #include "xpemonPlotOptions.h"
 
@@ -50,7 +50,7 @@ class pHitmapTab : public pQtCustomTab
  private:
    
    pMap* m_hitmap;
-   pMapPlot *m_hitmapPlot;
+   pHitmap *m_hitmapPlot;
    
    void setup();
 };

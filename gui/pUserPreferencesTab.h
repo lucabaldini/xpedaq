@@ -1,6 +1,5 @@
 /***********************************************************************
-Copyright (C) 2007, 2008 by Luca Baldini (luca.baldini@pi.infn.it),
-Johan Bregeon, Massimo Minuti and Gloria Spandre.
+Copyright (C) 2007--2016 the X-ray Polarimetry Explorer (XPE) team.
 
 For the license terms see the file LICENSE, distributed along with this
 software.
@@ -43,7 +42,7 @@ class pUserPreferencesTab : public pQtCustomTab
   Q_OBJECT
 
  public:
-  pUserPreferencesTab();
+  pUserPreferencesTab(bool full = true);
   ~pUserPreferencesTab() {;}
   pUserPreferences *getUserPreferences();
   int getVisualizationMode();
@@ -68,8 +67,7 @@ class pUserPreferencesTab : public pQtCustomTab
   void visualizetionModeChanged(int mode);
 
  protected:
-
- private:
+  
   QString m_loggerDebugString;
   QString m_loggerInfoString;
   QString m_loggerWarningString;
@@ -95,7 +93,7 @@ class pUserPreferencesTab : public pQtCustomTab
   void setupMulticastWidgets();
   void setupLoggerWidgets();
   void setupConnections();
-  void setOutputFodler(std::string path);
+  void setOutputFolder(std::string folderPath);
   void setMulticastAddress(std::string address);
   void setMulticastPort(int port);
   int convertLoggerLevel(QString level);
