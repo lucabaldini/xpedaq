@@ -8,13 +8,15 @@ qusb_install_kernel_module()
     KM_INSTALL_PATH=/lib/modules/$(uname -r)/kernel/drivers/usb/misc
     if [ -f $KM_INSTALL_PATH/qusb_lnx.ko ];
     then
-	echo "Kernel module found, nothing to do."
+    	echo "Kernel module found, nothing to do."
     else
 	echo "Compiling kernel..."
 	cd driver
 	make
 	echo "Copying kernel module..."
 	sudo cp $(uname -m)/qusb_lnx.ko $KM_INSTALL_PATH
+	cd ..
+	source qusb_script.sh
 	cd -
     fi
 }
