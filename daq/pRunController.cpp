@@ -60,10 +60,12 @@ pRunController::pRunController(std::string configFilePath,
   if (!xpedaqos::fileExists(m_trgMaskFilePath)) {
     xpedaqos::copyFile(m_trgMaskFilePath + ".sample", m_trgMaskFilePath);
   }
+  m_lockFilePath = xpedaqos::rjoin(".ups.lock");
   setupRun();
   m_timer = new QTimer();
   m_timer->setInterval(1000);
   connect(m_timer, SIGNAL(timeout()), this, SLOT(updateRunInfo()));
+  connect(m_timer, SIGNAL(timeout()), this, SLOT(checkLockFile()));
   m_usbController = new pUsbController();
   m_xpolFpga = new pXpolFpga(m_usbController);
   m_dataCollector = new pDataCollector(m_xpolFpga, m_emitBlocks);
@@ -286,6 +288,19 @@ void pRunController::resetRunInfo()
   emit numEventsChanged(0);
   emit averageEventRateChanged(0.);
   emit instantEventRateChanged(0.);
+}
+
+
+/*!
+ */
+void pRunController::checkLockFile()
+{
+  if (FILE *file = fopen(m_lockFilePath.c_str(), "r")) {
+    *xpollog::kError << "Lock file " << m_lockFilePath
+		     << " found, stopping run..." << endline;
+    fclose(file);    
+    setStopped();
+  }
 }
 
 

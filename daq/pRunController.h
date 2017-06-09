@@ -297,11 +297,20 @@ class pRunController : public pFiniteStateMachine
   
   /// Flag for requiring the dataCollector to emit data blocks on reading
   bool m_emitBlocks;
+
+  /// Path to the lock file.
+  std::string m_lockFilePath;
   
  private slots:
-   
+
+  /// Update the run information.
   virtual void updateRunInfo();
+
+  /// Reset the run information.
   virtual void resetRunInfo();
+
+  /// Check the presence of a lock file and stop the DAQ if needed.
+  virtual void checkLockFile();
 
 };
 
