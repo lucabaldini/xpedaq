@@ -108,7 +108,7 @@ void pDataCollector::run()
       } else {
 	curDataBlock = new pDataBlock(dataBuffer, maxSize);
 
-	// Shit to check the ROI.
+	/* Shit to check the ROI.
 	if (m_detectorConfiguration->readoutMode() ==
 	    xpoldetector::kChargeInjectionReadoutCode) {
 	  for (unsigned int evt = 0; evt < curDataBlock->numEvents(); evt ++) {
@@ -124,7 +124,7 @@ void pDataCollector::run()
 	  }
 	}
 	// End of shit.
-	
+	*/
       }
       if (curDataBlock->errorSummary()) {
 	*xpollog::kError << "Data block at index " 
