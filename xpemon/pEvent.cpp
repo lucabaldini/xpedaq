@@ -74,7 +74,7 @@ const event::Hit& pEvent::operator() (const CubeCoordinate& p) const{
 int pEvent::findHighestPixel() const
 {
   int maxPos = -1;
-  int maxVal = 0;
+  int maxVal = -100000;
   for (int i = 0; i < evtSize(); ++i){
     if (m_hits.at(i).counts > maxVal){
       maxVal = m_hits.at(i).counts;
@@ -172,7 +172,7 @@ int pEvent::minKey(const std::vector<int> &key) const
 void pEvent::reconstruct(int threshold)
 {
   int clusterId = 0;
-
+   
   // Run the clustering.
   clusterize(threshold);
 
@@ -225,7 +225,7 @@ void pEvent::reconstruct(int threshold)
     x0 /= wsum;
     y0 /= wsum;
   }
-
+  
   // Now we can assign a direction to the original axis, based on the
   // sign of the third moment.
   m_momentsAnalysis1.flip3();
