@@ -28,7 +28,7 @@ with this program; if not, write to the Free Software Foundation Inc.,
 #include <vector>
 #include <cstdint>
 
-typedef int16_t adc_count_t;
+typedef uint16_t adc_count_t;
 typedef uint64_t microsecond_t;
 
 namespace event
