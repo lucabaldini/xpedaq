@@ -1,5 +1,7 @@
 
-* ADC count changed from uint16 to int 16.
+* Command line options to control all the timing parameters added.
+* Facility for stopping the DAQ via a lock file implemented (issue #153).
+* Merge with the radtest branch.
 * Added fuction to read the XPOL register, and minor refactoring of the
   pXpolFpga code.
 * Added functions to read the readout counters in the FPGA.
