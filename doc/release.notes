@@ -1,4 +1,7 @@
 
+-------------------------------------------------------------------------------
+xpedaq (0.23.0) - Thu, 20 Jul 2017 16:18:26 +0200
+-------------------------------------------------------------------------------
 * Command line options to control all the timing parameters added.
 * Facility for stopping the DAQ via a lock file implemented (issue #153).
 * Merge with the radtest branch.
