@@ -44,9 +44,9 @@ class pEventReader: public QObject
   public:
   
     pEventReader(const pMonitorPreferences& preferences,
-		 pHistogram* windowSizeHist, pHistogram* clusterSizeHist,
+		             pHistogram* windowSizeHist, pHistogram* clusterSizeHist,
                  pHistogram* pulseHeightHist,
-		 pModulationHistogram* modulationHist, pMap* hitMap);
+		             pModulationHistogram* modulationHist, pMap* hitMap);
     int numEventsRead() const {return m_numEventsRead;}
     int numEventsAccepted() const {return m_numEventsAccepted;}
     long int currentSeconds() const;

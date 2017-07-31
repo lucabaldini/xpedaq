@@ -51,6 +51,10 @@ class pMinMaxOptionPairBase : public pQtGridLayoutWidget
   
   pMinMaxOptionPairBase(QWidget *parent) : pQtGridLayoutWidget(parent) {;}
     
+  signals:
+  
+    void textEdited();
+
   public slots:
   
     virtual void updateMinRange() = 0;

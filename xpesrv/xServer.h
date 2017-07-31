@@ -49,6 +49,8 @@ class xServer : public QThread
  
  protected: 
   void run();
+  bool isRoiValid(const int* Roi);
+  void goToNextEvent();
 
  private:
   pUdpSender *m_udpSender;

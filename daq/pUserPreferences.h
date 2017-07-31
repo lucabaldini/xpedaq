@@ -33,9 +33,8 @@ class pUserPreferences
 {
 
  public:
-  pUserPreferences();
+  pUserPreferences() {;}
   pUserPreferences(std::string filePath);
-  ~pUserPreferences();
 
   // Access methods.
   unsigned short int visualizationMode() const {return m_visualizationMode;}

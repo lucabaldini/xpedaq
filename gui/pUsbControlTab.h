@@ -38,7 +38,7 @@ class pUsbControlTab : public pQtCustomTab
 
  public:
 
-  pUsbControlTab();
+  pUsbControlTab(bool timeoutWidgets = true);
   ~pUsbControlTab() {;}
   int timeout() const;
   
@@ -52,7 +52,7 @@ class pUsbControlTab : public pQtCustomTab
 
  private:
 
-  void setupWidgets();
+  void setupWidgets(bool timeoutWidgets);
   pQtCustomTextLabel *m_statusLabel;
   QLineEdit *m_statusDisplay;
   pQtCustomTextLabel *m_deviceNameLabel;

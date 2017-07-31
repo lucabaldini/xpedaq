@@ -156,3 +156,16 @@ bool xpedaqos::copyFile(std::string src, std::string dest)
   }
   return true;
 }
+
+
+/*! Check if a file name ends with a given string
+*/
+bool xpedaqos::nameEndsWith(std::string filePath, std::string ending)
+{
+  if (filePath.length() >= ending.length()) {
+    return (0 == filePath.compare (filePath.length() - ending.length(),
+            ending.length(), ending));
+  } else {
+    return false;
+  }
+}

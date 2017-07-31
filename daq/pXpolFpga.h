@@ -41,9 +41,21 @@ class pXpolFpga : public QObject
   void setup(pDetectorConfiguration *configuration); 
   void configFullFrame();
   void configWindowedMode(pDetectorConfiguration *configuration);
+  void setProbes();
   void configXPM();
   void configXPMWindowed(pDetectorConfiguration *configuration);
-  void writeAddress(unsigned short X, unsigned short Y);
+
+  void writeXpolAddressRegister(unsigned short x, unsigned short y);
+  void writeXpolConfigurationRegister(unsigned short value);
+  void readXpolAddressConfigurationRegisters(unsigned short &x,
+					     unsigned short &y,
+					     unsigned short &conf);
+  uint32_t readErrorCode();
+  uint32_t readEventCounter();
+  uint32_t readRejectedEventCounterWllim();
+  uint32_t readRejectedEventCounterWulim();
+  void readReadoutStatistics(uint32_t &evtCounter, uint32_t &rejEvtCounterWllim,
+			     uint32_t &rejEvtCounterWulim );
   
   pUsbController *usbController() const {return m_usbController;}
 
@@ -61,20 +73,18 @@ class pXpolFpga : public QObject
  protected:
 
  private:
-
-   void serialWrite(unsigned short REG_ADD,unsigned short regdata);
-   void mainSerialWrite(unsigned short REG_ADD,unsigned short regdata);
+	
+   void serialWrite(unsigned short REG_ADD, unsigned short regdata);
+   void mainSerialWrite(unsigned short REG_ADD, unsigned short regdata);
    void setupToDisablePixels();
-   unsigned short mainSiRead(unsigned short reg_address);
+   uint32_t mainSerialRead(unsigned short reg_address);
    pUsbController *m_usbController;
 
  public slots:
    unsigned short readVrefDac();
 
-
  signals:
    void vrefRead(unsigned short dac, double vref);
-
 };
 
 #endif /*PXPOLFPGA_H_*/

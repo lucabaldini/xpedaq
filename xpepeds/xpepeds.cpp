@@ -28,18 +28,27 @@ int main(int argn, char *argv[])
   parser.addOption<int>("clock-frequency", 'f',
                         "Clock frequency code (0-32-64-96)");  
   parser.addOption<std::string>("comment", 'm', "A user comment");
-  
+  parser.addOption<std::string>("reference-file", 'r',
+                                "Path to the reference pedestal file");
+  parser.addOption<int>("sigma-threshold", 't',
+                        "Threshold for outlier pixels (in sigma)");
+  parser.addOption<int>("bad-pixels", 'p',
+    "Number of outlier pixels required to tag an event as corrupted");
+  // Parse the command-line arguments.
+  parser.parse(argn, argv);
+
   std::string cfgFolderPath = xpedaqos::rjoin("xpepeds", "config");
   std::string configFilePath = xpedaqos::join(cfgFolderPath, "detector.cfg");
   std::string preferencesFilePath = xpedaqos::join(cfgFolderPath,
 						   "preferences.cfg");
   std::string trgMaskFilePath = xpedaqos::join(cfgFolderPath, "trgmask.cfg");
-  pedRunController *runController = new pedRunController(configFilePath,
-                                       preferencesFilePath, trgMaskFilePath);
+  
+  // Initialize run controller and detector configuration
+  pedRunController *runController;
+  runController = new pedRunController(configFilePath, preferencesFilePath,
+                                       trgMaskFilePath);
   pDetectorConfiguration* configuration =
     runController->detectorConfiguration();  
-  // Parse the command-line arguments.
-  parser.parse(argn, argv);
 
   // Apply all command-line options.
   if (parser.optionSet("max-seconds")) {
@@ -65,6 +74,19 @@ int main(int argn, char *argv[])
   if (parser.optionSet("comment")){
     const std::string userComment = parser.value<std::string>("comment");
     runController->setUserComment(userComment);
+  }
+  if (parser.optionSet("reference-file")) {
+    std::string referenceMapFilePath  =  parser.value<std::string>
+                                                          ("reference-file");
+    runController->loadRefMapFromFile(referenceMapFilePath);
+    if (parser.optionSet("sigma-threshold")) {
+      int nSigma = parser.value<int>("sigma-threshold");
+      runController->setNSigmaAlarmThreshold(nSigma);
+    }
+    if (parser.optionSet("bad-pixels")) {
+      int nBadPixels = parser.value<int>("bad-pixels");
+      runController->setNBadPixelsThreshold(nBadPixels);
+    }
   }
   bool batch = parser.value<bool>("batch");
   

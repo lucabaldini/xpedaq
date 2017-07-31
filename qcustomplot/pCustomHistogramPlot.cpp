@@ -201,6 +201,7 @@ void pCustomHistogramPlot::contextMenuRequest(QPoint pos)
   else {
     menu->addAction("Set y to lin scale", this, SLOT(setLinScaleY()));
   }
+  menu->addAction("Save", this, SLOT(savePlot()));
   menu->popup(mapToGlobal(pos));
 }
 
@@ -216,4 +217,14 @@ void pCustomHistogramPlot::setLinScaleY()
 {
   yAxis->setScaleType(QCPAxis::stLinear);
   m_isLogScaleY = false;
+}
+
+
+void pCustomHistogramPlot::savePlot()
+{
+  QString fileName;
+  fileName = QFileDialog::getSaveFileName(this, tr("Save File"),
+             "", tr("Images (*.pdf)"));
+  savePdf(fileName, true, 0, 0, QString("xpedaq package"),
+          m_options.m_plotName);
 }

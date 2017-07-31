@@ -1,6 +1,5 @@
 /***********************************************************************
-Copyright (C) 2007, 2008 by Luca Baldini (luca.baldini@pi.infn.it),
-Johan Bregeon, Massimo Minuti and Gloria Spandre.
+Copyright (C) 2007--2016 the X-ray Polarimetry Explorer (XPE) team.
 
 For the license terms see the file LICENSE, distributed along with this
 software.
@@ -26,7 +25,7 @@ with this program; if not, write to the Free Software Foundation Inc.,
 
 #include "pUserPreferencesTab.h"
 
-pUserPreferencesTab::pUserPreferencesTab()
+pUserPreferencesTab::pUserPreferencesTab(bool full)
   : pQtCustomTab("Preferences")
 {
   m_groupBoxGridLayout->setColumnMinimumWidth(0, 250);
@@ -34,17 +33,23 @@ pUserPreferencesTab::pUserPreferencesTab()
   m_loggerInfoString = "INFO";
   m_loggerWarningString = "WARNING";
   m_loggerErrorString = "ERROR";
-  setupVisualizationModeWidgets();
-  addVerticalSpacer();
+  if (full) {
+    setupVisualizationModeWidgets();
+    addVerticalSpacer();
+  }
   setupDataFileWidgets();
   addVerticalSpacer();
-  setupMulticastWidgets();
-  addVerticalSpacer();
+  if (full) {
+    setupMulticastWidgets();
+    addVerticalSpacer();
+  }
   setupLoggerWidgets();
   freezeSize(xpolgui::kTabGroupBoxWidth);
-  setupConnections();
+  if (full) {
+    setupConnections();
+  }
   // To be uncommented when the functionality is implemented.
-  m_enableDataFileCheckBox->setEnabled(false);
+  m_enableDataFileCheckBox->setEnabled(true);
   enableOutputFolderWidgets(false);
 }
 
@@ -250,7 +255,7 @@ void pUserPreferencesTab::displayUserPreferences(pUserPreferences preferences)
     *xpollog::kError << "Invalid display." << endline;
   }
   m_enableDataFileCheckBox->setChecked(preferences.dataFileEnabled());
-  setOutputFodler(preferences.outputFolder());
+  setOutputFolder(preferences.outputFolder());
   m_enableMulticastCheckBox->setChecked(preferences.multicastEnabled());
   enableMulticastWidgets(preferences.multicastEnabled());
   setMulticastAddress(preferences.multicastAddress());
@@ -262,9 +267,9 @@ void pUserPreferencesTab::displayUserPreferences(pUserPreferences preferences)
   m_enableLogFileCheckBox->setChecked(preferences.logFileEnabled());
 }
 
-void pUserPreferencesTab::setOutputFodler(std::string path)
+void pUserPreferencesTab::setOutputFolder(std::string folderPath)
 {
-  QString pathQString = QString(path.c_str());
+  QString pathQString = QString(folderPath.c_str());
   m_outputFolderDisplay->setText(pathQString);
 }
 

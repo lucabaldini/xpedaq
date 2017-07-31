@@ -22,8 +22,8 @@ with this program; if not, write to the Free Software Foundation Inc.,
 #include "pEventReader.h"
 
 pEventReader::pEventReader(const pMonitorPreferences& preferences,
-			   pHistogram* windowSizeHist,
-			   pHistogram* clusterSizeHist,
+			                     pHistogram* windowSizeHist,
+			                     pHistogram* clusterSizeHist,
                            pHistogram* pulseHeightHist, 
                            pModulationHistogram* modulationHist,
                            pMap* hitMap) :
@@ -63,13 +63,12 @@ void pEventReader::readPendingDatagram()
      to the buffer - no actual copy of the data involved.
   */
   pDataBlock p (reinterpret_cast<unsigned char*> (data), size);
+  if (p.errorSummary() > 0){
+    std::cout << "Invalid datablock: " << p;
+    return;
+  }
   for (unsigned int evt = 0; evt < p.numEvents(); ++evt)
   {
-    if (p.errorSummary() > 0)
-    {
-      std::cout << "Invalid event n. " <<  evt  << " of " << p;
-      return;
-    }
     int nPixel = p.numPixels(evt);
     event::Adc_vec_t curHitMap;
     curHitMap.resize(nPixel);

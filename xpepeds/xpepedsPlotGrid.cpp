@@ -20,8 +20,10 @@ void xpepedsPlotGrid::setupAverageMap()
   pColorMapOptions averageMapOptions ("Average map", "x", "y",
                                       "average [counts]",
                                       QCPColorGradient::gpThermal);
-  m_averageMap = new pMap(pedestals::kNx, 0, pedestals::kNx,
-                          pedestals::kNy, 0, pedestals::kNy);
+  m_averageMap = new pMap(xpoldetector::kNumPixelsX,
+                          0, xpoldetector::kNumPixelsX,
+                          xpoldetector::kNumPixelsY,
+                          0, xpoldetector::kNumPixelsY);
   m_averageMapPlot = new pMapPlot(m_averageMap, averageMapOptions);
   m_averageMapPlot -> setObjectName(QString::fromUtf8("average map"));                              
   m_PlotLayout -> addWidget(m_averageMapPlot, 0, 0);
@@ -44,8 +46,10 @@ void xpepedsPlotGrid::setupRmsMap()
 {
   pColorMapOptions rmsMapOptions ("Rms map", "x", "y", "rms [counts]",
                                    QCPColorGradient::gpThermal);
-  m_rmsMap = new pMap(pedestals::kNx, 0, pedestals::kNx,
-                      pedestals::kNy, 0, pedestals::kNy);
+  m_rmsMap = new pMap(xpoldetector::kNumPixelsX,
+                      0, xpoldetector::kNumPixelsX,
+                      xpoldetector::kNumPixelsY,
+                      0, xpoldetector::kNumPixelsY);
   m_rmsMapPlot = new pMapPlot(m_rmsMap, rmsMapOptions);
   m_rmsMapPlot -> setObjectName(QString::fromUtf8("rms map"));
   m_PlotLayout -> addWidget(m_rmsMapPlot, 1, 0);
@@ -65,21 +69,14 @@ void xpepedsPlotGrid::setupRmsHist()
 
 void xpepedsPlotGrid::fillPlots(const PedestalsMap& pedMap)
 {
-  for (unsigned int xIndex=0; xIndex < pedestals::kNx; xIndex++){
-    for (unsigned int yIndex=0; yIndex < pedestals::kNy; yIndex++){
-      try {
-        double average = pedMap.average (xIndex,yIndex);
-        double rms = pedMap.rms (xIndex,yIndex);
-        //std::cout <<  "x = " << xIndex << ", y = " << yIndex << ", average = " << average << std::endl;
-        m_averageMap -> fillBin (xIndex, yIndex, average);
-        m_rmsMap -> fillBin (xIndex, yIndex, rms);                            
-        m_averageHist -> fill (average);
-        m_rmsHist -> fill (rms);
-        
-      }
-      catch (int err){
-        continue;
-      }    
+  for (unsigned int col=0; col < xpoldetector::kNumPixelsX; ++col){
+    for (unsigned int row=0; row < xpoldetector::kNumPixelsY; ++row){
+      double average = pedMap.average (col,row);
+      double rms = pedMap.rms (col,row);
+      m_averageMap -> fillBin (col, row, average);
+      m_rmsMap -> fillBin (col, row, rms);                            
+      m_averageHist -> fill (average);
+      m_rmsHist -> fill (rms);
     }
   }
   m_averagePlot -> updateDisplay();

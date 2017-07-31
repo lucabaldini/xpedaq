@@ -4,6 +4,8 @@
 #include <vector>
 
 #include <QMenu>
+#include <QFileDialog>
+#include <QString>
 
 #include "qcustomplot.h"
 #include "pHistogramOptions.h"
@@ -42,6 +44,7 @@ class pCustomHistogramPlot : public QCustomPlot
     void contextMenuRequest(QPoint pos);
     void setLogScaleY();
     void setLinScaleY();
+    void savePlot();    
       
   protected:
     

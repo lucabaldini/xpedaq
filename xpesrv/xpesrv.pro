@@ -54,7 +54,7 @@ HEADERS += pLoggerChannel.h
 HEADERS += pLogger.h
 HEADERS += pIOManager.h
 HEADERS += pQtCustomTextLabel.h
-
+HEADERS += pChrono.h
 
 SOURCES += xpolgui.cpp
 SOURCES += xpollog.cpp
@@ -80,6 +80,8 @@ SOURCES += pLoggerChannel.cpp
 SOURCES += pLogger.cpp
 SOURCES += pIOManager.cpp
 SOURCES += pQtCustomTextLabel.cpp
+SOURCES += pChrono.cpp
+
 SOURCES += xpesrv.cpp
 
 

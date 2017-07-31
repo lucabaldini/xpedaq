@@ -49,6 +49,7 @@ namespace xpedaqos{
   extern bool fileExists(std::string path);
   extern bool folderExists(std::string path);
   extern bool copyFile(std::string src, std::string dest);
+  extern bool nameEndsWith(std::string filePath, std::string ending);
 }
 
 #endif //XPEDAQOS_H

@@ -30,6 +30,7 @@ bin/xpedaq
 bin/xpepeds
 bin/xpesrv
 bin/xpemon
+bin/xpereg
 
 build/*
 log/*
@@ -53,3 +54,5 @@ xpepeds/config/*.cfg
 xpesrv/preferences.cfg
 
 xpemon/config/preferences.cfg
+
+xpereg/config/*.cfg
