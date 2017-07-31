@@ -51,8 +51,8 @@ def highest_occupancy_pxl(pxl_matrix, npxl=10):
 # don't forget to check for min window=32 of pixel on the border won't trigger
 EXECUTABLE=os.path.join(os.environ['XPEDAQ_ROOT'],'bin','xpedaq')
 MAX_SECONDS=30
-MAX_BLOCK= 1000
-THRESHOLD_DAC=285 # 230 mV
+MAX_BLOCK= 200
+THRESHOLD_DAC=273 #285 DAC -> 230 mV, 200 DAC -> 161 mV, 273 DAC -> 220 mV
 
 """ For reference here list of usefull options:
 ("max-seconds", 's',"Maximum data acquisition time (in s)");
@@ -108,8 +108,11 @@ for i in range(run_n_evt):
 
 run_noisy_pxl =  highest_occupancy_pxl(pxl_occupancy, 100)
 print ("List of noisy pixel\ncol\trow\tocc.\trate")
+nTot = 0
 for  (c,r,n) in run_noisy_pxl:
 	print ("%d\t%d\t%d\t%.2f" % (c,r,n,n/run_duration))
+	nTot +=n
+print ("Tot triggers %d, total rate %.2f" %(nTot, nTot/run_duration))
 
 # Write trigger mask
 print ("\n\tWriting trigger mask \n NOT IMPLEMENTED YET" )
