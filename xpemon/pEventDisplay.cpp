@@ -20,6 +20,7 @@ with this program; if not, write to the Free Software Foundation Inc.,
 ***********************************************************************/
 
 #include "pEventDisplay.h"
+#include <algorithm>
 
 pEventDisplay::pEventDisplay(pColorMapOptions options) :
   m_options(options),
@@ -226,12 +227,13 @@ void pEventDisplay::loadEvent (const pEvent& evt)
 
 void pEventDisplay::updateDataRange()
 {
-  double zmin = 0;
-  double zmax = 0;
+  double zmin = 10000.; // Initialize with a very high value
+  double zmax = 0.;
   for (const event::Hit& hit : m_event) {
     if (hit.counts < zmin) zmin = hit.counts;
     if (hit.counts > zmax) zmax = hit.counts;
   }
+  zmin = std::max(zmin, 0.); // if zmin is less than zero start from zero instead
   setDataRange(QCPRange(zmin, zmax));
 }
 
