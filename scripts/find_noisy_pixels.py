@@ -1,8 +1,29 @@
+#!/usr/bin/env python
+# Copyright (C) 2007--2016 the X-ray Polarimetry Explorer (XPE) team.
+#
+# For the license terms see the file LICENSE, distributed along with this
+# software.
+#
+# This program is free software; you can redistribute it and/or modify it
+# under the terms of the GNU General Public License as published by the
+# Free Software Foundation; either version 2 of the License, or (at your
+# option) any later version.
+#
+# This program is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+# General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along
+# with this program; if not, write to the Free Software Foundation Inc.,
+# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+
 import os, sys
 import subprocess
 import numpy as np
-from pyxpe.recon.xpol import XPOL_NUM_COLUMNS, XPOL_NUM_ROWS
-from pyxpe.recon.binio import xpeBinaryFileWindowed
+
+from ixpe_evt_lib import XPOL_NUM_COLUMNS, XPOL_NUM_ROWS, ixpeBinaryFileWindowed
+
 
 #---------------------------------------
 # Useful functions
@@ -50,7 +71,7 @@ def highest_occupancy_pxl(pxl_matrix, npxl=10):
 # execute run for noisy pixel
 # don't forget to check for min window=32 of pixel on the border won't trigger
 EXECUTABLE=os.path.join(os.environ['XPEDAQ_ROOT'],'bin','xpedaq')
-MAX_SECONDS=30
+MAX_SECONDS=60
 MAX_BLOCK= 200
 THRESHOLD_DAC=273 #285 DAC -> 230 mV, 200 DAC -> 161 mV, 273 DAC -> 220 mV
 
@@ -69,14 +90,22 @@ print ("\n\tExecuting:\n%s\n..." %cmd)
 
 out_dir_path = ""
 run_id = 0
-proc=subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-for line in proc.stdout:
-	sys.stdout.buffer.write(line)
-	sys.stdout.flush()
-	if "Creating" in str(line):
-		out_dir_path = str(line).split("...")[0].split("Creating ")[-1]
-		run_id = os.path.basename(out_dir_path)
-proc.wait()
+if os.name == "posix": # temporary fix for pcxipe1 with linux where subprocess don't work as expected
+	os.system(cmd)
+	try:
+		run_id = input("enter run id ")
+	except NameError:
+		run_id = raw_input("enter run id ")	
+	out_dir_path = "/data/xpedata/004/" + run_id
+else:
+	proc=subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+	for line in proc.stdout:
+		sys.stdout.buffer.write(line)
+		sys.stdout.flush()
+		if "Creating" in str(line):
+			out_dir_path = str(line).split("...")[0].split("Creating ")[-1]
+			run_id = os.path.basename(out_dir_path)
+	proc.wait()
 
 # execute search for noisy pixels 
 print ("\n\tAnalyzing run %s in %s" % (run_id, out_dir_path))
@@ -95,16 +124,18 @@ for l in run_stat_file:
 print("Average rate [Hz]: %f" % (run_n_evt/run_duration))
 
 file_path = os.path.join(out_dir_path, '%s_data.mdat'% (run_id))
-input_file = xpeBinaryFileWindowed(file_path)
+input_file = ixpeBinaryFileWindowed(file_path)
 # matrix for pixel occupancy
 # DON"T FORGET: np.zeros([row,col])
 pxl_occupancy = np.zeros([XPOL_NUM_ROWS,XPOL_NUM_COLUMNS])
 
 for i in range(run_n_evt):
     event = input_file.next()
-    #event.draw_ascii(ZERO_SUPP)
+    #event.draw_ascii(0)
     col, row = guess_trg_pxl(event)
     pxl_occupancy[row][col] += 1
+    #print ("debug col, row: %d %d" % (col, row))
+    #input("e2g")
 
 run_noisy_pxl =  highest_occupancy_pxl(pxl_occupancy, 100)
 print ("List of noisy pixel\ncol\trow\tocc.\trate")
@@ -116,3 +147,5 @@ print ("Tot triggers %d, total rate %.2f" %(nTot, nTot/run_duration))
 
 # Write trigger mask
 print ("\n\tWriting trigger mask \n NOT IMPLEMENTED YET" )
+
+#
