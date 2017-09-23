@@ -107,6 +107,11 @@ void pDataCollector::run()
 	curDataBlock = new pDataBlock(dataBuffer);
       } else {
 	curDataBlock = new pDataBlock(dataBuffer, maxSize);
+	
+	// stupid printout for timestamp debug, cs 22/9/2017
+	//for (unsigned int evt = 0; evt < curDataBlock->numEvents(); evt ++) {
+	//	curDataBlock->mydebug(evt);
+	//}
 
 	/* Shit to check the ROI.
 	if (m_detectorConfiguration->readoutMode() ==

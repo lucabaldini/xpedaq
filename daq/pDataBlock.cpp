@@ -231,6 +231,15 @@ unsigned int pDataBlock::numPixels(unsigned int event) const
   return (xmax(event) - xmin(event) + 1)*(ymax(event) - ymin(event) + 1);
 }
 
+void pDataBlock::mydebug(unsigned int event)  const
+{
+	std::cout <<  dataWord(event, BufferId) 
+	<< " - " << dataWord(event, 12) << " - " << dataWord(event, 14) 
+	<< " - " << dataWord(event, 16) << " - " << dataWord(event, 18)
+	<< " - " << dataWord(event, 20) << " - " << dataWord(event, 22) << std::endl;
+	
+}
+
 
 /*!
 

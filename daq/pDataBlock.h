@@ -95,6 +95,10 @@ class pDataBlock
   friend std::ostream& operator<<(std::ostream& os, const pDataBlock& block)
     {return block.fillStream(os);}
 
+	/*
+   */
+  void mydebug(unsigned int event)  const;
+  
  private:
 
   enum WordOffset {
@@ -147,6 +151,8 @@ class pDataBlock
   /*
    */
   unsigned int dataWord(unsigned int offset) const;
+  
+
 
   /*
    */
