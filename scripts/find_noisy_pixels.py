@@ -70,10 +70,12 @@ def highest_occupancy_pxl(pxl_matrix, npxl=10):
 
 # execute run for noisy pixel
 # don't forget to check for min window=32 of pixel on the border won't trigger
-EXECUTABLE=os.path.join(os.environ['XPEDAQ_ROOT'],'bin','xpedaq')
-MAX_SECONDS=60
-MAX_BLOCK= 200
-THRESHOLD_DAC=273 #285 DAC -> 230 mV, 200 DAC -> 161 mV, 273 DAC -> 220 mV
+EXECUTABLE   = os.path.join(os.environ['XPEDAQ_ROOT'],'bin','xpedaq')
+TRG_FILE     =  os.path.join(os.environ['XPEDAQ_ROOT'],'xpedaq\config','trgmask.cfg')
+MAX_SECONDS  = 60
+MAX_BLOCK    = 200
+THRESHOLD_DAC= 236 #285 DAC -> 230 mV, 200 DAC -> 161 mV, 273 DAC -> 220 mV, 236 DAC -> 190 mV
+TARGET_RATE  = 1 #Hz
 
 """ For reference here list of usefull options:
 ("max-seconds", 's',"Maximum data acquisition time (in s)");
@@ -83,69 +85,80 @@ THRESHOLD_DAC=273 #285 DAC -> 230 mV, 200 DAC -> 161 mV, 273 DAC -> 220 mV
 ("threshold-dac", 'T',"Threshold DAC setting (the same for all clusters)");
 ("comment", 'm', "A user comment");
  """
- 
-#CMD="$EXECUTABLE -b -I -C $CHARGE_DAC -x $ADDRESS_X -y $ADDRESS_Y -p $NUM_PEDESTALS -f $CLOCK_FREQUENCY -c $CLOCK_SHIFT -s $MAX_SECONDS -T $thr_dac"
-cmd = "%s -b -s %d -N %d -T %d" %(EXECUTABLE, MAX_SECONDS, MAX_BLOCK, THRESHOLD_DAC)
-print ("\n\tExecuting:\n%s\n..." %cmd)
+average_rate = 1000
+while average_rate >= TARGET_RATE:
+	#CMD="$EXECUTABLE -b -I -C $CHARGE_DAC -x $ADDRESS_X -y $ADDRESS_Y -p $NUM_PEDESTALS -f $CLOCK_FREQUENCY -c $CLOCK_SHIFT -s $MAX_SECONDS -T $thr_dac"
+	cmd = "%s -b -s %d -N %d -T %d" %(EXECUTABLE, MAX_SECONDS, MAX_BLOCK, THRESHOLD_DAC)
+	print ("\n\tExecuting:\n%s\n..." %cmd)
 
-out_dir_path = ""
-run_id = 0
-if os.name == "posix": # temporary fix for pcxipe1 with linux where subprocess don't work as expected
-	os.system(cmd)
-	try:
-		run_id = input("enter run id ")
-	except NameError:
-		run_id = raw_input("enter run id ")	
-	out_dir_path = "/data/xpedata/004/" + run_id
-else:
-	proc=subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-	for line in proc.stdout:
-		sys.stdout.buffer.write(line)
-		sys.stdout.flush()
-		if "Creating" in str(line):
-			out_dir_path = str(line).split("...")[0].split("Creating ")[-1]
-			run_id = os.path.basename(out_dir_path)
-	proc.wait()
+	out_dir_path = ""
+	run_id = 0
+	if os.name == "posix": # temporary fix for pcxipe1 with linux where subprocess don't work as expected
+		os.system(cmd)
+		try:
+			run_id = input("enter run id ")
+		except NameError:
+			run_id = raw_input("enter run id ")	
+		out_dir_path = "/data/xpedata/004/" + run_id
+	else:
+		proc=subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+		for line in proc.stdout:
+			sys.stdout.buffer.write(line)
+			sys.stdout.flush()
+			if "Creating" in str(line):
+				out_dir_path = str(line).split("...")[0].split("Creating ")[-1]
+				run_id = os.path.basename(out_dir_path)
+		proc.wait()
 
-# execute search for noisy pixels 
-print ("\n\tAnalyzing run %s in %s" % (run_id, out_dir_path))
+	# execute search for noisy pixels 
+	print ("\n\tAnalyzing run %s in %s" % (run_id, out_dir_path))
 
-# parsing run stats
-run_stat_file = open(os.path.join(out_dir_path, '%s_runstat.txt'% (run_id)))
-run_n_evt = 0
-run_duration = 0 #s
-print("Run stats for run %s" % run_id)
-for l in run_stat_file:
-	print(l.strip('\n'))
-	if 'duration' in l:
-		run_duration = float(l.strip('\n').split(':')[-1])
-	if 'events' in l:
-		run_n_evt = int(l.strip('\n').split(':')[-1])
-print("Average rate [Hz]: %f" % (run_n_evt/run_duration))
+	# parsing run stats
+	run_stat_file = open(os.path.join(out_dir_path, '%s_runstat.txt'% (run_id)))
+	run_n_evt = 0
+	run_duration = 0 #s
+	print("Run stats for run %s" % run_id)
+	for l in run_stat_file:
+		print(l.strip('\n'))
+		if 'duration' in l:
+			run_duration = float(l.strip('\n').split(':')[-1])
+		if 'events' in l:
+			run_n_evt = int(l.strip('\n').split(':')[-1])
+			
+	average_rate = run_n_evt/run_duration
+	print("Average rate [Hz]: %f" % (average_rate))
 
-file_path = os.path.join(out_dir_path, '%s_data.mdat'% (run_id))
-input_file = ixpeBinaryFileWindowed(file_path)
-# matrix for pixel occupancy
-# DON"T FORGET: np.zeros([row,col])
-pxl_occupancy = np.zeros([XPOL_NUM_ROWS,XPOL_NUM_COLUMNS])
+	file_path = os.path.join(out_dir_path, '%s_data.mdat'% (run_id))
+	input_file = ixpeBinaryFileWindowed(file_path)
+	# matrix for pixel occupancy
+	# DON"T FORGET: np.zeros([row,col])
+	pxl_occupancy = np.zeros([XPOL_NUM_ROWS,XPOL_NUM_COLUMNS])
 
-for i in range(run_n_evt):
-    event = input_file.next()
-    #event.draw_ascii(0)
-    col, row = guess_trg_pxl(event)
-    pxl_occupancy[row][col] += 1
-    #print ("debug col, row: %d %d" % (col, row))
-    #input("e2g")
+	for i in range(run_n_evt):
+		event = input_file.next()
+		#event.draw_ascii(0)
+		col, row = guess_trg_pxl(event)
+		pxl_occupancy[row][col] += 1
+		#print ("debug col, row: %d %d" % (col, row))
+		#input("e2g")
 
-run_noisy_pxl =  highest_occupancy_pxl(pxl_occupancy, 100)
-print ("List of noisy pixel\ncol\trow\tocc.\trate")
-nTot = 0
-for  (c,r,n) in run_noisy_pxl:
-	print ("%d\t%d\t%d\t%.2f" % (c,r,n,n/run_duration))
-	nTot +=n
-print ("Tot triggers %d, total rate %.2f" %(nTot, nTot/run_duration))
+	run_noisy_pxl = []
+	if run_n_evt>0:
+		run_noisy_pxl =  highest_occupancy_pxl(pxl_occupancy, 100)
+		
+	print ("List of noisy pixel\ncol\trow\tocc.\trate")
+	nTot = 0
+	for  (c,r,n) in run_noisy_pxl:
+		print ("%d\t%d\t%d\t%.2f" % (c,r,n,n/run_duration))
+		nTot +=n
+	print ("Tot triggers %d, total rate %.2f" %(nTot, nTot/run_duration))
 
-# Write trigger mask
-print ("\n\tWriting trigger mask \n NOT IMPLEMENTED YET" )
-
-#
+	# Write trigger mask
+	if run_noisy_pxl != []:
+		print ("\n\tWriting trigger mask with pixel %d %d \n" % (run_noisy_pxl[0][0], run_noisy_pxl[0][1]) )
+		# writing the pixel with highest occupancy
+		trg_mask_file = open(TRG_FILE, 'a')
+		trg_mask_file.write("%d %d" % (run_noisy_pxl[0][0], run_noisy_pxl[0][1]))
+		trg_mask_file.close()
+	
+print ("\n\t*************** The End *************** ")
