@@ -57,6 +57,8 @@ class pMonitorPreferences
   bool m_showCuts;
   // Show the modulation plot (if false, this is replaced by the cluster size).
   bool m_showModulationPlot;
+  // Disable the clustering and the reconstruction
+  bool m_skipReconstruction;
   
   // Read/write to/from file.
   void writeToFile(std::string filePath);
