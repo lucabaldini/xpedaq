@@ -22,7 +22,11 @@ with this program; if not, write to the Free Software Foundation Inc.,
 #include "pInfoBoxWidget.h"
 
 pInfoBoxWidget::pInfoBoxWidget(QWidget *parent):
-  pInfoBoxGui(parent)
+  pInfoBoxGui(parent),
+  m_drawFirstPassCheckBox(nullptr),
+  m_drawSearchRegionCheckBox(nullptr),
+  m_drawSecondPassCheckBox(nullptr),
+  m_showRawEventsCheckBox(nullptr)
 {
   setTitle("Single-event display");
   m_timeLabelName = "Time [s]";
@@ -63,6 +67,8 @@ pInfoBoxWidget::pInfoBoxWidget(QWidget *parent):
   addWidget(m_drawSearchRegionCheckBox, rowCount(), 0, 1, 2);
   m_drawSecondPassCheckBox = new QCheckBox("Draw second-pass moments analysis");
   addWidget(m_drawSecondPassCheckBox, rowCount(), 0, 1, 2);
+  m_showRawEventsCheckBox = new QCheckBox("Show raw events");
+  addWidget(m_showRawEventsCheckBox, rowCount(), 0, 1, 2);
   initializeText();
   freezeHeight();
 }
@@ -76,6 +82,18 @@ void pInfoBoxWidget::checkCheckBoxes(bool checked)
 }
  
 
+void pInfoBoxWidget::setReconOptionsEnabled(int status)
+{
+   bool enabled = !(static_cast<bool>(status));
+   if (!enabled) {
+     checkCheckBoxes(false);
+   }
+   m_drawFirstPassCheckBox->setEnabled(enabled);
+   m_drawSearchRegionCheckBox->setEnabled(enabled);
+   m_drawSecondPassCheckBox->setEnabled(enabled);
+}
+ 
+ 
 void pInfoBoxWidget::initializeText()
 {
   updateTime(0.);
