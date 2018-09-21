@@ -306,8 +306,8 @@ void pXpolFpga::configFullFrame()
   serialWrite((unsigned short)XPOL_RDNGS_N_REG,0x2);
   
   // modification for fw debug, by massimo on 14/7
-  serialWrite(0x1, 6);
-  serialWrite(0x2, 6);
+  serialWrite(0x1, 20);
+  serialWrite(0x2, 20);
 }
 
 
@@ -399,8 +399,8 @@ void pXpolFpga::configWindowedMode(pDetectorConfiguration *configuration)
   setProbes();
 
   // modification for fw debug, by massimo on 14/7
-  serialWrite(0x1, 8);
-  serialWrite(0x2, 8);
+  serialWrite(0x1, 10);
+  serialWrite(0x2, 10);
 
 }
 
