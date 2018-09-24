@@ -110,7 +110,7 @@ class pDataBlock
     BufferId = 10,
     Microseconds = 12,
     Seconds = 16,
-    AdcStart = 20
+    AdcStart = 30
   };
 
   enum DataBlockError {
