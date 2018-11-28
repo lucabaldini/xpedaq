@@ -28,6 +28,10 @@ pEvent::pEvent(int firstCol, int lastCol, int firstRow, int lastRow,
   pEventWindow(firstCol, lastCol, firstRow, lastRow),
   m_microseconds(microseconds),
   m_threshold(threshold),
+  m_rawPulseHeight(0),
+  m_pulseHeight(0),
+  m_baricenterX(0.),
+  m_baricenterY(0.),
   m_clusterSize(0),
   m_isEmpty(false)
 {
@@ -38,11 +42,12 @@ pEvent::pEvent(int firstCol, int lastCol, int firstRow, int lastRow,
   for (unsigned int i =0; i < adcCounts.size(); ++i){
     double x, y;
     pixelToCoord(pixelCoord(i), x, y);
-    m_hits.push_back(event::Hit{x, y, adcCounts.at(i), -1});
+    adc_count_t adcCount = adcCounts.at(i);
+    m_hits.push_back(event::Hit{x, y, adcCount, -1});
+    m_rawPulseHeight += adcCount;
+    m_pulseHeight += adcCount;
   }
   m_highestPixelAddress = findHighestPixel();
-  m_rawPulseHeight = 0;  
-  m_pulseHeight = 0;
   m_baricenterX = 0.;
   m_baricenterY = 0.;
 }
@@ -177,12 +182,10 @@ void pEvent::reconstruct(int threshold)
   clusterize(threshold);
 
   // Calculate the pulse height(s) and the coordinates of the baricenter.
-  m_rawPulseHeight = 0;  
   m_pulseHeight = 0;
   m_baricenterX = 0.;
   m_baricenterY = 0.;
   for (const auto &hit : m_hits){
-    m_rawPulseHeight += hit.counts;
     if (hit.clusterId == clusterId) {
       m_pulseHeight += hit.counts;
       m_baricenterX += hit.x * hit.counts;

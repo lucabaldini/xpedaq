@@ -305,7 +305,9 @@ void pXpolFpga::configFullFrame()
   // 2 because you cannot put more than 2 events in memory  
   serialWrite((unsigned short)XPOL_RDNGS_N_REG,0x2);
   
-  setProbes();
+  // modification for fw debug, by massimo on 14/7
+  serialWrite(0x1, 20);
+  serialWrite(0x2, 20);
 }
 
 
@@ -318,7 +320,6 @@ void pXpolFpga::configWindowedMode(pDetectorConfiguration *configuration)
     conf = (unsigned short)WINDOWED_INJ;
   else if(configuration->readoutMode()==xpoldetector::kWindowedReadoutCode)
     conf = (unsigned short)WINDOWED_EVT;
-
   
   // Discharge Width in unit of 50us tics - standard is 10 = 500us
   //serialWrite((unsigned short)14,0xa); 
@@ -343,6 +344,7 @@ void pXpolFpga::configWindowedMode(pDetectorConfiguration *configuration)
   
   // Define the Minimum number of pixels to be read in the Window : (DIM = x*32) 
   unsigned short winMinSize = configuration->minWindowSize();
+  
   serialWrite((unsigned short)XPOL_MIN_WIN_DIM_REG, winMinSize);    
   serialWrite((unsigned short)XPOL_WPULSE_REG,(conf>>6)&0x7);//modesel,usemh,runb 
   serialWrite((unsigned short)XPOL_SIGNAL_REG,(conf>>9)&0x1);//EnabletriggWindow
@@ -378,7 +380,7 @@ void pXpolFpga::configWindowedMode(pDetectorConfiguration *configuration)
   // We have to write the total number of samples to be acquired, i.e. 1 (the
   // actual data readout) + numSamples (the number of samples for pedestal
   // subtraction).
-  serialWrite((unsigned short)XPOL_RDNGS_N_REG, numSamples + 1);
+  serialWrite((unsigned short)XPOL_RDNGS_N_REG, numSamples); // used to be +1, changed on 27/7, cs mm
 
   // When the second bit of this register is set to 1 : analogical reset of the ASIC
   serialWrite((unsigned short)XPOL_DISPIX_REG,0x0);  //aaresetn
@@ -389,13 +391,17 @@ void pXpolFpga::configWindowedMode(pDetectorConfiguration *configuration)
   *xpollog::kInfo << "Address x: " << x << endline;
   *xpollog::kInfo << "Address y: " << y << endline;
   *xpollog::kInfo << "Configuration register: 0x" << hex << value << dec
-		  << endline;
-
+  		  << endline;
   // Configuration of the sequencer : configuration of the ASIC via the FPGPA
   // 0x0 means : USB speaks with the ASIC via the FPGA
   // 0xf means : the ASIC works in windowed mode
   serialWrite((unsigned short)15,0xf);
   setProbes();
+
+  // modification for fw debug, by massimo on 14/7
+  serialWrite(0x1, 10);
+  serialWrite(0x2, 10);
+
 }
 
 

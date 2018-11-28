@@ -71,6 +71,8 @@ void pMonitorPreferences::writeToFile(std::string filePath)
   xpolio::kIOManager->write(outputFile, m_showCuts);
   xpolio::kIOManager->write(outputFile, "//Display the modulation plot//");
   xpolio::kIOManager->write(outputFile, m_showModulationPlot);
+  xpolio::kIOManager->write(outputFile, "//Disable the clustering and the reconstruction//");
+  xpolio::kIOManager->write(outputFile, m_skipReconstruction);
   xpolio::kIOManager->closeOutputFile(outputFile);
 }
 
@@ -112,6 +114,8 @@ void pMonitorPreferences::readFromFile(std::string filePath)
   m_showCuts = xpolio::kIOManager->readBool(inputFile);
   xpolio::kIOManager->skipLine(inputFile);
   m_showModulationPlot = xpolio::kIOManager->readBool(inputFile);
+  xpolio::kIOManager->skipLine(inputFile);
+  m_skipReconstruction = xpolio::kIOManager->readBool(inputFile);
   xpolio::kIOManager->closeInputFile(inputFile);
 }
 

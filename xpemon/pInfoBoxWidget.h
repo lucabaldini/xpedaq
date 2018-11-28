@@ -47,6 +47,7 @@ class pInfoBoxWidget: public pInfoBoxGui
     QCheckBox *drawFirstPassCheckBox() {return m_drawFirstPassCheckBox;}
     QCheckBox *drawSearchRegionCheckBox() {return m_drawSearchRegionCheckBox;}
     QCheckBox *drawSecondPassCheckBox() {return m_drawSecondPassCheckBox;}
+    QCheckBox *showRawEventsCheckBox() {return m_showRawEventsCheckBox;}
 
     void checkCheckBoxes(bool checked);
 
@@ -66,6 +67,7 @@ class pInfoBoxWidget: public pInfoBoxGui
     void updateMom2Long(double mom2Long);
     void updateMomRatio(double momRatio);
     void updateSkewness(double skewness);
+    void setReconOptionsEnabled(int status);
     void reset();
  
   private:
@@ -93,6 +95,7 @@ class pInfoBoxWidget: public pInfoBoxGui
     QCheckBox *m_drawFirstPassCheckBox;
     QCheckBox *m_drawSearchRegionCheckBox;
     QCheckBox *m_drawSecondPassCheckBox;
+    QCheckBox *m_showRawEventsCheckBox;
 };
 
 

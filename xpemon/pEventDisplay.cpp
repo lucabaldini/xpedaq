@@ -20,13 +20,15 @@ with this program; if not, write to the Free Software Foundation Inc.,
 ***********************************************************************/
 
 #include "pEventDisplay.h"
+#include <algorithm>
 
 pEventDisplay::pEventDisplay(pColorMapOptions options) :
   m_options(options),
   m_minDisplayEdge(400),
   m_displayFirstPass(false),
   m_displaySearchRegion(false),
-  m_displaySecondPass(false)
+  m_displaySecondPass(false),
+  m_showRawEvents(false)
 {
   //Initialize with void event
   m_event = pEvent();
@@ -195,6 +197,12 @@ void pEventDisplay::setSecondPassDisplayEnabled(int status)
   draw();
 }
 
+void pEventDisplay::setShowRawEventsEnabled(int status)
+{
+  m_showRawEvents = status;
+  clearItems();
+  draw();
+}
 
 void pEventDisplay::clearItems()
 {
@@ -226,12 +234,13 @@ void pEventDisplay::loadEvent (const pEvent& evt)
 
 void pEventDisplay::updateDataRange()
 {
-  double zmin = 0;
-  double zmax = 0;
+  double zmin = 10000.; // Initialize with a very high value
+  double zmax = 0.;
   for (const event::Hit& hit : m_event) {
     if (hit.counts < zmin) zmin = hit.counts;
     if (hit.counts > zmax) zmax = hit.counts;
   }
+  zmin = std::max(zmin, 0.); // if zmin is less than zero start from zero instead
   setDataRange(QCPRange(zmin, zmax));
 }
 
@@ -309,10 +318,10 @@ void pEventDisplay::updateMatrixColor()
     QColor color (scanLine[i]);
     m_hexMatrix -> hexagon(i) -> setPen(QPen(QColor(220, 220, 220)));
     // Add color only for the pixels belonging to the firts cluster.
-    if (m_event.hits().at(i).clusterId == 0) {
+    // Unless the flag for showing raw events is set
+    if ((m_event.hits().at(i).clusterId == 0) || m_showRawEvents) { //TEMP
       m_hexMatrix -> hexagon(i) -> setBrush(QBrush(color));
     }
-    //else if (m_hexMatrix->border(i))
   }
 }
 
@@ -352,7 +361,7 @@ void pEventDisplay::draw()
     updateMatrixColor();
   }
   clearItems();
-  if (!m_event.isEmpty()) {
+  if ((!m_event.isEmpty()) && (!m_showRawEvents)) {
     if (m_displayFirstPass) {
       m_event.moma1().draw(this, "blue", true, true, true, 1, Qt::DashLine,
 			   Qt::SolidLine);

@@ -37,6 +37,23 @@ pDataBlock::pDataBlock(unsigned char *buffer) :
 
 /*!
   Window-mode (events with variable length).
+  
+  This function is under restructuring, as through the development of
+  the new firmware we realized that the old logic was writing to disk
+  the last event of the buffer, whosa data were located past the 
+  bufferSize limit.
+  
+  In the new logic we:
+  * update the m_size class member in the event loop, rather than at 
+    the end of the loop.
+  * have a break statement preventing the event counter to be updated
+    past the hard bufferSize limit (in which case we also pop the last
+	location out of the m_offsetVec class member.)
+	
+  Note that the variable pos in the event loop is pointing to the first
+  location of memory for the next event, as opposed to the last location 
+  of the previous event. Therefore the out-of-bound check reads 
+  pos > bufferSize rather than pos >= bufferSize.
 */
 
 pDataBlock::pDataBlock(unsigned char *buffer, unsigned int bufferSize) :
@@ -46,9 +63,11 @@ pDataBlock::pDataBlock(unsigned char *buffer, unsigned int bufferSize) :
 {
   unsigned int pos = 0;
   unsigned int evt = 0;
+  //std::cout << bufferSize << std::endl;
   while (pos < bufferSize) {
-    m_offsetVec.push_back(pos);
-    //std::cout << "**** " << header(evt) << std::endl;
+	m_size = pos;
+	m_offsetVec.push_back(pos);
+    //std::cout << "**** " << header(evt) << " " << pos << std::endl;
     if (header(evt) != 0xffff) {
       m_errorSummary += IdMismatch;
     }
@@ -65,9 +84,13 @@ pDataBlock::pDataBlock(unsigned char *buffer, unsigned int bufferSize) :
       m_errorSummary |= UnphysicalYMax;
     }
     pos += AdcStart + 2*numPixels(evt);
+	if (pos > bufferSize) {
+		m_offsetVec.pop_back();
+	    break;
+	}
     evt += 1;
   }
-  m_size = pos;
+  //std::cout << m_size << " " << evt << " " << m_offsetVec.size() << std::endl;
 }
 
 
@@ -206,6 +229,15 @@ unsigned int pDataBlock::numPixels(unsigned int event) const
 {
   if (!m_isWindowed) return xpoldetector::kNumPixelsX * xpoldetector::kNumPixelsY;
   return (xmax(event) - xmin(event) + 1)*(ymax(event) - ymin(event) + 1);
+}
+
+void pDataBlock::mydebug(unsigned int event)  const
+{
+	std::cout <<  dataWord(event, BufferId) 
+	<< " - " << dataWord(event, 12) << " - " << dataWord(event, 14) 
+	<< " - " << dataWord(event, 16) << " - " << dataWord(event, 18)
+	<< " - " << dataWord(event, 20) << " - " << dataWord(event, 22) << std::endl;
+	
 }
 
 

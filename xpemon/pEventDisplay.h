@@ -56,6 +56,7 @@ class pEventDisplay : public QCustomPlot
     void setFirstPassDisplayEnabled(int status);
     void setSearchRegionDisplayEnabled(int status);
     void setSecondPassDisplayEnabled(int status);
+    void setShowRawEventsEnabled(int status);
 
     void clearItems();
   
@@ -109,7 +110,8 @@ class pEventDisplay : public QCustomPlot
     bool m_isSyncronized; //check if the last event has been already drawn
     bool m_displayFirstPass;
     bool m_displaySearchRegion;
-    bool m_displaySecondPass; 
+    bool m_displaySecondPass;
+    bool m_showRawEvents;
 };
 
 #endif  //PEVENTDISPLAY_H

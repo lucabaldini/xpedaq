@@ -67,15 +67,21 @@ xpemonWindow::xpemonWindow(std::string preferencesFilePath,
   m_mainGridLayout->setColumnStretch(1, 12);
   //Initialize the event reader
   m_eventReader = new pEventReader((*m_preferences),
-				   m_monitorTab->windowSizeHist(),
-				   m_monitorTab->clusterSizeHist(),
+                                   m_monitorTab->windowSizeHist(),
+                                   m_monitorTab->clusterSizeHist(),
                                    m_monitorTab->pulseHeightHist(),
                                    m_monitorTab->modulationHist(),
                                    m_monitorTab->hitmap());
   
   setupConnections();
-  // Enable the recon check boxes (this might go in the configuration file).
+  // Set the check boxes as checked, except the show raw one.
   m_infoBoxWidget->checkCheckBoxes(true);
+  if (m_preferences->m_skipReconstruction) {
+    m_infoBoxWidget->showRawEventsCheckBox()->setChecked(true);
+    m_infoBoxWidget->showRawEventsCheckBox()->setEnabled(false);
+  } else {
+    m_infoBoxWidget->showRawEventsCheckBox()->setChecked(false);
+  }
   statusBar()->showMessage("Monitor system ready", 2000);
 }
 
@@ -97,6 +103,9 @@ void xpemonWindow::setupConnections()
           this, SLOT(showReaderStatMessage()));
   connect(this, SIGNAL(startAcquisition()),
           m_eventReader, SLOT(startReading()));
+  connect(m_infoBoxWidget->showRawEventsCheckBox(),
+	  SIGNAL(stateChanged(int)),
+	  m_infoBoxWidget, SLOT(setReconOptionsEnabled(int)));
   connect(m_infoBoxWidget->drawFirstPassCheckBox(),
 	  SIGNAL(stateChanged(int)),
 	  m_eventDisplayTab->eventDisplay(),
@@ -109,6 +118,10 @@ void xpemonWindow::setupConnections()
 	  SIGNAL(stateChanged(int)),
 	  m_eventDisplayTab->eventDisplay(),
 	  SLOT(setSecondPassDisplayEnabled(int)));
+  connect(m_infoBoxWidget->showRawEventsCheckBox(),
+	  SIGNAL(stateChanged(int)),
+	  m_eventDisplayTab->eventDisplay(),
+	  SLOT(setShowRawEventsEnabled(int)));
   setupEvtReaderConnections();
 }
 

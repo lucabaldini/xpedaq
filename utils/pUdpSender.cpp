@@ -49,7 +49,7 @@ void pUdpSender::broadcastEventByEvent(pDataBlock *block)
   std::vector<unsigned int> offsetVec = block->offsetVec();
   std::vector<unsigned int>::iterator offset;
   for(offset = offsetVec.begin(); offset != offsetVec.end() - 1; offset++) {
-    write(block->getCharDataBlock(*offset), *(offset + 1) - *offset);
+	write(block->getCharDataBlock(*offset), *(offset + 1) - *offset);
   }
 }
 

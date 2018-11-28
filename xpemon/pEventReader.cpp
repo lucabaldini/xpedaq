@@ -24,9 +24,9 @@ with this program; if not, write to the Free Software Foundation Inc.,
 pEventReader::pEventReader(const pMonitorPreferences& preferences,
 			                     pHistogram* windowSizeHist,
 			                     pHistogram* clusterSizeHist,
-                           pHistogram* pulseHeightHist, 
-                           pModulationHistogram* modulationHist,
-                           pMap* hitMap) :
+                                 pHistogram* pulseHeightHist, 
+                                 pModulationHistogram* modulationHist,
+                                 pMap* hitMap) :
   m_windowSizeHist(windowSizeHist),
   m_clusterSizeHist(clusterSizeHist),
   m_pulseHeightHist(pulseHeightHist),
@@ -87,7 +87,9 @@ void pEventReader::readPendingDatagram()
     pEvent event = pEvent(p.xmin(evt), p.xmax(evt), p.ymin(evt), p.ymax(evt),
 			   curHitMap, p.microseconds(evt),
 			   m_preferences.m_zeroSuppressionThreshold);
-    event.reconstruct(m_preferences.m_zeroSuppressionThreshold);
+    if (!m_preferences.m_skipReconstruction) {
+      event.reconstruct(m_preferences.m_zeroSuppressionThreshold);
+    }
     emit eventRead();
     m_numEventsRead += 1;
     if (eventAccepted(event)) {
@@ -95,10 +97,10 @@ void pEventReader::readPendingDatagram()
       m_isLastEventChanged = true;    
       m_lastEvent = event;
       for (auto const& it : event){
-        if (it.clusterId == 0){
+        if ((it.clusterId == 0) || (m_preferences.m_skipReconstruction)){
           OffsetCoordinate coord = event.coordToPixel(it.x, it.y);
           m_hitMap->fill(coord.col(), coord.row(),
-                       static_cast<double> (it.counts));      
+                         static_cast<double> (it.counts));
         }
       }
       m_windowSizeHist->fill(nPixel);
@@ -112,16 +114,23 @@ void pEventReader::readPendingDatagram()
 
 bool pEventReader::eventAccepted(const pEvent& event)
 {
-  return (event.clusterSize() > m_preferences.m_minClusterSize &&
-          event.clusterSize() < m_preferences.m_maxClusterSize &&
-          event.pulseHeight() > m_preferences.m_minPulseHeight &&
-          event.pulseHeight() < m_preferences.m_maxPulseHeight &&
-          event.moma1().elongation() > m_preferences.m_minElongation &&
-          event.moma1().elongation() < m_preferences.m_maxElongation &&
-          event.evtSize() > m_preferences.m_minWindowSize &&
-          event.evtSize() < m_preferences.m_maxWindowSize &&
-	  fabs(event.skewness()) > m_preferences.m_minSkewness &&
-	  fabs(event.skewness()) < m_preferences.m_maxSkewness);
+  if (m_preferences.m_skipReconstruction) {
+    return (event.evtSize() > m_preferences.m_minWindowSize &&
+            event.evtSize() < m_preferences.m_maxWindowSize &&
+            event.pulseHeight() > m_preferences.m_minPulseHeight &&
+            event.pulseHeight() < m_preferences.m_maxPulseHeight);
+  } else {
+    return (event.clusterSize() > m_preferences.m_minClusterSize &&
+            event.clusterSize() < m_preferences.m_maxClusterSize &&
+            event.pulseHeight() > m_preferences.m_minPulseHeight &&
+            event.pulseHeight() < m_preferences.m_maxPulseHeight &&
+            event.moma1().elongation() > m_preferences.m_minElongation &&
+            event.moma1().elongation() < m_preferences.m_maxElongation &&
+            event.evtSize() > m_preferences.m_minWindowSize &&
+            event.evtSize() < m_preferences.m_maxWindowSize &&
+	        fabs(event.skewness()) > m_preferences.m_minSkewness &&
+	        fabs(event.skewness()) < m_preferences.m_maxSkewness);
+  }
 } 
 
 
