@@ -72,10 +72,10 @@ def highest_occupancy_pxl(pxl_matrix, npxl=10):
 # don't forget to check for min window=32 of pixel on the border won't trigger
 EXECUTABLE   = os.path.join(os.environ['XPEDAQ_ROOT'],'bin','xpedaq')
 TRG_FILE     =  os.path.join(os.environ['XPEDAQ_ROOT'],'xpedaq\config','trgmask.cfg')
-MAX_SECONDS  = 60
+MAX_SECONDS  = 20
 MAX_BLOCK    = 200
-THRESHOLD_DAC= 236 #285 DAC -> 230 mV, 200 DAC -> 161 mV, 273 DAC -> 220 mV, 236 DAC -> 190 mV
-TARGET_RATE  = 1 #Hz
+THRESHOLD_DAC= 310 #285 DAC -> 230 mV, 200 DAC -> 161 mV, 273 DAC -> 220 mV, 236 DAC -> 190 mV
+TARGET_RATE  = 1. #Hz
 
 """ For reference here list of usefull options:
 ("max-seconds", 's',"Maximum data acquisition time (in s)");
@@ -156,9 +156,11 @@ while average_rate >= TARGET_RATE:
 	# Write trigger mask
 	if run_noisy_pxl != []:
 		print ("\n\tWriting trigger mask with pixel %d %d \n" % (run_noisy_pxl[0][0], run_noisy_pxl[0][1]) )
+		print ("\n\tWriting trigger mask with pixel %d %d \n" % (run_noisy_pxl[1][0], run_noisy_pxl[1][1]) )
 		# writing the pixel with highest occupancy
 		trg_mask_file = open(TRG_FILE, 'a')
-		trg_mask_file.write("%d %d" % (run_noisy_pxl[0][0], run_noisy_pxl[0][1]))
+		trg_mask_file.write("%d %d\n" % (run_noisy_pxl[0][0], run_noisy_pxl[0][1]))
+		trg_mask_file.write("%d %d" % (run_noisy_pxl[1][0], run_noisy_pxl[1][1]))
 		trg_mask_file.close()
 	
 print ("\n\t*************** The End *************** ")
