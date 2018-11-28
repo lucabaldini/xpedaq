@@ -1,4 +1,10 @@
 
+* throwing away the last event of the buffer when it is truncated
+* changing pha type from unsigned int to int
+* fixing the options for setting the number of pedestal samples in xpedaq
+* changed the adc_counts type from unsigned to signed int 
+* added a show raw data check box to xpemon
+
 -------------------------------------------------------------------------------
 xpedaq (0.23.0) - Thu, 20 Jul 2017 16:18:26 +0200
 -------------------------------------------------------------------------------
