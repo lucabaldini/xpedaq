@@ -28,17 +28,17 @@ with this program; if not, write to the Free Software Foundation Inc.,
 pAdvancedSettingsTab::pAdvancedSettingsTab()
   : pQtCustomTab("Advanced settings")
 {
-  m_clockFasterLabel = "10";
-  m_clockFastLabel = "5";
-  m_clockSlowLabel = "2.5";
-  m_clockSlowerLabel = "1.25";
+  m_clockFasterLabel = "9.6";
+  m_clockFastLabel = "4.8";
+  m_clockSlowLabel = "2.4";
+  m_clockSlowerLabel = "1.2";
   m_subSamplesZeroLabel = "0";
   m_subSamplesSmallerLabel = "1";
   m_subSamplesSmallLabel = "2";
   m_subSamplesLargeLabel = "4";
   m_subSamplesLargerLabel = "8";
-  m_windowMarginHighTrueLabel = "Large";
-  m_windowMarginHighFalseLabel = "Small";
+  //m_windowMarginHighTrueLabel = "Large";
+  //m_windowMarginHighFalseLabel = "Small";
   setupTimingWidgets();
   addVerticalSpacer();
   setupPedSubWidgets();
@@ -54,7 +54,7 @@ pAdvancedSettingsTab::pAdvancedSettingsTab()
  */
 void pAdvancedSettingsTab::disableSpinBoxLineEdits()
 {
-  m_clockShiftSpinBox->findChild<QLineEdit*>()->setReadOnly(true);
+  //m_clockShiftSpinBox->findChild<QLineEdit*>()->setReadOnly(true);
   m_pedSubDelaySpinBox->findChild<QLineEdit*>()->setReadOnly(true);
   m_trgEnableDelaySpinBox->findChild<QLineEdit*>()->setReadOnly(true);
   m_trgEnableDelaySpinBox->findChild<QLineEdit*>()->setReadOnly(true);
@@ -81,16 +81,16 @@ void pAdvancedSettingsTab::setupTimingWidgets()
   m_groupBoxGridLayout->addWidget(m_clockFrequencyComboBox, row, 1);
   m_groupBoxGridLayout->addWidget(m_clockFrequencyUnitsLabel, row, 2);
   row ++;
-  m_clockShiftLabel = new pQtCustomTextLabel(this, "Clock shift");
-  m_clockShiftSpinBox = new QSpinBox(this);
-  m_clockShiftSpinBox->setMinimum(xpoldetector::kClockShiftMin);
-  m_clockShiftSpinBox->setMaximum(xpoldetector::kClockShiftMax);
-  m_clockShiftSpinBox->setSingleStep(xpoldetector::kClockShiftStep);
-  m_clockShiftUnitsLabel = new pQtCustomTextLabel(this,
-						  xpolgui::knsUnitsLabel);
-  m_groupBoxGridLayout->addWidget(m_clockShiftLabel, row, 0);
-  m_groupBoxGridLayout->addWidget(m_clockShiftSpinBox, row, 1);
-  m_groupBoxGridLayout->addWidget(m_clockShiftUnitsLabel, row, 2);
+  //m_clockShiftLabel = new pQtCustomTextLabel(this, "Clock shift");
+  //m_clockShiftSpinBox = new QSpinBox(this);
+  //m_clockShiftSpinBox->setMinimum(xpoldetector::kClockShiftMin);
+  //m_clockShiftSpinBox->setMaximum(xpoldetector::kClockShiftMax);
+  //m_clockShiftSpinBox->setSingleStep(xpoldetector::kClockShiftStep);
+  //m_clockShiftUnitsLabel = new pQtCustomTextLabel(this,
+  //					  xpolgui::knsUnitsLabel);
+  //m_groupBoxGridLayout->addWidget(m_clockShiftLabel, row, 0);
+  //m_groupBoxGridLayout->addWidget(m_clockShiftSpinBox, row, 1);
+  //m_groupBoxGridLayout->addWidget(m_clockShiftUnitsLabel, row, 2);
 }
 
 
@@ -159,14 +159,14 @@ void pAdvancedSettingsTab::setupWindowWidgets()
   m_groupBoxGridLayout->addWidget(m_maxWindowSizeLabel, row, 0);
   m_groupBoxGridLayout->addWidget(m_maxWindowSizeSpinBox, row, 1);
   row ++;
-  m_windowMarginHighLabel =
-    new pQtCustomTextLabel(this, "Window padding");
-  m_windowMarginHighComboBox = new QComboBox(this);
-  m_windowMarginHighComboBox->insertItem(0, m_windowMarginHighTrueLabel);
-  m_windowMarginHighComboBox->insertItem(1, m_windowMarginHighFalseLabel);
-  m_groupBoxGridLayout->addWidget(m_windowMarginHighLabel, row, 0);
-  m_groupBoxGridLayout->addWidget(m_windowMarginHighComboBox, row, 1);
-  m_windowMarginHighComboBox->setDisabled(true);
+  //m_windowMarginHighLabel =
+  //  new pQtCustomTextLabel(this, "Window padding");
+  //m_windowMarginHighComboBox = new QComboBox(this);
+  //m_windowMarginHighComboBox->insertItem(0, m_windowMarginHighTrueLabel);
+  //m_windowMarginHighComboBox->insertItem(1, m_windowMarginHighFalseLabel);
+  //m_groupBoxGridLayout->addWidget(m_windowMarginHighLabel, row, 0);
+  //m_groupBoxGridLayout->addWidget(m_windowMarginHighComboBox, row, 1);
+  //m_windowMarginHighComboBox->setDisabled(true);
 }
 
 
@@ -191,10 +191,10 @@ unsigned short pAdvancedSettingsTab::clockFrequency() const
 
 /*!
  */
-unsigned short pAdvancedSettingsTab::clockShift() const
-{
-  return m_clockShiftSpinBox->value()/xpoldetector::kClockShiftStep;
-}
+//unsigned short pAdvancedSettingsTab::clockShift() const
+//{
+//  return m_clockShiftSpinBox->value()/xpoldetector::kClockShiftStep;
+//}
 
 
 /*!
@@ -252,17 +252,17 @@ unsigned short pAdvancedSettingsTab::maxWindowSize() const
 
 /*!
  */
-bool pAdvancedSettingsTab::windowMarginHigh() const
-{
-  QString marginHigh = m_windowMarginHighComboBox->currentText();
-  if (marginHigh == m_windowMarginHighFalseLabel){
-    return false;
-  } else if (marginHigh == m_windowMarginHighTrueLabel){
-    return true;
-  } else {
-    return false;
-  }
-}
+//bool pAdvancedSettingsTab::windowMarginHigh() const
+//{
+//  QString marginHigh = m_windowMarginHighComboBox->currentText();
+//  if (marginHigh == m_windowMarginHighFalseLabel){
+//    return false;
+//  } else if (marginHigh == m_windowMarginHighTrueLabel){
+//    return true;
+//  } else {
+//    return false;
+//  }
+//}
 
 
 /*!
@@ -285,10 +285,10 @@ void pAdvancedSettingsTab::displayClockFrequency(unsigned short frequency)
 
 /*!
  */
-void pAdvancedSettingsTab::displayClockShift(unsigned short shift)
-{
-  m_clockShiftSpinBox->setValue(shift*xpoldetector::kClockShiftStep);
-}
+//void pAdvancedSettingsTab::displayClockShift(unsigned short shift)
+//{
+//  m_clockShiftSpinBox->setValue(shift*xpoldetector::kClockShiftStep);
+//}
 
 
 /*!
@@ -346,14 +346,14 @@ void pAdvancedSettingsTab::displayMaxWindowSize(unsigned short size)
 
 /*!
  */
-void pAdvancedSettingsTab::displayWindowMarginHigh(bool marginHigh)
-{
-  if (marginHigh == true){
-    m_windowMarginHighComboBox->setCurrentIndex(0);
-  } else {
-    m_windowMarginHighComboBox->setCurrentIndex(1);
-  }
-}
+//void pAdvancedSettingsTab::displayWindowMarginHigh(bool marginHigh)
+//{
+//  if (marginHigh == true){
+//    m_windowMarginHighComboBox->setCurrentIndex(0);
+//  } else {
+//    m_windowMarginHighComboBox->setCurrentIndex(1);
+//  }
+//}
 
 
 /*!
@@ -362,13 +362,13 @@ void pAdvancedSettingsTab::displayConfiguration(pDetectorConfiguration
 						*configuration)
 {
   displayClockFrequency(configuration->clockFrequency());
-  displayClockShift(configuration->clockShift());
+  //displayClockShift(configuration->clockShift());
   displayNumPedsSamples(configuration->numPedSamples());
   displayPedSubDelay(configuration->pedSampleDelay());
   displayTrgEnableDelay(configuration->trgEnableDelay());
   displayMinWindowSize(configuration->minWindowSize());
   displayMaxWindowSize(configuration->maxWindowSize());
-  displayWindowMarginHigh(configuration->windowMarginHigh());
+  //displayWindowMarginHigh(configuration->windowMarginHigh());
 }
 
 

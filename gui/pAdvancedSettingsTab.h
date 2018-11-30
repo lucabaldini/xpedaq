@@ -45,23 +45,23 @@ class pAdvancedSettingsTab : public pQtCustomTab
 
   // Access functions.
   unsigned short clockFrequency() const;
-  unsigned short clockShift() const;
+  //unsigned short clockShift() const;
   unsigned short numPedSamples() const;
   unsigned short pedSubDelay() const;
   unsigned short trgEnableDelay() const;
   unsigned short minWindowSize() const;
   unsigned short maxWindowSize() const;
-  bool windowMarginHigh() const;
+  //bool windowMarginHigh() const;
 
   // Display functions.
   void displayClockFrequency(unsigned short frequency);
-  void displayClockShift(unsigned short shift);
+  //void displayClockShift(unsigned short shift);
   void displayNumPedsSamples(unsigned short samples);
   void displayPedSubDelay(unsigned short delay);
   void displayTrgEnableDelay(unsigned short delay);
   void displayMinWindowSize(unsigned short size);
   void displayMaxWindowSize(unsigned short size);
-  void displayWindowMarginHigh(bool marginHigh);
+  //void displayWindowMarginHigh(bool marginHigh);
   void displayConfiguration(pDetectorConfiguration *configuration);
 
  public slots:
@@ -81,14 +81,14 @@ class pAdvancedSettingsTab : public pQtCustomTab
   QString m_subSamplesSmallLabel;
   QString m_subSamplesLargeLabel;
   QString m_subSamplesLargerLabel;
-  QString m_windowMarginHighTrueLabel;
-  QString m_windowMarginHighFalseLabel;
+  //QString m_windowMarginHighTrueLabel;
+  //QString m_windowMarginHighFalseLabel;
   pQtCustomTextLabel *m_clockFrequencyLabel;
   QComboBox *m_clockFrequencyComboBox;
   pQtCustomTextLabel *m_clockFrequencyUnitsLabel;
-  pQtCustomTextLabel *m_clockShiftLabel;
-  QSpinBox *m_clockShiftSpinBox;
-  pQtCustomTextLabel *m_clockShiftUnitsLabel;
+  //pQtCustomTextLabel *m_clockShiftLabel;
+  //QSpinBox *m_clockShiftSpinBox;
+  //pQtCustomTextLabel *m_clockShiftUnitsLabel;
   pQtCustomTextLabel *m_numPedSamplesLabel;
   QComboBox *m_numPedSamplesComboBox;
   pQtCustomTextLabel *m_pedSubDelayLabel;
@@ -101,8 +101,8 @@ class pAdvancedSettingsTab : public pQtCustomTab
   QSpinBox *m_minWindowSizeSpinBox;
   pQtCustomTextLabel *m_maxWindowSizeLabel;
   QSpinBox *m_maxWindowSizeSpinBox;
-  QComboBox *m_windowMarginHighComboBox;
-  pQtCustomTextLabel *m_windowMarginHighLabel;
+  //QComboBox *m_windowMarginHighComboBox;
+  //pQtCustomTextLabel *m_windowMarginHighLabel;
   void setupTimingWidgets();
   void setupPedSubWidgets();
   void setupWindowWidgets();

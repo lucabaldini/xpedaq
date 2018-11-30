@@ -296,9 +296,9 @@ void pXpolFpga::configFullFrame()
   serialWrite((unsigned short)XPOL_SI_CNT_REG,WSEL);//WSEL=1 CONFIGURATION mode
   serialWrite((unsigned short)XPOL_SI_CNT_REG,SEND|WSEL);//WSEL=1 CONFIGURATION mode
   serialWrite((unsigned short)XPOL_SI_CNT_REG,0);
-  unsigned int clockShift = 23;
-  unsigned int clockFrequency = 0x40; // 2.5 MHz
-  serialWrite((unsigned short)12, clockFrequency | clockShift);
+  //unsigned int clockShift = 23;
+  //unsigned int clockFrequency = 0x40; // 2.5 MHz
+  //serialWrite((unsigned short)12, clockFrequency | clockShift);
   
   //SET number of readings stored in SRAM
   // Number of events you want to take within a loop
@@ -322,13 +322,15 @@ void pXpolFpga::configWindowedMode(pDetectorConfiguration *configuration)
     conf = (unsigned short)WINDOWED_EVT;
   
   // Discharge Width in unit of 50us tics - standard is 10 = 500us
-  //serialWrite((unsigned short)14,0xa); 
-  unsigned short dischargeWidth = configuration->pedSampleDelay();  
+  //serialWrite((unsigned short)14,0xa);
+  unsigned short dischargeWidth = configuration->pedSampleDelay();
+  *xpollog::kInfo << "Setting pedestal sample delay to " << dischargeWidth << endline;
   serialWrite((unsigned short)14, dischargeWidth);
   
   // Trigger Enable Delay after analog reset
   // window dimension limit in unit of 512 channels
   unsigned short disTriggerWidth = configuration->trgEnableDelay();
+  *xpollog::kInfo << "Setting trigger enable delay to " << disTriggerWidth << endline;
   unsigned short win_dlim = configuration->maxWindowSize();
   // Put parhentesis here around |.
   serialWrite((unsigned short)XPOL_DANGEROUS_REG,
@@ -371,7 +373,7 @@ void pXpolFpga::configWindowedMode(pDetectorConfiguration *configuration)
   // MSB correspond to the clock frequency : (Code|Value)&0xF (0x0 is 10MHz, 0x20 is 5MHz, 0x40 is 2.5MHz, 0x60 is 1.25MHz)
   // LSB correspond to the clock shift : Code&0x1F in unit of 25ns
   // 0x37 was standard value
-  serialWrite((unsigned short)12, configuration->timingCode());
+  //serialWrite((unsigned short)12, configuration->timingCode());
   
   //SET number of total readings(data+peds)
   // how many pedestals do you want to take between 2 events.
@@ -398,9 +400,12 @@ void pXpolFpga::configWindowedMode(pDetectorConfiguration *configuration)
   serialWrite((unsigned short)15,0xf);
   setProbes();
 
+  unsigned short clockFreqCode = configuration->clockFrequency();
+  *xpollog::kInfo << "Setting clock frequency to " << clockFreqCode << endline;
+  
   // modification for fw debug, by massimo on 14/7
-  serialWrite(0x1, 10);
-  serialWrite(0x2, 10);
+  serialWrite(0x1, clockFreqCode);
+  serialWrite(0x2, clockFreqCode);
 
 }
 
