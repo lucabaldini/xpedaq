@@ -100,13 +100,13 @@ pDetectorConfiguration* xpedaqWindow::detectorConfiguration(int mode)
 	setThresholdDac(i, m_thresholdSettingTab->getThreshold(i, mode));
     }
   configuration->setClockFrequency(m_advancedSettingsTab->clockFrequency());
-  //configuration->setClockShift(m_advancedSettingsTab->clockShift());
+  configuration->setClockShift(0);
   configuration->setNumPedSamples(m_advancedSettingsTab->numPedSamples());
   configuration->setPedSampleDelay(m_advancedSettingsTab->pedSubDelay());
   configuration->setTrgEnableDelay(m_advancedSettingsTab->trgEnableDelay());
   configuration->setMinWindowSize(m_advancedSettingsTab->minWindowSize());
   configuration->setMaxWindowSize(m_advancedSettingsTab->maxWindowSize());
-  //configuration->setWindowMarginHigh(m_advancedSettingsTab->windowMarginHigh());
+  configuration->setWindowMarginHigh(0);
   return configuration;
 }
 

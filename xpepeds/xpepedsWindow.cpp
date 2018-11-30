@@ -125,7 +125,7 @@ pDetectorConfiguration* xpepedsWindow::detectorConfiguration(int mode)
 	setThresholdDac(i, m_thresholdSettingTab->getThreshold(i, mode));
     }
   configuration->setClockFrequency(m_advancedSettingsTab->clockFrequency());
-  //configuration->setClockShift(m_advancedSettingsTab->clockShift());
+  configuration->setClockShift(0);
   configuration->setNumPedSamples(m_advancedSettingsTab->numPedSamples());
   configuration->setPedSampleDelay(m_advancedSettingsTab->pedSubDelay());
   configuration->setTrgEnableDelay(m_advancedSettingsTab->trgEnableDelay());
