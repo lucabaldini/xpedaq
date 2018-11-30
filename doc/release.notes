@@ -1,6 +1,7 @@
 
 * Advanced configuration parameters exposed in the GUI
-* settings updated to the 48 MHz clock
+* Settings updated to the 48 MHz clock
+* Clock shift and roi padding mode set to zero by default in the configuration
 
 -------------------------------------------------------------------------------
 xpedaq (1.0.0) - Thu, 29 Nov 2018 16:18:26 +0200
