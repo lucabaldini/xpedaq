@@ -1,4 +1,10 @@
 
+* Advanced configuration parameters exposed in the GUI
+* settings updated to the 48 MHz clock
+
+-------------------------------------------------------------------------------
+xpedaq (1.0.0) - Thu, 29 Nov 2018 16:18:26 +0200
+-------------------------------------------------------------------------------
 * throwing away the last event of the buffer when it is truncated
 * changing pha type from unsigned int to int
 * fixing the options for setting the number of pedestal samples in xpedaq
