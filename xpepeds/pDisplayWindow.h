@@ -1,10 +1,10 @@
 #ifndef DISPLAYWINDOW_H
 #define DISPLAYWINDOW_H
 
-#include <QtGui/QMainWindow>
-#include <QtGui/QStatusBar>
-#include <QtGui/QVBoxLayout>
-#include <QtGui/QWidget>
+#include <QMainWindow>
+#include <QStatusBar>
+#include <QVBoxLayout>
+#include <QWidget>
 
 #include "pedestalsMap.h"
 #include "xpepedsPlotGrid.h"
