@@ -17,7 +17,7 @@ equals(QT_MAJOR_VERSION, 5) {
   VPATH  += ../daq
   VPATH  += ../utils
   VPATH  += ../qcustomplot
-  QT += network opengl
+  QT += network opengl printsupport
   }
 
 INCLUDEPATH += .
