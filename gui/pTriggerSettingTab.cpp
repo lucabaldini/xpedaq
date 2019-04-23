@@ -33,8 +33,8 @@ pTriggerSettingTab::pTriggerSettingTab()
   QStringList tableHeader;
   tableHeader << "x" << "y";
   m_tableWidget->setHorizontalHeaderLabels(tableHeader);
-  m_tableWidget->horizontalHeader()->setResizeMode(0, QHeaderView::Stretch);
-  m_tableWidget->horizontalHeader()->setResizeMode(1, QHeaderView::Stretch);
+  //m_tableWidget->horizontalHeader()->setResizeMode(0, QHeaderView::Stretch);
+  //m_tableWidget->horizontalHeader()->setResizeMode(1, QHeaderView::Stretch);
   m_tableWidget->horizontalHeader()->setStretchLastSection(true);
   m_groupBoxGridLayout->addWidget(m_tableWidget, row, 0);
   freezeSize(xpolgui::kTabGroupBoxWidth);
