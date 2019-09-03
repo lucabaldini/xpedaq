@@ -27,7 +27,7 @@ with this program; if not, write to the Free Software Foundation Inc.,
 
 pDataBlock::pDataBlock(unsigned char *buffer) :
   m_rawBuffer(buffer),
-  m_size(2*NWORDS),
+  m_size(2*NWORDS_XPII),
   m_errorSummary(0),
   m_isWindowed(false)
 { 
@@ -46,24 +46,29 @@ pDataBlock::pDataBlock(unsigned char *buffer, unsigned int bufferSize) :
 {
   unsigned int pos = 0;
   unsigned int evt = 0;
+
   while (pos < bufferSize) {
     m_offsetVec.push_back(pos);
-    //std::cout << "**** " << header(evt) << std::endl;
+	 std::cout << "**** bufferSize= ****" << bufferSize 			<< std::endl;
+    std::cout << "**** Header ****" << header(evt) 			<< std::endl;
+	std::cout << "**** usecs. ****" << microseconds(evt) 	<< std::endl;
+	std::cout << "**** Ts(s) ****"  << timestamp(evt) 		<< std::endl;
+	printf("*****(%d,%d,%d,%d)****\n", xmin(evt), xmax(evt), ymin(evt),ymax(evt));
     if (header(evt) != 0xffff) {
       m_errorSummary += IdMismatch;
     }
-    if (xmin(evt) >= xpoldetector::kNumPixelsX) {
-      m_errorSummary |= UnphysicalXMin;
-    }
-    if (xmax(evt) >= xpoldetector::kNumPixelsX) {
-      m_errorSummary |= UnphysicalXMax;
-    }
-    if (ymin(evt) >= xpoldetector::kNumPixelsY) {
-      m_errorSummary |= UnphysicalYMin;
-    }
-    if (ymax(evt) >= xpoldetector::kNumPixelsY) {
-      m_errorSummary |= UnphysicalYMax;
-    }
+   //if (xmin(evt) >= xpoldetector::kNumPixelsX) {
+   //  m_errorSummary |= UnphysicalXMin;
+   //}
+   //if (xmax(evt) >= xpoldetector::kNumPixelsX) {
+   //  m_errorSummary |= UnphysicalXMax;
+   //}
+   //if (ymin(evt) >= xpoldetector::kNumPixelsY) {
+   //  m_errorSummary |= UnphysicalYMin;
+   //}
+   //if (ymax(evt) >= xpoldetector::kNumPixelsY) {
+   //  m_errorSummary |= UnphysicalYMax;
+   //}
     pos += AdcStart + 2*numPixels(evt);
     evt += 1;
   }
@@ -225,7 +230,8 @@ microsecond_t pDataBlock::microseconds(unsigned int event) const
 double pDataBlock::timestamp(unsigned int event) const
 {
   return dataWord(event, Seconds + 2) + 65536*dataWord(event, Seconds) +
-    0.8e-6*microseconds(event);
+    0.6667e-6*microseconds(event);
+	//was  0.8e-6*microseconds(event);
 }
 
 

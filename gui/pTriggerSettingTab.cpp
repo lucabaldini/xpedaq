@@ -88,12 +88,12 @@ pTriggerMask *pTriggerSettingTab::triggerMask() const
   for (int row = 0; row < m_tableWidget->rowCount(); row++) {
     unsigned short x = m_tableWidget->item(row, 0)->text().toInt();
     unsigned short y = m_tableWidget->item(row, 1)->text().toInt();
-    if ((x <= xpoldetector::kNumPixelsX) & (y <= xpoldetector::kNumPixelsY)) {
+    //if ((x <= xpoldetector::kNumPixelsX) & (y <= xpoldetector::kNumPixelsY)) {
       triggerMask->add(x, y);
-    } else {
-      *xpollog::kError << "Invalid trigger mask entry (" << x << ", " << y
-		       << "), skipping..." << endline;
-    }
+    //} else {
+    //  *xpollog::kError << "Invalid trigger mask entry (" << x << ", " << y
+	//	       << "), skipping..." << endline;
+    //}
   }
   return triggerMask;
 }

@@ -38,7 +38,9 @@ with this program; if not, write to the Free Software Foundation Inc.,
 #define DATAADDRESS_SETT		0x4000	//address bus disabled B14=1 B15=1 mean don't increment
 #define FIFO_MODE_SETT			0xE7	//MAster Mode:OxFA Slave Mode:0xf3   asynchslave 0xfB slave synch
 #define PIXELS_TO_READ			13200
+#define PIXELS_TO_READ_XPII			16296
 #define NWORDS				PIXELS_TO_READ*8
+#define NWORDS_XPII			PIXELS_TO_READ_XPII*8
 #define TIMEOUTMS			20000L
 #define SRAM_DIM			262144	//2^18 //on board SRAm dimension
 #define XPOL_FULL_FRAME_DIM		106496	//rounded to 104 1024 data blocks
@@ -54,9 +56,12 @@ with this program; if not, write to the Free Software Foundation Inc.,
 #define ALLINPUT	0x00
 #define ALLOUTPUT	0Xff
 
+#define XPOL_USEQ_CK_CYCLES_MACRO_temp 20
+#define XPOL_USEQ_SH_CYCLES_MACRO_temp 10
+
 #define STATUS_REG			0
-#define X2NPIXEL_LSB_REG		0x01
-#define X2NPIXEL_MSB_REG		0x02
+#define XPOL_USEQ_CK_CYCLES_REG		0x01
+#define XPOL_USEQ_SH_CYCLES_REG		0x02
 #define TOXPOL_MSB_REG			0X03
 #define TOXPOL_MID_REG			0X04
 #define TOXPOL_LSB_REG			0X05
@@ -192,7 +197,12 @@ with this program; if not, write to the Free Software Foundation Inc.,
 #define EP6FULLFLG	0x10
 #define EP6EMPTYFLG	0x200
 
-
+/* xpolII */
+#define XPOLII_DOUTCAL_REG 13
+#define XPOLII_AUTOCAL_READOUT_CTRL_REG 0
+#define DOUTCAL_MASK		 	1
+#define CalCK_MASTER 	1
+#define RdCal			2 
 
 
 class pUsbController : public QObject, public CQuickUsb

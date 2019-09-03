@@ -156,6 +156,10 @@ void pDataCollector::run()
       }
     }
   }
+  
+  std::cout << "readRejectedEventCounterWllim" << m_xpolFpga-> readRejectedEventCounterWllim() << std::endl; 
+  std::cout << "readRejectedEventCounterWulim" << m_xpolFpga-> readRejectedEventCounterWulim() << std::endl; 
+  
   m_xpolFpga->usbController()->stopSequencer();
   m_xpolFpga->usbController()->flushQUsbFIFO();
   m_xpolFpga->usbController()->resetSequencer();

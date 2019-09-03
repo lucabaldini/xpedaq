@@ -90,7 +90,6 @@ void pXpolFpga::mainSerialWrite(unsigned short REG_ADD,unsigned short regdata)
 void pXpolFpga::enableAllPixels()
 {
   *xpollog::kInfo << "Enabling all pixels to trigger... ";
-  setupToDisablePixels();
   serialWrite(XPOL_SIGNAL_REG, 0x4);
   serialWrite(XPOL_SIGNAL_REG, 0x0);
   *xpollog::kInfo << "Done." << endline;
@@ -114,7 +113,7 @@ void pXpolFpga::applyTriggerMask(pTriggerMask *trgMask)
 {
   enableAllPixels();
   if (trgMask->size()) {
-    //setupToDisablePixels();
+    setupToDisablePixels();
     for (const auto &chan : *(trgMask->mask())) {
       *xpollog::kInfo << "Masking pixel <" << chan.first << ", " 
 		      << chan.second << ">... " << endline;
@@ -179,13 +178,19 @@ uint32_t pXpolFpga::mainSerialRead(unsigned short reg_address){
 void pXpolFpga::writeXpolConfigurationRegister(unsigned short value)
 {
   serialWrite(15, 0x0); // To send configuration to XPOL SIMODE must be 0.
+  //XPOLI
   serialWrite(TOXPOL_MSB_REG, ((value & 0x3f) >> 4) & 0x03);
   serialWrite(TOXPOL_MID_REG, ((value & 0x3f) << 4) & 0xf0);
+  //XPOLII
+  //serialWrite(TOXPOL_MSB_REG, ((value & 0x3f) >> 3) & 0x03);
+  //serialWrite(TOXPOL_MID_REG, ((value & 0x3f) << 5) & 0xE0);
   serialWrite(XPOL_SI_CNT_REG, reset_XPOLSI);
   serialWrite(XPOL_SI_CNT_REG, 0);
   serialWrite(XPOL_SI_CNT_REG, WSEL);//WSEL=1 CONFIGURATION mode
   serialWrite(XPOL_SI_CNT_REG, SEND | WSEL);//WSEL=1 CONFIGURATION mode
   serialWrite(XPOL_SI_CNT_REG, 0);
+ 
+
 }
 
 
@@ -199,6 +204,8 @@ void pXpolFpga::writeXpolAddressRegister(unsigned short X, unsigned short Y)
   serialWrite(XPOL_SI_CNT_REG, 0);
   serialWrite(XPOL_SI_CNT_REG, SEND);//WSEL=0 address mode
   serialWrite(XPOL_SI_CNT_REG, 0);	
+  
+  serialWrite((unsigned short)XPOL_WPULSE_REG,1);//temp
 }
 
 
@@ -216,11 +223,16 @@ void pXpolFpga::readXpolAddressConfigurationRegisters(unsigned short &x,
   unsigned short midWord = mainSerialRead(XPM_RBACK_MIDW);
   unsigned short highWord = mainSerialRead(XPM_RBACK_MSW);
 
+
   x = lowWord >> 9;
   x |= ((midWord & 0x0003) << 7);
   y = lowWord & 0x01FF;
-  conf = ((highWord & 0x000f) << 2) ;
-  conf |= ((midWord >> 14) & 0x03);
+  conf = ((midWord >> 3) & 0x1f);
+
+
+  printf ("****** %04X, %04X, %04X\n",highWord,midWord,lowWord);
+  printf ("****** %04X\n",conf);
+
 }
 
 
@@ -265,7 +277,8 @@ void pXpolFpga::readReadoutStatistics(uint32_t &evtCounter,
 void pXpolFpga::configFullFrame()
 {
   *xpollog::kInfo << "Configuring FPGA in Full Frame mode..." << endline;
-  unsigned short conf = (unsigned short)FULLFRAME_MH;
+  //unsigned short conf = (unsigned short)FULLFRAME_MH; //XPOLI
+  unsigned short conf = 0x04; //XPOLII
   serialWrite(STATUS_REG,0x1);//reset ADC
   serialWrite(STATUS_REG,0x0);//reset ADC
 
@@ -274,9 +287,9 @@ void pXpolFpga::configFullFrame()
   //serialWrite((unsigned short)XPOL_DANGEROUS_REG,
   //	      (disTriggerWidth&0xf) | ((win_dlim<<4) & 0xf0));
 
-  serialWrite((unsigned short)X2NPIXEL_LSB_REG,(char)(PIXELS_TO_READ)&0xff);
-  serialWrite((unsigned short)X2NPIXEL_MSB_REG,(char)((PIXELS_TO_READ)>>8)&0xff);
-  serialWrite((unsigned short)XPOL_SIGNAL_REG,0);//Disable EnabletriggWindow
+  //serialWrite((unsigned short)X2NPIXEL_LSB_REG,(char)(PIXELS_TO_READ)&0xff);
+  //serialWrite((unsigned short)X2NPIXEL_MSB_REG,(char)((PIXELS_TO_READ)>>8)&0xff);
+  serialWrite((unsigned short)XPOL_SIGNAL_REG,0);//Define DefConf, EnableAll status
   serialWrite((unsigned short)XPOL_DISPIX_REG,0x2);//aaresetn
   serialWrite((unsigned short)XPOL_DISPIX_REG,0x0);//aaresetn
   mainSerialWrite((unsigned short) XPM_TRG_CNT_STATUS_REG,
@@ -284,27 +297,21 @@ void pXpolFpga::configFullFrame()
 
   //serialWrite((unsigned short)XPOL_WWIDTH_REG,8); What is this?
 
-  serialWrite((unsigned short)XPOL_WPULSE_REG,(conf>>6)&0x7);//modesel,usemh,runb
-  serialWrite((unsigned short)XPOL_SIGNAL_REG,(conf>>9)&0x1);//EnabletriggWindow
-  //xpol_write_conf(conf&0x3f); /*0x14*/
-  
-  serialWrite((unsigned short)15,0x0);  //to send configuration to XPOL SIMODE must be at 0
-  serialWrite((unsigned short)TOXPOL_MSB_REG,((conf&0x3f)>>4)&0x03);
-  serialWrite((unsigned short)TOXPOL_MID_REG,((conf&0x3f)<<4)&0xf0);
-  serialWrite((unsigned short)XPOL_SI_CNT_REG,reset_XPOLSI);
-  serialWrite((unsigned short)XPOL_SI_CNT_REG,0);
-  serialWrite((unsigned short)XPOL_SI_CNT_REG,WSEL);//WSEL=1 CONFIGURATION mode
-  serialWrite((unsigned short)XPOL_SI_CNT_REG,SEND|WSEL);//WSEL=1 CONFIGURATION mode
-  serialWrite((unsigned short)XPOL_SI_CNT_REG,0);
+  serialWrite((unsigned short)XPOL_WPULSE_REG,0);//modesel(not used),usemh(not used),runb
+  writeXpolConfigurationRegister(conf); /*0x04*/
+
   unsigned int clockShift = 23;
   unsigned int clockFrequency = 0x40; // 2.5 MHz
   serialWrite((unsigned short)12, clockFrequency | clockShift);
+  unsigned short x,y,val;
+  readXpolAddressConfigurationRegisters(x,y,val);
   
   //SET number of readings stored in SRAM
   // Number of events you want to take within a loop
   // 2 because you cannot put more than 2 events in memory  
   serialWrite((unsigned short)XPOL_RDNGS_N_REG,0x2);
-  
+  serialWrite(XPOL_USEQ_CK_CYCLES_REG, XPOL_USEQ_CK_CYCLES_MACRO_temp);//(register1 is ck_cycles[7..0])massimo
+  serialWrite(XPOL_USEQ_SH_CYCLES_REG , XPOL_USEQ_SH_CYCLES_MACRO_temp);//(register2 is sh_cycles[7..0])massimo
   setProbes();
 }
 
@@ -313,11 +320,14 @@ void pXpolFpga::configFullFrame()
 void pXpolFpga::configWindowedMode(pDetectorConfiguration *configuration)
 {
   *xpollog::kInfo << "Configuring FPGA in Windowed mode..." << endline;	
-  unsigned short conf = 0 ;
-  if(configuration->readoutMode()==xpoldetector::kChargeInjectionReadoutCode)
-    conf = (unsigned short)WINDOWED_INJ;
-  else if(configuration->readoutMode()==xpoldetector::kWindowedReadoutCode)
-    conf = (unsigned short)WINDOWED_EVT;
+  unsigned short conf = (unsigned short)0x1A;// 0x04=FullFrame, 0x0A = Window ROI 0, 0x0B=Window ROI 1
+
+  if(configuration->readoutMode()==xpoldetector::kChargeInjectionReadoutCode){
+	serialWrite((unsigned short)XPOL_WPULSE_REG,1);//modesel(not used),usemh(not used),runb
+	}
+  else if(configuration->readoutMode()==xpoldetector::kWindowedReadoutCode){
+	serialWrite((unsigned short)XPOL_WPULSE_REG,0);//modesel(not used),usemh(not used),runb
+	}
 
   
   // Discharge Width in unit of 50us tics - standard is 10 = 500us
@@ -335,7 +345,7 @@ void pXpolFpga::configWindowedMode(pDetectorConfiguration *configuration)
 
   serialWrite((unsigned short)STATUS_REG,0);//put at 0 conf[4..0] : needed ?
 
-  serialWrite((unsigned short)XPOL_SIGNAL_REG,0);//Disable EnabletriggWindow  
+  serialWrite((unsigned short)XPOL_SIGNAL_REG,0);//Define DefConf, EnableAll status
   serialWrite((unsigned short)XPOL_DISPIX_REG,0x2);//aaresetn
 
   // XPM_TRG_CNT_STATUS_DATA declared in pUsbController.h
@@ -344,32 +354,19 @@ void pXpolFpga::configWindowedMode(pDetectorConfiguration *configuration)
   // Define the Minimum number of pixels to be read in the Window : (DIM = x*32) 
   unsigned short winMinSize = configuration->minWindowSize();
   serialWrite((unsigned short)XPOL_MIN_WIN_DIM_REG, winMinSize);    
-  serialWrite((unsigned short)XPOL_WPULSE_REG,(conf>>6)&0x7);//modesel,usemh,runb 
-  serialWrite((unsigned short)XPOL_SIGNAL_REG,(conf>>9)&0x1);//EnabletriggWindow
+  
+
 
   // Configuration of the sequencer : configuration of the ASIC via the FPGPA
-  // 0x0 means : USB speaks with the ASIC via the FPGA
-  // 0xf means : the ASIC works in windowed mode				
-  serialWrite((unsigned short)15,0x0); //to send configuration to XPOL SIMODE must be at 0
-  serialWrite((unsigned short)TOXPOL_MSB_REG,((conf&0x3f)>>4)&0x03); //ASIC configuration
-
-  // In order to set the large margin for the window we should set the LSB
-  // of this group of 4 to 1---instead of 0.
-  //serialWrite(TOXPOL_MID_REG, ((((conf & 0x3f) | (configuration->windowMarginHigh() & 0x1)) << 4) & 0xf0));
-  serialWrite((unsigned short)TOXPOL_MID_REG,((conf&0x3f)<<4)&0xf0);
-
-  //FPGA Sends the content of the register to the ASIC
-  serialWrite((unsigned short)XPOL_SI_CNT_REG,reset_XPOLSI);  
-  serialWrite((unsigned short)XPOL_SI_CNT_REG,0);
-  serialWrite((unsigned short)XPOL_SI_CNT_REG,WSEL);//WSEL=1 CONFIGURATION mode
-  serialWrite((unsigned short)XPOL_SI_CNT_REG,SEND|WSEL);//WSEL=1 CONFIGURATION mode
-  serialWrite((unsigned short)XPOL_SI_CNT_REG,0);
+  writeXpolConfigurationRegister(conf);
+  unsigned short x,y,val;
+  readXpolAddressConfigurationRegisters(x,y,val);
   
   //SET TIMING CODE 37 FOR 5MHz : Can be set from the GUI, kind of Tack delay
   // MSB correspond to the clock frequency : (Code|Value)&0xF (0x0 is 10MHz, 0x20 is 5MHz, 0x40 is 2.5MHz, 0x60 is 1.25MHz)
   // LSB correspond to the clock shift : Code&0x1F in unit of 25ns
   // 0x37 was standard value
-  serialWrite((unsigned short)12, configuration->timingCode());
+  //serialWrite((unsigned short)12, configuration->timingCode());
   
   //SET number of total readings(data+peds)
   // how many pedestals do you want to take between 2 events.
@@ -378,23 +375,19 @@ void pXpolFpga::configWindowedMode(pDetectorConfiguration *configuration)
   // We have to write the total number of samples to be acquired, i.e. 1 (the
   // actual data readout) + numSamples (the number of samples for pedestal
   // subtraction).
-  serialWrite((unsigned short)XPOL_RDNGS_N_REG, numSamples + 1);
+  serialWrite((unsigned short)XPOL_RDNGS_N_REG, numSamples);
 
   // When the second bit of this register is set to 1 : analogical reset of the ASIC
-  serialWrite((unsigned short)XPOL_DISPIX_REG,0x0);  //aaresetn
-
-  *xpollog::kInfo << "Reading back XPOL registers..." << endline; 
-  unsigned short x, y, value;
-  readXpolAddressConfigurationRegisters(x, y, value);
-  *xpollog::kInfo << "Address x: " << x << endline;
-  *xpollog::kInfo << "Address y: " << y << endline;
-  *xpollog::kInfo << "Configuration register: 0x" << hex << value << dec
-		  << endline;
+  serialWrite((unsigned short)XPOL_DISPIX_REG,0x0);  //DisablePixel
 
   // Configuration of the sequencer : configuration of the ASIC via the FPGPA
   // 0x0 means : USB speaks with the ASIC via the FPGA
   // 0xf means : the ASIC works in windowed mode
   serialWrite((unsigned short)15,0xf);
+  serialWrite(XPOL_USEQ_CK_CYCLES_REG, XPOL_USEQ_CK_CYCLES_MACRO_temp);//(register1 is ck_cycles[7..0])massimo
+  serialWrite(XPOL_USEQ_SH_CYCLES_REG, XPOL_USEQ_SH_CYCLES_MACRO_temp);//(register2 is sh_cycles[7..0])massimo
+
+  
   setProbes();
 }
 
@@ -464,6 +457,10 @@ void pXpolFpga::configXPMWindowed(pDetectorConfiguration *configuration)
   *xpollog::kDebug << "Pixel <" << configuration->pixelAddressX() <<
     ", " << configuration->pixelAddressY() <<
     "> selected for charge injection." << endline;
+	
+	
+  //shit remove soon
+  //xpolii_autocal_readout("autocal_post.bin");
 }
 
 
@@ -477,7 +474,8 @@ void pXpolFpga::setDacThreshold(pDetectorConfiguration *configuration)
   unsigned short calibrationSignal = configuration->calibrationDac();
   
   // Reads the reference voltage in DAC and sum it to the thresholds - To Be Fixed later
-  unsigned short dac = readVrefDac();
+  //unsigned short dac = readVrefDac(); XPOLI
+  unsigned short dac = 0; //XPOLII
   for(int i=0;i<15;i++)
       copythreshold[i] = trh_buffer[i]+ (unsigned short)(dac*AD2_LSB/DAC_LSB);
 
@@ -559,7 +557,7 @@ unsigned short pXpolFpga::readVrefDac()
   *xpollog::kDebug << "Reading reference voltage... " << dac
 		   << " ADC counts (" << vref << " V)" << endline;
   // Emit a signal with the relevant value(s).
-  emit vrefRead(dac, vref);
+  emit vrefRead(dac, vref);  
   return dac;
 }
 
@@ -617,3 +615,33 @@ void pXpolFpga::setup(pDetectorConfiguration *configuration)
     exit(1);
   }
 }
+
+
+void pXpolFpga::xpolii_autocal_readout(char* filename){
+	FILE * file;
+	file = fopen(filename,"w");
+	//read mode =0, write mode= 0
+	writeXpolConfigurationRegister(0x0);
+	for (unsigned int cp_add = 0; cp_add < 388; cp_add +=2){
+		//set column address
+		writeXpolAddressRegister(cp_add, cp_add);
+		//apply RdCal
+		serialWrite(XPOLII_AUTOCAL_READOUT_CTRL_REG, RdCal);
+		for (unsigned int row = 0; row < 336; row +=2){
+			unsigned int code = 0;
+			for (int bit = 5; bit >=0; bit-- ){
+			//read bit 5,4,3,2,1,0
+			code |= ((DOUTCAL_MASK & mainSerialRead((unsigned short)XPOLII_DOUTCAL_REG)) << bit);
+			//apply CalCk_Master pulse
+			serialWrite(XPOLII_AUTOCAL_READOUT_CTRL_REG, RdCal | CalCK_MASTER);
+			serialWrite(XPOLII_AUTOCAL_READOUT_CTRL_REG, RdCal);;
+			}
+			std::cout << code << " ";
+			fwrite(&code,sizeof(code),1,file);
+		}
+		std::cout << std::endl;
+	}
+	fclose(file);
+	//remove RdCal
+	serialWrite(XPOLII_AUTOCAL_READOUT_CTRL_REG, 0);
+	}

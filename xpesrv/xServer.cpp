@@ -25,7 +25,7 @@ with this program; if not, write to the Free Software Foundation Inc.,
 
 #include "xServer.h"
 
-#define COMB(x1,x2) (((x2 & 0xff)<<8)|x1 & 0xff)
+#define COMB(x1,x2) ((((x2 & 0xff)<<8)|x1) & 0xff)
 
 xServer::xServer(QWidget *parent)
 {
@@ -148,7 +148,7 @@ void xServer::goToNextEvent()
 
 void xServer::broadcastEvent()
 {
-  const int maxEvtsize = 10000; 
+  const int maxEvtsize = 200000; 
   //unsigned char data[2];
   unsigned char buffer[maxEvtsize];
   char tmp1, tmp2;
@@ -179,10 +179,10 @@ void xServer::broadcastEvent()
     buffer[bindex+1]= tmp2; //data[1];         
     bindex+=2;
   }
-  // *xpollog::kDebug << Roi[0] << " " << Roi[1] << " " << Roi[2] << " "
-  //                << Roi[3] << endline;
+   *xpollog::kDebug << Roi[0] << " " << Roi[1] << " " << Roi[2] << " "
+                  << Roi[3] << endline;
   int numPix = (Roi[1]+1- Roi[0])*(Roi[3]+1- Roi[2]);
-  //*xpollog::kDebug << numPix << endline;
+  *xpollog::kDebug << numPix << endline;
   // read BufferID and Time Stamps
   //fread(data,1,2,m_inputFile);
   fStream.read((char*)&tmp1, sizeof(char));
@@ -239,5 +239,6 @@ void xServer::broadcastEvent()
       buffer[bindex+1]= tmp2; //data[1];
       bindex+=2;
     }
+  *xpollog::kError << "Broadcasting evt" << endline;
   m_udpSender->broadcastDatagram((char*)buffer, bindex);//maxEvsize);
 }

@@ -98,7 +98,9 @@ void pXpolRegisterPoker::write()
 		  << "), 0x" << hex << m_configuration << dec
 		  << " into the XPOL registers..." << endline;
   m_xpolFpga->writeXpolAddressRegister(m_pixelAddressX, m_pixelAddressY);
+
   m_xpolFpga->writeXpolConfigurationRegister(m_configuration);
+  
   emit registersWritten(m_pixelAddressX, m_pixelAddressY, m_configuration);
 }
 

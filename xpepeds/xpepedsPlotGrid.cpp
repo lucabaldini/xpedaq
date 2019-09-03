@@ -35,7 +35,7 @@ void xpepedsPlotGrid::setupAverageHist()
   pBasicPlotOptions averageHistOptions = pBasicPlotOptions("Average",
                                      "Average [counts]", "n. pixel");
   
-  m_averageHist = new pHistogram(200, 0., 1800.);
+  m_averageHist = new pHistogram(200, 0., 3500.);
   m_averagePlot = new pHistogramPlot(m_averageHist, averageHistOptions);
   m_averagePlot -> setObjectName(QString::fromUtf8("average hist"));
   m_PlotLayout -> addWidget(m_averagePlot, 0, 1);
@@ -60,7 +60,7 @@ void xpepedsPlotGrid::setupRmsHist()
 {
   pBasicPlotOptions rmsHistOptions = pBasicPlotOptions("Rms",
                                         "Rms [counts]", "n. pixel");
-  m_rmsHist = new pHistogram(100, 0., 150.);
+  m_rmsHist = new pHistogram(100, 0., 50.);
   m_rmsPlot = new pHistogramPlot(m_rmsHist, rmsHistOptions);
   m_rmsPlot -> setObjectName(QString::fromUtf8("rms hist"));
   m_PlotLayout -> addWidget(m_rmsPlot, 1, 1);

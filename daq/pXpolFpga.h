@@ -50,10 +50,12 @@ class pXpolFpga : public QObject
   void readXpolAddressConfigurationRegisters(unsigned short &x,
 					     unsigned short &y,
 					     unsigned short &conf);
+  void xpolii_autocal_readout(char *filename);
   uint32_t readErrorCode();
   uint32_t readEventCounter();
   uint32_t readRejectedEventCounterWllim();
   uint32_t readRejectedEventCounterWulim();
+  
   void readReadoutStatistics(uint32_t &evtCounter, uint32_t &rejEvtCounterWllim,
 			     uint32_t &rejEvtCounterWulim );
   

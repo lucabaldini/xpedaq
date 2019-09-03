@@ -45,12 +45,12 @@ void pTriggerMask::add(unsigned short x, unsigned short y)
 {
   bool insertError = false;
   for (const auto &chan : *m_mask) {
-    if ((chan.first == x) & (chan.second == y)) {
+    /*if ((chan.first == x) & (chan.second == y)) {
       *xpollog::kError << "Duplicate trigger mask entry (" << x << ", " << y
 		       << "), skipping..." << endline;
       insertError = true;
       break;
-    }
+    }*/
   }
   if (!insertError) { 
     m_mask->push_back(std::make_pair(x, y));

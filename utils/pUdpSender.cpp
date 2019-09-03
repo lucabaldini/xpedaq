@@ -27,16 +27,19 @@ pUdpSender::pUdpSender()
   m_udpSocket = new QUdpSocket();
   setHostAddress("127.0.0.1");
   setPort(0);
+
 }
 
 void pUdpSender::setHostAddress(std::string address)
 {
+
   m_hostAddress = QHostAddress(address.c_str());
 }
 
 void pUdpSender::setPort(int port)
 {
   m_port = port;
+  
 }
 
 void pUdpSender::broadcastDatagram(pDataBlock *block)
@@ -66,7 +69,7 @@ void pUdpSender::broadcastDatagram(unsigned char *datagram, int size)
 void pUdpSender::write(char *data, int size)
 {
   int numBytes = m_udpSocket->writeDatagram(data, size, m_hostAddress, m_port);
-  if (numBytes < 0) {
+  if (numBytes < size) {
     int errorCode = m_udpSocket->error();
     *xpollog::kDebug << "UDP socket error. " << numBytes << "/" << size
 		     << " bytes multicasted (error code " << errorCode
