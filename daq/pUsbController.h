@@ -57,7 +57,7 @@ with this program; if not, write to the Free Software Foundation Inc.,
 #define ALLOUTPUT	0Xff
 
 #define XPOL_USEQ_CK_CYCLES_MACRO_temp 20
-#define XPOL_USEQ_SH_CYCLES_MACRO_temp 10
+#define XPOL_USEQ_SH_CYCLES_MACRO_temp 20
 
 #define STATUS_REG			0
 #define XPOL_USEQ_CK_CYCLES_REG		0x01

@@ -162,4 +162,4 @@ const unsigned short xpoldetector::kNumReadOutBuffers = 8;
 const unsigned short xpoldetector::kNumThresholdClusters = 16;
 
 const int xpoldetector::kSmallBufferSize = 2*5000;
-const int xpoldetector::kLargeBufferSize = 2*262144;
+const int xpoldetector::kLargeBufferSize = 2*(130379 - 1);

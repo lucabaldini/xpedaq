@@ -112,18 +112,18 @@ void pEventReader::readPendingDatagram()
 
 bool pEventReader::eventAccepted(const pEvent& event)
 {
-//return (//event.clusterSize() > m_preferences.m_minClusterSize &&
-//        event.clusterSize() < m_preferences.m_maxClusterSize //&&
-//        event.pulseHeight() > m_preferences.m_minPulseHeight &&
-//        event.pulseHeight() < m_preferences.m_maxPulseHeight &&
-//        event.moma1().elongation() > m_preferences.m_minElongation &&
-//        event.moma1().elongation() < m_preferences.m_maxElongation &&
-//        event.evtSize() > m_preferences.m_minWindowSize &&
-//        event.evtSize() < m_preferences.m_maxWindowSize &&
-//  fabs(event.skewness()) > m_preferences.m_minSkewness &&
-//  fabs(event.skewness()) < m_preferences.m_maxSkewness
-//);
-return true;
+return (event.clusterSize() > m_preferences.m_minClusterSize &&
+        event.clusterSize() < m_preferences.m_maxClusterSize &&
+        event.pulseHeight() > m_preferences.m_minPulseHeight &&
+        event.pulseHeight() < m_preferences.m_maxPulseHeight &&
+        event.moma1().elongation() > m_preferences.m_minElongation &&
+        event.moma1().elongation() < m_preferences.m_maxElongation &&
+        event.evtSize() > m_preferences.m_minWindowSize &&
+        event.evtSize() < m_preferences.m_maxWindowSize &&
+  fabs(event.skewness()) > m_preferences.m_minSkewness &&
+  fabs(event.skewness()) < m_preferences.m_maxSkewness
+);
+//return true;
 } 
 
 
