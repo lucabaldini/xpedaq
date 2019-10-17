@@ -320,7 +320,7 @@ void pXpolFpga::configFullFrame()
 void pXpolFpga::configWindowedMode(pDetectorConfiguration *configuration)
 {
   *xpollog::kInfo << "Configuring FPGA in Windowed mode..." << endline;	
-  unsigned short conf = (unsigned short)0x1A;// 0x04=FullFrame, 0x0A = Window ROI 0, 0x0B=Window ROI 1
+  unsigned short conf = (unsigned short)0x1B;// 0x04=FullFrame, 0x0A = Window ROI 0, 0x0B=Window ROI 1
 
   if(configuration->readoutMode()==xpoldetector::kChargeInjectionReadoutCode){
 	serialWrite((unsigned short)XPOL_WPULSE_REG,1);//modesel(not used),usemh(not used),runb
@@ -639,7 +639,8 @@ void pXpolFpga::xpolii_autocal_readout(char* filename){
 			std::cout << code << " ";
 			fwrite(&code,sizeof(code),1,file);
 		}
-		std::cout << std::endl;
+		//std::cout << std::endl;
+		std::cout << "cp= "<<cp_add <<std::endl;
 	}
 	fclose(file);
 	//remove RdCal
