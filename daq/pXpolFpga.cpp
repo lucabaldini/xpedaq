@@ -227,11 +227,11 @@ void pXpolFpga::readXpolAddressConfigurationRegisters(unsigned short &x,
   x = lowWord >> 9;
   x |= ((midWord & 0x0003) << 7);
   y = lowWord & 0x01FF;
-  conf = ((midWord >> 3) & 0x1f);
+  conf = ((midWord >> 2) & 0x1f); 
 
 
-  printf ("****** %04X, %04X, %04X\n",highWord,midWord,lowWord);
-  printf ("****** %04X\n",conf);
+  printf ("****** %04Xh, %04Xh, %04Xh\n",highWord,midWord,lowWord);
+  printf ("****** %04Xh\n",conf);
 
 }
 
@@ -320,7 +320,7 @@ void pXpolFpga::configFullFrame()
 void pXpolFpga::configWindowedMode(pDetectorConfiguration *configuration)
 {
   *xpollog::kInfo << "Configuring FPGA in Windowed mode..." << endline;	
-  unsigned short conf = (unsigned short)0x1A;// 0x04=FullFrame, 0x0A = Window ROI 0, 0x0B=Window ROI 1
+  unsigned short conf = (unsigned short)0x0A;// 0x04=FullFrame, 0x0A = Window ROI 0, 0x0B=Window ROI 1
 
   if(configuration->readoutMode()==xpoldetector::kChargeInjectionReadoutCode){
 	serialWrite((unsigned short)XPOL_WPULSE_REG,1);//modesel(not used),usemh(not used),runb
