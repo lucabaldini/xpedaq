@@ -21,6 +21,8 @@ with this program; if not, write to the Free Software Foundation Inc.,
 ***********************************************************************/
 
 #include "pXpolFpga.h"
+#define XPOL_USEQ_CK_CYCLES_MACRO_temp 20
+#define XPOL_USEQ_SH_CYCLES_MACRO_temp 20
 
 pXpolFpga::pXpolFpga(pUsbController *usbController)
 {
@@ -320,7 +322,7 @@ void pXpolFpga::configFullFrame()
 void pXpolFpga::configWindowedMode(pDetectorConfiguration *configuration)
 {
   *xpollog::kInfo << "Configuring FPGA in Windowed mode..." << endline;	
-  unsigned short conf = (unsigned short)0x1B;// 0x04=FullFrame, 0x0A = Window ROI 0, 0x0B=Window ROI 1
+  unsigned short conf = (unsigned short)0x0B;// 0x04=FullFrame, 0x0A = Window ROI 0, 0x0B=Window ROI 1
 
   if(configuration->readoutMode()==xpoldetector::kChargeInjectionReadoutCode){
 	serialWrite((unsigned short)XPOL_WPULSE_REG,1);//modesel(not used),usemh(not used),runb
@@ -622,12 +624,12 @@ void pXpolFpga::xpolii_autocal_readout(char* filename){
 	file = fopen(filename,"w");
 	//read mode =0, write mode= 0
 	writeXpolConfigurationRegister(0x0);
-	for (unsigned int cp_add = 0; cp_add < 388; cp_add +=2){
+	for (unsigned int cp_add = 50; cp_add < 52; cp_add +=2){
 		//set column address
 		writeXpolAddressRegister(cp_add, cp_add);
 		//apply RdCal
 		serialWrite(XPOLII_AUTOCAL_READOUT_CTRL_REG, RdCal);
-		for (unsigned int row = 0; row < 336; row +=2){
+		for (unsigned int row = 0; row < 50; row +=2){
 			unsigned int code = 0;
 			for (int bit = 5; bit >=0; bit-- ){
 			//read bit 5,4,3,2,1,0
