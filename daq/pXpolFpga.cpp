@@ -229,11 +229,11 @@ void pXpolFpga::readXpolAddressConfigurationRegisters(unsigned short &x,
   x = lowWord >> 9;
   x |= ((midWord & 0x0003) << 7);
   y = lowWord & 0x01FF;
-  conf = ((midWord >> 3) & 0x1f);
+  conf = ((midWord >> 2) & 0x1f); 
 
 
-  printf ("****** %04X, %04X, %04X\n",highWord,midWord,lowWord);
-  printf ("****** %04X\n",conf);
+  printf ("****** %04Xh, %04Xh, %04Xh\n",highWord,midWord,lowWord);
+  printf ("****** %04Xh\n",conf);
 
 }
 
@@ -641,8 +641,7 @@ void pXpolFpga::xpolii_autocal_readout(char* filename){
 			std::cout << code << " ";
 			fwrite(&code,sizeof(code),1,file);
 		}
-		//std::cout << std::endl;
-		std::cout << "cp= "<<cp_add <<std::endl;
+		std::cout << std::endl;
 	}
 	fclose(file);
 	//remove RdCal
